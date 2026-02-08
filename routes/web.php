@@ -1,39 +1,50 @@
 <?php
 
-use App\Http\Controllers\InvitationController;
-
+use App\Livewire\Pages\Auth\Login;
+use App\Livewire\Pages\Auth\Register;
+use App\Livewire\Pages\Dashboard;
+use App\Livewire\Pages\Welcome;
+use App\Livewire\ThemePage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
 // Public Routes
-Route::livewire('/', 'pages::welcome')->name('home');
+Route::get('/', Welcome::class)->name('home');
 
 // Guest Routes (Not Authenticated)
 Route::middleware('guest')->group(function () {
-    Route::livewire('/login', 'pages::auth.login')->name('login');
-    Route::livewire('/register', 'pages::auth.register')->name('register');
+    Route::get('/login', Login::class)->name('login');
+    Route::get('/register', Register::class)->name('register');
 });
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
-    Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
-    
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+
     // Invitation Management
-    Route::livewire('/invitations/new', 'pages::invitation.type-selector')->name('invitations.new');
-    Route::livewire('/invitations/create', 'pages::invitation.builder')->name('invitations.create');
-    Route::livewire('/invitations/{id}/edit', 'pages::invitation.builder')->name('invitations.edit');
-    Route::livewire('/invitations/{id}/sebar', 'pages::invitation.sebar')->name('invitations.sebar');
-    
+    Route::get('/invitations/new', \App\Livewire\Pages\Invitation\TypeSelector::class)->name('invitations.new');
+    Route::get('/invitations/create', \App\Livewire\Pages\Invitation\Builder::class)->name('invitations.create');
+    Route::get('/invitations/{id}/edit', \App\Livewire\Pages\Invitation\Builder::class)->name('invitations.edit');
+
+    // To be migrated
+    Route::get('/invitations/{id}/sebar', \App\Livewire\Pages\Invitation\Sebar::class)->name('invitations.sebar');
+    // Route::get('/invitations/{invitation}/customize', \App\Livewire\ThemeCustomizer::class)->name('invitations.customize');
+
     // Logout
     Route::post('/logout', function () {
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
+
         return redirect('/');
     })->name('logout');
 });
 
 // Public Invitation View
-Route::get('/i/{slug}', [InvitationController::class, 'show'])->name('invitation.show');
-Route::post('/i/{slug}/rsvp', [InvitationController::class, 'rsvp'])->name('invitation.rsvp');
-Route::post('/i/{slug}/wish', [InvitationController::class, 'wish'])->name('invitation.wish');
+Route::get('/i/{slug}', ThemePage::class)->name('invitation.show');

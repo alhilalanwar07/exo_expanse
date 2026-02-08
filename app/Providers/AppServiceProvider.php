@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Livewire\Livewire::component('themes.royal-gold', \App\Livewire\Themes\RoyalGold::class);
+        \Livewire\Livewire::component('themes.floral-romance', \App\Livewire\Themes\FloralRomance::class);
+        \Livewire\Livewire::component('themes.modern-elegance', \App\Livewire\Themes\ModernElegance::class);
+        \Livewire\Livewire::component('themes.generic', \App\Livewire\Themes\Generic::class);
     }
 }

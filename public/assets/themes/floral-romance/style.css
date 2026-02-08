@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Outfit:wght@100;300;400;600&family=Pinyon+Script&display=swap');
+
+.theme-floral-romance {
+    --color-bg: #FDF2F2;
+    --color-accent: #D48C8C;
+    --color-dark: #4A3434;
+    --color-gold: #C5A059;
+}
+
+/* Base Styles */
+.theme-floral-romance .font-serif {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.theme-floral-romance .font-sans {
+    font-family: 'Outfit', sans-serif;
+}
+
+.theme-floral-romance .font-script {
+    font-family: 'Pinyon Script', cursive;
+}
+
+.theme-floral-romance.texture-paper {
+    background-color: var(--color-bg);
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+}
+
+/* Utilities - Colors */
+.theme-floral-romance .bg-primary {
+    background-color: var(--color-dark);
+}
+
+.theme-floral-romance .text-primary {
+    color: var(--color-dark);
+}
+
+.theme-floral-romance .bg-accent {
+    background-color: var(--color-accent);
+}
+
+.theme-floral-romance .text-accent {
+    color: var(--color-accent);
+}
+
+.theme-floral-romance .bg-paper {
+    background-color: var(--color-bg);
+}
+
+.theme-floral-romance .text-paper {
+    color: var(--color-bg);
+}
+
+.theme-floral-romance .text-light {
+    color: #FDF2F2;
+}
+
+/* Utilities - Opacity Variants */
+.theme-floral-romance .bg-accent-10 {
+    background-color: rgba(212, 140, 140, 0.1);
+}
+
+.theme-floral-romance .bg-accent-30 {
+    background-color: rgba(212, 140, 140, 0.3);
+}
+
+.theme-floral-romance .border-accent-20 {
+    border-color: rgba(212, 140, 140, 0.2);
+}
+
+.theme-floral-romance .border-accent-30 {
+    border-color: rgba(212, 140, 140, 0.3);
+}
+
+.theme-floral-romance .bg-primary-20 {
+    background-color: rgba(74, 52, 52, 0.2);
+}
+
+.theme-floral-romance .bg-white-5 {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-floral-romance .bg-white-10 {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-floral-romance .bg-white-20 {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-floral-romance .bg-white-30 {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.theme-floral-romance .bg-white-60 {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.theme-floral-romance .border-white-5 {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-floral-romance .border-white-10 {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-floral-romance .border-white-20 {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Utilities - Gradients */
+.theme-floral-romance .bg-hero-gradient {
+    background: linear-gradient(to bottom, rgba(74, 52, 52, 0.2), transparent, var(--color-bg));
+}
+
+/* Utilities - Typography */
+.theme-floral-romance .text-xxs {
+    font-size: 0.625rem;
+}
+
+/* 10px */
+.theme-floral-romance .text-tiny {
+    font-size: 0.5rem;
+}
+
+/* 8px */
+
+.theme-floral-romance .tracking-widest-xl {
+    letter-spacing: 0.6em;
+}
+
+.theme-floral-romance .tracking-widest-lg {
+    letter-spacing: 0.4em;
+}
+
+.theme-floral-romance .tracking-widest-md {
+    letter-spacing: 0.3em;
+}
+
+.theme-floral-romance .tracking-widest-sm {
+    letter-spacing: 0.2em;
+}
+
+/* Responsive Typography */
+.theme-floral-romance .text-hero {
+    font-size: 3.75rem;
+    /* ~6xl */
+    line-height: 1;
+}
+
+@media (min-width: 768px) {
+    .theme-floral-romance .text-hero {
+        font-size: 8rem;
+    }
+}
+
+/* Utilities - Layout & Transforms */
+.theme-floral-romance .rotate-n2 {
+    transform: rotate(-2deg);
+}
+
+.theme-floral-romance .rotate-p2 {
+    transform: rotate(2deg);
+}
+
+.theme-floral-romance .aspect-portrait {
+    aspect-ratio: 3/4;
+}
+
+.theme-floral-romance .h-viewport-80 {
+    height: 80vh;
+}
+
+.theme-floral-romance .z-envelope {
+    z-index: 100;
+}
+
+.theme-floral-romance .z-modal {
+    z-index: 200;
+}
+
+/* Selection */
+.theme-floral-romance ::selection {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+/* Custom Scrollbar */
+.theme-floral-romance::-webkit-scrollbar {
+    width: 6px;
+}
+
+.theme-floral-romance::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+.theme-floral-romance::-webkit-scrollbar-thumb {
+    background: #D48C8C;
+    border-radius: 10px;
+}
+
+/* Glassmorphism */
+.theme-floral-romance .glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.theme-floral-romance .glass-dark {
+    background: rgba(74, 52, 52, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Animations */
+.theme-floral-romance .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.theme-floral-romance .reveal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes floralFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.theme-floral-romance .animate-float {
+    animation: floralFloat 5s ease-in-out infinite;
+}
+
+/* Image Styling */
+.theme-floral-romance .arch-t {
+    border-radius: 15rem 15rem 0 0;
+}
+
+.theme-floral-romance .arch-b {
+    border-radius: 0 0 15rem 15rem;
+}
+
+.theme-floral-romance .arch-full {
+    border-radius: 15rem;
+}
+
+.theme-floral-romance .img-zoom {
+    transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.theme-floral-romance .group:hover .img-zoom {
+    transform: scale(1.08);
+}

@@ -13,46 +13,66 @@ class Invitation extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
         'theme_id',
-        'slug',
+        'user_id',
         'title',
-        'type',
-        'cover_title',
-        'cover_subtitle',
-        'cover_photo',
-        'event_date',
-        'content',
-        'settings',
-        'music_enabled',
-        'music_url',
-        'gift_enabled',
-        'gift_accounts',
-        'countdown_enabled',
-        'rsvp_enabled',
-        'wishes_enabled',
+        'bride_name',
+        'bride_nickname',
+        'bride_father',
+        'bride_mother',
+        'bride_photo',
+        'groom_name',
+        'groom_nickname',
+        'groom_father',
+        'groom_mother',
+        'groom_photo',
+        'akad_date',
+        'akad_time',
+        'akad_venue',
+        'akad_address',
+        'akad_maps_link',
+        'resepsi_date',
+        'resepsi_time',
+        'resepsi_venue',
+        'resepsi_address',
+        'resepsi_maps_link',
+        'cover_image',
+        'background_music',
+        'gallery_images',
+        'love_story',
+        'bank_accounts',
+        'instagram_bride',
+        'instagram_groom',
+        'custom_colors',
+        'custom_fonts',
+        'custom_styles',
+        'slug',
         'is_published',
+        'enable_rsvp',
+        'enable_wishes',
+        'enable_gallery',
+        'enable_gift',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'event_date' => 'datetime',
-            'content' => 'array',
-            'settings' => 'array',
-            'gift_accounts' => 'array',
-            'music_enabled' => 'boolean',
-            'gift_enabled' => 'boolean',
-            'countdown_enabled' => 'boolean',
-            'rsvp_enabled' => 'boolean',
-            'wishes_enabled' => 'boolean',
-            'is_published' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'akad_date' => 'datetime',
+        'resepsi_date' => 'datetime',
+        'gallery_images' => 'array',
+        'love_story' => 'array',
+        'bank_accounts' => 'array',
+        'custom_colors' => 'array',
+        'custom_fonts' => 'array',
+        'custom_styles' => 'array',
+        'is_published' => 'boolean',
+        'enable_rsvp' => 'boolean',
+        'enable_wishes' => 'boolean',
+        'enable_gallery' => 'boolean',
+        'enable_gift' => 'boolean',
+    ];
 
-    // ==================
+    // ========================
     // RELATIONSHIPS
-    // ==================
+    // ========================
 
     public function user(): BelongsTo
     {
@@ -64,86 +84,48 @@ class Invitation extends Model
         return $this->belongsTo(Theme::class);
     }
 
+    public function guests(): HasMany
+    {
+        return $this->hasMany(Guest::class); // Assuming Guest model exists
+    }
+
+    public function rsvps(): HasMany
+    {
+        return $this->hasMany(Rsvp::class); // Assuming Rsvp model exists
+    }
+
+    public function wishes(): HasMany
+    {
+        return $this->hasMany(Wish::class); // Assuming Wish model exists
+    }
+
     public function photos(): HasMany
     {
         return $this->hasMany(InvitationPhoto::class)->orderBy('order');
     }
 
-    public function guests(): HasMany
+    public function publish(): bool
     {
-        return $this->hasMany(Guest::class);
+        return $this->update(['is_published' => true]);
     }
 
-    public function wishes(): HasMany
+    public function unpublish(): bool
     {
-        return $this->hasMany(Wish::class)->latest();
+        return $this->update(['is_published' => false]);
     }
 
-    // ==================
-    // ACCESSORS
-    // ==================
-
-    public function getGroomNameAttribute(): string
+    public function getThemeCustomization(): array
     {
-        return $this->content['groom_name'] ?? '';
-    }
+        $themeConfig = $this->theme ? $this->theme->toConfigArray() : [];
 
-    public function getBrideNameAttribute(): string
-    {
-        return $this->content['bride_name'] ?? '';
-    }
+        $colors = array_merge($themeConfig['colors'] ?? [], $this->custom_colors ?? []);
+        $fonts = array_merge($themeConfig['fonts'] ?? [], $this->custom_fonts ?? []);
+        $styles = array_merge($themeConfig['layout'] ?? [], $this->custom_styles ?? []);
 
-    public function getCoupleNamesAttribute(): string
-    {
-        $nameOrder = $this->content['name_order'] ?? 'groom_first';
-        
-        if ($nameOrder === 'bride_first') {
-            return $this->bride_name . ' & ' . $this->groom_name;
-        }
-        
-        return $this->groom_name . ' & ' . $this->bride_name;
-    }
-
-    public function getPublicUrlAttribute(): string
-    {
-        return route('invitation.show', $this->slug);
-    }
-
-    public function getCoverPhotoUrlAttribute(): ?string
-    {
-        if (!$this->cover_photo) {
-            return null;
-        }
-        
-        return asset('storage/' . $this->cover_photo);
-    }
-
-    // ==================
-    // METHODS
-    // ==================
-
-    public function isOwnedBy(User $user): bool
-    {
-        return $this->user_id === $user->id;
-    }
-
-    public function publish(): void
-    {
-        $this->update(['is_published' => true]);
-    }
-
-    public function unpublish(): void
-    {
-        $this->update(['is_published' => false]);
-    }
-
-    public function getContentValue(string $key, mixed $default = null): mixed
-    {
-        return $this->content[$key] ?? $default;
-    }
-
-    public function getSettingValue(string $key, mixed $default = null): mixed
-    {
-        return $this->settings[$key] ?? $default;
+        return [
+            'colors' => $colors,
+            'fonts' => $fonts,
+            'styles' => $styles,
+        ];
     }
 }

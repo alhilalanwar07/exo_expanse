@@ -13,7 +13,7 @@
     
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+
 </head>
 <body class="font-outfit antialiased bg-slate-50 dark:bg-slate-900">
     <div class="min-h-screen">
@@ -68,6 +68,6 @@
         </main>
     </div>
     
-    @livewireScripts
+
 </body>
 </html>

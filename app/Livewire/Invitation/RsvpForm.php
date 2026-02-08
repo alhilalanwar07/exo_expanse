@@ -11,13 +11,19 @@ use Livewire\Component;
 class RsvpForm extends Component
 {
     public Invitation $invitation;
+
     public ?Guest $guest = null; // Currently identified guest
+
     public string $theme = 'rose';
 
-    public string $name = '';
-    public string $status = '';
-    public int $pax = 1;
-    
+    public ?string $name = null;
+
+    public ?string $status = null;
+
+    public ?int $pax = 1;
+
+    public bool $isSubmitted = false;
+
     public bool $isSuccess = false;
 
     public function mount(Invitation $invitation, ?Guest $guest = null, string $theme = 'rose')
@@ -28,12 +34,13 @@ class RsvpForm extends Component
 
         if ($guest) {
             $this->name = $guest->name;
-            $this->status = $guest->status->value;
+            $this->status = $guest->status?->value;
             $this->pax = $guest->pax;
         }
+
     }
 
-    public function submit(GuestService $guestService)
+    public function save(GuestService $guestService)
     {
         $validated = $this->validate([
             'name' => 'required|string|max:255',
@@ -58,7 +65,7 @@ class RsvpForm extends Component
                 ->first();
 
             if ($existingGuest) {
-                 $guestService->updateRsvp(
+                $guestService->updateRsvp(
                     $existingGuest,
                     GuestStatus::from($validated['status']),
                     $validated['pax']
