@@ -1,27 +1,39 @@
 <div class="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="{{ route('dashboard') }}" class="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
+        <div class="max-w-12xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+            
+            <!-- Title Section: Added min-w-0 to prevent flex blowout -->
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+                <a href="{{ route('dashboard') }}" class="shrink-0 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 </a>
-                <div>
-                    <h1 class="font-bold text-slate-800 dark:text-white text-lg sm:text-xl">{{ $invitationId ? 'Edit Undangan' : 'Buat Undangan Baru' }}</h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $this->title ?: 'Belum ada judul' }}</p>
+                <div class="min-w-0 flex-1">
+                    <h1 class="font-bold text-slate-800 dark:text-white text-base sm:text-lg truncate leading-tight">
+                        {{ $invitationId ? 'Edit Undangan' : 'Buat Baru' }}
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate block">
+                        {{ $this->title ?: 'Draft Undangan' }}
+                    </p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button wire:click="save" wire:loading.attr="disabled" class="px-3 sm:px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all flex items-center gap-2">
-                    <span wire:loading.remove wire:target="save">💾 <span class="hidden sm:inline">Simpan Draft</span></span>
-                    <span wire:loading wire:target="save" class="flex items-center gap-2">
+
+            <!-- Action Buttons: Added shrink-0 to protect buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+                <!-- Save Button -->
+                <button wire:click="save" wire:loading.attr="disabled" class="px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all flex items-center gap-2 border border-slate-200 dark:border-slate-600 sm:border-transparent">
+                    <span wire:loading.remove wire:target="save">💾</span>
+                    <span wire:loading wire:target="save">
                         <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-                        <span class="hidden sm:inline">Menyimpan...</span>
                     </span>
+                    <span class="hidden sm:inline font-medium">Simpan</span>
                 </button>
-                <button wire:click="publish" wire:loading.attr="disabled" class="px-3 sm:px-5 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-rose-500/30 transition-all flex items-center gap-2">
-                    <span wire:loading.remove wire:target="publish">🚀 <span class="hidden sm:inline">Publish</span></span>
-                    <span wire:loading wire:target="publish"><span class="hidden sm:inline">Publishing...</span><span class="sm:hidden">...</span></span>
+
+                <!-- Publish Button -->
+                <button wire:click="publish" wire:loading.attr="disabled" class="px-4 py-2 text-sm bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-rose-500/30 transition-all flex items-center gap-2">
+                    <span wire:loading.remove wire:target="publish">🚀</span>
+                    <span wire:loading wire:target="publish" class="animate-spin">⌛</span>
+                    <span class="hidden sm:inline">Publish</span>
                 </button>
             </div>
         </div>
@@ -29,7 +41,7 @@
 
     <!-- Flash Messages -->
     @if(session('success'))
-        <div class="max-w-7xl mx-auto px-4 mt-4">
+        <div class="max-w-12xl mx-auto px-4 mt-4">
             <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 flex items-center gap-3">
                 <span class="text-2xl">✅</span>
                 <p class="text-emerald-700 dark:text-emerald-300">{{ session('success') }}</p>
@@ -38,70 +50,22 @@
     @endif
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 py-4 md:py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            
-            <!-- Left: Preview Panel -->
-            <div class="hidden lg:block lg:col-span-2 order-2 lg:order-1">
-                <div class="sticky top-24">
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                        <div class="bg-slate-100 dark:bg-slate-700 px-4 py-2 flex items-center gap-2">
-                            <div class="flex gap-1.5">
-                                <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                                <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                            </div>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 ml-2">Preview</span>
-                        </div>
-                        <div class="aspect-[9/16] bg-gradient-to-br from-rose-100 to-amber-100 dark:from-rose-900/30 dark:to-amber-900/30 flex items-center justify-center p-6">
-                            <div class="text-center">
-                                @if($this->cover_photo)
-                                    <img src="{{ asset('storage/' . $this->cover_photo) }}" alt="Cover" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover shadow-lg">
-                                @else
-                                    <div class="w-32 h-32 rounded-full mx-auto mb-4 bg-white/50 dark:bg-slate-700/50 flex items-center justify-center">
-                                        <span class="text-5xl">💍</span>
-                                    </div>
-                                @endif
-                                <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">{{ $this->cover_subtitle ?: 'The Wedding of' }}</p>
-                                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">
-                                    @if($this->groom_name && $this->bride_name)
-                                        {{ $this->name_order === 'bride_first' ? $this->bride_name : $this->groom_name }}
-                                        <span class="text-rose-500">&</span>
-                                        {{ $this->name_order === 'bride_first' ? $this->groom_name : $this->bride_name }}
-                                    @else
-                                        {{ $this->title ?: 'Nama Mempelai' }}
-                                    @endif
-                                </h2>
-                                @if($this->event_date)
-                                    <p class="mt-4 text-slate-600 dark:text-slate-300">
-                                        {{ \Carbon\Carbon::parse($this->event_date)->translatedFormat('l, d F Y') }}
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    
-                    @if($invitationId && $this->invitation?->is_published)
-                        <a href="{{ route('invitation.show', $this->invitation->slug) }}" target="_blank" class="mt-4 block text-center py-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all">
-                            🔗 Lihat Undangan Live
-                        </a>
-                    @endif
-                </div>
-            </div>
+    <div class="max-w-12xl mx-auto px-4 py-4 md:py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <!-- Right: Form Panel -->
-            <div class="lg:col-span-3 order-1 lg:order-2">
-                <!-- Tab Navigation -->
+            <!-- Form Panel -->
+            <div class="lg:col-span-12">
+                
+                <!-- TAB NAVIGATION FIX -->
                 <div 
                     x-data="{
                         scrollLeft: 0,
                         maxScroll: 0,
                         init() {
-                            this.checkScroll();
-                            this.$nextTick(() => this.checkScroll());
-                            window.addEventListener('resize', () => this.checkScroll());
+                            this.updateScroll();
+                            window.addEventListener('resize', () => this.updateScroll());
                         },
-                        checkScroll() {
+                        updateScroll() {
                             const el = this.$refs.tabContainer;
                             if (el) {
                                 this.scrollLeft = el.scrollLeft;
@@ -110,52 +74,55 @@
                         },
                         scroll(direction) {
                             const el = this.$refs.tabContainer;
-                            el.scrollBy({ left: direction * 150, behavior: 'smooth' });
-                            setTimeout(() => this.checkScroll(), 300);
+                            const amount = el.clientWidth / 2;
+                            el.scrollBy({ left: direction * amount, behavior: 'smooth' });
                         }
                     }"
-                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 mb-6 overflow-hidden relative group"
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 mb-6 flex items-center p-1 gap-1"
                 >
                     <!-- Left Arrow -->
                     <button 
-                        x-show="scrollLeft > 5"
-                        x-transition.opacity
-                        @click="scroll(-1)"
+                        x-show="scrollLeft > 0" 
+                        x-transition
+                        @click="scroll(-1)" 
                         type="button"
-                        class="absolute left-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-r from-white via-white/90 to-transparent dark:from-slate-800 dark:via-slate-800/90 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
+                        class="shrink-0 w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
                     >
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     </button>
 
+                    <!-- Scroll Container -->
                     <div 
                         x-ref="tabContainer" 
-                        @scroll.debounce.50ms="checkScroll()"
-                        class="flex overflow-x-auto scrollbar-hide snap-x bg-slate-50/50 dark:bg-slate-900/20 scroll-smooth relative"
+                        @scroll.debounce.10ms="updateScroll()"
+                        class="flex-1 overflow-x-auto scrollbar-hide snap-x scroll-smooth flex items-center gap-2 px-1"
                     >
                         @foreach($tabs as $key => $tabInfo)
                             <button 
                                 wire:click="setTab('{{ $key }}')"
+                                type="button"
                                 @class([
-                                    'shrink-0 min-w-[90px] sm:min-w-[110px] sm:flex-1 px-4 py-4 text-center transition-all border-b-2 whitespace-nowrap snap-start outline-none focus:outline-none',
-                                    'border-rose-500 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20' => $tab === $key,
-                                    'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50' => $tab !== $key,
+                                    'snap-start shrink-0 px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center gap-2 whitespace-nowrap outline-none focus:ring-2 focus:ring-rose-500/20',
+                                    'lg:flex-1 lg:justify-center',
+                                    'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 ring-1 ring-rose-200 dark:ring-rose-800' => $tab === $key,
+                                    'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700/50 dark:hover:text-slate-200' => $tab !== $key,
                                 ])
                             >
-                                <span class="text-xl block mb-1">{{ $tabInfo['icon'] }}</span>
-                                <span class="text-sm font-medium">{{ $tabInfo['label'] }}</span>
+                                <span class="text-lg leading-none">{{ $tabInfo['icon'] }}</span>
+                                <span>{{ $tabInfo['label'] }}</span>
                             </button>
                         @endforeach
                     </div>
 
                     <!-- Right Arrow -->
                     <button 
-                        x-show="maxScroll > 0 && scrollLeft < maxScroll - 5"
-                        x-transition.opacity
-                        @click="scroll(1)"
+                        x-show="maxScroll > 0 && scrollLeft < maxScroll - 5" 
+                        x-transition
+                        @click="scroll(1)" 
                         type="button"
-                        class="absolute right-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-l from-white via-white/90 to-transparent dark:from-slate-800 dark:via-slate-800/90 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
+                        class="shrink-0 w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
                     >
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </button>
                 </div>
 
