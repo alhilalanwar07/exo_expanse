@@ -515,28 +515,73 @@
                  <p style="font-size: 0.9rem; margin-bottom: 20px;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara cashless.</p>
                  
                  @if($invitation->bank_accounts)
-                     @foreach($invitation->bank_accounts as $account)
-                     <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border);">
-                         <p class="gold-txt" style="font-weight: bold;">{{ $account['bank'] }}</p>
-                         <p style="font-size: 1.1rem; margin: 5px 0;" id="rek-{{ $loop->index }}">{{ $account['account_number'] }}</p>
-                         <p>a.n {{ $account['account_name'] }}</p>
-                         <button @click="navigator.clipboard.writeText('{{ $account['account_number'] }}'); alert('Berhasil disalin!')" 
-                                 style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 5px 15px; border-radius: 20px; margin-top: 10px; cursor: pointer;">
-                             <i class="fas fa-copy"></i> Salin
-                         </button>
-                     </div>
-                     @endforeach
-                 @elseif($invitation->bank_name)
-                     <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border);">
-                         <p class="gold-txt" style="font-weight: bold;">{{ $invitation->bank_name }}</p>
-                         <p style="font-size: 1.1rem; margin: 5px 0;">{{ $invitation->bank_account }}</p>
-                         <p>a.n {{ $invitation->bank_holder }}</p>
-                         <button @click="navigator.clipboard.writeText('{{ $invitation->bank_account }}'); alert('Berhasil disalin!')" 
-                                 style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 5px 15px; border-radius: 20px; margin-top: 10px; cursor: pointer;">
-                             <i class="fas fa-copy"></i> Salin
-                         </button>
-                     </div>
-                 @endif
+    @foreach($invitation->bank_accounts as $account)
+    <div class="bank-card" style="position: relative; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; text-align: left;">
+        
+        <div style="position: absolute; top: -50px; right: -50px; width: 100px; height: 100px; background: var(--primary); opacity: 0.1; filter: blur(40px); border-radius: 50%;"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+            <i class="fas fa-sim-card" style="font-size: 2rem; color: rgba(212, 175, 55, 0.5);"></i> <p class="gold-txt" style="font-weight: bold; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin: 0;">{{ $account['bank'] }}</p>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <p style="font-size: 0.8rem; color: #aaa; margin: 0 0 5px 0;">Nomor Rekening</p>
+            <p style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: bold; color: #fff; letter-spacing: 2px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                {{ $account['account_number'] }}
+            </p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <p style="font-size: 0.7rem; color: #aaa; margin: 0;">Atas Nama</p>
+                <p style="font-size: 1rem; color: #fff; margin: 0; font-weight: 500;">{{ $account['account_name'] }}</p>
+            </div>
+
+            <button x-data="{ copied: false }"
+                    @click="navigator.clipboard.writeText('{{ $account['account_number'] }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                    :style="copied ? 'background: var(--primary); color: #000; border-color: var(--primary); width: 100px;' : 'background: rgba(0,0,0,0.3); color: var(--primary); border-color: var(--primary); width: 80px;'"
+                    style="padding: 8px 0; border-radius: 50px; cursor: pointer; border: 1px solid; transition: all 0.3s ease; font-size: 0.8rem; display: flex; justify-content: center; align-items: center; gap: 5px;">
+                <i class="fas" :class="copied ? 'fa-check' : 'fa-copy'"></i> 
+                <span x-text="copied ? 'Berhasil' : 'Salin'"></span>
+            </button>
+        </div>
+    </div>
+    @endforeach
+
+@elseif($invitation->bank_name)
+    {{-- Single Bank Account Fallback (Gaya Sama) --}}
+    <div class="bank-card" style="position: relative; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; text-align: left;">
+        
+        <div style="position: absolute; top: -50px; right: -50px; width: 100px; height: 100px; background: var(--primary); opacity: 0.1; filter: blur(40px); border-radius: 50%;"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+            <i class="fas fa-sim-card" style="font-size: 2rem; color: rgba(212, 175, 55, 0.5);"></i>
+            <p class="gold-txt" style="font-weight: bold; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin: 0;">{{ $invitation->bank_name }}</p>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <p style="font-size: 0.8rem; color: #aaa; margin: 0 0 5px 0;">Nomor Rekening</p>
+            <p style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: bold; color: #fff; letter-spacing: 2px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                {{ $invitation->bank_account }}
+            </p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <p style="font-size: 0.7rem; color: #aaa; margin: 0;">Atas Nama</p>
+                <p style="font-size: 1rem; color: #fff; margin: 0; font-weight: 500;">{{ $invitation->bank_holder }}</p>
+            </div>
+
+            <button x-data="{ copied: false }"
+                    @click="navigator.clipboard.writeText('{{ $invitation->bank_account }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                    :style="copied ? 'background: var(--primary); color: #000; border-color: var(--primary); width: 100px;' : 'background: rgba(0,0,0,0.3); color: var(--primary); border-color: var(--primary); width: 80px;'"
+                    style="padding: 8px 0; border-radius: 50px; cursor: pointer; border: 1px solid; transition: all 0.3s ease; font-size: 0.8rem; display: flex; justify-content: center; align-items: center; gap: 5px;">
+                <i class="fas" :class="copied ? 'fa-check' : 'fa-copy'"></i> 
+                <span x-text="copied ? 'Berhasil' : 'Salin'"></span>
+            </button>
+        </div>
+    </div>
+@endif
              </div>
              @endif
 
