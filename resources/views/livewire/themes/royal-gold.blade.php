@@ -318,26 +318,85 @@ body {
 
 /* === GIFT SECTION === */
 .gift-card { 
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark)); 
-    color: white; 
+    background: white; 
     border-radius: 16px; 
-    padding: 20px; 
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid rgba(201,162,39,0.15);
+}
+.gift-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 12px;
-    text-align: center;
+}
+.gift-card-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(201,162,39,0.25);
+}
+.gift-card-icon svg {
+    width: 20px;
+    height: 20px;
+    color: white;
+}
+.gift-card-info {
+    flex: 1;
+    min-width: 0;
+}
+.gift-card-bank {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    color: var(--gold-dark);
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+.gift-card-number {
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: var(--dark);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.gift-card-name {
+    font-size: 0.75rem;
+    color: var(--text);
+    margin-top: 2px;
 }
 .copy-btn { 
-    background: rgba(255,255,255,0.2); 
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark)); 
     border: none; 
     color: white; 
-    padding: 10px 20px; 
+    padding: 10px 16px; 
     border-radius: 8px; 
     cursor: pointer; 
-    font-size: 13px;
-    font-weight: 500;
-    min-height: 44px; /* Touch friendly */
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(201,162,39,0.2);
 }
 .copy-btn:active { 
-    background: rgba(255,255,255,0.35); 
+    transform: scale(0.98);
+}
+.copy-btn.copied {
+    background: #10B981;
+    box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+}
+.copy-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 /* === BOTTOM NAVIGATION === */
@@ -808,6 +867,38 @@ body {
     font-size: 13px;
     line-height: 1.6;
     margin-top: 4px;
+}
+.rsvp-attendance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+}
+.rsvp-attendance-badge.confirmed {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.15));
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.rsvp-attendance-badge.confirmed svg {
+    color: #10B981;
+}
+.rsvp-attendance-badge.declined {
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(75, 85, 99, 0.15));
+    color: #4B5563;
+    border: 1px solid rgba(107, 114, 128, 0.3);
+}
+.rsvp-attendance-badge.declined svg {
+    color: #6B7280;
+}
+.rsvp-attendance-badge svg {
+    width: 12px;
+    height: 12px;
 }
 
 .rsvp-empty {
@@ -1390,88 +1481,73 @@ body {
 
         {{-- GIFT --}}
         @if($invitation->enable_gift)
-        <section id="gift" class="section bg-white">
-            <div class="section-title">
-                <p class="text-gold" style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">Wedding Gift</p>
-                <h2>Amplop Digital</h2>
-                <div class="divider"></div>
+        <section id="gift" class="section" style="background: linear-gradient(180deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%); position: relative; overflow: hidden;">
+            {{-- Decorative Elements --}}
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);"></div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);"></div>
+            <div style="position: absolute; top: 20%; left: -100px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%); pointer-events: none;"></div>
+            <div style="position: absolute; bottom: 20%; right: -100px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%); pointer-events: none;"></div>
+            
+            <div class="section-title" style="position: relative; z-index: 1;">
+                <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border-radius: 50%; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(201,162,39,0.3);">
+                    <svg style="width: 28px; height: 28px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+                </div>
+                <p style="font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; color: var(--gold);">Wedding Gift</p>
+                <h2 style="color: white; font-size: 2rem;">Amplop Digital</h2>
+                <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 16px auto;"></div>
             </div>
-            <div class="max-w-md mx-auto text-center px-4">
-                <p class="text-gray-600 mb-8 text-sm italic font-serif">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara cashless.</p>
+            <div class="max-w-md mx-auto text-center px-4" style="position: relative; z-index: 1;">
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 32px; font-size: 14px; font-style: italic; font-family: 'Cormorant Garamond', serif; line-height: 1.8;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara cashless.</p>
                 
-                <div class="grid gap-4">
+                <div style="display: grid; gap: 16px;">
                 @if($invitation->bank_accounts)
-                    @foreach($invitation->bank_accounts as $account)
-                    <div class="gift-card" x-data="{ copied: false }">
-                        <div style="border: 1px solid #E5E7EB; border-radius: 12px; padding: 24px; background: #fff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <span class="font-bold text-gray-800" style="font-size: 1.1rem;">{{ $account['bank'] }}</span>
-                                <svg class="w-8 h-8 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M4 10h2v7H4v-7zm0-4h2v2H4V6zm6 4h10v7H10v-7zm0-4h10v2H10V6zM3 3h18v18H3V3zm2 16h14V5H5v14z"/></svg>
+                    @foreach($invitation->bank_accounts as $index => $account)
+                    <div class="gift-card animate-fade-up" x-data="{ copied: false }" style="animation-delay: {{ $index * 0.1 }}s;">
+                        <div class="gift-card-header">
+                            <div class="gift-card-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                             </div>
-                            
-                            <div style="text-align: left;">
-                                <p style="font-family: monospace; font-size: 1.25rem; letter-spacing: 2px; color: #1F2937; margin-bottom: 4px;">{{ $account['account_number'] }}</p>
-                                <p style="font-size: 0.875rem; color: #6B7280;">a.n {{ $account['account_name'] }}</p>
+                            <div class="gift-card-info">
+                                <p class="gift-card-bank">{{ $account['bank'] }}</p>
+                                <p class="gift-card-number">{{ $account['account_number'] }}</p>
+                                <p class="gift-card-name">a.n {{ $account['account_name'] }}</p>
                             </div>
-                            
-                            <hr style="border-top: 1px dashed #E5E7EB; margin: 16px 0;">
-                            
-                            <button @click="navigator.clipboard.writeText('{{ $account['account_number'] }}'); copied = true; setTimeout(() => copied = false, 2000)" 
-                                    class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all"
-                                    :class="copied ? 'bg-green-50 text-green-600' : 'bg-[#C9A227] text-white hover:bg-[#B08D23]'"
-                                    style="font-size: 0.875rem; font-weight: 500;">
-                                <template x-if="!copied">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                                        Salin Nomor Rekening
-                                    </div>
-                                </template>
-                                <template x-if="copied">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                        Berhasil Disalin
-                                    </div>
-                                </template>
-                            </button>
                         </div>
+                        <button @click="navigator.clipboard.writeText('{{ $account['account_number'] }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                            <svg x-show="!copied" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <svg x-show="copied" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span x-text="copied ? 'Tersalin!' : 'Salin Rekening'"></span>
+                        </button>
                     </div>
                     @endforeach
                 @elseif($invitation->bank_name)
                     <div class="gift-card" x-data="{ copied: false }">
-                        <div style="border: 1px solid #E5E7EB; border-radius: 12px; padding: 24px; background: #fff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <span class="font-bold text-gray-800" style="font-size: 1.1rem;">{{ $invitation->bank_name }}</span>
-                                <svg class="w-8 h-8 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M4 10h2v7H4v-7zm0-4h2v2H4V6zm6 4h10v7H10v-7zm0-4h10v2H10V6zM3 3h18v18H3V3zm2 16h14V5H5v14z"/></svg>
+                        <div class="gift-card-header">
+                            <div class="gift-card-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                             </div>
-                            
-                            <div style="text-align: left;">
-                                <p style="font-family: monospace; font-size: 1.25rem; letter-spacing: 2px; color: #1F2937; margin-bottom: 4px;">{{ $invitation->bank_account }}</p>
-                                <p style="font-size: 0.875rem; color: #6B7280;">a.n {{ $invitation->bank_holder }}</p>
+                            <div class="gift-card-info">
+                                <p class="gift-card-bank">{{ $invitation->bank_name }}</p>
+                                <p class="gift-card-number">{{ $invitation->bank_account }}</p>
+                                <p class="gift-card-name">a.n {{ $invitation->bank_holder }}</p>
                             </div>
-                            
-                            <hr style="border-top: 1px dashed #E5E7EB; margin: 16px 0;">
-                            
-                            <button @click="navigator.clipboard.writeText('{{ $invitation->bank_account }}'); copied = true; setTimeout(() => copied = false, 2000)" 
-                                    class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all"
-                                    :class="copied ? 'bg-green-50 text-green-600' : 'bg-[#C9A227] text-white hover:bg-[#B08D23]'"
-                                    style="font-size: 0.875rem; font-weight: 500;">
-                                <template x-if="!copied">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                                        Salin Nomor Rekening
-                                    </div>
-                                </template>
-                                <template x-if="copied">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                        Berhasil Disalin
-                                    </div>
-                                </template>
-                            </button>
                         </div>
+                        <button @click="navigator.clipboard.writeText('{{ $invitation->bank_account }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                            <svg x-show="!copied" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <svg x-show="copied" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span x-text="copied ? 'Tersalin!' : 'Salin Rekening'"></span>
+                        </button>
                     </div>
                 @endif
                 </div>
+                
+                {{-- Thank You Text --}}
+                <p style="color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 32px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <svg style="width: 16px; height: 16px; color: var(--gold);" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    Terima kasih atas kebaikan hati Anda
+                </p>
             </div>
         </section>
         @endif
@@ -1658,6 +1734,17 @@ body {
                                         <span class="rsvp-wish-time" x-text="wish.time"></span>
                                     </div>
                                     <p class="rsvp-wish-message" x-text="wish.message"></p>
+                                    <template x-if="wish.attendance_status">
+                                        <span class="rsvp-attendance-badge" :class="wish.attendance_status">
+                                            <template x-if="wish.attendance_status === 'confirmed'">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            </template>
+                                            <template x-if="wish.attendance_status === 'declined'">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            </template>
+                                            <span x-text="wish.attendance_status === 'confirmed' ? 'Akan Hadir' : 'Tidak Hadir'"></span>
+                                        </span>
+                                    </template>
                                 </div>
                             </div>
                         </div>

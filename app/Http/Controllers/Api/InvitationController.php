@@ -52,6 +52,11 @@ class InvitationController extends Controller
             'message' => $validated['message'],
         ]);
 
+        // Get attendance status from guest table
+        $guest = Guest::where('invitation_id', $invitation->id)
+            ->where('name', $validated['name'])
+            ->first();
+
         return response()->json([
             'success' => true,
             'message' => 'Ucapan berhasil dikirim!',
@@ -61,6 +66,7 @@ class InvitationController extends Controller
                 'message' => $wish->message,
                 'initial' => strtoupper(substr($wish->name, 0, 1)),
                 'time' => $wish->created_at->diffForHumans(),
+                'attendance_status' => $guest?->status?->value ?? null,
             ],
         ]);
     }
@@ -69,6 +75,11 @@ class InvitationController extends Controller
     {
         $limit = $request->get('limit', 10);
         $offset = $request->get('offset', 0);
+
+        // Get all guest names and statuses for this invitation
+        $guestStatuses = Guest::where('invitation_id', $invitation->id)
+            ->pluck('status', 'name')
+            ->toArray();
 
         $wishes = $invitation->wishes()
             ->latest()
@@ -81,6 +92,7 @@ class InvitationController extends Controller
                 'message' => $wish->message,
                 'initial' => strtoupper(substr($wish->name, 0, 1)),
                 'time' => $wish->created_at->diffForHumans(),
+                'attendance_status' => isset($guestStatuses[$wish->name]) ? $guestStatuses[$wish->name]->value : null,
             ]);
 
         return response()->json([

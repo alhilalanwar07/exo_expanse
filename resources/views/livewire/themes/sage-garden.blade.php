@@ -1,19 +1,20 @@
 @section('title', 'The Wedding of ' . $invitation->groom_nickname . ' & ' . $invitation->bride_nickname)
 
 @push('fonts')
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Pinyon+Script&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Dancing+Script:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
 @endpush
 
 @push('styles')
 <style>
 :root {
-    --gold: #D4A5A5;
-    --gold-light: #F5E6E8;
-    --gold-dark: #B76E79;
-    --cream: #FFFBFC;
-    --dark: #3D3D3D;
-    --text: #5A5A5A;
-    --sage: #9CAF88;
+    --gold: #6B8E6B;
+    --gold-light: #A8C5A8;
+    --gold-dark: #4A6741;
+    --cream: #F5F7F2;
+    --dark: #2D3B2D;
+    --text: #4A5548;
+    --accent: #C4A35A;
+    --blush: #E8DDD4;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,63 +30,84 @@ body {
     color: var(--text); 
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-.font-serif { font-family: 'Playfair Display', serif; }
-.font-script { font-family: 'Pinyon Script', cursive; }
+.font-serif { font-family: 'Cormorant Garamond', serif; }
+.font-script { font-family: 'Dancing Script', cursive; }
 
-/* === ANIMATIONS === */
+/* === ADVANCED ANIMATIONS === */
 @keyframes fadeUp { 
-    from { opacity: 0; transform: translateY(30px); } 
+    from { opacity: 0; transform: translateY(40px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 @keyframes pulse { 
     0%, 100% { transform: scale(1); } 
-    50% { transform: scale(1.08); } 
+    50% { transform: scale(1.05); } 
 }
 @keyframes float { 
-    0%, 100% { transform: translateY(0); } 
-    50% { transform: translateY(-10px); } 
+    0%, 100% { transform: translateY(0) rotate(0deg); } 
+    50% { transform: translateY(-15px) rotate(3deg); } 
+}
+@keyframes floatReverse { 
+    0%, 100% { transform: translateY(0) rotate(0deg); } 
+    50% { transform: translateY(-12px) rotate(-3deg); } 
 }
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
-@keyframes fallingPetal {
-    0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
-    25% { transform: translateY(25vh) rotate(90deg) translateX(15px); }
-    50% { transform: translateY(50vh) rotate(180deg) translateX(-10px); }
-    75% { transform: translateY(75vh) rotate(270deg) translateX(20px); }
-    100% { transform: translateY(110vh) rotate(360deg) translateX(-5px); opacity: 0.3; }
+@keyframes leafFall {
+    0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0.9; }
+    20% { transform: translateY(18vh) rotate(72deg) translateX(25px); }
+    40% { transform: translateY(36vh) rotate(144deg) translateX(-15px); }
+    60% { transform: translateY(54vh) rotate(216deg) translateX(30px); }
+    80% { transform: translateY(72vh) rotate(288deg) translateX(-20px); }
+    100% { transform: translateY(110vh) rotate(360deg) translateX(10px); opacity: 0.2; }
 }
-@keyframes sway {
-    0%, 100% { transform: rotate(-5deg); }
-    50% { transform: rotate(5deg); }
+@keyframes gentleSway {
+    0%, 100% { transform: rotate(-8deg) scale(1); }
+    50% { transform: rotate(8deg) scale(1.02); }
 }
-@keyframes bloomIn {
-    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+@keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 0.8; }
 }
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    14% { transform: scale(1.1); }
-    28% { transform: scale(1); }
-    42% { transform: scale(1.1); }
-    70% { transform: scale(1); }
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-60px); }
+    to { opacity: 1; transform: translateX(0); }
 }
-.animate-fade-up { animation: fadeUp 0.8s ease forwards; }
-.animate-fade-in { animation: fadeIn 1s ease forwards; }
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-bloom { animation: bloomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.animate-heartbeat { animation: heartbeat 2s ease-in-out infinite; }
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(60px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes ripple {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+@keyframes rotateGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-/* === FALLING PETALS === */
-.petals-container {
+.animate-fade-up { animation: fadeUp 0.8s ease forwards; }
+.animate-fade-scale { animation: fadeInScale 0.6s ease forwards; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-float-reverse { animation: floatReverse 5s ease-in-out infinite; }
+.animate-sway { animation: gentleSway 6s ease-in-out infinite; }
+.animate-breathe { animation: breathe 4s ease-in-out infinite; }
+.animate-slide-left { animation: slideInLeft 0.8s ease forwards; }
+.animate-slide-right { animation: slideInRight 0.8s ease forwards; }
+
+/* === FALLING LEAVES === */
+.leaves-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -95,30 +117,131 @@ body {
     z-index: 99;
     overflow: hidden;
 }
-.petal {
+.leaf {
     position: absolute;
-    width: 15px;
-    height: 15px;
-    background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
-    border-radius: 150% 0 150% 0;
     opacity: 0.7;
-    animation: fallingPetal linear infinite;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    animation: leafFall linear infinite;
 }
-.petal:nth-child(odd) { background: linear-gradient(135deg, #F8BBD9, #FADADD); }
-.petal:nth-child(3n) { background: linear-gradient(135deg, #FFE4E9, #FFF0F3); width: 12px; height: 12px; }
-.petal:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
-.petal:nth-child(2) { left: 20%; animation-duration: 15s; animation-delay: 2s; }
-.petal:nth-child(3) { left: 30%; animation-duration: 11s; animation-delay: 4s; }
-.petal:nth-child(4) { left: 40%; animation-duration: 14s; animation-delay: 1s; }
-.petal:nth-child(5) { left: 50%; animation-duration: 13s; animation-delay: 3s; }
-.petal:nth-child(6) { left: 60%; animation-duration: 16s; animation-delay: 5s; }
-.petal:nth-child(7) { left: 70%; animation-duration: 12s; animation-delay: 2.5s; }
-.petal:nth-child(8) { left: 80%; animation-duration: 14s; animation-delay: 0.5s; }
-.petal:nth-child(9) { left: 90%; animation-duration: 11s; animation-delay: 3.5s; }
-.petal:nth-child(10) { left: 5%; animation-duration: 15s; animation-delay: 6s; }
-.petal:nth-child(11) { left: 15%; animation-duration: 13s; animation-delay: 4.5s; }
-.petal:nth-child(12) { left: 85%; animation-duration: 12s; animation-delay: 1.5s; }
+.leaf svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--gold);
+}
+.leaf:nth-child(odd) svg { fill: var(--gold-light); width: 16px; height: 16px; }
+.leaf:nth-child(3n) svg { fill: var(--accent); width: 24px; height: 24px; }
+.leaf:nth-child(1) { left: 8%; animation-duration: 14s; animation-delay: 0s; }
+.leaf:nth-child(2) { left: 18%; animation-duration: 18s; animation-delay: 3s; }
+.leaf:nth-child(3) { left: 28%; animation-duration: 12s; animation-delay: 5s; }
+.leaf:nth-child(4) { left: 42%; animation-duration: 16s; animation-delay: 2s; }
+.leaf:nth-child(5) { left: 55%; animation-duration: 15s; animation-delay: 4s; }
+.leaf:nth-child(6) { left: 68%; animation-duration: 17s; animation-delay: 1s; }
+.leaf:nth-child(7) { left: 78%; animation-duration: 13s; animation-delay: 6s; }
+.leaf:nth-child(8) { left: 88%; animation-duration: 16s; animation-delay: 2.5s; }
+.leaf:nth-child(9) { left: 35%; animation-duration: 14s; animation-delay: 7s; }
+.leaf:nth-child(10) { left: 92%; animation-duration: 15s; animation-delay: 4.5s; }
+
+/* === DECORATIVE BACKGROUNDS === */
+.pattern-botanical {
+    position: relative;
+    overflow: hidden;
+}
+.pattern-botanical::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(107,142,107,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(107,142,107,0.06) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(196,163,90,0.04) 0%, transparent 60%);
+    pointer-events: none;
+}
+.pattern-dots {
+    background-image: radial-gradient(circle, rgba(107,142,107,0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+.pattern-leaves {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c-5 8-3 18 5 23s20 3 25-5c-8 5-18 3-23-5s-3-20 5-25c-8 5-12 12-12 12z' fill='rgba(107,142,107,0.04)'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+}
+
+/* === DECORATIVE DIVIDERS === */
+.section-divider {
+    position: relative;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.section-divider-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    animation: gentleSway 4s ease-in-out infinite;
+}
+.section-divider-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* === FLOATING DECORATIONS === */
+.floating-decor {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.15;
+}
+.floating-decor.top-left {
+    top: 20px;
+    left: 20px;
+    animation: float 6s ease-in-out infinite;
+}
+.floating-decor.top-right {
+    top: 20px;
+    right: 20px;
+    animation: floatReverse 7s ease-in-out infinite;
+}
+.floating-decor.bottom-left {
+    bottom: 20px;
+    left: 20px;
+    animation: floatReverse 5s ease-in-out infinite;
+}
+.floating-decor.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    animation: float 6.5s ease-in-out infinite;
+}
+.floating-decor svg {
+    width: 60px;
+    height: 60px;
+    fill: var(--gold);
+}
+
+/* === GLOWING ACCENTS === */
+.glow-accent {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: breathe 6s ease-in-out infinite;
+}
+.glow-accent.green { background: var(--gold); }
+.glow-accent.gold { background: var(--accent); }
 
 /* === COVER SCREEN === */
 .cover { 
@@ -1210,20 +1333,18 @@ body {
     </audio>
     @endif
 
-    {{-- FALLING PETALS ANIMATION --}}
-    <div class="petals-container" x-show="opened">
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
+    {{-- FALLING LEAVES ANIMATION --}}
+    <div class="leaves-container" x-show="opened">
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
+        <div class="leaf"><svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg></div>
     </div>
 
     {{-- COVER --}}
@@ -1345,19 +1466,44 @@ body {
         </section>
 
         {{-- INTRO --}}
-        <section class="section bg-white">
-            <div class="max-w-lg mx-auto text-center px-4">
-                <p class="font-serif text-lg leading-relaxed text-gray-600 mb-3">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
-                <p class="text-xs text-gray-500 mb-6">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
-                <div style="width: 48px; height: 1px; background: #C9A227; margin: 0 auto 24px;"></div>
-                <p class="text-gray-600 leading-relaxed text-sm">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
+        <section class="section pattern-botanical" style="background: linear-gradient(180deg, white 0%, var(--cream) 100%);">
+            {{-- Floating Decorations --}}
+            <div class="floating-decor top-left">
+                <svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+            </div>
+            <div class="floating-decor top-right">
+                <svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+            </div>
+            {{-- Glowing Accents --}}
+            <div class="glow-accent green" style="top: -50px; left: -100px;"></div>
+            <div class="glow-accent gold" style="bottom: -50px; right: -100px;"></div>
+            
+            <div class="max-w-lg mx-auto text-center px-4 relative z-10">
+                <p class="font-serif text-lg leading-relaxed mb-3" style="color: var(--dark);">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+                <p class="text-xs mb-6" style="color: var(--text);">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                <div style="width: 48px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 0 auto 24px;"></div>
+                <p class="leading-relaxed text-sm" style="color: var(--text);">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
             </div>
         </section>
 
+        {{-- SECTION DIVIDER --}}
+        <div class="section-divider" style="background: var(--cream);">
+            <div class="section-divider-icon">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+        </div>
+
         {{-- COUPLE --}}
-        <section id="couple" class="section bg-[#FDF8F0]">
+        <section id="couple" class="section pattern-dots" style="background: var(--cream);">
+            {{-- Floating Decorations --}}
+            <div class="floating-decor bottom-left" style="opacity: 0.1;">
+                <svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+            </div>
+            <div class="floating-decor bottom-right" style="opacity: 0.1;">
+                <svg viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+            </div>
             <div class="section-title">
-                <p class="text-[10px] tracking-widest text-[#C9A227] uppercase mb-2">Bride & Groom</p>
+                <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold);">Bride & Groom</p>
                 <h2>Mempelai</h2>
                 <div class="divider"></div>
             </div>

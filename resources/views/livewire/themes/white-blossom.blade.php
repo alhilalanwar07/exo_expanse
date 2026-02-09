@@ -1,19 +1,20 @@
 @section('title', 'The Wedding of ' . $invitation->groom_nickname . ' & ' . $invitation->bride_nickname)
 
 @push('fonts')
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Pinyon+Script&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
 @endpush
 
 @push('styles')
 <style>
 :root {
-    --gold: #D4A5A5;
-    --gold-light: #F5E6E8;
-    --gold-dark: #B76E79;
-    --cream: #FFFBFC;
-    --dark: #3D3D3D;
-    --text: #5A5A5A;
-    --sage: #9CAF88;
+    --gold: #C9A227;
+    --gold-light: #E8D5A3;
+    --gold-dark: #A68B1B;
+    --cream: #FFFEF9;
+    --dark: #1A1A1A;
+    --text: #4A4A4A;
+    --white: #FFFFFF;
+    --pearl: #F5F3EF;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,101 +25,249 @@ html {
 }
 
 body { 
-    font-family: 'Lora', serif; 
+    font-family: 'Cormorant Garamond', serif; 
     background: var(--cream); 
     color: var(--text); 
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-.font-serif { font-family: 'Playfair Display', serif; }
-.font-script { font-family: 'Pinyon Script', cursive; }
+.font-serif { font-family: 'Cinzel', serif; }
+.font-script { font-family: 'Great Vibes', cursive; }
 
-/* === ANIMATIONS === */
+/* === MEGA ADVANCED ANIMATIONS === */
 @keyframes fadeUp { 
-    from { opacity: 0; transform: translateY(30px); } 
+    from { opacity: 0; transform: translateY(50px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
 @keyframes pulse { 
     0%, 100% { transform: scale(1); } 
-    50% { transform: scale(1.08); } 
+    50% { transform: scale(1.05); } 
 }
 @keyframes float { 
-    0%, 100% { transform: translateY(0); } 
-    50% { transform: translateY(-10px); } 
+    0%, 100% { transform: translateY(0) rotate(0deg); } 
+    33% { transform: translateY(-12px) rotate(2deg); }
+    66% { transform: translateY(-6px) rotate(-1deg); }
 }
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
-@keyframes fallingPetal {
-    0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
-    25% { transform: translateY(25vh) rotate(90deg) translateX(15px); }
-    50% { transform: translateY(50vh) rotate(180deg) translateX(-10px); }
-    75% { transform: translateY(75vh) rotate(270deg) translateX(20px); }
-    100% { transform: translateY(110vh) rotate(360deg) translateX(-5px); opacity: 0.3; }
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(180deg); }
 }
-@keyframes sway {
-    0%, 100% { transform: rotate(-5deg); }
-    50% { transform: rotate(5deg); }
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
 }
-@keyframes bloomIn {
-    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+@keyframes gentleRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
-@keyframes heartbeat {
+@keyframes slideReveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+}
+@keyframes textReveal {
+    from { opacity: 0; transform: translateY(20px) rotateX(-90deg); }
+    to { opacity: 1; transform: translateY(0) rotateX(0deg); }
+}
+@keyframes borderGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(201,162,39,0.3); }
+    50% { box-shadow: 0 0 40px rgba(201,162,39,0.6); }
+}
+@keyframes floatParticle {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
+}
+@keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+}
+@keyframes waveFloat {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-8px) translateX(5px); }
+    50% { transform: translateY(-15px) translateX(0); }
+    75% { transform: translateY(-8px) translateX(-5px); }
+}
+@keyframes goldenShine {
+    0% { background-position: -100% 0; }
+    100% { background-position: 200% 0; }
+}
+@keyframes heartPulse {
     0%, 100% { transform: scale(1); }
-    14% { transform: scale(1.1); }
-    28% { transform: scale(1); }
-    42% { transform: scale(1.1); }
-    70% { transform: scale(1); }
+    5% { transform: scale(1.15); }
+    10% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    20% { transform: scale(1); }
 }
-.animate-fade-up { animation: fadeUp 0.8s ease forwards; }
-.animate-fade-in { animation: fadeIn 1s ease forwards; }
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-bloom { animation: bloomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.animate-heartbeat { animation: heartbeat 2s ease-in-out infinite; }
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+@keyframes flipIn {
+    from { transform: perspective(400px) rotateY(90deg); opacity: 0; }
+    to { transform: perspective(400px) rotateY(0); opacity: 1; }
+}
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-/* === FALLING PETALS === */
-.petals-container {
+.animate-fade-up { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in { animation: fadeIn 1.2s ease forwards; }
+.animate-fade-scale { animation: fadeInScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-float { animation: float 5s ease-in-out infinite; }
+.animate-sparkle { animation: sparkle 2s ease-in-out infinite; }
+.animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+.animate-border-glow { animation: borderGlow 3s ease-in-out infinite; }
+.animate-breathe { animation: breathe 4s ease-in-out infinite; }
+.animate-wave { animation: waveFloat 6s ease-in-out infinite; }
+.animate-golden-shine { 
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), #fff, var(--gold-light), var(--gold));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: goldenShine 3s linear infinite;
+}
+.animate-heart-pulse { animation: heartPulse 4s ease-in-out infinite; }
+.animate-zoom-in { animation: zoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-flip-in { animation: flipIn 0.8s ease forwards; }
+.animate-bounce-in { animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* === GOLDEN PARTICLES === */
+.particles-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 99;
+    z-index: 98;
     overflow: hidden;
 }
-.petal {
+.particle {
     position: absolute;
-    width: 15px;
-    height: 15px;
-    background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
-    border-radius: 150% 0 150% 0;
-    opacity: 0.7;
-    animation: fallingPetal linear infinite;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatParticle 12s linear infinite;
+    box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold-light);
 }
-.petal:nth-child(odd) { background: linear-gradient(135deg, #F8BBD9, #FADADD); }
-.petal:nth-child(3n) { background: linear-gradient(135deg, #FFE4E9, #FFF0F3); width: 12px; height: 12px; }
-.petal:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
-.petal:nth-child(2) { left: 20%; animation-duration: 15s; animation-delay: 2s; }
-.petal:nth-child(3) { left: 30%; animation-duration: 11s; animation-delay: 4s; }
-.petal:nth-child(4) { left: 40%; animation-duration: 14s; animation-delay: 1s; }
-.petal:nth-child(5) { left: 50%; animation-duration: 13s; animation-delay: 3s; }
-.petal:nth-child(6) { left: 60%; animation-duration: 16s; animation-delay: 5s; }
-.petal:nth-child(7) { left: 70%; animation-duration: 12s; animation-delay: 2.5s; }
-.petal:nth-child(8) { left: 80%; animation-duration: 14s; animation-delay: 0.5s; }
-.petal:nth-child(9) { left: 90%; animation-duration: 11s; animation-delay: 3.5s; }
-.petal:nth-child(10) { left: 5%; animation-duration: 15s; animation-delay: 6s; }
-.petal:nth-child(11) { left: 15%; animation-duration: 13s; animation-delay: 4.5s; }
-.petal:nth-child(12) { left: 85%; animation-duration: 12s; animation-delay: 1.5s; }
+.particle:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 14s; width: 6px; height: 6px; }
+.particle:nth-child(2) { left: 15%; animation-delay: 2s; animation-duration: 12s; width: 10px; height: 10px; }
+.particle:nth-child(3) { left: 25%; animation-delay: 4s; animation-duration: 16s; width: 5px; height: 5px; }
+.particle:nth-child(4) { left: 35%; animation-delay: 1s; animation-duration: 13s; width: 8px; height: 8px; }
+.particle:nth-child(5) { left: 45%; animation-delay: 3s; animation-duration: 15s; width: 7px; height: 7px; }
+.particle:nth-child(6) { left: 55%; animation-delay: 5s; animation-duration: 11s; width: 9px; height: 9px; }
+.particle:nth-child(7) { left: 65%; animation-delay: 2.5s; animation-duration: 14s; width: 6px; height: 6px; }
+.particle:nth-child(8) { left: 75%; animation-delay: 0.5s; animation-duration: 13s; width: 8px; height: 8px; }
+.particle:nth-child(9) { left: 85%; animation-delay: 4.5s; animation-duration: 12s; width: 5px; height: 5px; }
+.particle:nth-child(10) { left: 95%; animation-delay: 1.5s; animation-duration: 15s; width: 7px; height: 7px; }
+
+/* === SPARKLE STARS === */
+.sparkle-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+.sparkle-star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #fff, 0 0 12px var(--gold-light);
+    animation: twinkle ease-in-out infinite;
+}
+.sparkle-star:nth-child(1) { top: 10%; left: 20%; animation-duration: 2s; animation-delay: 0s; }
+.sparkle-star:nth-child(2) { top: 30%; left: 80%; animation-duration: 2.5s; animation-delay: 0.5s; }
+.sparkle-star:nth-child(3) { top: 50%; left: 10%; animation-duration: 3s; animation-delay: 1s; }
+.sparkle-star:nth-child(4) { top: 70%; left: 90%; animation-duration: 2.2s; animation-delay: 0.3s; }
+.sparkle-star:nth-child(5) { top: 85%; left: 40%; animation-duration: 2.8s; animation-delay: 0.8s; }
+.sparkle-star:nth-child(6) { top: 20%; left: 60%; animation-duration: 3.2s; animation-delay: 1.2s; }
+
+/* === DECORATIVE FRAME BORDERS === */
+.frame-border {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+}
+.frame-border-top {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: url('/assets/themes/border-white-merried.webp') no-repeat center top;
+    background-size: contain;
+    animation: waveFloat 8s ease-in-out infinite;
+}
+.frame-border-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: url('/assets/themes/border-white-merried.webp') no-repeat center bottom;
+    background-size: contain;
+    transform: rotate(180deg);
+    animation: waveFloat 8s ease-in-out infinite reverse;
+}
+
+/* === GOLDEN GLOW EFFECTS === */
+.glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
+}
+.glow-orb.gold { background: rgba(201,162,39,0.25); }
+.glow-orb.white { background: rgba(255,255,255,0.3); }
+
+/* === LUXURY DIVIDERS === */
+.luxury-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+}
+.luxury-divider::before,
+.luxury-divider::after {
+    content: '';
+    height: 1px;
+    width: 60px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.luxury-divider-icon {
+    color: var(--gold);
+    animation: heartPulse 4s ease-in-out infinite;
+}
+.luxury-divider-icon svg {
+    width: 24px;
+    height: 24px;
+}
 
 /* === COVER SCREEN === */
 .cover { 
@@ -129,17 +278,191 @@ body {
     align-items: center; 
     justify-content: center;
     padding: 24px;
+    background: linear-gradient(180deg, #FFFDF8 0%, #F8F5EF 50%, #FFFDF8 100%);
+    overflow: hidden;
 }
 .cover-bg { 
     position: absolute; 
     inset: 0; 
     background-size: cover; 
     background-position: center;
+    opacity: 0;
 }
 .cover-overlay { 
     position: absolute; 
     inset: 0; 
-    background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.75) 100%);
+    background: transparent;
+}
+
+/* Floral Corner Decorations */
+.cover-floral {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: url('/assets/themes/border-white-merried.webp') no-repeat center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 1;
+    animation: waveFloat 8s ease-in-out infinite;
+}
+.cover-floral.top-left {
+    top: -20px;
+    left: -40px;
+    transform: rotate(-30deg);
+}
+.cover-floral.top-right {
+    top: -20px;
+    right: -40px;
+    transform: rotate(30deg) scaleX(-1);
+}
+.cover-floral.bottom-left {
+    bottom: -20px;
+    left: -40px;
+    transform: rotate(150deg);
+    animation-delay: 1s;
+}
+.cover-floral.bottom-right {
+    bottom: -20px;
+    right: -40px;
+    transform: rotate(-150deg) scaleX(-1);
+    animation-delay: 1.5s;
+}
+
+/* Photo Frame with Golden Border */
+.cover-photo-frame {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 20px auto 24px;
+}
+.cover-photo-frame::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+    animation: gentleRotate 20s linear infinite;
+}
+.cover-photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: white;
+}
+.cover-photo {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+}
+.cover-photo-decor {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+}
+.cover-photo-decor.top {
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+}
+.cover-photo-decor.bottom {
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+    width: 100px;
+}
+.cover-photo-decor.left {
+    left: -35px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    width: 80px;
+}
+.cover-photo-decor.right {
+    right: -35px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    width: 80px;
+}
+
+/* Cover Content Styling */
+.cover-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+    max-width: 380px;
+    padding: 20px;
+}
+.cover-label {
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.cover-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+.cover-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.8rem;
+    color: var(--dark);
+    margin: 10px 0 24px;
+    line-height: 1.3;
+}
+.cover-guest-label {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.cover-guest-name {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+    text-decoration: line-through;
+    text-decoration-color: var(--gold-light);
+}
+.cover-invitation-text {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    padding: 0 10px;
+}
+.cover-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #9A7B4F, #C9A227);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(154,123,79,0.35);
+}
+.cover-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(154,123,79,0.45);
+}
+.cover-btn:active {
+    transform: translateY(0);
 }
 
 /* === SECTIONS === */
@@ -1210,52 +1533,70 @@ body {
     </audio>
     @endif
 
-    {{-- FALLING PETALS ANIMATION --}}
-    <div class="petals-container" x-show="opened">
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
-        <div class="petal"></div>
+    {{-- GOLDEN PARTICLES (floating up) --}}
+    <div class="particles-container" x-show="opened">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 
     {{-- COVER --}}
     <div x-show="!opened" x-transition:leave="transition duration-700" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="cover">
-        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
+        <div class="cover-bg"></div>
         <div class="cover-overlay"></div>
         
-        <div class="relative z-10 text-center text-white w-full max-w-sm px-6">
+        {{-- Floral Corner Decorations --}}
+        <div class="cover-floral top-left"></div>
+        <div class="cover-floral top-right"></div>
+        <div class="cover-floral bottom-left"></div>
+        <div class="cover-floral bottom-right"></div>
+        
+        {{-- Sparkle Stars --}}
+        <div class="sparkle-container">
+            <div class="sparkle-star"></div>
+            <div class="sparkle-star"></div>
+            <div class="sparkle-star"></div>
+            <div class="sparkle-star"></div>
+            <div class="sparkle-star"></div>
+            <div class="sparkle-star"></div>
+        </div>
+        
+        {{-- Main Content --}}
+        <div class="cover-content">
             {{-- Label --}}
-            <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">THE WEDDING OF</p>
+            <p class="cover-label animate-fade-up">HAPPY WEDDING</p>
+            
+            {{-- Title --}}
+            <h2 class="cover-title animate-fade-up" style="animation-delay: 0.1s;">Wedding Of</h2>
+            
+            {{-- Photo Frame --}}
+            <div class="cover-photo-frame animate-fade-up" style="animation-delay: 0.2s;">
+                <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple Photo" class="cover-photo">
+                {{-- Photo Frame Decorations --}}
+                <img src="/assets/themes/border-white-merried.webp" class="cover-photo-decor top" alt="">
+                <img src="/assets/themes/border-white-merried.webp" class="cover-photo-decor bottom" alt="">
+            </div>
             
             {{-- Names --}}
-            <h1 class="font-script hero-names" style="margin-bottom: 8px;">{{ $invitation->groom_nickname }}</h1>
-            <p class="font-script" style="font-size: 2rem; color: #E8D5A3; margin: 16px 0;">&</p>
-            <h1 class="font-script hero-names" style="margin-bottom: 40px;">{{ $invitation->bride_nickname }}</h1>
-            
-            {{-- Divider --}}
-            <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #C9A227, transparent); margin: 0 auto 32px;"></div>
+            <h1 class="cover-names animate-fade-up" style="animation-delay: 0.3s;">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h1>
             
             {{-- Guest Section --}}
-            <p style="font-size: 12px; letter-spacing: 1px; opacity: 0.8; margin-bottom: 8px;">Kepada Yth.</p>
-            <p class="font-serif" style="font-size: 1.5rem; font-weight: 500; margin-bottom: 20px;">{{ $guestName }}</p>
-            
-            {{-- Invitation Text --}}
-            <p style="font-size: 13px; line-height: 1.7; opacity: 0.85; margin-bottom: 32px; padding: 0 8px;">
-                Tanpa Mengurangi Rasa Hormat, Kami Mengundang Bapak/Ibu/Saudara/i untuk Hadir di Acara Kami.
+            <p class="cover-guest-label animate-fade-up" style="animation-delay: 0.4s;">Kepada</p>
+            <p class="cover-guest-name animate-fade-up" style="animation-delay: 0.45s;">{{ $guestName }}</p>
+            <p class="cover-invitation-text animate-fade-up" style="animation-delay: 0.5s;">
+                Tanpa Mengurangi Rasa Hormat, Kami Mengundang Bapak/Ibu/Saudara/i<br>untuk Hadir di Acara Kami.
             </p>
             
             {{-- Button --}}
-            <button @click="open()" class="btn btn-gold animate-fade-up" style="width: 100%; max-width: 240px; padding: 16px 32px;">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/></svg>
-                Buka Undangan
+            <button @click="open()" class="cover-btn animate-fade-up" style="animation-delay: 0.6s;">
+                Buka Sampul
             </button>
         </div>
     </div>
@@ -1346,19 +1687,34 @@ body {
 
         {{-- INTRO --}}
         <section class="section bg-white">
-            <div class="max-w-lg mx-auto text-center px-4">
-                <p class="font-serif text-lg leading-relaxed text-gray-600 mb-3">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
-                <p class="text-xs text-gray-500 mb-6">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
-                <div style="width: 48px; height: 1px; background: #C9A227; margin: 0 auto 24px;"></div>
-                <p class="text-gray-600 leading-relaxed text-sm">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
+            <div class="max-w-lg mx-auto text-center px-4 relative">
+                {{-- Glow Orbs --}}
+                <div class="glow-orb gold" style="width: 200px; height: 200px; top: -100px; left: -50px;"></div>
+                <div class="glow-orb white" style="width: 150px; height: 150px; bottom: -80px; right: -30px;"></div>
+                
+                <p class="font-serif text-xl leading-relaxed mb-3" style="color: var(--dark);">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+                <p class="text-xs mb-6" style="color: var(--text); letter-spacing: 1px;">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                
+                {{-- Luxury Divider --}}
+                <div class="luxury-divider">
+                    <div class="luxury-divider-icon">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                </div>
+                
+                <p class="leading-relaxed" style="color: var(--text); font-size: 15px; line-height: 1.9;">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
             </div>
         </section>
 
         {{-- COUPLE --}}
-        <section id="couple" class="section bg-[#FDF8F0]">
-            <div class="section-title">
-                <p class="text-[10px] tracking-widest text-[#C9A227] uppercase mb-2">Bride & Groom</p>
-                <h2>Mempelai</h2>
+        <section id="couple" class="section" style="background: linear-gradient(180deg, var(--cream) 0%, white 50%, var(--cream) 100%); position: relative; overflow: hidden;">
+            {{-- Background Glow --}}
+            <div class="glow-orb gold" style="width: 300px; height: 300px; top: 50%; left: -150px; transform: translateY(-50%);"></div>
+            <div class="glow-orb gold" style="width: 300px; height: 300px; top: 50%; right: -150px; transform: translateY(-50%);"></div>
+            
+            <div class="section-title relative z-10">
+                <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold);">Bride & Groom</p>
+                <h2 class="animate-golden-shine">Mempelai</h2>
                 <div class="divider"></div>
             </div>
             
