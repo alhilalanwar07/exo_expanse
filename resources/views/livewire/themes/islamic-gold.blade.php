@@ -1,6 +1,7 @@
 <div class="theme-islamic-gold">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&family=Montserrat:wght@300;500&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
         
         :root {
             --primary: #D4AF37; /* Emas Mewah */
@@ -93,7 +94,7 @@
             margin: 0 auto;
             position: relative;
             z-index: 10;
-            padding-bottom: 50px;
+            padding-bottom: 130px; /* Ditambah agar tidak ketutup Navbar yang lebih tinggi */
         }
 
         /* --- GLASS CARDS --- */
@@ -164,14 +165,15 @@
         .time-val { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
         .time-label { font-size: 0.7rem; text-transform: uppercase; }
 
-        /* --- MUSIC FAB --- */
+        /* --- MUSIC FAB (IMPROVED) --- */
         .music-fab {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: rgba(0,0,0,0.6);
+            bottom: 130px; /* Dinaikkan sedikit supaya tidak nabrak Navbar */
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.6); /* Gelap transparan */
+            backdrop-filter: blur(5px);
             border: 1px solid var(--primary);
             border-radius: 50%;
             display: flex;
@@ -180,8 +182,113 @@
             z-index: 100;
             cursor: pointer;
             color: var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
         }
-        .spin { animation: spin 4s linear infinite; }
+
+        .music-fab:hover {
+            transform: scale(1.1);
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* Ring animasi berputar saat musik play */
+        .music-fab.spin::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-right-color: var(--primary);
+            animation: spin 3s linear infinite;
+        }
+
+        /* Gelombang suara */
+        .music-fab.spin::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            border: 1px solid var(--primary);
+            animation: music-wave 2s infinite ease-out;
+            z-index: -1;
+        }
+
+        /* --- NAVBAR (IMPROVED) --- */
+        .navbar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            /* Glassmorphism Effect */
+            background: rgba(5, 5, 5, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            
+            border-radius: 30px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 5px;
+            z-index: 999; /* Di bawah Cover Gate, Di atas konten */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            width: 95%;
+            max-width: 450px;
+        }
+        
+        .nav-item {
+            color: rgba(255, 255, 255, 0.7); /* Lebih terang supaya jelas */
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 4px;
+            min-width: 50px;
+        }
+        
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-item:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            transform: translateY(-5px);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+        
+        .nav-item.active .nav-label {
+            font-weight: 600;
+        }
+        
+        /* Indikator titik di bawah icon aktif */
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            width: 5px;
+            height: 5px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+        }
 
         /* --- ANIMATIONS --- */
         @keyframes pulse {
@@ -190,10 +297,42 @@
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        @keyframes music-wave {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
 
         .gold-txt { color: var(--primary); }
         .mt-20 { margin-top: 20px; }
         .mb-20 { margin-bottom: 20px; }
+
+        /* Custom Scrollbar for Wishes */
+        .wishes-container {
+            margin-top: 30px;
+            text-align: left;
+            max-height: 350px; /* Est. 3 items */
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .wishes-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .wishes-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .wishes-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .wishes-container::-webkit-scrollbar-thumb:hover {
+            background: #b5952f;
+        }
 
         /* Helpers for Alpine transitions */
         [x-cloak] { display: none !important; }
@@ -216,11 +355,11 @@
                  :class="{ 'spin': isPlaying }" 
                  @click="toggleMusic()" 
                  x-show="opened" 
-                 x-transition:enter="transition ease-out duration-500"
+                 x-transition:enter="transition ease-out duration-500 delay-500"
                  x-transition:enter-start="opacity-0 translate-y-10"
                  x-transition:enter-end="opacity-100 translate-y-0"
                  style="display: none;">
-                <i class="fas fa-compact-disc" style="font-size: 24px;"></i>
+                <i class="fas" :class="isPlaying ? 'fa-pause' : 'fa-play'" style="font-size: 16px;"></i>
             </div>
         @endif
 
@@ -251,7 +390,7 @@
         <div class="container" x-show="opened" x-transition:enter="transition ease-out duration-1000 delay-500" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" style="display: none;">
             
             {{-- Quote Card --}}
-            <div class="card" x-intersect="$el.classList.add('visible')">
+            <div class="card" x-intersect="$el.classList.add('visible')" id="home">
                 <div class="bismillah">﷽</div>
                 <p class="font-serif">Maha Suci Allah yang telah menciptakan makhluk-Nya berpasang-pasangan.</p>
                 <p class="mt-20" style="font-size: 0.9rem; line-height: 1.6;">"Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang."</p>
@@ -259,7 +398,7 @@
             </div>
 
             {{-- Couple Card --}}
-            <div class="card">
+            <div class="card" id="couple">
                 @php
                     $nameOrder = $invitation->custom_styles['name_order'] ?? 'groom_first';
                 @endphp
@@ -304,7 +443,7 @@
             </div>
 
             {{-- Events Card --}}
-            <div class="card">
+            <div class="card" id="event">
                 <h2 class="font-serif mb-20" style="border-bottom: 1px solid var(--primary); display: inline-block; padding-bottom: 10px;">Rangkaian Acara</h2>
                 
                 <div class="mt-20">
@@ -403,7 +542,7 @@
 
             {{-- GALLERY --}}
             @if($invitation->photos->count() > 0)
-            <div class="card" x-data="{ lightboxOpen: false, imgUrl: '' }">
+            <div class="card" x-data="{ lightboxOpen: false, imgUrl: '' }" id="gallery">
                 <h2 class="font-serif mb-20" style="border-bottom: 1px solid var(--primary); display: inline-block; padding-bottom: 10px;">Galeri Foto</h2>
                 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
@@ -423,7 +562,7 @@
             @endif
 
             {{-- RSVP & WISHES --}}
-            <div class="card">
+            <div class="card" id="rsvp">
                 <h2 class="font-serif mb-20" style="border-bottom: 1px solid var(--primary); display: inline-block; padding-bottom: 10px;">RSVP & Ucapan</h2>
                 
                 <form wire:submit="submitRSVP" style="text-align: left;">
@@ -469,7 +608,7 @@
                     @endif
                 </form>
 
-                <div style="margin-top: 30px; text-align: left; max-height: 300px; overflow-y: auto;">
+                <div class="wishes-container">
                     @foreach($invitation->wishes()->latest()->get() as $wish)
                     <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid var(--primary);">
                         <div style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">{{ $wish->name }} <span style="font-size: 0.7rem; color: #aaa; font-weight: normal; float: right;">{{ $wish->created_at->diffForHumans() }}</span></div>
@@ -501,6 +640,38 @@
             </div>
         </div>
 
+        {{-- NAVBAR --}}
+        <div class="navbar" 
+             x-show="opened" 
+             x-transition:enter="transition ease-out duration-500 delay-1000" 
+             x-transition:enter-start="opacity-0 translate-y-20" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             style="display: none;">
+            
+            <div class="nav-item" :class="{ 'active': activeSection === 'home' }" @click="scrollToSection('home')">
+                <i class="fas fa-home"></i>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-item" :class="{ 'active': activeSection === 'couple' }" @click="scrollToSection('couple')">
+                <i class="fas fa-heart"></i>
+                <span class="nav-label">Mempelai</span>
+            </div>
+            <div class="nav-item" :class="{ 'active': activeSection === 'event' }" @click="scrollToSection('event')">
+                <i class="fas fa-calendar-alt"></i>
+                <span class="nav-label">Acara</span>
+            </div>
+            @if($invitation->photos->count() > 0)
+            <div class="nav-item" :class="{ 'active': activeSection === 'gallery' }" @click="scrollToSection('gallery')">
+                <i class="fas fa-images"></i>
+                <span class="nav-label">Galeri</span>
+            </div>
+            @endif
+            <div class="nav-item" :class="{ 'active': activeSection === 'rsvp' }" @click="scrollToSection('rsvp')">
+                <i class="fas fa-envelope"></i>
+                <span class="nav-label">Ucapan</span>
+            </div>
+        </div>
+
     </div>
 
     {{-- SCRIPTS --}}
@@ -509,9 +680,35 @@
             return {
                 opened: false,
                 isPlaying: false,
+                activeSection: 'home',
+                sections: ['home', 'couple', 'event', 'gallery', 'rsvp'],
 
                 initTheme() {
                     this.initParticles();
+                    window.addEventListener('scroll', () => this.checkActiveSection());
+                },
+
+                checkActiveSection() {
+                    const scrollPosition = window.scrollY + 300; // Adjusted Offset for better trigger
+                    for (const section of this.sections) {
+                        const element = document.getElementById(section);
+                        if (element) {
+                            const top = element.offsetTop;
+                            const bottom = top + element.offsetHeight;
+                            if (scrollPosition >= top && scrollPosition < bottom) {
+                                this.activeSection = section;
+                            }
+                        }
+                    }
+                },
+
+                scrollToSection(id) {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        // Offset for fixed navbar
+                        const y = element.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({top: y, behavior: 'smooth'});
+                    }
                 },
 
                 openInvitation() {
