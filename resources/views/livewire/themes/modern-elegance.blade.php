@@ -170,9 +170,16 @@
 
             <div class="flex flex-col items-center justify-center space-y-6">
                 <h1 class="font-heading text-6xl md:text-8xl leading-tight opacity-0 animate-[fadeInUp_1.2s_ease-out_0.5s_forwards]">
-                    <span class="block">{{ $invitation->groom_nickname }}</span>
-                    <span class="font-script text-5xl md:text-7xl text-gold-light block my-2">&</span>
-                    <span class="block">{{ $invitation->bride_nickname }}</span>
+                    @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                    @if($order === 'bride_first')
+                        <span class="block">{{ $invitation->bride_nickname }}</span>
+                        <span class="font-script text-5xl md:text-7xl text-gold-light block my-2">&</span>
+                        <span class="block">{{ $invitation->groom_nickname }}</span>
+                    @else
+                        <span class="block">{{ $invitation->groom_nickname }}</span>
+                        <span class="font-script text-5xl md:text-7xl text-gold-light block my-2">&</span>
+                        <span class="block">{{ $invitation->bride_nickname }}</span>
+                    @endif
                 </h1>
             </div>
 
@@ -213,9 +220,16 @@
                 
                 <div class="py-10">
                     <h2 class="font-heading text-7xl md:text-8xl text-dark leading-none">
-                        {{ $invitation->groom_nickname }}
-                        <span class="block font-script text-5xl text-gold my-4">and</span>
-                        {{ $invitation->bride_nickname }}
+                        @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                        @if($order === 'bride_first')
+                            {{ $invitation->bride_nickname }}
+                            <span class="block font-script text-5xl text-gold my-4">and</span>
+                            {{ $invitation->groom_nickname }}
+                        @else
+                            {{ $invitation->groom_nickname }}
+                            <span class="block font-script text-5xl text-gold my-4">and</span>
+                            {{ $invitation->bride_nickname }}
+                        @endif
                     </h2>
                 </div>
 
@@ -251,39 +265,76 @@
             <div class="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
             
             <div class="space-y-24 relative z-10">
-                {{-- Groom --}}
-                <div class="reveal-up text-center group">
-                    <div class="relative w-64 h-80 mx-auto mb-8">
-                        <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
-                        <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
-                        <div class="relative w-full h-full overflow-hidden bg-gray-200">
-                             <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
-                                  class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                @if($order === 'bride_first')
+                    {{-- Bride --}}
+                    <div class="reveal-up text-center group">
+                        <div class="relative w-64 h-80 mx-auto mb-8">
+                            <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                            <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
+                            <div class="relative w-full h-full overflow-hidden bg-gray-200">
+                                 <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
+                                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+                            </div>
                         </div>
+                        <h3 class="font-heading text-4xl text-dark mb-2">{{ $invitation->bride_name }}</h3>
+                        <p class="font-body text-xs tracking-widest text-gold uppercase mb-4">The Bride</p>
+                        <p class="font-heading text-lg italic text-gray-500">
+                            Putri dari {{ $invitation->bride_father }} & {{ $invitation->bride_mother }}
+                        </p>
                     </div>
-                    <h3 class="font-heading text-4xl text-dark mb-2">{{ $invitation->groom_name }}</h3>
-                    <p class="font-body text-xs tracking-widest text-gold uppercase mb-4">The Groom</p>
-                    <p class="font-heading text-lg italic text-gray-500">
-                        Putra dari {{ $invitation->groom_father }} & {{ $invitation->groom_mother }}
-                    </p>
-                </div>
 
-                {{-- Bride --}}
-                <div class="reveal-up text-center group">
-                    <div class="relative w-64 h-80 mx-auto mb-8">
-                        <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
-                        <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
-                        <div class="relative w-full h-full overflow-hidden bg-gray-200">
-                             <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
-                                  class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+                    {{-- Groom --}}
+                    <div class="reveal-up text-center group">
+                        <div class="relative w-64 h-80 mx-auto mb-8">
+                            <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                            <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
+                            <div class="relative w-full h-full overflow-hidden bg-gray-200">
+                                 <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
+                                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+                            </div>
                         </div>
+                        <h3 class="font-heading text-4xl text-dark mb-2">{{ $invitation->groom_name }}</h3>
+                        <p class="font-body text-xs tracking-widest text-gold uppercase mb-4">The Groom</p>
+                        <p class="font-heading text-lg italic text-gray-500">
+                            Putra dari {{ $invitation->groom_father }} & {{ $invitation->groom_mother }}
+                        </p>
                     </div>
-                    <h3 class="font-heading text-4xl text-dark mb-2">{{ $invitation->bride_name }}</h3>
-                    <p class="font-body text-xs tracking-widest text-gold uppercase mb-4">The Bride</p>
-                    <p class="font-heading text-lg italic text-gray-500">
-                        Putri dari {{ $invitation->bride_father }} & {{ $invitation->bride_mother }}
-                    </p>
-                </div>
+                @else
+                    {{-- Groom --}}
+                    <div class="reveal-up text-center group">
+                        <div class="relative w-64 h-80 mx-auto mb-8">
+                            <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                            <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
+                            <div class="relative w-full h-full overflow-hidden bg-gray-200">
+                                 <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
+                                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+                            </div>
+                        </div>
+                        <h3 class="font-heading text-4xl text-dark mb-2">{{ $invitation->groom_name }}</h3>
+                        <p class="font-body text-xs tracking-widest text-gold uppercase mb-4">The Groom</p>
+                        <p class="font-heading text-lg italic text-gray-500">
+                            Putra dari {{ $invitation->groom_father }} & {{ $invitation->groom_mother }}
+                        </p>
+                    </div>
+
+                    {{-- Bride --}}
+                    <div class="reveal-up text-center group">
+                        <div class="relative w-64 h-80 mx-auto mb-8">
+                            <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                            <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
+                            <div class="relative w-full h-full overflow-hidden bg-gray-200">
+                                 <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
+                                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
+                            </div>
+                        </div>
+                        <h3 class="font-heading text-4xl text-dark mb-2">{{ $invitation->bride_name }}</h3>
+                        <p class="font-body text-xs tracking-widest text-gold uppercase mb-4">The Bride</p>
+                        <p class="font-heading text-lg italic text-gray-500">
+                            Putri dari {{ $invitation->bride_father }} & {{ $invitation->bride_mother }}
+                        </p>
+                    </div>
+                @endif
             </div>
         </section>
 
@@ -576,7 +627,10 @@
 
         {{-- FOOTER --}}
         <footer class="py-20 bg-white text-center border-t border-gold/10 pb-32">
-            <h2 class="font-heading text-5xl mb-6 text-dark">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h2>
+            <h2 class="font-heading text-5xl mb-6 text-dark">
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
+            </h2>
             <p class="font-body text-[10px] uppercase tracking-[0.4em] text-gray-400">See You At The Wedding</p>
         </footer>
 

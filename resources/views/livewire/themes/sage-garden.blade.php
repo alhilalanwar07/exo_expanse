@@ -1357,9 +1357,16 @@ body {
             <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">THE WEDDING OF</p>
             
             {{-- Names --}}
-            <h1 class="font-script hero-names" style="margin-bottom: 8px;">{{ $invitation->groom_nickname }}</h1>
-            <p class="font-script" style="font-size: 2rem; color: #E8D5A3; margin: 16px 0;">&</p>
-            <h1 class="font-script hero-names" style="margin-bottom: 40px;">{{ $invitation->bride_nickname }}</h1>
+            @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+            @if($order === 'bride_first')
+                <h1 class="font-script hero-names" style="margin-bottom: 8px;">{{ $invitation->bride_nickname }}</h1>
+                <p class="font-script" style="font-size: 2rem; color: #E8D5A3; margin: 16px 0;">&</p>
+                <h1 class="font-script hero-names" style="margin-bottom: 40px;">{{ $invitation->groom_nickname }}</h1>
+            @else
+                <h1 class="font-script hero-names" style="margin-bottom: 8px;">{{ $invitation->groom_nickname }}</h1>
+                <p class="font-script" style="font-size: 2rem; color: #E8D5A3; margin: 16px 0;">&</p>
+                <h1 class="font-script hero-names" style="margin-bottom: 40px;">{{ $invitation->bride_nickname }}</h1>
+            @endif
             
             {{-- Divider --}}
             <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #C9A227, transparent); margin: 0 auto 32px;"></div>
@@ -1406,7 +1413,7 @@ body {
                 }
             },
             saveToCalendar() {
-                const title = '{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }} Wedding';
+                const title = '{{ ($invitation->custom_styles['name_order'] ?? 'groom_first') === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }} Wedding';
                 const date = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
                 const location = '{{ $invitation->akad_venue }}';
                 const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`;
@@ -1424,7 +1431,10 @@ body {
                 </div>
                 
                 {{-- Names --}}
-                <h1 class="hero-names-text">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h1>
+                <h1 class="hero-names-text">
+                    @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                    {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
+                </h1>
                 
                 {{-- Countdown (if active) --}}
                 <div x-show="isActive" class="hero-countdown">
@@ -1509,6 +1519,34 @@ body {
             </div>
             
             <div class="max-w-lg mx-auto space-y-4">
+            @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+            @if($order === 'bride_first')
+                {{-- Bride --}}
+                <div class="card couple-card me-2">
+                    <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
+                    <h3 class="couple-name">{{ $invitation->bride_name }}</h3>
+                    <p class="text-gray-500 text-sm mb-3">Putri dari Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
+                    @if($invitation->bride_instagram)
+                    <a href="https://instagram.com/{{ $invitation->bride_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        @{{ $invitation->bride_instagram }}
+                    </a>
+                    @endif
+                </div>
+
+                {{-- Groom --}}
+                <div class="card couple-card">
+                    <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
+                    <h3 class="couple-name">{{ $invitation->groom_name }}</h3>
+                    <p class="text-gray-500 text-sm mb-3">Putra dari Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
+                    @if($invitation->groom_instagram)
+                    <a href="https://instagram.com/{{ $invitation->groom_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        @{{ $invitation->groom_instagram }}
+                    </a>
+                    @endif
+                </div>
+            @else
                 {{-- Groom --}}
                 <div class="card couple-card me-2">
                     <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
@@ -1534,6 +1572,7 @@ body {
                     </a>
                     @endif
                 </div>
+            @endif
             </div>
         </section>
 

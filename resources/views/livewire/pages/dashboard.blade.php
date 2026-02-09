@@ -1,10 +1,10 @@
 <div>
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div>
             <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
             <p class="text-slate-600 dark:text-slate-400">Kelola undangan digital Anda</p>
         </div>
-        <a href="{{ route('invitations.new') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-xl hover:opacity-90 transition-all transform hover:scale-105 shadow-lg shadow-rose-500/30">
+        <a href="{{ route('invitations.new') }}" class="w-full md:w-auto inline-flex justify-center items-center px-6 py-3 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-xl hover:opacity-90 transition-all transform hover:scale-105 shadow-lg shadow-rose-500/30">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -101,24 +101,24 @@
             <div class="divide-y divide-slate-200 dark:divide-slate-700">
                 @foreach($invitations as $invitation)
                     <div class="p-6 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-14 h-14 bg-gradient-to-br from-rose-100 to-amber-100 dark:from-rose-900/30 dark:to-amber-900/30 rounded-xl flex items-center justify-center">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div class="flex items-start md:items-center gap-4 w-full md:w-auto">
+                                <div class="w-14 h-14 bg-gradient-to-br from-rose-100 to-amber-100 dark:from-rose-900/30 dark:to-amber-900/30 rounded-xl flex items-center justify-center shrink-0">
                                     <span class="text-2xl">💍</span>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ $invitation->title }}</h3>
-                                    <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white truncate">{{ $invitation->title }}</h3>
+                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
                                         <span>{{ $invitation->theme?->name ?? 'No theme' }}</span>
-                                        <span>•</span>
+                                        <span class="hidden md:inline">•</span>
                                         <span>{{ $invitation->event_date?->format('d M Y') ?? 'No date' }}</span>
                                     </div>
-                                    <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank" class="text-xs text-rose-500 hover:underline mt-1 block font-mono">
+                                    <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank" class="text-xs text-rose-500 hover:underline mt-1 block font-mono truncate">
                                         {{ route('invitation.show', $invitation->slug) }}
                                     </a>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 w-full md:w-auto justify-end border-t border-slate-100 dark:border-slate-700 pt-4 md:border-0 md:pt-0">
                                 <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" title="Preview">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>

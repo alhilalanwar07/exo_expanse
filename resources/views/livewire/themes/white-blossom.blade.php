@@ -465,6 +465,227 @@ body {
     transform: translateY(0);
 }
 
+/* === HERO SECTION (After Opening) === */
+.hero-section {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px 60px;
+    background: linear-gradient(180deg, #FFFDF8 0%, #F8F5EF 50%, #FFFDF8 100%);
+    overflow: hidden;
+}
+.hero-section::before,
+.hero-section::after {
+    content: '';
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: url('/assets/themes/border-white-merried.webp') no-repeat center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 1;
+    animation: waveFloat 10s ease-in-out infinite;
+}
+.hero-section::before {
+    top: -30px;
+    left: -60px;
+    transform: rotate(-30deg);
+}
+.hero-section::after {
+    bottom: -30px;
+    right: -60px;
+    transform: rotate(150deg);
+    animation-delay: 2s;
+}
+.hero-photo-wrapper {
+    position: relative;
+    z-index: 10;
+    margin-bottom: 24px;
+}
+.hero-photo-frame {
+    width: 180px;
+    height: 180px;
+    position: relative;
+}
+.hero-photo-frame::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+    animation: gentleRotate 25s linear infinite;
+}
+.hero-photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: white;
+}
+.hero-photo-frame img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+.hero-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: var(--dark);
+    text-align: center;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 10;
+}
+.hero-date {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 10;
+}
+.hero-countdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    max-width: 340px;
+    margin: 0 auto 32px;
+    position: relative;
+    z-index: 10;
+}
+.hero-countdown-item {
+    background: white;
+    padding: 16px 8px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid rgba(201,162,39,0.15);
+}
+.hero-countdown-num {
+    font-family: 'Cinzel', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+}
+.hero-countdown-label {
+    font-size: 0.6rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+}
+.hero-calendar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #9A7B4F, #C9A227);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(154,123,79,0.3);
+    position: relative;
+    z-index: 10;
+}
+.hero-calendar-btn svg {
+    width: 18px;
+    height: 18px;
+}
+.hero-calendar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(154,123,79,0.4);
+}
+.hero-scroll-indicator {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+    z-index: 10;
+}
+.hero-scroll-indicator svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* === THEMED SECTIONS === */
+.section-cream {
+    background: linear-gradient(180deg, #FFFDF8 0%, #F8F5EF 100%);
+    position: relative;
+    overflow: hidden;
+}
+.section-cream::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 20%, rgba(201,162,39,0.3) 50%, transparent 80%);
+}
+.section-white {
+    background: white;
+    position: relative;
+}
+.section-floral {
+    position: relative;
+    overflow: hidden;
+}
+.section-floral::before,
+.section-floral::after {
+    content: '';
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: url('/assets/themes/border-white-merried.webp') no-repeat center;
+    background-size: contain;
+    opacity: 0.15;
+    pointer-events: none;
+}
+.section-floral::before {
+    top: 20px;
+    left: -40px;
+    transform: rotate(-20deg);
+}
+.section-floral::after {
+    bottom: 20px;
+    right: -40px;
+    transform: rotate(160deg);
+}
+
+/* === THEMED SECTION TITLE === */
+.section-title-themed h2 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: var(--gold);
+}
+.section-title-themed .subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
 /* === SECTIONS === */
 .section { 
     padding: 56px 16px; 
@@ -1585,7 +1806,10 @@ body {
             </div>
             
             {{-- Names --}}
-            <h1 class="cover-names animate-fade-up" style="animation-delay: 0.3s;">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h1>
+            @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+            <h1 class="cover-names animate-fade-up" style="animation-delay: 0.3s;">
+                {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
+            </h1>
             
             {{-- Guest Section --}}
             <p class="cover-guest-label animate-fade-up" style="animation-delay: 0.4s;">Kepada</p>
@@ -1626,58 +1850,65 @@ body {
                 }
             },
             saveToCalendar() {
-                const title = '{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }} Wedding';
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                const title = '{{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }} Wedding';
                 const date = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
                 const location = '{{ $invitation->akad_venue }}';
                 const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`;
                 window.open(url, '_blank');
             }
         }">
-            {{-- Background --}}
-            <div class="hero-bg"></div>
+            {{-- Sparkle Stars --}}
+            <div class="sparkle-container">
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+            </div>
             
-            {{-- Content --}}
-            <div class="hero-content">
-                {{-- Couple Photo --}}
-                <div class="hero-photo">
+            {{-- Photo Frame --}}
+            <div class="hero-photo-wrapper animate-fade-up">
+                <div class="hero-photo-frame">
                     <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple">
                 </div>
-                
-                {{-- Names --}}
-                <h1 class="hero-names-text">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h1>
-                
-                {{-- Countdown (if active) --}}
-                <div x-show="isActive" class="hero-countdown">
-                    <div class="hero-countdown-item">
-                        <span class="hero-countdown-num" x-text="days">0</span>
-                        <span class="hero-countdown-label">DAYS</span>
-                    </div>
-                    <div class="hero-countdown-item">
-                        <span class="hero-countdown-num" x-text="hours">0</span>
-                        <span class="hero-countdown-label">HOURS</span>
-                    </div>
-                    <div class="hero-countdown-item">
-                        <span class="hero-countdown-num" x-text="minutes">0</span>
-                        <span class="hero-countdown-label">MINUTES</span>
-                    </div>
-                    <div class="hero-countdown-item">
-                        <span class="hero-countdown-num" x-text="seconds">0</span>
-                        <span class="hero-countdown-label">SECONDS</span>
-                    </div>
-                </div>
-                
-                {{-- Date (if countdown ended) --}}
-                <div x-show="!isActive" class="hero-date-display">
-                    <p class="hero-day">{{ $invitation->akad_date?->translatedFormat('l') }}</p>
-                    <p class="hero-full-date">{{ $invitation->akad_date?->translatedFormat('d F Y') }}</p>
-                </div>
-                
-                {{-- Save To Calendar Button --}}
-                <button @click="saveToCalendar()" class="hero-calendar-btn">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    Save To Calendar
-                </button>
             </div>
+            
+            {{-- Names --}}
+            @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+            <h1 class="hero-names animate-fade-up" style="animation-delay: 0.1s;">
+                {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
+            </h1>
+            
+            {{-- Date --}}
+            <p class="hero-date animate-fade-up" style="animation-delay: 0.2s;">{{ $invitation->akad_date?->translatedFormat('d F Y') }}</p>
+            
+            {{-- Countdown --}}
+            <div x-show="isActive" class="hero-countdown animate-fade-up" style="animation-delay: 0.3s;">
+                <div class="hero-countdown-item">
+                    <span class="hero-countdown-num" x-text="days">0</span>
+                    <span class="hero-countdown-label">Hari</span>
+                </div>
+                <div class="hero-countdown-item">
+                    <span class="hero-countdown-num" x-text="hours">0</span>
+                    <span class="hero-countdown-label">Jam</span>
+                </div>
+                <div class="hero-countdown-item">
+                    <span class="hero-countdown-num" x-text="minutes">0</span>
+                    <span class="hero-countdown-label">Menit</span>
+                </div>
+                <div class="hero-countdown-item">
+                    <span class="hero-countdown-num" x-text="seconds">0</span>
+                    <span class="hero-countdown-label">Detik</span>
+                </div>
+            </div>
+            
+            {{-- Save To Calendar Button --}}
+            <button @click="saveToCalendar()" class="hero-calendar-btn animate-fade-up" style="animation-delay: 0.4s;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Simpan Tanggal
+            </button>
             
             {{-- Scroll Indicator --}}
             <div class="hero-scroll-indicator animate-float">
@@ -1686,72 +1917,107 @@ body {
         </section>
 
         {{-- INTRO --}}
-        <section class="section bg-white">
-            <div class="max-w-lg mx-auto text-center px-4 relative">
+        <section class="section section-cream section-floral">
+            <div class="max-w-lg mx-auto text-center px-4 relative z-10">
                 {{-- Glow Orbs --}}
                 <div class="glow-orb gold" style="width: 200px; height: 200px; top: -100px; left: -50px;"></div>
                 <div class="glow-orb white" style="width: 150px; height: 150px; bottom: -80px; right: -30px;"></div>
                 
-                <p class="font-serif text-xl leading-relaxed mb-3" style="color: var(--dark);">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
-                <p class="text-xs mb-6" style="color: var(--text); letter-spacing: 1px;">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
+                <p class="font-serif text-xl leading-relaxed mb-3 animate-fade-up" style="color: var(--dark);">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+                <p class="text-xs mb-6 animate-fade-up" style="color: var(--text); letter-spacing: 1px; animation-delay: 0.1s;">Assalamu'alaikum Warahmatullahi Wabarakatuh</p>
                 
                 {{-- Luxury Divider --}}
-                <div class="luxury-divider">
+                <div class="luxury-divider animate-fade-up" style="animation-delay: 0.2s;">
                     <div class="luxury-divider-icon">
                         <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     </div>
                 </div>
                 
-                <p class="leading-relaxed" style="color: var(--text); font-size: 15px; line-height: 1.9;">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
+                <p class="leading-relaxed animate-fade-up" style="color: var(--text); font-size: 15px; line-height: 1.9; animation-delay: 0.3s;">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
             </div>
         </section>
 
         {{-- COUPLE --}}
-        <section id="couple" class="section" style="background: linear-gradient(180deg, var(--cream) 0%, white 50%, var(--cream) 100%); position: relative; overflow: hidden;">
-            {{-- Background Glow --}}
-            <div class="glow-orb gold" style="width: 300px; height: 300px; top: 50%; left: -150px; transform: translateY(-50%);"></div>
-            <div class="glow-orb gold" style="width: 300px; height: 300px; top: 50%; right: -150px; transform: translateY(-50%);"></div>
+        <section id="couple" class="section section-cream section-floral">
+            {{-- Sparkle Stars --}}
+            <div class="sparkle-container">
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+                <div class="sparkle-star"></div>
+            </div>
             
-            <div class="section-title relative z-10">
-                <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold);">Bride & Groom</p>
-                <h2 class="animate-golden-shine">Mempelai</h2>
+            <div class="section-title section-title-themed relative z-10">
+                <p class="subtitle">Bride & Groom</p>
+                <h2>Mempelai</h2>
                 <div class="divider"></div>
             </div>
             
             <div class="max-w-lg mx-auto space-y-4">
-                {{-- Groom --}}
-                <div class="card couple-card me-2">
-                    <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
-                    <h3 class="couple-name">{{ $invitation->groom_name }}</h3>
-                    <p class="text-gray-500 text-sm mb-3">Putra dari Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
-                    @if($invitation->groom_instagram)
-                    <a href="https://instagram.com/{{ $invitation->groom_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        @{{ $invitation->groom_instagram }}
-                    </a>
-                    @endif
-                </div>
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
 
-                {{-- Bride --}}
-                <div class="card couple-card">
-                    <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
-                    <h3 class="couple-name">{{ $invitation->bride_name }}</h3>
-                    <p class="text-gray-500 text-sm mb-3">Putri dari Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
-                    @if($invitation->bride_instagram)
-                    <a href="https://instagram.com/{{ $invitation->bride_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        @{{ $invitation->bride_instagram }}
-                    </a>
-                    @endif
-                </div>
+                @if($order === 'bride_first')
+                    {{-- Bride --}}
+                    <div class="card couple-card">
+                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
+                        <h3 class="couple-name">{{ $invitation->bride_name }}</h3>
+                        <p class="text-gray-500 text-sm mb-3">Putri dari Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
+                        @if($invitation->bride_instagram)
+                        <a href="https://instagram.com/{{ $invitation->bride_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            @{{ $invitation->bride_instagram }}
+                        </a>
+                        @endif
+                    </div>
+
+                    {{-- Groom --}}
+                    <div class="card couple-card me-2">
+                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
+                        <h3 class="couple-name">{{ $invitation->groom_name }}</h3>
+                        <p class="text-gray-500 text-sm mb-3">Putra dari Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
+                        @if($invitation->groom_instagram)
+                        <a href="https://instagram.com/{{ $invitation->groom_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            @{{ $invitation->groom_instagram }}
+                        </a>
+                        @endif
+                    </div>
+                @else
+                    {{-- Groom --}}
+                    <div class="card couple-card me-2">
+                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
+                        <h3 class="couple-name">{{ $invitation->groom_name }}</h3>
+                        <p class="text-gray-500 text-sm mb-3">Putra dari Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
+                        @if($invitation->groom_instagram)
+                        <a href="https://instagram.com/{{ $invitation->groom_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            @{{ $invitation->groom_instagram }}
+                        </a>
+                        @endif
+                    </div>
+
+                    {{-- Bride --}}
+                    <div class="card couple-card">
+                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
+                        <h3 class="couple-name">{{ $invitation->bride_name }}</h3>
+                        <p class="text-gray-500 text-sm mb-3">Putri dari Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
+                        @if($invitation->bride_instagram)
+                        <a href="https://instagram.com/{{ $invitation->bride_instagram }}" target="_blank" class="inline-flex items-center gap-1.5 text-[#C9A227] text-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            @{{ $invitation->bride_instagram }}
+                        </a>
+                        @endif
+                    </div>
+                @endif
             </div>
         </section>
 
         {{-- COUNTDOWN --}}
-        <section class="section" style="background: linear-gradient(135deg, #1A1A1A, #2D2D2D); padding: 60px 20px;">
-            <div class="max-w-lg mx-auto text-center text-white">
-                <p class="font-script text-[#C9A227]" style="font-size: 2rem; margin-bottom: 8px;">Save The Date</p>
-                <p style="font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.7; margin-bottom: 32px;">Hitung Mundur Menuju Hari Bahagia</p>
+        <section class="section section-white section-floral" style="padding: 60px 20px;">
+            <div class="max-w-lg mx-auto text-center relative z-10">
+                <div class="section-title section-title-themed">
+                    <p class="subtitle">Save The Date</p>
+                    <h2>Hitung Mundur</h2>
+                </div>
                 
                 <div x-data="{
                     days: 0, hours: 0, minutes: 0, seconds: 0,
@@ -1766,31 +2032,33 @@ body {
                             this.seconds = Math.floor((diff % 60000) / 1000);
                         }
                     }
-                }" class="grid grid-cols-4 gap-3" style="max-width: 320px; margin: 0 auto;">
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 8px;">
-                        <div class="font-serif" style="font-size: 1.75rem; font-weight: 600;" x-text="days">0</div>
-                        <div style="font-size: 10px; opacity: 0.7; margin-top: 4px;">Hari</div>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 8px;">
-                        <div class="font-serif" style="font-size: 1.75rem; font-weight: 600;" x-text="hours">0</div>
-                        <div style="font-size: 10px; opacity: 0.7; margin-top: 4px;">Jam</div>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 8px;">
-                        <div class="font-serif" style="font-size: 1.75rem; font-weight: 600;" x-text="minutes">0</div>
-                        <div style="font-size: 10px; opacity: 0.7; margin-top: 4px;">Menit</div>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 8px;">
-                        <div class="font-serif" style="font-size: 1.75rem; font-weight: 600;" x-text="seconds">0</div>
-                        <div style="font-size: 10px; opacity: 0.7; margin-top: 4px;">Detik</div>
+                }">
+                    <div class="hero-countdown" style="max-width: 340px; margin: 0 auto;">
+                        <div class="hero-countdown-item">
+                            <span class="hero-countdown-num" x-text="days">0</span>
+                            <span class="hero-countdown-label">Hari</span>
+                        </div>
+                        <div class="hero-countdown-item">
+                            <span class="hero-countdown-num" x-text="hours">0</span>
+                            <span class="hero-countdown-label">Jam</span>
+                        </div>
+                        <div class="hero-countdown-item">
+                            <span class="hero-countdown-num" x-text="minutes">0</span>
+                            <span class="hero-countdown-label">Menit</span>
+                        </div>
+                        <div class="hero-countdown-item">
+                            <span class="hero-countdown-num" x-text="seconds">0</span>
+                            <span class="hero-countdown-label">Detik</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         {{-- EVENTS --}}
-        <section id="events" class="section bg-white">
-            <div class="section-title">
-                <p class="text-gold" style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">Wedding Events</p>
+        <section id="events" class="section section-cream section-floral">
+            <div class="section-title section-title-themed relative z-10">
+                <p class="subtitle">Wedding Events</p>
                 <h2>Waktu & Tempat</h2>
                 <div class="divider"></div>
             </div>
@@ -1854,7 +2122,7 @@ body {
 
         {{-- GALLERY --}}
         @if($invitation->photos->count() > 0)
-        <section id="gallery" class="section bg-cream" x-data="{ 
+        <section id="gallery" class="section section-white section-floral" x-data="{ 
             lightboxOpen: false, 
             lightboxImage: '', 
             lightboxCaption: '',
@@ -1869,8 +2137,8 @@ body {
                 document.body.style.overflow = '';
             }
         }">
-            <div class="section-title">
-                <p class="text-gold" style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">Our Moments</p>
+            <div class="section-title section-title-themed relative z-10">
+                <p class="subtitle">Our Moments</p>
                 <h2>Galeri</h2>
                 <div class="divider"></div>
             </div>
@@ -1919,23 +2187,17 @@ body {
 
         {{-- GIFT --}}
         @if($invitation->enable_gift)
-        <section id="gift" class="section" style="background: linear-gradient(180deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%); position: relative; overflow: hidden;">
-            {{-- Decorative Elements --}}
-            <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);"></div>
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);"></div>
-            <div style="position: absolute; top: 20%; left: -100px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%); pointer-events: none;"></div>
-            <div style="position: absolute; bottom: 20%; right: -100px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%); pointer-events: none;"></div>
-            
-            <div class="section-title" style="position: relative; z-index: 1;">
+        <section id="gift" class="section section-cream section-floral">
+            <div class="section-title section-title-themed relative z-10">
                 <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border-radius: 50%; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(201,162,39,0.3);">
                     <svg style="width: 28px; height: 28px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
                 </div>
-                <p style="font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; color: var(--gold);">Wedding Gift</p>
-                <h2 style="color: white; font-size: 2rem;">Amplop Digital</h2>
-                <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 16px auto;"></div>
+                <p class="subtitle">Wedding Gift</p>
+                <h2>Amplop Digital</h2>
+                <div class="divider"></div>
             </div>
-            <div class="max-w-md mx-auto text-center px-4" style="position: relative; z-index: 1;">
-                <p style="color: rgba(255,255,255,0.7); margin-bottom: 32px; font-size: 14px; font-style: italic; font-family: 'Cormorant Garamond', serif; line-height: 1.8;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara cashless.</p>
+            <div class="max-w-md mx-auto text-center px-4 relative z-10">
+                <p style="color: var(--text); margin-bottom: 32px; font-size: 14px; font-style: italic; font-family: 'Cormorant Garamond', serif; line-height: 1.8;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara cashless.</p>
                 
                 <div style="display: grid; gap: 16px;">
                 @if($invitation->bank_accounts)

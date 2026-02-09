@@ -7,21 +7,21 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 </a>
                 <div>
-                    <h1 class="font-bold text-slate-800 dark:text-white">{{ $invitationId ? 'Edit Undangan' : 'Buat Undangan Baru' }}</h1>
+                    <h1 class="font-bold text-slate-800 dark:text-white text-lg sm:text-xl">{{ $invitationId ? 'Edit Undangan' : 'Buat Undangan Baru' }}</h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">{{ $this->title ?: 'Belum ada judul' }}</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <button wire:click="save" wire:loading.attr="disabled" class="px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all flex items-center gap-2">
-                    <span wire:loading.remove wire:target="save">💾 Simpan Draft</span>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button wire:click="save" wire:loading.attr="disabled" class="px-3 sm:px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all flex items-center gap-2">
+                    <span wire:loading.remove wire:target="save">💾 <span class="hidden sm:inline">Simpan Draft</span></span>
                     <span wire:loading wire:target="save" class="flex items-center gap-2">
                         <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-                        Menyimpan...
+                        <span class="hidden sm:inline">Menyimpan...</span>
                     </span>
                 </button>
-                <button wire:click="publish" wire:loading.attr="disabled" class="px-5 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-rose-500/30 transition-all flex items-center gap-2">
-                    <span wire:loading.remove wire:target="publish">🚀 Publish</span>
-                    <span wire:loading wire:target="publish">Publishing...</span>
+                <button wire:click="publish" wire:loading.attr="disabled" class="px-3 sm:px-5 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-rose-500/30 transition-all flex items-center gap-2">
+                    <span wire:loading.remove wire:target="publish">🚀 <span class="hidden sm:inline">Publish</span></span>
+                    <span wire:loading wire:target="publish"><span class="hidden sm:inline">Publishing...</span><span class="sm:hidden">...</span></span>
                 </button>
             </div>
         </div>
@@ -38,11 +38,11 @@
     @endif
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="grid lg:grid-cols-5 gap-6">
+    <div class="max-w-7xl mx-auto px-4 py-4 md:py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
             
             <!-- Left: Preview Panel -->
-            <div class="lg:col-span-2 order-2 lg:order-1">
+            <div class="hidden lg:block lg:col-span-2 order-2 lg:order-1">
                 <div class="sticky top-24">
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700">
                         <div class="bg-slate-100 dark:bg-slate-700 px-4 py-2 flex items-center gap-2">
@@ -92,13 +92,51 @@
             <!-- Right: Form Panel -->
             <div class="lg:col-span-3 order-1 lg:order-2">
                 <!-- Tab Navigation -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 mb-6 overflow-hidden">
-                    <div class="flex overflow-x-auto scrollbar-hide">
+                <div 
+                    x-data="{
+                        scrollLeft: 0,
+                        maxScroll: 0,
+                        init() {
+                            this.checkScroll();
+                            this.$nextTick(() => this.checkScroll());
+                            window.addEventListener('resize', () => this.checkScroll());
+                        },
+                        checkScroll() {
+                            const el = this.$refs.tabContainer;
+                            if (el) {
+                                this.scrollLeft = el.scrollLeft;
+                                this.maxScroll = el.scrollWidth - el.clientWidth;
+                            }
+                        },
+                        scroll(direction) {
+                            const el = this.$refs.tabContainer;
+                            el.scrollBy({ left: direction * 150, behavior: 'smooth' });
+                            setTimeout(() => this.checkScroll(), 300);
+                        }
+                    }"
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 mb-6 overflow-hidden relative group"
+                >
+                    <!-- Left Arrow -->
+                    <button 
+                        x-show="scrollLeft > 5"
+                        x-transition.opacity
+                        @click="scroll(-1)"
+                        type="button"
+                        class="absolute left-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-r from-white via-white/90 to-transparent dark:from-slate-800 dark:via-slate-800/90 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+
+                    <div 
+                        x-ref="tabContainer" 
+                        @scroll.debounce.50ms="checkScroll()"
+                        class="flex overflow-x-auto scrollbar-hide snap-x bg-slate-50/50 dark:bg-slate-900/20 scroll-smooth relative"
+                    >
                         @foreach($tabs as $key => $tabInfo)
                             <button 
                                 wire:click="setTab('{{ $key }}')"
                                 @class([
-                                    'flex-1 min-w-[100px] px-4 py-4 text-center transition-all border-b-2 whitespace-nowrap',
+                                    'shrink-0 min-w-[90px] sm:min-w-[110px] sm:flex-1 px-4 py-4 text-center transition-all border-b-2 whitespace-nowrap snap-start outline-none focus:outline-none',
                                     'border-rose-500 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20' => $tab === $key,
                                     'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50' => $tab !== $key,
                                 ])
@@ -108,10 +146,21 @@
                             </button>
                         @endforeach
                     </div>
+
+                    <!-- Right Arrow -->
+                    <button 
+                        x-show="maxScroll > 0 && scrollLeft < maxScroll - 5"
+                        x-transition.opacity
+                        @click="scroll(1)"
+                        type="button"
+                        class="absolute right-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-l from-white via-white/90 to-transparent dark:from-slate-800 dark:via-slate-800/90 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
                 </div>
 
                 <!-- Tab Content -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-6">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 md:p-6">
                     
                     {{-- TAB: COVER --}}
                     @if($tab === 'cover')
@@ -181,7 +230,7 @@
                             </div>
 
                             <!-- Mempelai Pria -->
-                            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 space-y-4">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 md:p-5 space-y-4">
                                 <h3 class="font-bold text-blue-800 dark:text-blue-200 flex items-center gap-2">
                                     <span class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white">🤵</span>
                                     Mempelai Pria
@@ -215,7 +264,7 @@
                             </div>
 
                             <!-- Mempelai Wanita -->
-                            <div class="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-5 space-y-4">
+                            <div class="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-4 md:p-5 space-y-4">
                                 <h3 class="font-bold text-pink-800 dark:text-pink-200 flex items-center gap-2">
                                     <span class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center text-white">👰</span>
                                     Mempelai Wanita
@@ -278,7 +327,7 @@
 
                             <!-- Akad -->
                             @if(in_array($this->event_type, ['akad_only', 'both']))
-                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-5 space-y-4">
+                            <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 md:p-5 space-y-4">
                                 <h3 class="font-bold text-amber-800 dark:text-amber-200 flex items-center gap-2">
                                     <span class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white">💒</span>
                                     Akad Nikah
@@ -306,7 +355,7 @@
 
                             <!-- Resepsi -->
                             @if(in_array($this->event_type, ['resepsi_only', 'both']))
-                            <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-5 space-y-4">
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 md:p-5 space-y-4">
                                 <h3 class="font-bold text-emerald-800 dark:text-emerald-200 flex items-center gap-2">
                                     <span class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white">🍽️</span>
                                     Resepsi
@@ -394,7 +443,7 @@
                             {{-- Foto Mempelai --}}
                             <div class="grid md:grid-cols-2 gap-6">
                                 {{-- Mempelai Pria --}}
-                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6">
+                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-4 md:p-6">
                                     <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
                                         🤵 Foto Mempelai Pria
                                     </h4>
@@ -419,7 +468,7 @@
                                 </div>
 
                                 {{-- Mempelai Wanita --}}
-                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6">
+                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-4 md:p-6">
                                     <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
                                         👰 Foto Mempelai Wanita
                                     </h4>
@@ -455,7 +504,7 @@
                                 @if(count($existingPhotos) > 0)
                                     <div class="mb-6">
                                         <h4 class="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">Foto Tersimpan</h4>
-                                        <div class="grid grid-cols-3 md:grid-cols-4 gap-3">
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                                             @foreach($existingPhotos as $photo)
                                                 <div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700">
                                                     <img src="{{ $photo['url'] }}" alt="Photo" class="w-full h-full object-cover">
@@ -486,7 +535,7 @@
                                 @if(count($photos) > 0)
                                     <div class="mt-6">
                                         <h4 class="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">Foto Baru (belum disimpan)</h4>
-                                        <div class="grid grid-cols-3 md:grid-cols-4 gap-3">
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                                             @foreach($photos as $index => $photo)
                                                 @if($photo)
                                                     <div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700 ring-2 ring-rose-500">
@@ -522,7 +571,7 @@
                                 </div>
                             @else
                                 <!-- Quick Add via Text -->
-                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-5">
+                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 md:p-5">
                                     <h4 class="font-medium text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
                                         ✏️ Tambah Cepat
                                     </h4>
@@ -544,13 +593,13 @@
                                 </div>
 
                                 <!-- Upload CSV/Excel -->
-                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-5">
+                                <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 md:p-5">
                                     <h4 class="font-medium text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
                                         📁 Import dari File
                                     </h4>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Upload file CSV dengan kolom: nama, telepon (opsional)</p>
                                     
-                                    <div class="flex gap-3 items-end">
+                                    <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
                                         <div class="flex-1">
                                             <input 
                                                 type="file" 
@@ -564,7 +613,7 @@
                                             wire:loading.attr="disabled"
                                             class="px-5 py-2.5 bg-emerald-500 text-white font-medium rounded-lg hover:bg-emerald-600 transition-all"
                                         >
-                                            <span wire:loading.remove wire:target="importGuestsFromFile">📥 Import</span>
+                                            <span wire:loading.remove wire:target="importGuestsFromFile">📥 <span class="inline sm:hidden">Import File</span><span class="hidden sm:inline">Import</span></span>
                                             <span wire:loading wire:target="importGuestsFromFile">Importing...</span>
                                         </button>
                                     </div>
@@ -662,7 +711,7 @@
                             <!-- Theme Selection -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Pilih Tema *</label>
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                     @foreach($this->themes as $theme)
                                         <label class="relative cursor-pointer group">
                                             <input type="radio" wire:model.live="theme_id" value="{{ $theme->id }}" class="sr-only peer">
@@ -826,12 +875,12 @@
                                     <div class="ml-12 space-y-3">
                                         @foreach($this->bank_accounts as $index => $account)
                                             <div class="flex gap-2 items-start">
-                                                <div class="flex-1 grid grid-cols-3 gap-2">
+                                                <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
                                                     <input wire:model.blur="bank_accounts.{{ $index }}.bank" type="text" class="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm" placeholder="Bank">
                                                     <input wire:model.blur="bank_accounts.{{ $index }}.account_number" type="text" class="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm" placeholder="No. Rekening">
                                                     <input wire:model.blur="bank_accounts.{{ $index }}.account_name" type="text" class="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm" placeholder="Atas Nama">
                                                 </div>
-                                                <button wire:click="removeGiftAccount({{ $index }})" type="button" class="w-9 h-9 bg-red-100 text-red-500 rounded-lg hover:bg-red-200">✕</button>
+                                                <button wire:click="removeGiftAccount({{ $index }})" type="button" class="w-9 h-9 bg-red-100 text-red-500 rounded-lg hover:bg-red-200 mt-0.5 sm:mt-0">✕</button>
                                             </div>
                                         @endforeach
                                         <button wire:click="addGiftAccount" type="button" class="text-rose-500 text-sm font-medium hover:text-rose-600">+ Tambah Rekening</button>

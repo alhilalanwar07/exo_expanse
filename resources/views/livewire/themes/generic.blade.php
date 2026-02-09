@@ -69,7 +69,8 @@
         <div class="relative z-10 text-center text-white px-6 max-w-2xl">
             <h4 class="font-body tracking-[0.3em] uppercase text-sm mb-6 opacity-80">Wedding Invitation</h4>
             <h1 class="font-heading text-5xl md:text-7xl mb-12 leading-tight">
-                {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
             </h1>
 
             <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl mb-10 border border-white/20">
@@ -98,7 +99,12 @@
             <div class="relative z-10 space-y-6">
                 <span class="font-accent text-5xl md:text-7xl text-slate-800">The Wedding Of</span>
                 <h2 class="font-heading text-6xl md:text-9xl text-slate-900">
-                    {{ $invitation->groom_nickname }} <span class="text-3xl md:text-5xl block md:inline">&</span> {{ $invitation->bride_nickname }}
+                    @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                    @if($order === 'bride_first')
+                        {{ $invitation->bride_nickname }} <span class="text-3xl md:text-5xl block md:inline">&</span> {{ $invitation->groom_nickname }}
+                    @else
+                        {{ $invitation->groom_nickname }} <span class="text-3xl md:text-5xl block md:inline">&</span> {{ $invitation->bride_nickname }}
+                    @endif
                 </h2>
                 <div class="font-body text-xl tracking-[0.5em] text-slate-500 font-light">
                     {{ $invitation->akad_date?->translatedFormat('d.m.Y') }}
@@ -119,29 +125,56 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-16 md:gap-32 items-center">
-                    {{-- Groom --}}
-                    <div class="text-center group">
-                        <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                            <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
+                    @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                    @if($order === 'bride_first')
+                        {{-- Bride --}}
+                        <div class="text-center group">
+                            <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
+                                <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->bride_name }}</h3>
+                            <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putri Dari</p>
+                            <p class="font-body font-bold text-slate-700">
+                                Bpk. {{ $invitation->bride_father }} <br> & <br> Ibu {{ $invitation->bride_mother }}
+                            </p>
                         </div>
-                        <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->groom_name }}</h3>
-                        <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putra Dari</p>
-                        <p class="font-body font-bold text-slate-700">
-                            Bpk. {{ $invitation->groom_father }} <br> & <br> Ibu {{ $invitation->groom_mother }}
-                        </p>
-                    </div>
 
-                    {{-- Bride --}}
-                    <div class="text-center group">
-                        <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden -rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                            <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
+                        {{-- Groom --}}
+                        <div class="text-center group">
+                            <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden -rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
+                                <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->groom_name }}</h3>
+                            <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putra Dari</p>
+                            <p class="font-body font-bold text-slate-700">
+                                Bpk. {{ $invitation->groom_father }} <br> & <br> Ibu {{ $invitation->groom_mother }}
+                            </p>
                         </div>
-                        <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->bride_name }}</h3>
-                        <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putri Dari</p>
-                        <p class="font-body font-bold text-slate-700">
-                            Bpk. {{ $invitation->bride_father }} <br> & <br> Ibu {{ $invitation->bride_mother }}
-                        </p>
-                    </div>
+                    @else
+                        {{-- Groom --}}
+                        <div class="text-center group">
+                            <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
+                                <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->groom_name }}</h3>
+                            <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putra Dari</p>
+                            <p class="font-body font-bold text-slate-700">
+                                Bpk. {{ $invitation->groom_father }} <br> & <br> Ibu {{ $invitation->groom_mother }}
+                            </p>
+                        </div>
+
+                        {{-- Bride --}}
+                        <div class="text-center group">
+                            <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden -rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
+                                <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->bride_name }}</h3>
+                            <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putri Dari</p>
+                            <p class="font-body font-bold text-slate-700">
+                                Bpk. {{ $invitation->bride_father }} <br> & <br> Ibu {{ $invitation->bride_mother }}
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </section>
@@ -280,7 +313,8 @@
             <div class="container mx-auto px-6">
                 <span class="font-accent text-5xl text-slate-800 mb-6 block">Thank You</span>
                 <h4 class="font-heading text-3xl text-slate-900 mb-2">
-                    {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
+                    @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                    {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
                 </h4>
                 <p class="font-body text-slate-500 text-xs tracking-[0.5em] uppercase mt-12 opacity-50">Exo Expanse © 2026</p>
             </div>

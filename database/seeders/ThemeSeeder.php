@@ -177,6 +177,31 @@ class ThemeSeeder extends Seeder
                 'button_style' => 'rounded',
                 'overlay_opacity' => 55,
             ],
+
+            // 8. Islamic Gold - Mewah dan Elegan
+            [
+                'name' => 'Islamic Gold',
+                'slug' => 'islamic-gold',
+                'view_file' => 'themes.islamic-gold',
+                'thumbnail_url' => '/images/themes/islamic-gold.jpg',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#D4AF37',
+                'secondary_color' => '#1a1a1a',
+                'accent_color' => '#FFD700',
+                'text_color' => '#f0f0f0',
+                'heading_color' => '#D4AF37',
+                'background_color' => '#050505',
+                'heading_font' => 'Cormorant Garamond',
+                'body_font' => 'Montserrat',
+                'accent_font' => 'Great Vibes',
+                'container_max_width' => 500,
+                'heading_size' => 48,
+                'border_radius' => '20px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 80,
+            ],
+
         ];
 
         foreach ($themes as $themeData) {
