@@ -202,6 +202,101 @@ class ThemeSeeder extends Seeder
                 'overlay_opacity' => 80,
             ],
 
+            // 9. Agung Bali - Elegan dengan nuansa Bali
+            [
+                'name' => 'Agung Bali',
+                'slug' => 'agung-bali',
+                'view_file' => 'themes.agung-bali',
+                'thumbnail_url' => '/images/themes/agung-bali.jpg',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#D4AF37', // bali-gold
+                'secondary_color' => '#3E2723', // bali-brown
+                'accent_color' => '#8D6E63', // bali-red
+                'text_color' => '#2C241B',
+                'heading_color' => '#3E2723',
+                'background_color' => '#FAF7F2',
+                'heading_font' => 'Cinzel Decorative',
+                'body_font' => 'Noto Serif Display',
+                'accent_font' => 'Pinyon Script',
+                'container_max_width' => 500,
+                'heading_size' => 45,
+                'border_radius' => '4px',
+                'button_style' => 'boxy',
+                'overlay_opacity' => 60,
+            ],
+
+            // 10. Rustic Sage - Natural dengan warna hijau sage (Variant 2)
+            [
+                'name' => 'Rustic Sage',
+                'slug' => 'rustic-sage',
+                'view_file' => 'themes.rustic-sage',
+                'thumbnail_url' => '/images/themes/rustic-sage.jpg',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#6F8B68', // sage-medium
+                'secondary_color' => '#4A5D46', // sage-dark
+                'accent_color' => '#D6C0B3', // dusty-pink
+                'text_color' => '#3D403D',
+                'heading_color' => '#6F8B68',
+                'background_color' => '#F9F7F2',
+                'heading_font' => 'Playfair Display',
+                'body_font' => 'Lato',
+                'accent_font' => 'Dancing Script',
+                'container_max_width' => 500,
+                'heading_size' => 42,
+                'border_radius' => '24px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 50,
+            ],
+
+            // 11. Mystical Forest - Hutan Magis dengan nuansa gelap dan emas
+            [
+                'name' => 'Mystical Forest',
+                'slug' => 'mystical-forest',
+                'view_file' => 'themes.mystical-forest',
+                'thumbnail_url' => '/images/themes/mystical-forest.jpg',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#134640', // mystic-teal
+                'secondary_color' => '#071A18', // mystic-dark
+                'accent_color' => '#D4AF37', // mystic-gold
+                'text_color' => '#E8E3D1',
+                'heading_color' => '#D4AF37',
+                'background_color' => '#071A18',
+                'heading_font' => 'Cinzel',
+                'body_font' => 'Fauna One',
+                'accent_font' => 'Pinyon Script',
+                'container_max_width' => 500,
+                'heading_size' => 45,
+                'border_radius' => '16px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 70,
+            ],
+
+            // 12. Javanese Heritage - Jawa Keraton Premium
+            [
+                'name' => 'Javanese Heritage',
+                'slug' => 'javanese-heritage',
+                'view_file' => 'themes.javanese-heritage',
+                'thumbnail_url' => '/images/themes/javanese-heritage.jpg',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#D4AF37', // java-gold
+                'secondary_color' => '#3E2723', // java-brown
+                'accent_color' => '#AA8C2C', // java-gold-dim
+                'text_color' => '#3E2723',
+                'heading_color' => '#D4AF37',
+                'background_color' => '#F4F1EA',
+                'heading_font' => 'Cinzel Decorative',
+                'body_font' => 'Lora',
+                'accent_font' => 'Pinyon Script',
+                'container_max_width' => 500,
+                'heading_size' => 45,
+                'border_radius' => '8px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 60,
+            ],
         ];
 
         foreach ($themes as $themeData) {
