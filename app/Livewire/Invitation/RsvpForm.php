@@ -6,12 +6,15 @@ use App\Enums\GuestStatus;
 use App\Models\Guest;
 use App\Models\Invitation;
 use App\Services\GuestService;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class RsvpForm extends Component
 {
+    #[Locked]
     public Invitation $invitation;
 
+    #[Locked]
     public ?Guest $guest = null; // Currently identified guest
 
     public string $theme = 'rose';

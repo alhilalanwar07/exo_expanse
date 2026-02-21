@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -16,6 +17,7 @@ use Livewire\Component;
 #[Title('Sebar Undangan')]
 class Sebar extends Component
 {
+    #[Locked]
     public Invitation $invitation;
 
     // Recipient management

@@ -4,6 +4,7 @@ namespace App\Livewire\Invitation;
 
 use App\Models\Invitation;
 use App\Models\Wish;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,9 +12,11 @@ class WishesSection extends Component
 {
     use WithPagination;
 
+    #[Locked]
     public Invitation $invitation;
 
     public string $name = '';
+
     public string $message = '';
 
     public function mount(Invitation $invitation)
@@ -36,7 +39,7 @@ class WishesSection extends Component
 
         $this->name = '';
         $this->message = '';
-        
+
         session()->flash('wish_success', 'Terima kasih atas ucapan Anda!');
     }
 

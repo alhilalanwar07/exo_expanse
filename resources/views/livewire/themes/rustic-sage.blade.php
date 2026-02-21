@@ -54,10 +54,13 @@ body {
 .cover { 
     position: fixed; inset: 0; z-index: 100; 
     background: var(--sand);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding: 24px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    overflow-y: auto;
 }
 .cover-arch {
-    width: 80%; max-width: 350px; height: 60vh;
+    width: 80%; max-width: 350px; height: 50vh;
     border-radius: 200px 200px 0 0;
     overflow: hidden;
     position: relative;
@@ -66,8 +69,9 @@ body {
 }
 .cover-img { width: 100%; height: 100%; object-fit: cover; }
 .cover-content {
-    position: absolute; bottom: 40px; left: 0; right: 0;
     text-align: center;
+    width: 100%;
+    max-width: 400px;
     z-index: 101;
 }
 
@@ -299,21 +303,27 @@ body {
 
     {{-- COVER --}}
     <div x-show="!opened" x-transition:leave="transition duration-1000 transform" x-transition:leave-end="-translate-y-full" class="cover">
-        <div class="cover-arch animate-slide-up">
-            <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" class="cover-img">
+        {{-- Top Section: Arch + Names --}}
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+            <div class="cover-arch animate-slide-up">
+                <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" class="cover-img">
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 10px;">The Wedding of</p>
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--sage-dark);">
+                    @if($order === 'bride_first')
+                        {{ $invitation->bride_nickname }} & {{ $invitation->groom_nickname }}
+                    @else
+                        {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
+                    @endif
+                </h1>
+            </div>
         </div>
         
-        <div class="cover-content">
-            <p style="text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 10px;">The Wedding of</p>
-            @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
-            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 30px; color: var(--sage-dark);">
-                @if($order === 'bride_first')
-                    {{ $invitation->bride_nickname }} & {{ $invitation->groom_nickname }}
-                @else
-                    {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
-                @endif
-            </h1>
-            
+        {{-- Bottom Section: Guest + Button --}}
+        <div class="cover-content" style="flex-shrink: 0; margin-top: 20px;">
             <div style="background: white; padding: 15px 30px; border-radius: 15px; display: inline-block; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
                 <p style="font-size: 0.8rem; color: #888;">Kepada Yth.</p>
                 <p style="font-weight: 700; font-size: 1.1rem; margin-top: 5px;">{{ $guestName }}</p>

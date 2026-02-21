@@ -58,9 +58,9 @@ class Login extends Component
         session()->regenerate();
 
         if (Auth::user()->role === 'admin') {
-            return $this->redirect('/admin');
+            return $this->redirectRoute('admin.dashboard', navigate: true);
         } else {
-            return $this->redirect(route('dashboard'));
+            return $this->redirectRoute('dashboard', navigate: true);
         }
     }
 

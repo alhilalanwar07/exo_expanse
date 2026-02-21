@@ -3,15 +3,32 @@
 namespace App\Livewire\Themes;
 
 use App\Models\Invitation;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class RusticSage extends Component
 {
+    #[Locked]
     public Invitation $invitation;
 
+    #[Locked]
     public ?array $metadata = null;
 
+    #[Locked]
     public ?string $guestName = null;
+
+    #[Validate('required|string|min:3|max:255')]
+    public string $rsvpName = '';
+
+    #[Validate('required|string')]
+    public string $rsvpStatus = 'Hadir';
+
+    #[Validate('required|integer|min:1|max:10')]
+    public int $rsvpGuests = 1;
+
+    #[Validate('required|string|min:5|max:1000')]
+    public string $rsvpMessage = '';
 
     public function mount(Invitation $invitation, ?array $metadata = null): void
     {
@@ -20,19 +37,7 @@ class RusticSage extends Component
         $this->guestName = request('kpd', 'Tamu Undangan');
     }
 
-    public $rsvpName;
-    public $rsvpStatus = 'Hadir';
-    public $rsvpGuests = 1;
-    public $rsvpMessage;
-
-    protected $rules = [
-        'rsvpName' => 'required|min:3',
-        'rsvpStatus' => 'required',
-        'rsvpGuests' => 'required|integer|min:1',
-        'rsvpMessage' => 'required|min:5',
-    ];
-
-    public function submitRSVP()
+    public function submitRSVP(): void
     {
         $this->validate();
 

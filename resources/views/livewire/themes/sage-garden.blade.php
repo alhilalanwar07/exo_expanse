@@ -249,9 +249,12 @@ body {
     inset: 0; 
     z-index: 100; 
     display: flex; 
+    flex-direction: column;
     align-items: center; 
-    justify-content: center;
+    justify-content: flex-end;
     padding: 24px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    overflow-y: auto;
 }
 .cover-bg { 
     position: absolute; 
@@ -1352,36 +1355,34 @@ body {
         <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
         <div class="cover-overlay"></div>
         
-        <div class="relative z-10 text-center text-white w-full max-w-sm px-6">
-            {{-- Label --}}
+        {{-- Top Section: Names --}}
+        <div class="relative z-10 text-center text-white w-full max-w-sm px-6 flex-1 flex flex-col items-center justify-center">
             <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">THE WEDDING OF</p>
             
-            {{-- Names --}}
             @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
             @if($order === 'bride_first')
                 <h1 class="font-script hero-names" style="margin-bottom: 8px;">{{ $invitation->bride_nickname }}</h1>
                 <p class="font-script" style="font-size: 2rem; color: #E8D5A3; margin: 16px 0;">&</p>
-                <h1 class="font-script hero-names" style="margin-bottom: 40px;">{{ $invitation->groom_nickname }}</h1>
+                <h1 class="font-script hero-names">{{ $invitation->groom_nickname }}</h1>
             @else
                 <h1 class="font-script hero-names" style="margin-bottom: 8px;">{{ $invitation->groom_nickname }}</h1>
                 <p class="font-script" style="font-size: 2rem; color: #E8D5A3; margin: 16px 0;">&</p>
-                <h1 class="font-script hero-names" style="margin-bottom: 40px;">{{ $invitation->bride_nickname }}</h1>
+                <h1 class="font-script hero-names">{{ $invitation->bride_nickname }}</h1>
             @endif
+        </div>
+
+        {{-- Bottom Section: Guest + Button --}}
+        <div class="relative z-10 text-center text-white w-full max-w-sm px-6" style="flex-shrink: 0;">
+            <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #C9A227, transparent); margin: 0 auto 24px;"></div>
             
-            {{-- Divider --}}
-            <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #C9A227, transparent); margin: 0 auto 32px;"></div>
-            
-            {{-- Guest Section --}}
             <p style="font-size: 12px; letter-spacing: 1px; opacity: 0.8; margin-bottom: 8px;">Kepada Yth.</p>
-            <p class="font-serif" style="font-size: 1.5rem; font-weight: 500; margin-bottom: 20px;">{{ $guestName }}</p>
+            <p class="font-serif" style="font-size: 1.5rem; font-weight: 500; margin-bottom: 16px;">{{ $guestName }}</p>
             
-            {{-- Invitation Text --}}
-            <p style="font-size: 13px; line-height: 1.7; opacity: 0.85; margin-bottom: 32px; padding: 0 8px;">
+            <p style="font-size: 13px; line-height: 1.7; opacity: 0.85; margin-bottom: 24px; padding: 0 8px;">
                 Tanpa Mengurangi Rasa Hormat, Kami Mengundang Bapak/Ibu/Saudara/i untuk Hadir di Acara Kami.
             </p>
             
-            {{-- Button --}}
-            <button @click="open()" class="btn btn-gold animate-fade-up" style="width: 100%; max-width: 240px; padding: 16px 32px;">
+            <button @click="open()" class="btn btn-gold animate-fade-up" style="width: 100%; max-width: 240px; padding: 16px 32px; margin-bottom: 8px;">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/></svg>
                 Buka Undangan
             </button>

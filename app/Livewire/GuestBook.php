@@ -2,46 +2,37 @@
 
 namespace App\Livewire;
 
-use App\Enums\GuestStatus;
 use App\Models\Guest;
 use App\Models\Wish;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class GuestBook extends Component
 {
-    public $invitationId;
+    #[Locked]
+    public int $invitationId;
 
-    // Form State
-    public $name;
+    #[Validate('required|string|min:3|max:255')]
+    public string $name = '';
 
-    public $status = 'confirmed';
+    #[Validate('required|string')]
+    public string $status = 'confirmed';
 
-    // public $total_guests = 1; // Removed from UI
-    public $message;
+    #[Validate('nullable|string|max:1000')]
+    public string $message = '';
 
     protected $listeners = ['refreshWishes' => '$refresh'];
 
-    public function mount($invitationId)
+    public function mount(int $invitationId): void
     {
         $this->invitationId = $invitationId;
-        // Ambil nama dari URL parameter ?kpd=NamaTamu
-        $this->name = request()->query('kpd');
+        $this->name = request()->query('kpd', '');
     }
 
-    protected function rules()
-    {
-        return [
-            'name' => 'required|min:3|string|max:255',
-            'status' => ['required', Rule::enum(GuestStatus::class)],
-            // 'total_guests' => 'required|integer|min:1|max:5', // Removed validation
-            'message' => 'nullable|string|max:1000',
-        ];
-    }
-
-    public function submit()
+    public function submit(): void
     {
         $this->validate();
 

@@ -140,7 +140,8 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
 /* === COVER === */
 .cover { 
     position: fixed; inset: 0; z-index: 100; 
-    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; overflow: hidden;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 .cover-bg {
     position: absolute; inset: 0; background-size: cover; background-position: center;
@@ -331,18 +332,22 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
         <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=1200' }}');"></div>
         <div class="cover-overlay"></div>
         
-        <div class="cover-content reveal-element is-visible">
+        {{-- Top Section: Names --}}
+        <div class="relative z-10 text-center w-full flex-1 flex flex-col items-center justify-center" style="padding: 30px;">
             <p style="letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; color: var(--mystic-gold);">A Mystical Union</p>
             @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
-            <h1 style="font-size: 3rem; margin-bottom: 30px; text-shadow: 0 0 20px var(--mystic-gold);">
+            <h1 style="font-size: 3rem; text-shadow: 0 0 20px var(--mystic-gold);">
                 @if($order === 'bride_first')
                     {{ $invitation->bride_nickname }} <span class="font-script">&</span> {{ $invitation->groom_nickname }}
                 @else
                     {{ $invitation->groom_nickname }} <span class="font-script">&</span> {{ $invitation->bride_nickname }}
                 @endif
             </h1>
-            
-            <div style="margin-bottom: 40px; border-top: 1px solid var(--mystic-gold); border-bottom: 1px solid var(--mystic-gold); padding: 20px;">
+        </div>
+        
+        {{-- Bottom Section: Guest + Button --}}
+        <div class="cover-content reveal-element is-visible" style="flex-shrink: 0; margin: 0 30px 20px; width: calc(100% - 60px); max-width: 400px;">
+            <div style="border-top: 1px solid var(--mystic-gold); border-bottom: 1px solid var(--mystic-gold); padding: 20px; margin-bottom: 20px;">
                 <p>Dear,</p>
                 <h3 style="font-size: 1.5rem; margin: 10px 0; color: var(--mystic-gold);">{{ $guestName }}</h3>
                 <p>You are invited to our enchanted evening.</p>

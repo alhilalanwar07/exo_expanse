@@ -5,24 +5,31 @@ namespace App\Livewire;
 use App\Models\Invitation;
 use App\Services\ThemeService;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 #[Layout('layouts.invitation-layout')]
 class ThemePage extends Component
 {
-    public $slug;
+    #[Locked]
+    public string $slug = '';
 
+    #[Locked]
     public Invitation $invitation;
 
-    public $themeComponent = 'themes.generic';
+    #[Locked]
+    public string $themeComponent = 'themes.generic';
 
-    public $themeCssVariables = '';
+    #[Locked]
+    public string $themeCssVariables = '';
 
-    public $googleFontsUrl = '';
+    #[Locked]
+    public string $googleFontsUrl = '';
 
-    public $metadata;
+    #[Locked]
+    public ?array $metadata = null;
 
-    public function mount($slug, ThemeService $themeService)
+    public function mount(string $slug, ThemeService $themeService): void
     {
         $this->slug = $slug;
         $this->invitation = Invitation::where('slug', $slug)->firstOrFail();

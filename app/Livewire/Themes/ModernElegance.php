@@ -3,10 +3,12 @@
 namespace App\Livewire\Themes;
 
 use App\Models\Invitation;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ModernElegance extends Component
 {
+    #[Locked]
     public Invitation $invitation;
 
     public ?array $metadata = null;

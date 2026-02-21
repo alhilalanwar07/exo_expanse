@@ -3,15 +3,32 @@
 namespace App\Livewire\Themes;
 
 use App\Models\Invitation;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class JavaneseHeritage extends Component
 {
+    #[Locked]
     public Invitation $invitation;
 
+    #[Locked]
     public ?array $metadata = null;
 
+    #[Locked]
     public ?string $guestName = null;
+
+    #[Validate('required|string|min:3|max:255')]
+    public string $rsvpName = '';
+
+    #[Validate('required|in:confirmed,declined')]
+    public string $rsvpStatus = 'confirmed';
+
+    #[Validate('required|integer|min:1|max:10')]
+    public int $rsvpGuests = 1;
+
+    #[Validate('required|string|min:5|max:1000')]
+    public string $rsvpMessage = '';
 
     public function mount(Invitation $invitation, ?array $metadata = null): void
     {
@@ -23,7 +40,7 @@ class JavaneseHeritage extends Component
         } else {
             $groom = $invitation->groom_nickname ?? 'Groom';
             $bride = $invitation->bride_nickname ?? 'Bride';
-            $coverImage = $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200';
+            $coverImage = $invitation->cover_image ? asset('storage/'.$invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200';
 
             $this->metadata = [
                 'title' => "The Royal Wedding of $groom & $bride",
@@ -34,19 +51,7 @@ class JavaneseHeritage extends Component
         }
     }
 
-    public $rsvpName;
-    public $rsvpStatus = 'confirmed';
-    public $rsvpGuests = 1;
-    public $rsvpMessage;
-
-    protected $rules = [
-        'rsvpName' => 'required|min:3',
-        'rsvpStatus' => 'required',
-        'rsvpGuests' => 'required|integer|min:1',
-        'rsvpMessage' => 'required|min:5',
-    ];
-
-    public function submitRSVP()
+    public function submitRSVP(): void
     {
         $this->validate();
 

@@ -2,49 +2,43 @@
 
 namespace App\Livewire;
 
-use App\Enums\GuestStatus;
 use App\Models\Guest;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class RsvpForm extends Component
 {
-    public $invitationId; // Diterima dari parameter
+    #[Locked]
+    public int $invitationId;
 
-    // State Form
-    public $name;
+    #[Validate('required|string|min:3|max:255')]
+    public string $name = '';
 
-    public $status = 'confirmed';
+    #[Validate('required|string')]
+    public string $status = 'confirmed';
 
-    public $total_guests = 1;
+    #[Validate('required|integer|min:1|max:5')]
+    public int $total_guests = 1;
 
-    public function mount($invitationId)
+    public function mount(int $invitationId): void
     {
         $this->invitationId = $invitationId;
     }
 
-    protected function rules()
-    {
-        return [
-            'name' => 'required|min:3',
-            'status' => ['required', Rule::enum(GuestStatus::class)],
-            'total_guests' => 'required|integer|min:1|max:5',
-        ];
-    }
-
-    public function submit()
+    public function submit(): void
     {
         $this->validate();
 
         Guest::create([
             'invitation_id' => $this->invitationId,
             'name' => $this->name,
-            'slug' => \Illuminate\Support\Str::slug($this->name).'-'.\Illuminate\Support\Str::random(6),
+            'slug' => Str::slug($this->name).'-'.Str::random(6),
             'status' => $this->status,
             'pax' => $this->status === 'confirmed' ? $this->total_guests : 0,
         ]);
 
-        // Reset form dan beri notifikasi
         $this->reset(['name', 'status', 'total_guests']);
         session()->flash('message', 'Terima kasih atas konfirmasinya!');
     }

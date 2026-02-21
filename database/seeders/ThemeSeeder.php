@@ -297,6 +297,54 @@ class ThemeSeeder extends Seeder
                 'button_style' => 'rounded',
                 'overlay_opacity' => 60,
             ],
+
+            // 13. Luxury Gold - Mewah dengan nuansa emas dan hitam
+            [
+                'name' => 'Luxury Gold',
+                'slug' => 'luxury-gold',
+                'view_file' => 'themes.luxury-gold',
+                'thumbnail_url' => '/images/themes/luxury-gold.jpg',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#C5A86F',
+                'secondary_color' => '#1A1A1A',
+                'accent_color' => '#E8D5A3',
+                'text_color' => '#2C2C2C',
+                'heading_color' => '#C5A86F',
+                'background_color' => '#F9F7F2',
+                'heading_font' => 'Playfair Display',
+                'body_font' => 'Lato',
+                'accent_font' => 'Great Vibes',
+                'container_max_width' => 480,
+                'heading_size' => 48,
+                'border_radius' => '8px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 40,
+            ],
+
+            // 14. Sage Elegant - Tema Sage Green Elegan
+            [
+                'name' => 'Sage Elegant',
+                'slug' => 'sage-elegant',
+                'view_file' => 'themes.sage-elegant',
+                'thumbnail_url' => '/images/themes/sage-elegant.jpg', // Placeholder
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#4a6f60',
+                'secondary_color' => '#2f3e38',
+                'accent_color' => '#d4c5a3',
+                'text_color' => '#2f3e38',
+                'heading_color' => '#4a6f60',
+                'background_color' => '#f4f7f5',
+                'heading_font' => 'Cormorant Garamond',
+                'body_font' => 'Plus Jakarta Sans',
+                'accent_font' => 'Pinyon Script',
+                'container_max_width' => 480,
+                'heading_size' => 48,
+                'border_radius' => '16px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 40,
+            ],
         ];
 
         foreach ($themes as $themeData) {

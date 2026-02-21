@@ -74,9 +74,12 @@ body {
     inset: 0; 
     z-index: 100; 
     display: flex; 
+    flex-direction: column;
     align-items: center; 
-    justify-content: center;
+    justify-content: flex-end;
     padding: 24px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    overflow-y: auto;
     background: #1a1a1a;
 }
 .cover-bg { 
@@ -526,10 +529,10 @@ body {
         <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
         <div class="cover-frame"></div> {{-- Decorative border --}}
         
-        <div class="relative z-10 text-center text-white w-full max-w-sm px-6">
+        {{-- Top Section: Names --}}
+        <div class="relative z-10 text-center text-white w-full max-w-sm px-6 flex-1 flex flex-col items-center justify-center">
             <p style="font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--bali-gold); margin-bottom: 20px;">Pawiwahan</p>
             
-            {{-- Names --}}
             @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
             <div class="font-bali-title" style="font-size: 2.2rem; line-height: 1.2; text-shadow: 0 2px 4px black;">
                 @if($order === 'bride_first')
@@ -538,9 +541,11 @@ body {
                     {{ $invitation->groom_nickname }} <br> <span class="font-script text-white text-3xl">&</span> <br> {{ $invitation->bride_nickname }}
                 @endif
             </div>
-            
-            {{-- Guest Section --}}
-            <div style="margin-top: 40px; background: rgba(0,0,0,0.6); padding: 20px; border: 1px solid var(--bali-gold);">
+        </div>
+        
+        {{-- Bottom Section: Guest + Button --}}
+        <div class="relative z-10 text-center text-white w-full max-w-sm px-6" style="flex-shrink: 0;">
+            <div style="background: rgba(0,0,0,0.6); padding: 20px; border: 1px solid var(--bali-gold);">
                 <p style="font-size: 11px; letter-spacing: 1px; opacity: 0.9; margin-bottom: 5px;">Kepada Yth.</p>
                 <p class="font-serif" style="font-size: 1.3rem; color: var(--bali-gold); margin-bottom: 15px;">{{ $guestName }}</p>
                 

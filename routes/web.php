@@ -1,5 +1,11 @@
 <?php
 
+use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\UserManagement as AdminUserManagement;
+use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
+use App\Livewire\Admin\ThemeManagement as AdminThemeManagement;
+use App\Livewire\Admin\Settings as AdminSettings;
+use App\Http\Middleware\IsAdmin;
 use App\Livewire\Pages\Auth\Login;
 use App\Livewire\Pages\Auth\Register;
 use App\Livewire\Pages\Dashboard;
@@ -26,6 +32,15 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
+
+    // Admin Routes
+    Route::middleware(IsAdmin::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+        Route::get('/users', AdminUserManagement::class)->name('users');
+        Route::get('/invitations', AdminInvitationManagement::class)->name('invitations');
+        Route::get('/themes', AdminThemeManagement::class)->name('themes');
+        Route::get('/settings', AdminSettings::class)->name('settings');
+    });
 
     // Invitation Management
     Route::get('/invitations/new', \App\Livewire\Pages\Invitation\TypeSelector::class)->name('invitations.new');

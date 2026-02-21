@@ -3,27 +3,27 @@
 namespace App\Livewire;
 
 use App\Models\Wish;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class WishesFeed extends Component
 {
-    public $invitationId;
+    #[Locked]
+    public int $invitationId;
 
-    public $name;
+    #[Validate('required|string|min:3|max:255')]
+    public string $name = '';
 
-    public $message;
+    #[Validate('required|string|min:5|max:1000')]
+    public string $message = '';
 
-    protected $rules = [
-        'name' => 'required|min:3',
-        'message' => 'required|min:5',
-    ];
-
-    public function mount($invitationId)
+    public function mount(int $invitationId): void
     {
         $this->invitationId = $invitationId;
     }
 
-    public function submit()
+    public function submit(): void
     {
         $this->validate();
 

@@ -4,17 +4,22 @@ namespace App\Livewire\Invitation;
 
 use App\Models\Invitation;
 use App\Models\Wish;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class Wishes extends Component
 {
+    #[Locked]
     public Invitation $invitation;
+
     public string $theme = 'rose';
 
     public string $name = '';
+
     public string $message = '';
-    
+
     public int $limit = 10;
+
     public bool $isSuccess = false;
 
     public function mount(Invitation $invitation, string $theme = 'rose')
@@ -42,7 +47,7 @@ class Wishes extends Component
         $this->name = '';
         $this->message = '';
         $this->isSuccess = true;
-        
+
         // Hide success message after 3 seconds
         $this->dispatch('wish-submitted');
     }
@@ -58,10 +63,10 @@ class Wishes extends Component
             ->latest()
             ->take($this->limit)
             ->get();
-            
+
         return view('livewire.invitation.wishes', [
             'wishes' => $wishes,
-            'totalWishes' => $this->invitation->wishes()->count()
+            'totalWishes' => $this->invitation->wishes()->count(),
         ]);
     }
 }

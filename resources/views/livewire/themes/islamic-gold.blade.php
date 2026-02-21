@@ -367,7 +367,9 @@
         <div class="cover-gate" 
              :style="opened ? 'transform: translateY(-100%)' : ''">
             <div class="cover-bg-img"></div>
-            <div class="cover-content">
+            
+            {{-- Top Section: Names (centered) --}}
+            <div style="position: relative; z-index: 2; text-align: center; width: 80%; max-width: 500px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                 <h3 class="font-serif mb-20" style="letter-spacing: 3px;">THE WEDDING OF</h3>
                 @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
                 <h1 class="font-script mb-20">
@@ -377,6 +379,10 @@
                         {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
                     @endif
                 </h1>
+            </div>
+
+            {{-- Bottom Section: Guest + Button --}}
+            <div class="cover-content" style="flex-shrink: 0;">
                 <p style="font-size: 0.9rem; margin-bottom: 20px;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
                 <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 30px;">{{ $guestName }}</div>
                 
