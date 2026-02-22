@@ -73,6 +73,10 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+@keyframes gentleRotateDecor {
+    0% { transform: scale(1.2) rotate(0deg); }
+    100% { transform: scale(1.2) rotate(-360deg); }
+}
 @keyframes slideReveal {
     from { clip-path: inset(0 100% 0 0); }
     to { clip-path: inset(0 0 0 0); }
@@ -96,10 +100,10 @@ body {
     50% { transform: scale(1.15); opacity: 0.8; }
 }
 @keyframes waveFloat {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    25% { transform: translateY(-8px) translateX(5px); }
-    50% { transform: translateY(-15px) translateX(0); }
-    75% { transform: translateY(-8px) translateX(-5px); }
+    0%, 100% { translate: 0 0; }
+    25% { translate: 5px -8px; }
+    50% { translate: 0 -15px; }
+    75% { translate: -5px -8px; }
 }
 @keyframes goldenShine {
     0% { background-position: -100% 0; }
@@ -170,6 +174,7 @@ body {
     background: var(--gold);
     border-radius: 50%;
     opacity: 0;
+    will-change: transform, opacity;
     animation: floatParticle 12s linear infinite;
     box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold-light);
 }
@@ -219,7 +224,7 @@ body {
     left: 0;
     right: 0;
     height: 120px;
-    background: url('/assets/themes/border-white-merried.webp') no-repeat center top;
+    background: url('/assets/themes/bunga_emas_pinggir.png') no-repeat center top;
     background-size: contain;
     animation: waveFloat 8s ease-in-out infinite;
 }
@@ -228,7 +233,7 @@ body {
     left: 0;
     right: 0;
     height: 120px;
-    background: url('/assets/themes/border-white-merried.webp') no-repeat center bottom;
+    background: url('/assets/themes/bunga_emas_pinggir.png') no-repeat center bottom;
     background-size: contain;
     transform: rotate(180deg);
     animation: waveFloat 8s ease-in-out infinite reverse;
@@ -277,7 +282,7 @@ body {
     display: flex; 
     align-items: center; 
     justify-content: center;
-    padding: 24px;
+    padding: 0;
     background: linear-gradient(180deg, #FFFDF8 0%, #F8F5EF 50%, #FFFDF8 100%);
     overflow: hidden;
 }
@@ -297,34 +302,34 @@ body {
 /* Floral Corner Decorations */
 .cover-floral {
     position: absolute;
-    width: 200px;
-    height: 200px;
-    background: url('/assets/themes/border-white-merried.webp') no-repeat center;
+    width: 150px;
+    height: 150px;
+    background: url('/assets/themes/bunga_emas_pinggir.png') no-repeat center;
     background-size: contain;
     pointer-events: none;
     z-index: 1;
+    will-change: transform;
     animation: waveFloat 8s ease-in-out infinite;
 }
 .cover-floral.top-left {
-    top: -20px;
-    left: -40px;
-    transform: rotate(-30deg);
+    top: -10px;
+    left: -20px;
 }
 .cover-floral.top-right {
-    top: -20px;
-    right: -40px;
-    transform: rotate(30deg) scaleX(-1);
+    top: -10px;
+    right: -20px;
+    transform: scaleX(-1);
 }
 .cover-floral.bottom-left {
-    bottom: -20px;
-    left: -40px;
-    transform: rotate(150deg);
+    bottom: -10px;
+    left: -20px;
+    transform: scaleY(-1);
     animation-delay: 1s;
 }
 .cover-floral.bottom-right {
-    bottom: -20px;
-    right: -40px;
-    transform: rotate(-150deg) scaleX(-1);
+    bottom: -10px;
+    right: -20px;
+    transform: scale(-1);
     animation-delay: 1.5s;
 }
 
@@ -362,32 +367,14 @@ body {
 }
 .cover-photo-decor {
     position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     z-index: 3;
     pointer-events: none;
-}
-.cover-photo-decor.top {
-    top: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-}
-.cover-photo-decor.bottom {
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%) rotate(180deg);
-    width: 100px;
-}
-.cover-photo-decor.left {
-    left: -35px;
-    top: 50%;
-    transform: translateY(-50%) rotate(-90deg);
-    width: 80px;
-}
-.cover-photo-decor.right {
-    right: -35px;
-    top: 50%;
-    transform: translateY(-50%) rotate(90deg);
-    width: 80px;
+    object-fit: contain;
+    max-width: none;
+    animation: gentleRotateDecor 30s linear infinite;
 }
 
 /* Cover Content Styling */
@@ -396,16 +383,20 @@ body {
     z-index: 10;
     text-align: center;
     width: 100%;
-    max-width: 380px;
-    padding: 20px;
+    max-width: 480px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8vh 20px 6vh;
 }
 .cover-label {
     font-size: 11px;
-    letter-spacing: 5px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 8px;
-    font-weight: 500;
+    margin-bottom: 24px;
+    font-weight: 600;
 }
 .cover-title {
     font-family: 'Great Vibes', cursive;
@@ -416,10 +407,10 @@ body {
 }
 .cover-names {
     font-family: 'Great Vibes', cursive;
-    font-size: 2.8rem;
+    font-size: 3.2rem;
     color: var(--dark);
-    margin: 10px 0 24px;
-    line-height: 1.3;
+    margin: 10px 0 0;
+    line-height: 1.2;
 }
 .cover-guest-label {
     font-size: 13px;
@@ -428,11 +419,9 @@ body {
 }
 .cover-guest-name {
     font-family: 'Great Vibes', cursive;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--gold);
     margin-bottom: 4px;
-    text-decoration: line-through;
-    text-decoration-color: var(--gold-light);
 }
 .cover-invitation-text {
     font-size: 12px;
@@ -446,13 +435,16 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 14px 40px;
+    padding: 12px 32px;
     background: linear-gradient(135deg, #9A7B4F, #C9A227);
     color: white;
     border: none;
     border-radius: 30px;
-    font-family: 'Great Vibes', cursive;
-    font-size: 1.3rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 6px 20px rgba(154,123,79,0.35);
@@ -481,24 +473,21 @@ body {
 .hero-section::after {
     content: '';
     position: absolute;
-    width: 250px;
-    height: 250px;
-    background: url('/assets/themes/border-white-merried.webp') no-repeat center;
+    width: 110px;
+    height: 110px;
+    background: url('/assets/themes/bunga_emas_pinggir.png') no-repeat center;
     background-size: contain;
     pointer-events: none;
     z-index: 1;
-    animation: waveFloat 10s ease-in-out infinite;
 }
 .hero-section::before {
-    top: -30px;
-    left: -60px;
-    transform: rotate(-30deg);
+    top: -10px;
+    left: -20px;
 }
 .hero-section::after {
-    bottom: -30px;
-    right: -60px;
-    transform: rotate(150deg);
-    animation-delay: 2s;
+    top: -10px;
+    right: -20px;
+    transform: scaleX(-1);
 }
 .hero-photo-wrapper {
     position: relative;
@@ -525,7 +514,7 @@ body {
     border-radius: 50%;
     background: white;
 }
-.hero-photo-frame img {
+.hero-photo-frame img:not(.hero-photo-decor) {
     position: relative;
     z-index: 2;
     width: 100%;
@@ -534,6 +523,16 @@ body {
     object-fit: cover;
     border: 3px solid white;
     box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+.hero-photo-decor {
+    position: absolute;
+    inset: -12%;
+    width: 124%;
+    height: 124%;
+    z-index: 3;
+    pointer-events: none;
+    object-fit: contain;
+    max-width: none;
 }
 .hero-names {
     font-family: 'Great Vibes', cursive;
@@ -556,10 +555,12 @@ body {
     z-index: 10;
 }
 .hero-countdown {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
     gap: 12px;
     max-width: 340px;
+    width: 100%;
     margin: 0 auto 32px;
     position: relative;
     z-index: 10;
@@ -567,8 +568,9 @@ body {
 .hero-countdown-item {
     background: white;
     padding: 16px 8px;
-    border-radius: 16px;
+    border-radius: 12px;
     text-align: center;
+    flex: 1;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     border: 1px solid rgba(201,162,39,0.15);
 }
@@ -592,8 +594,10 @@ body {
     justify-content: center;
     gap: 8px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, #9A7B4F, #C9A227);
-    color: white;
+    background: linear-gradient(135deg, #9A7B4F, #C9A227) !important;
+    background-color: var(--gold) !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
     border: none;
     border-radius: 30px;
     font-family: 'Cormorant Garamond', serif;
@@ -653,22 +657,21 @@ body {
 .section-floral::after {
     content: '';
     position: absolute;
-    width: 150px;
-    height: 150px;
-    background: url('/assets/themes/border-white-merried.webp') no-repeat center;
+    width: 100px;
+    height: 100px;
+    background: url('/assets/themes/bunga_emas_pinggir.png') no-repeat center;
     background-size: contain;
     opacity: 0.15;
     pointer-events: none;
 }
 .section-floral::before {
-    top: 20px;
-    left: -40px;
-    transform: rotate(-20deg);
+    top: 5px;
+    left: -5px;
 }
 .section-floral::after {
-    bottom: 20px;
-    right: -40px;
-    transform: rotate(160deg);
+    bottom: 5px;
+    right: -5px;
+    transform: scale(-1);
 }
 
 /* === THEMED SECTION TITLE === */
@@ -1619,6 +1622,30 @@ body {
     font-size: 1rem;
 }
 
+/* === MOBILE OPTIMIZATIONS === */
+@media (max-width: 480px) {
+    .cover-floral {
+        width: 110px;
+        height: 110px;
+    }
+    .cover-floral.top-left { left: 0px; top: -5px; }
+    .cover-floral.top-right { right: 0px; top: -5px; }
+    .cover-floral.bottom-left { left: 0px; bottom: -5px; }
+    .cover-floral.bottom-right { right: 0px; bottom: -5px; }
+    
+    .hero-section::before, .hero-section::after {
+        width: 80px;
+        height: 80px;
+    }
+    .hero-section::before { left: 0px; top: -5px; }
+    .hero-section::after { right: 0px; top: -5px; }
+    
+    .section-floral::before, .section-floral::after {
+        width: 80px;
+        height: 80px;
+    }
+}
+
 /* === TABLET+ === */
 @media (min-width: 640px) {
     .section { 
@@ -1791,37 +1818,37 @@ body {
         
         {{-- Main Content --}}
         <div class="cover-content">
-            {{-- Label --}}
-            <p class="cover-label animate-fade-up">HAPPY WEDDING</p>
-            
-            {{-- Title --}}
-            <h2 class="cover-title animate-fade-up" style="animation-delay: 0.1s;">Wedding Of</h2>
-            
-            {{-- Photo Frame --}}
-            <div class="cover-photo-frame animate-fade-up" style="animation-delay: 0.2s;">
-                <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple Photo" class="cover-photo">
-                {{-- Photo Frame Decorations --}}
-                <img src="/assets/themes/border-white-merried.webp" class="cover-photo-decor top" alt="">
-                <img src="/assets/themes/border-white-merried.webp" class="cover-photo-decor bottom" alt="">
+            <div class="cover-top flex flex-col items-center justify-center">
+                {{-- Label --}}
+                <p class="cover-label animate-fade-up">THE WEDDING OF</p>
+                
+                {{-- Photo Frame --}}
+                <div class="cover-photo-frame animate-fade-up" style="animation-delay: 0.1s;">
+                    <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple Photo" class="cover-photo">
+                    {{-- Photo Frame Decorations --}}
+                    <img src="/assets/themes/border-white-merried.webp" class="cover-photo-decor" alt="">
+                </div>
+                
+                {{-- Names --}}
+                @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
+                <h1 class="cover-names animate-fade-up" style="animation-delay: 0.2s;">
+                    {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
+                </h1>
             </div>
             
-            {{-- Names --}}
-            @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
-            <h1 class="cover-names animate-fade-up" style="animation-delay: 0.3s;">
-                {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}
-            </h1>
-            
-            {{-- Guest Section --}}
-            <p class="cover-guest-label animate-fade-up" style="animation-delay: 0.4s;">Kepada</p>
-            <p class="cover-guest-name animate-fade-up" style="animation-delay: 0.45s;">{{ $guestName }}</p>
-            <p class="cover-invitation-text animate-fade-up" style="animation-delay: 0.5s;">
-                Tanpa Mengurangi Rasa Hormat, Kami Mengundang Bapak/Ibu/Saudara/i<br>untuk Hadir di Acara Kami.
-            </p>
-            
-            {{-- Button --}}
-            <button @click="open()" class="cover-btn animate-fade-up" style="animation-delay: 0.6s;">
-                Buka Sampul
-            </button>
+            <div class="cover-bottom flex flex-col items-center justify-center mt-auto gap-8 pb-4">
+                {{-- Guest Section --}}
+                <div class="bg-white/90 backdrop-blur-md px-10 py-5 rounded-3xl border border-white/50 shadow-sm animate-fade-up flex flex-col items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]" style="animation-delay: 0.3s; min-width: 240px;">
+                    <p class="cover-guest-label">Kepada Yth.</p>
+                    <p class="cover-guest-name" style="margin-bottom: 0;">{{ $guestName }}</p>
+                </div>
+                
+                {{-- Button --}}
+                <button @click="open()" class="cover-btn animate-fade-up" style="animation-delay: 0.4s;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/></svg>
+                    Buka Undangan
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1857,7 +1884,7 @@ body {
                 const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`;
                 window.open(url, '_blank');
             }
-        }">
+            }">
             {{-- Sparkle Stars --}}
             <div class="sparkle-container">
                 <div class="sparkle-star"></div>
@@ -1869,9 +1896,10 @@ body {
             </div>
             
             {{-- Photo Frame --}}
-            <div class="hero-photo-wrapper animate-fade-up">
-                <div class="hero-photo-frame">
+            <div class="hero-photo-wrapper animate-fade-up flex justify-center">
+                <div class="hero-photo-frame w-[180px] h-[180px] mx-auto">
                     <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple">
+                    <img src="/assets/themes/border-white-merried.webp" class="hero-photo-decor" alt="">
                 </div>
             </div>
             
@@ -2244,7 +2272,7 @@ body {
                 </div>
                 
                 {{-- Thank You Text --}}
-                <p style="color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 32px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <p style="color: rgba(233, 169, 31, 0.93); font-size: 12px; margin-top: 32px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <svg style="width: 16px; height: 16px; color: var(--gold);" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     Terima kasih atas kebaikan hati Anda
                 </p>
@@ -2282,7 +2310,7 @@ body {
                         const wishRes = await fetch(`/api/invitations/${this.invitationId}/wishes`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
-                            body: JSON.stringify({ name: this.name, message: this.message })
+                            body: JSON.stringify({ name: this.name, message: this.message, attendance_status: this.status, pax: this.pax })
                         });
                         if (wishRes.ok) {
                             const data = await wishRes.json();
@@ -2421,7 +2449,7 @@ body {
                 </div>
 
                 {{-- Wishes List --}}
-                <div class="rsvp-wishes-list">
+                <div class="rsvp-wishes-list" style="max-height: 480px; overflow-y: auto; padding-right: 8px;">
                     <h3 class="rsvp-wishes-title">Ucapan Terbaru</h3>
                     
                     <template x-for="wish in wishes" :key="wish.id">

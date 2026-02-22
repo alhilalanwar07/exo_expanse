@@ -486,7 +486,64 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
 
         {{-- RSVP & WISHES --}}
         @if($invitation->enable_rsvp || $invitation->enable_wishes)
-        <section id="rsvp" class="section" style="background-image: url('https://images.unsplash.com/photo-1494913389576-9a34771f384a?w=1200');">
+        <section id="rsvp" class="section" style="background-image: url('https://images.unsplash.com/photo-1494913389576-9a34771f384a?w=1200');"
+            x-data="{
+                invitationId: {{ $invitation->id }},
+                name: '{{ request('kpd', '') }}',
+                message: '',
+                status: 'confirmed',
+                pax: 1,
+                loading: false,
+                success: false,
+                error: '',
+                wishes: [],
+                stats: { total_wishes: 0, total_confirmed: 0 },
+                
+                async submitForm() {
+                    if (!this.name.trim() || !this.message.trim()) {
+                        this.error = 'Please fill in your name and message.';
+                        return;
+                    }
+                    this.loading = true;
+                    this.error = '';
+                    try {
+                        await fetch(`/api/invitations/${this.invitationId}/rsvp`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                            body: JSON.stringify({ name: this.name, status: this.status, pax: this.pax })
+                        });
+                        const wishRes = await fetch(`/api/invitations/${this.invitationId}/wishes`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                            body: JSON.stringify({ name: this.name, message: this.message })
+                        });
+                        if (wishRes.ok) {
+                            const data = await wishRes.json();
+                            this.wishes.unshift(data.wish);
+                            this.stats.total_wishes++;
+                            if (this.status === 'confirmed') this.stats.total_confirmed += parseInt(this.pax);
+                            this.message = '';
+                            this.success = true;
+                            setTimeout(() => this.success = false, 5000);
+                        }
+                    } catch (e) { this.error = 'Failed to send. Check your connection.'; }
+                    finally { this.loading = false; }
+                },
+                async loadWishes() {
+                    try {
+                        const res = await fetch(`/api/invitations/${this.invitationId}/wishes`);
+                        const data = await res.json();
+                        this.wishes = data.wishes || [];
+                    } catch (e) {}
+                },
+                async loadStats() {
+                    try {
+                        const res = await fetch(`/api/invitations/${this.invitationId}/stats`);
+                        this.stats = await res.json();
+                    } catch (e) {}
+                },
+                init() { this.loadWishes(); this.loadStats(); }
+            }">
             <div style="position: absolute; inset:0; background: rgba(7, 26, 24, 0.9);"></div>
 
             <div class="section-title reveal-element">
@@ -495,55 +552,81 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
             </div>
 
             <div class="glass-card reveal-element delay-1" style="max-w-md mx-auto;">
-                <form wire:submit="submitRSVP">
-                    <input type="text" wire:model="rsvpName" placeholder="Your Full Name" class="form-input-mystic">
-                    @error('rsvpName') <span style="color: red; font-size: 0.8rem; display: block; margin-bottom: 10px;">{{ $message }}</span> @enderror
-                    
-                    <textarea wire:model="rsvpMessage" rows="3" placeholder="Write a magical wish..." class="form-input-mystic"></textarea>
-                    @error('rsvpMessage') <span style="color: red; font-size: 0.8rem; display: block; margin-bottom: 10px;">{{ $message }}</span> @enderror
-                    
-                    <div style="display: flex; gap: 20px; margin-bottom: 20px; justify-content: center;">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="radio" value="confirmed" wire:model="rsvpStatus" style="accent-color: var(--mystic-gold);"> Will Attend
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="radio" value="declined" wire:model="rsvpStatus" style="accent-color: var(--mystic-gold);"> Unable to Attend
-                        </label>
-                    </div>
-                    @error('rsvpStatus') <span style="color: red; font-size: 0.8rem; display: block; margin-bottom: 10px; text-align: center;">{{ $message }}</span> @enderror
+                {{-- Success --}}
+                <div x-show="success" x-transition style="margin-bottom: 20px; padding: 12px; background: rgba(212, 175, 55, 0.2); border: 1px solid var(--mystic-gold); border-radius: 8px; text-align: center; color: var(--mystic-gold);">
+                    ✓ Thank you! Your wish and confirmation have been saved.
+                </div>
+                {{-- Error --}}
+                <div x-show="error" x-transition style="margin-bottom: 20px; padding: 12px; background: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; border-radius: 8px; text-align: center; color: #ff6b6b;" x-text="error"></div>
 
-                    <div style="margin-bottom: 20px; text-align: center;" x-show="$wire.rsvpStatus === 'confirmed'">
+                <form @submit.prevent="submitForm">
+                    <input type="text" x-model="name" placeholder="Your Full Name" class="form-input-mystic">
+                    
+                    <textarea x-model="message" rows="3" placeholder="Write a magical wish..." class="form-input-mystic"></textarea>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button type="button" @click="status = 'confirmed'"
+                            :style="status === 'confirmed' ? 'background: var(--mystic-gold); color: var(--mystic-dark); border-color: var(--mystic-gold);' : 'background: rgba(0,0,0,0.3); color: var(--mystic-cream); border-color: var(--mystic-teal);'"
+                            style="flex: 1; padding: 12px; border: 2px solid; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Will Attend
+                        </button>
+                        <button type="button" @click="status = 'declined'"
+                            :style="status === 'declined' ? 'background: #7f1d1d; color: white; border-color: #991b1b;' : 'background: rgba(0,0,0,0.3); color: var(--mystic-cream); border-color: var(--mystic-teal);'"
+                            style="flex: 1; padding: 12px; border: 2px solid; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; text-transform: uppercase; letter-spacing: 1px;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            Unable
+                        </button>
+                    </div>
+
+                    <div style="margin-bottom: 20px; text-align: center;" x-show="status === 'confirmed'" x-transition>
                          <label style="display: block; margin-bottom: 5px;">Number of Guests</label>
-                         <select wire:model="rsvpGuests" class="form-input-mystic" style="width: 50%; display: inline-block;">
+                         <select x-model="pax" class="form-input-mystic" style="width: 50%; display: inline-block;">
                              <option value="1">1 Person</option>
                              <option value="2">2 People</option>
+                             <option value="3">3 People</option>
+                             <option value="4">4 People</option>
+                             <option value="5">5 People</option>
                          </select>
                     </div>
 
-                    <button type="submit" class="btn-magic" style="width: 100%;">
-                        <span wire:loading.remove>Send Confirmation</span>
-                        <span wire:loading>Sending Magic...</span>
+                    <button type="submit" :disabled="loading" class="btn-magic" style="width: 100%;">
+                        <span x-show="!loading">Send Confirmation</span>
+                        <span x-show="loading">Sending Magic...</span>
                     </button>
-
-                    @if (session()->has('message'))
-                        <div style="margin-top: 15px; padding: 10px; background: rgba(212, 175, 55, 0.2); border: 1px solid var(--mystic-gold); border-radius: 8px; text-align: center; color: var(--mystic-gold);">
-                            {{ session('message') }}
-                        </div>
-                    @endif
                 </form>
                 
                 {{-- Wishes List --}}
                 <div style="margin-top: 40px; max-height: 300px; overflow-y: auto;">
                     <h3 style="text-align: center; color: var(--mystic-gold); margin-bottom: 20px;">Latest Wishes</h3>
-                     @foreach($invitation->wishes()->latest()->get() as $wish)
-                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-left: 3px solid var(--mystic-gold); margin-bottom: 10px; color: var(--mystic-cream);" class="reveal-element">
+                    <template x-for="wish in wishes" :key="wish.id">
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-left: 3px solid var(--mystic-gold); margin-bottom: 10px; color: var(--mystic-cream);">
                             <div style="font-weight: bold; color: var(--mystic-gold);">
-                                {{ $wish->name }} 
-                                <span style="font-size: 0.7rem; opacity: 0.7; font-weight: normal; float: right;">{{ $wish->created_at->diffForHumans() }}</span>
+                                <span x-text="wish.name"></span>
+                                <span style="font-size: 0.7rem; opacity: 0.7; font-weight: normal; float: right;" x-text="wish.time"></span>
                             </div>
-                            <p style="font-size: 0.9rem; margin-top: 5px; font-style: italic;">"{{ $wish->message }}"</p>
+                            <p style="font-size: 0.9rem; margin-top: 5px; font-style: italic;" x-text="'\"' + wish.message + '\"'"></p>
+                            <template x-if="wish.attendance_status">
+                                <span>
+                                    <template x-if="wish.attendance_status === 'confirmed'">
+                                        <span style="display: inline-flex; align-items: center; gap: 4px; background: rgba(34,197,94,0.2); color: #22C55E; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 10px; margin-top: 8px;">
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Will Attend
+                                        </span>
+                                    </template>
+                                    <template x-if="wish.attendance_status === 'declined'">
+                                        <span style="display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.2); color: #EF4444; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 10px; margin-top: 8px;">
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            Unable to Attend
+                                        </span>
+                                    </template>
+                                </span>
+                            </template>
                         </div>
-                    @endforeach
+                    </template>
+                    <div x-show="wishes.length === 0" style="text-align: center; padding: 30px; opacity: 0.6;">
+                        <p>No wishes yet. Be the first!</p>
+                    </div>
                 </div>
             </div>
         </section>

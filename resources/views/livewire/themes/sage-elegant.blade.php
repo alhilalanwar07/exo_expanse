@@ -5,10 +5,6 @@
     activeSection: 'home',
     guestName: '{{ $guestName ?? 'Tamu Undangan' }}',
     days: '00', hours: '00', minutes: '00', seconds: '00',
-    rsvp: { name: '{{ $guestName ?? '' }}', message: '', status: 'Hadir' },
-    wishes: [
-        { id: 1, name: 'Admin', message: 'Selamat menempuh hidup baru!', time: 'Baru saja', initial: 'AD', status: 'Hadir' }
-    ],
 
     init() {
         // Audio Setup
@@ -70,22 +66,6 @@
     copyText(text) {
         navigator.clipboard.writeText(text);
         alert('Nomor Rekening berhasil disalin');
-    },
-
-    submitRSVP() {
-        if (!this.rsvp.name || !this.rsvp.message) return;
-        
-        this.wishes.unshift({
-            id: Date.now(),
-            name: this.rsvp.name,
-            message: this.rsvp.message,
-            time: 'Baru saja',
-            initial: this.rsvp.name.substring(0, 2).toUpperCase(),
-            status: this.rsvp.status
-        });
-        
-        alert('Terima kasih, konfirmasi Anda telah terkirim!');
-        this.rsvp.message = '';
     }
 }" x-init="init()">
 
@@ -542,7 +522,64 @@
 
         <!-- 8. RSVP -->
         @if($invitation->enable_rsvp)
-        <section id="rsvp" class="py-5 bg-light-custom">
+        <section id="rsvp" class="py-5 bg-light-custom"
+            x-data="{
+                invitationId: {{ $invitation->id }},
+                name: '{{ request('kpd', '') }}',
+                message: '',
+                status: 'confirmed',
+                pax: 1,
+                loading: false,
+                success: false,
+                error: '',
+                wishes: [],
+                stats: { total_wishes: 0, total_confirmed: 0 },
+                
+                async submitForm() {
+                    if (!this.name.trim() || !this.message.trim()) {
+                        this.error = 'Mohon lengkapi nama dan ucapan Anda.';
+                        return;
+                    }
+                    this.loading = true;
+                    this.error = '';
+                    try {
+                        await fetch(`/api/invitations/${this.invitationId}/rsvp`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                            body: JSON.stringify({ name: this.name, status: this.status, pax: this.pax })
+                        });
+                        const wishRes = await fetch(`/api/invitations/${this.invitationId}/wishes`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                            body: JSON.stringify({ name: this.name, message: this.message })
+                        });
+                        if (wishRes.ok) {
+                            const data = await wishRes.json();
+                            this.wishes.unshift(data.wish);
+                            this.stats.total_wishes++;
+                            if (this.status === 'confirmed') this.stats.total_confirmed += parseInt(this.pax);
+                            this.message = '';
+                            this.success = true;
+                            setTimeout(() => this.success = false, 5000);
+                        }
+                    } catch (e) { this.error = 'Gagal mengirim. Periksa koneksi internet.'; }
+                    finally { this.loading = false; }
+                },
+                async loadWishes() {
+                    try {
+                        const res = await fetch(`/api/invitations/${this.invitationId}/wishes`);
+                        const data = await res.json();
+                        this.wishes = data.wishes || [];
+                    } catch (e) {}
+                },
+                async loadStats() {
+                    try {
+                        const res = await fetch(`/api/invitations/${this.invitationId}/stats`);
+                        this.stats = await res.json();
+                    } catch (e) {}
+                },
+                init() { this.loadWishes(); this.loadStats(); }
+            }">
             <div class="container py-4">
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
@@ -552,43 +589,81 @@
                                 <p class="small mb-0 opacity-75">Konfirmasi Kehadiran</p>
                             </div>
                             <div class="card-body p-4">
-                                <form @submit.prevent="submitRSVP">
+                                {{-- Success --}}
+                                <div x-show="success" x-transition class="alert alert-success small py-2 text-center">
+                                    ✓ Terima kasih! Ucapan dan konfirmasi Anda telah tersimpan.
+                                </div>
+                                {{-- Error --}}
+                                <div x-show="error" x-transition class="alert alert-danger small py-2 text-center" x-text="error"></div>
+
+                                <form @submit.prevent="submitForm">
                                     <div class="mb-3">
                                         <label class="form-label small fw-bold text-primary-custom">Nama Lengkap</label>
-                                        <input type="text" x-model="rsvp.name" class="form-control bg-light" placeholder="Masukkan nama Anda" required>
+                                        <input type="text" x-model="name" class="form-control bg-light" placeholder="Masukkan nama Anda" required>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label small fw-bold text-primary-custom">Ucapan & Doa</label>
-                                        <textarea x-model="rsvp.message" class="form-control bg-light" rows="3" placeholder="Tuliskan doa restu..." required></textarea>
+                                        <textarea x-model="message" class="form-control bg-light" rows="3" placeholder="Tuliskan doa restu..." required></textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label small fw-bold text-primary-custom">Konfirmasi</label>
-                                        <select x-model="rsvp.status" class="form-select bg-light">
-                                            <option value="Hadir">Saya akan hadir</option>
-                                            <option value="Tidak Hadir">Maaf, tidak bisa hadir</option>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" @click="status = 'confirmed'"
+                                                :class="status === 'confirmed' ? 'btn btn-custom' : 'btn btn-outline-secondary'"
+                                                class="flex-fill d-flex align-items-center justify-content-center gap-1" style="font-size: 0.9rem;">
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                Hadir
+                                            </button>
+                                            <button type="button" @click="status = 'declined'"
+                                                :class="status === 'declined' ? 'btn btn-danger' : 'btn btn-outline-secondary'"
+                                                class="flex-fill d-flex align-items-center justify-content-center gap-1" style="font-size: 0.9rem;">
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                Tidak Hadir
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3" x-show="status === 'confirmed'" x-transition>
+                                        <label class="form-label small fw-bold text-primary-custom">Jumlah Tamu</label>
+                                        <select x-model="pax" class="form-select bg-light">
+                                            <option value="1">1 Orang</option>
+                                            <option value="2">2 Orang</option>
+                                            <option value="3">3 Orang</option>
+                                            <option value="4">4 Orang</option>
+                                            <option value="5">5 Orang</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-custom w-100">Kirim Konfirmasi</button>
+                                    <button type="submit" :disabled="loading" class="btn btn-custom w-100">
+                                        <span x-show="!loading">Kirim Konfirmasi</span>
+                                        <span x-show="loading">Mengirim...</span>
+                                    </button>
                                 </form>
 
                                 <!-- Wishes List -->
                                 <div class="mt-4 pt-4 border-top" style="max-height: 300px; overflow-y: auto;">
                                     <h6 class="fw-bold mb-3 small text-muted">Ucapan Terbaru</h6>
                                     <template x-for="wish in wishes" :key="wish.id">
-                                        <div class="d-flex mb-3 animate__animated animate__fadeIn">
+                                        <div class="d-flex mb-3">
                                             <div class="flex-shrink-0">
                                                 <div class="bg-primary-custom text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;" x-text="wish.initial"></div>
                                             </div>
                                             <div class="flex-grow-1 ms-3 bg-white p-2 rounded shadow-sm border">
                                                 <h6 class="mt-0 mb-1 fw-bold small">
                                                     <span x-text="wish.name"></span>
-                                                    <span class="badge bg-secondary ms-1" style="font-size:8px" x-text="wish.status"></span>
+                                                    <template x-if="wish.attendance_status === 'confirmed'">
+                                                        <span class="badge bg-success ms-1" style="font-size:8px">Akan Hadir</span>
+                                                    </template>
+                                                    <template x-if="wish.attendance_status === 'declined'">
+                                                        <span class="badge bg-danger ms-1" style="font-size:8px">Tidak Hadir</span>
+                                                    </template>
                                                 </h6>
                                                 <p class="small text-muted mb-0" x-text="wish.message"></p>
                                                 <small class="text-muted" style="font-size: 10px;" x-text="wish.time"></small>
                                             </div>
                                         </div>
                                     </template>
+                                    <div x-show="wishes.length === 0" class="text-center py-3">
+                                        <p class="small text-muted mb-0">Belum ada ucapan. Jadilah yang pertama!</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

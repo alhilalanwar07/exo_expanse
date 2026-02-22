@@ -613,62 +613,149 @@
             @endif
 
             {{-- RSVP & WISHES --}}
-            <div class="card" id="rsvp">
+            <div class="card" id="rsvp"
+                x-data="{
+                    invitationId: {{ $invitation->id }},
+                    name: '{{ request('kpd', '') }}',
+                    message: '',
+                    status: 'confirmed',
+                    pax: 1,
+                    loading: false,
+                    success: false,
+                    error: '',
+                    wishes: [],
+                    stats: { total_wishes: 0, total_confirmed: 0 },
+                    
+                    async submitForm() {
+                        if (!this.name.trim() || !this.message.trim()) {
+                            this.error = 'Mohon lengkapi nama dan ucapan Anda.';
+                            return;
+                        }
+                        this.loading = true;
+                        this.error = '';
+                        try {
+                            await fetch(`/api/invitations/${this.invitationId}/rsvp`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                                body: JSON.stringify({ name: this.name, status: this.status, pax: this.pax })
+                            });
+                            const wishRes = await fetch(`/api/invitations/${this.invitationId}/wishes`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                                body: JSON.stringify({ name: this.name, message: this.message })
+                            });
+                            if (wishRes.ok) {
+                                const data = await wishRes.json();
+                                this.wishes.unshift(data.wish);
+                                this.stats.total_wishes++;
+                                if (this.status === 'confirmed') this.stats.total_confirmed += parseInt(this.pax);
+                                this.message = '';
+                                this.success = true;
+                                setTimeout(() => this.success = false, 5000);
+                            }
+                        } catch (e) { this.error = 'Gagal mengirim. Periksa koneksi internet.'; }
+                        finally { this.loading = false; }
+                    },
+                    async loadWishes() {
+                        try {
+                            const res = await fetch(`/api/invitations/${this.invitationId}/wishes`);
+                            const data = await res.json();
+                            this.wishes = data.wishes || [];
+                        } catch (e) {}
+                    },
+                    async loadStats() {
+                        try {
+                            const res = await fetch(`/api/invitations/${this.invitationId}/stats`);
+                            this.stats = await res.json();
+                        } catch (e) {}
+                    },
+                    init() { this.loadWishes(); this.loadStats(); }
+                }">
                 <h2 class="font-serif mb-20" style="border-bottom: 1px solid var(--primary); display: inline-block; padding-bottom: 10px;">RSVP & Ucapan</h2>
                 
-                <form wire:submit="submitRSVP" style="text-align: left;">
+                {{-- Success --}}
+                <div x-show="success" x-transition style="margin-bottom: 15px; padding: 10px; background: rgba(40, 167, 69, 0.2); border: 1px solid #28a745; border-radius: 8px; text-align: center;">
+                    ✓ Terima kasih! Ucapan dan konfirmasi Anda telah tersimpan.
+                </div>
+                {{-- Error --}}
+                <div x-show="error" x-transition style="margin-bottom: 15px; padding: 10px; background: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; border-radius: 8px; text-align: center; color: #ff6b6b;" x-text="error"></div>
+
+                <form @submit.prevent="submitForm" style="text-align: left;">
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Nama</label>
-                        <input type="text" wire:model="rsvpName" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;" placeholder="Nama Anda" required>
-                        @error('rsvpName') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
+                        <input type="text" x-model="name" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;" placeholder="Nama Anda" required>
                     </div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Konfirmasi Kehadiran</label>
-                        <select wire:model="rsvpStatus" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;">
-                            <option value="Hadir" style="color: black;">Hadir</option>
-                            <option value="Maaf, Tidak Bisa Hadir" style="color: black;">Maaf, Tidak Bisa Hadir</option>
-                            <option value="Masih Ragu" style="color: black;">Masih Ragu</option>
-                        </select>
+                    <div class="mb-4">
+                        <label class="block mb-2 text-sm font-medium text-gray-200">Konfirmasi Kehadiran</label>
+                        <div class="flex gap-3">
+                            <button type="button" @click="status = 'confirmed'"
+                                :class="status === 'confirmed' ? 'bg-green-600 text-white border-green-600 ring-2 ring-offset-2 ring-green-600' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'"
+                                class="flex-1 flex items-center justify-center gap-2 py-3 px-4 border rounded-xl font-bold text-sm transition-all duration-200">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Hadir
+                            </button>
+
+                            <button type="button" @click="status = 'declined'"
+                                :class="status === 'declined' ? 'bg-red-900 text-white border-red-800 ring-2 ring-offset-2 ring-red-800' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'"
+                                class="flex-1 flex items-center justify-center gap-2 py-3 px-4 border rounded-xl font-bold text-sm transition-all duration-200">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                Tidak Hadir
+                            </button>
+                        </div>
                     </div>
 
-                    <div style="margin-bottom: 15px;">
+                    <div style="margin-bottom: 15px;" x-show="status === 'confirmed'" x-transition>
                         <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Jumlah Tamu</label>
-                        <select wire:model="rsvpGuests" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;">
+                        <select x-model="pax" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;">
                             <option value="1" style="color: black;">1 Orang</option>
                             <option value="2" style="color: black;">2 Orang</option>
                             <option value="3" style="color: black;">3 Orang</option>
                             <option value="4" style="color: black;">4 Orang</option>
+                            <option value="5" style="color: black;">5 Orang</option>
                         </select>
                     </div>
 
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Ucapan & Doa</label>
-                        <textarea wire:model="rsvpMessage" rows="3" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;" placeholder="Tulis ucapan selamat..."></textarea>
+                        <textarea x-model="message" rows="3" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px;" placeholder="Tulis ucapan selamat..."></textarea>
                     </div>
 
-                    <button type="submit" class="btn-open" style="width: 100%; justify-content: center; margin-top: 0;">
-                        <span wire:loading.remove>Kirim Ucapan</span>
-                        <span wire:loading>Mengirim...</span>
+                    <button type="submit" :disabled="loading" class="btn-open" style="width: 100%; justify-content: center; margin-top: 0;">
+                        <span x-show="!loading">Kirim Ucapan</span>
+                        <span x-show="loading">Mengirim...</span>
                     </button>
-
-                    @if (session()->has('message'))
-                        <div style="margin-top: 15px; padding: 10px; background: rgba(40, 167, 69, 0.2); border: 1px solid #28a745; border-radius: 8px; text-align: center;">
-                            {{ session('message') }}
-                        </div>
-                    @endif
                 </form>
 
                 <div class="wishes-container">
-                    @foreach($invitation->wishes()->latest()->get() as $wish)
-                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid var(--primary);">
-                        <div style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">{{ $wish->name }} <span style="font-size: 0.7rem; color: #aaa; font-weight: normal; float: right;">{{ $wish->created_at->diffForHumans() }}</span></div>
-                        <div style="font-size: 0.8rem; margin-bottom: 5px; opacity: 0.8;">
-                             <span style="background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">{{ $wish->status }}</span>
+                    <template x-for="wish in wishes" :key="wish.id">
+                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid var(--primary);">
+                            <div style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">
+                                <span x-text="wish.name"></span>
+                                <span style="font-size: 0.7rem; color: #aaa; font-weight: normal; float: right;" x-text="wish.time"></span>
+                            </div>
+                            <p style="font-size: 0.9rem; font-style: italic; margin-bottom: 8px;" x-text="wish.message"></p>
+                            <template x-if="wish.attendance_status">
+                                <span>
+                                    <template x-if="wish.attendance_status === 'confirmed'">
+                                        <span style="display: inline-flex; align-items: center; gap: 4px; background: rgba(34,197,94,0.15); color: #22C55E; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 10px;">
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Akan Hadir
+                                        </span>
+                                    </template>
+                                    <template x-if="wish.attendance_status === 'declined'">
+                                        <span style="display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.15); color: #EF4444; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 10px;">
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            Tidak Hadir
+                                        </span>
+                                    </template>
+                                </span>
+                            </template>
                         </div>
-                        <p style="font-size: 0.9rem; font-style: italic;">"{{ $wish->message }}"</p>
+                    </template>
+                    <div x-show="wishes.length === 0" style="text-align: center; padding: 20px; opacity: 0.6;">
+                        <p>Belum ada ucapan. Jadilah yang pertama!</p>
                     </div>
-                    @endforeach
                 </div>
             </div>
 

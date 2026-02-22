@@ -878,74 +878,151 @@
 
         <!-- RSVP -->
         @if($invitation->enable_rsvp || $invitation->enable_wishes)
-        <section id="rsvp" class="section bg-[#2D1B0E] text-[#F9F6F0]">
+        <section id="rsvp" class="section bg-[#2D1B0E] text-[#F9F6F0]"
+            x-data="{
+                invitationId: {{ $invitation->id }},
+                name: '{{ request('kpd', '') }}',
+                message: '',
+                status: 'confirmed',
+                pax: 1,
+                loading: false,
+                success: false,
+                error: '',
+                wishes: [],
+                stats: { total_wishes: 0, total_confirmed: 0 },
+                
+                async submitForm() {
+                    if (!this.name.trim() || !this.message.trim()) {
+                        this.error = 'Mohon lengkapi nama dan ucapan Anda.';
+                        return;
+                    }
+                    this.loading = true;
+                    this.error = '';
+                    try {
+                        await fetch(`/api/invitations/${this.invitationId}/rsvp`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                            body: JSON.stringify({ name: this.name, status: this.status, pax: this.pax })
+                        });
+                        const wishRes = await fetch(`/api/invitations/${this.invitationId}/wishes`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '' },
+                            body: JSON.stringify({ name: this.name, message: this.message })
+                        });
+                        if (wishRes.ok) {
+                            const data = await wishRes.json();
+                            this.wishes.unshift(data.wish);
+                            this.stats.total_wishes++;
+                            if (this.status === 'confirmed') this.stats.total_confirmed += parseInt(this.pax);
+                            this.message = '';
+                            this.success = true;
+                            setTimeout(() => this.success = false, 5000);
+                        }
+                    } catch (e) { this.error = 'Gagal mengirim. Periksa koneksi internet.'; }
+                    finally { this.loading = false; }
+                },
+                async loadWishes() {
+                    try {
+                        const res = await fetch(`/api/invitations/${this.invitationId}/wishes`);
+                        const data = await res.json();
+                        this.wishes = data.wishes || [];
+                    } catch (e) {}
+                },
+                async loadStats() {
+                    try {
+                        const res = await fetch(`/api/invitations/${this.invitationId}/stats`);
+                        this.stats = await res.json();
+                    } catch (e) {}
+                },
+                init() { this.loadWishes(); this.loadStats(); }
+            }">
             <div class="section-title text-center mb-8 md:mb-10" data-reveal="up">
                 <h2 class="font-head text-gold">Doa & Kehadiran</h2>
             </div>
 
             <div class="max-w-xl mx-auto bg-[rgba(255,255,255,0.03)] p-6 md:p-10 rounded-2xl border border-[rgba(212,175,55,0.3)]" data-reveal="up">
-                <form wire:submit="submitRSVP" class="space-y-5 md:space-y-6 mb-10">
-                    @if (session()->has('message'))
-                        <div class="bg-gold text-brown p-3 rounded-lg text-center text-sm font-bold border border-gold">
-                            {{ session('message') }}
-                        </div>
-                    @endif
+                {{-- Success --}}
+                <div x-show="success" x-transition class="bg-gold text-brown p-3 rounded-lg text-center text-sm font-bold border border-gold mb-5">
+                    ✓ Terima kasih! Ucapan dan konfirmasi Anda telah tersimpan.
+                </div>
+                {{-- Error --}}
+                <div x-show="error" x-transition class="bg-red-900/30 text-red-300 p-3 rounded-lg text-center text-sm border border-red-700 mb-5" x-text="error"></div>
 
+                <form @submit.prevent="submitForm" class="space-y-5 md:space-y-6 mb-10">
                     <div class="space-y-2">
                         <label class="text-[10px] md:text-xs uppercase tracking-widest text-gold font-bold">Nama Lengkap</label>
-                        <input type="text" wire:model="rsvpName" class="w-full bg-[rgba(255,255,255,0.05)] border-b border-gray-600 focus:border-gold outline-none py-2 md:py-3 text-white text-sm md:text-base px-3 rounded" placeholder="Nama Anda">
+                        <input type="text" x-model="name" class="w-full bg-[rgba(255,255,255,0.05)] border-b border-gray-600 focus:border-gold outline-none py-2 md:py-3 text-white text-sm md:text-base px-3 rounded" placeholder="Nama Anda">
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] md:text-xs uppercase tracking-widest text-gold font-bold">Ucapan & Doa</label>
-                        <textarea wire:model="rsvpMessage" rows="3" class="w-full bg-[rgba(255,255,255,0.05)] border-b border-gray-600 focus:border-gold outline-none py-2 md:py-3 text-white text-sm md:text-base px-3 rounded resize-none" placeholder="Tuliskan doa..."></textarea>
+                        <textarea x-model="message" rows="3" class="w-full bg-[rgba(255,255,255,0.05)] border-b border-gray-600 focus:border-gold outline-none py-2 md:py-3 text-white text-sm md:text-base px-3 rounded resize-none" placeholder="Tuliskan doa..."></textarea>
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] md:text-xs uppercase tracking-widest text-gold block font-bold">Konfirmasi Kehadiran</label>
                         <div class="flex gap-3">
-                            <button type="button" wire:click="$set('rsvpStatus', 'confirmed')"
-                                    class="flex-1 py-3 text-sm border rounded transition {{ $rsvpStatus === 'confirmed' ? 'bg-gold text-brown border-gold font-bold' : 'text-gray-400 border-gray-600' }}">
-                                ✓ Hadir
+                            <button type="button" @click="status = 'confirmed'"
+                                    :class="status === 'confirmed' ? 'bg-gold text-brown border-gold font-bold' : 'text-gray-400 border-gray-600'"
+                                    class="flex-1 py-3 text-sm border rounded transition flex items-center justify-center gap-2">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Hadir
                             </button>
-                            <button type="button" wire:click="$set('rsvpStatus', 'declined')"
-                                    class="flex-1 py-3 text-sm border rounded transition {{ $rsvpStatus === 'declined' ? 'bg-red-900 text-white border-red-700 font-bold' : 'text-gray-400 border-gray-600' }}">
-                                ✗ Maaf
+                            <button type="button" @click="status = 'declined'"
+                                    :class="status === 'declined' ? 'bg-red-900 text-white border-red-700 font-bold' : 'text-gray-400 border-gray-600'"
+                                    class="flex-1 py-3 text-sm border rounded transition flex items-center justify-center gap-2">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                Maaf
                             </button>
                         </div>
                     </div>
 
-                    @if($rsvpStatus === 'confirmed')
-                    <div class="space-y-2" x-transition>
+                    <div class="space-y-2" x-show="status === 'confirmed'" x-transition>
                         <label class="text-[10px] md:text-xs uppercase tracking-widest text-gold font-bold">Jumlah Tamu</label>
-                        <select wire:model="rsvpGuests" class="w-full bg-[rgba(255,255,255,0.05)] border-b border-gray-600 focus:border-gold outline-none py-2 md:py-3 text-white rounded px-3 text-sm md:text-base">
+                        <select x-model="pax" class="w-full bg-[rgba(255,255,255,0.05)] border-b border-gray-600 focus:border-gold outline-none py-2 md:py-3 text-white rounded px-3 text-sm md:text-base">
                             <option value="1" class="text-black">1 Orang</option>
                             <option value="2" class="text-black">2 Orang</option>
                             <option value="3" class="text-black">3 Orang</option>
+                            <option value="4" class="text-black">4 Orang</option>
+                            <option value="5" class="text-black">5 Orang</option>
                         </select>
                     </div>
-                    @endif
 
-                    <button type="submit" class="btn-royal w-full mt-4 text-sm md:text-base">
-                        <span wire:loading.remove>Kirim</span>
-                        <span wire:loading>Mengirim...</span>
+                    <button type="submit" :disabled="loading" class="btn-royal w-full mt-4 text-sm md:text-base">
+                        <span x-show="!loading">Kirim</span>
+                        <span x-show="loading">Mengirim...</span>
                     </button>
                 </form>
 
                 <div class="border-t border-[rgba(212,175,55,0.2)] pt-6 mt-6">
                     <p class="font-head text-center text-lg md:text-xl mb-4 text-gold">Ucapan Terindah</p>
                     <div class="max-h-64 md:max-h-80 overflow-y-auto space-y-3 pr-2">
-                        @forelse($invitation->wishes()->latest()->get() as $wish)
+                        <template x-for="wish in wishes" :key="wish.id">
                             <div class="bg-[rgba(255,255,255,0.02)] p-4 rounded border-l-2 border-gold text-sm md:text-base">
                                 <div class="flex justify-between items-start mb-2">
-                                    <h4 class="font-bold text-gold text-sm">{{ $wish->name }}</h4>
-                                    <span class="text-[10px] text-gray-500">{{ $wish->created_at->diffForHumans() }}</span>
+                                    <h4 class="font-bold text-gold text-sm" x-text="wish.name"></h4>
+                                    <span class="text-[10px] text-gray-500" x-text="wish.time"></span>
                                 </div>
-                                <p class="text-xs md:text-sm text-gray-300 italic">"{{ $wish->message }}"</p>
+                                <p class="text-xs md:text-sm text-gray-300 italic" x-text="'\"' + wish.message + '\"'"></p>
+                                <template x-if="wish.attendance_status">
+                                    <span>
+                                        <template x-if="wish.attendance_status === 'confirmed'">
+                                            <span class="inline-flex items-center gap-1 mt-2 text-[10px] font-bold px-2 py-1 rounded-full" style="background: rgba(34,197,94,0.15); color: #22C55E;">
+                                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                Akan Hadir
+                                            </span>
+                                        </template>
+                                        <template x-if="wish.attendance_status === 'declined'">
+                                            <span class="inline-flex items-center gap-1 mt-2 text-[10px] font-bold px-2 py-1 rounded-full" style="background: rgba(239,68,68,0.15); color: #EF4444;">
+                                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                Tidak Hadir
+                                            </span>
+                                        </template>
+                                    </span>
+                                </template>
                             </div>
-                        @empty
-                            <div class="text-center text-gray-500 py-6 text-xs md:text-sm italic">Belum ada ucapan.</div>
-                        @endforelse
+                        </template>
+                        <div x-show="wishes.length === 0" class="text-center text-gray-500 py-6 text-xs md:text-sm italic">Belum ada ucapan.</div>
                     </div>
                 </div>
             </div>

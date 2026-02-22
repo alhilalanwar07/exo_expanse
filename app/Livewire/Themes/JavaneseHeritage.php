@@ -57,8 +57,8 @@ class JavaneseHeritage extends Component
 
         $this->invitation->wishes()->create([
             'name' => $this->rsvpName,
-            'status' => $this->rsvpStatus === 'confirmed' ? 'Hadir' : 'Maaf, Tidak Bisa Hadir',
-            'guests' => $this->rsvpGuests,
+            'attendance_status' => $this->rsvpStatus,
+            'pax' => $this->rsvpGuests,
             'message' => $this->rsvpMessage,
         ]);
 

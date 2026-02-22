@@ -22,7 +22,7 @@ class RusticSage extends Component
     public string $rsvpName = '';
 
     #[Validate('required|string')]
-    public string $rsvpStatus = 'Hadir';
+    public string $rsvpStatus = 'confirmed';
 
     #[Validate('required|integer|min:1|max:10')]
     public int $rsvpGuests = 1;
@@ -43,8 +43,8 @@ class RusticSage extends Component
 
         $this->invitation->wishes()->create([
             'name' => $this->rsvpName,
-            'status' => $this->rsvpStatus,
-            'guests' => $this->rsvpGuests,
+            'attendance_status' => $this->rsvpStatus,
+            'pax' => $this->rsvpGuests,
             'message' => $this->rsvpMessage,
         ]);
 
