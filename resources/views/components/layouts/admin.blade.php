@@ -13,6 +13,15 @@
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Dark Mode Init -->
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
 </head>
 <body class="font-outfit antialiased bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
     <div x-data="{ sidebarOpen: false }" class="min-h-screen flex w-full">
