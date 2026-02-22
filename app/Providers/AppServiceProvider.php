@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
         \Livewire\Livewire::component('themes.floral-romance', \App\Livewire\Themes\FloralRomance::class);
         \Livewire\Livewire::component('themes.modern-elegance', \App\Livewire\Themes\ModernElegance::class);
         \Livewire\Livewire::component('themes.generic', \App\Livewire\Themes\Generic::class);
+        Paginator::useTailwind();
     }
 }

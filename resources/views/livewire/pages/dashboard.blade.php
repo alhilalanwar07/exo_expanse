@@ -133,6 +133,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                                     </svg>
                                 </button>
+                                <button wire:click="openThemeModal({{ $invitation->id }}, '{{ addslashes($invitation->title) }}', {{ $invitation->theme_id ?? 'null' }})" class="p-2 text-slate-400 hover:text-indigo-500 transition-colors" title="Ganti Tema">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                    </svg>
+                                </button>
                                 <a href="{{ route('invitations.edit', $invitation->id) }}" class="p-2 text-slate-400 hover:text-blue-500 transition-colors" title="Edit">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -303,6 +308,94 @@
                         Tutup
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    @endif
+
+    <!-- Change Theme Modal -->
+    @if($showingThemeModal)
+    <div
+        class="fixed inset-0 z-[999] flex items-center justify-center min-h-screen px-4 py-6 sm:px-0"
+        role="dialog"
+        aria-modal="true"
+    >
+        <!-- Backdrop -->
+        <div 
+            class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" 
+            wire:click="closeThemeModal"
+        ></div>
+
+        <!-- Modal Card -->
+        <div 
+            class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white dark:bg-slate-900 text-left align-middle shadow-2xl transition-all border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh]"
+        >
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Ganti Tema</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Pilih tema baru untuk "{{ $invitationTitleToChangeTheme }}"</p>
+                </div>
+                <button wire:click="closeThemeModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Theme Grid (Scrollable) -->
+            <div class="p-6 overflow-y-auto grow">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    @foreach($themes as $theme)
+                        <div 
+                            wire:click="$set('selectedThemeId', {{ $theme->id }})"
+                            class="relative cursor-pointer rounded-2xl overflow-hidden border-2 transition-all duration-300 {{ $selectedThemeId === $theme->id ? 'border-amber-500 shadow-lg shadow-amber-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-amber-300' }} group"
+                        >
+                            <div class="aspect-[9/16] bg-slate-100 dark:bg-slate-800">
+                                @if($theme->thumbnail_url)
+                                    <img src="{{ Str::startsWith($theme->thumbnail_url, ['http://', 'https://', '/']) ? $theme->thumbnail_url : asset('storage/' . $theme->thumbnail_url) }}" alt="{{ $theme->name }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-400">
+                                        <svg class="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span class="text-sm">No Preview</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
+                                <h4 class="text-white font-medium text-lg leading-tight">{{ $theme->name }}</h4>
+                            </div>
+                            
+                            @if($selectedThemeId === $theme->id)
+                                <div class="absolute top-3 right-3 bg-amber-500 text-white rounded-full p-1.5 shadow-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-3 shrink-0 bg-slate-50 dark:bg-slate-800/50">
+                <button 
+                    wire:click="closeThemeModal"
+                    type="button"
+                    class="py-2.5 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-colors"
+                >
+                    Batal
+                </button>
+                <button 
+                    wire:click="updateTheme"
+                    type="button"
+                    class="py-2.5 px-6 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 rounded-xl shadow-lg transition-all flex items-center gap-2 {{ !$selectedThemeId ? 'opacity-50 cursor-not-allowed' : '' }}"
+                    {{ !$selectedThemeId ? 'disabled' : '' }}
+                >
+                    <span wire:loading.remove wire:target="updateTheme">Simpan Tema</span>
+                    <span wire:loading wire:target="updateTheme" class="flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Menyimpan...
+                    </span>
+                </button>
             </div>
         </div>
     </div>

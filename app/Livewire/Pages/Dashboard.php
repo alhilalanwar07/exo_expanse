@@ -26,6 +26,15 @@ class Dashboard extends Component
 
     public string $shareRecipientName = '';
 
+    // Theme modal
+    public bool $showingThemeModal = false;
+
+    public ?int $invitationIdToChangeTheme = null;
+
+    public string $invitationTitleToChangeTheme = '';
+
+    public ?int $selectedThemeId = null;
+
     public function confirmDeletion(int $id, string $title): void
     {
         $this->invitationIdToDelete = $id;
@@ -85,6 +94,31 @@ class Dashboard extends Component
         return 'https://wa.me/?text='.urlencode($message);
     }
 
+    public function openThemeModal(int $id, string $title, ?int $currentThemeId): void
+    {
+        $this->invitationIdToChangeTheme = $id;
+        $this->invitationTitleToChangeTheme = $title;
+        $this->selectedThemeId = $currentThemeId;
+        $this->showingThemeModal = true;
+    }
+
+    public function closeThemeModal(): void
+    {
+        $this->showingThemeModal = false;
+        $this->invitationIdToChangeTheme = null;
+    }
+
+    public function updateTheme(): void
+    {
+        if ($this->invitationIdToChangeTheme && $this->selectedThemeId) {
+            $invitation = Invitation::where('user_id', Auth::id())->findOrFail($this->invitationIdToChangeTheme);
+            $invitation->update(['theme_id' => $this->selectedThemeId]);
+
+            session()->flash('message', 'Tema berhasil diubah.');
+            $this->closeThemeModal();
+        }
+    }
+
     public function render()
     {
         return view('livewire.pages.dashboard', [
@@ -102,6 +136,7 @@ class Dashboard extends Component
                 ])
                 ->latest()
                 ->get(),
+            'themes' => \App\Models\Theme::where('is_active', true)->get(),
         ]);
     }
 }
