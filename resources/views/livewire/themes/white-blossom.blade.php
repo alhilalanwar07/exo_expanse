@@ -1820,7 +1820,7 @@ body {
         <div class="cover-content">
             <div class="cover-top flex flex-col items-center justify-center">
                 {{-- Label --}}
-                <p class="cover-label animate-fade-up">THE WEDDING OF</p>
+                <p class="cover-label animate-fade-up">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
                 
                 {{-- Photo Frame --}}
                 <div class="cover-photo-frame animate-fade-up" style="animation-delay: 0.1s;">
@@ -1894,6 +1894,8 @@ body {
                 <div class="sparkle-star"></div>
                 <div class="sparkle-star"></div>
             </div>
+            {{-- Subtitle --}}
+            <p class="animate-fade-up text-center mb-4 font-serif" style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
             
             {{-- Photo Frame --}}
             <div class="hero-photo-wrapper animate-fade-up flex justify-center">
@@ -2209,6 +2211,35 @@ body {
                        x-text="lightboxCaption" 
                        class="absolute bottom-0 left-0 right-0 p-4 text-center text-white bg-gradient-to-t from-black/70 to-transparent rounded-b-lg"></p>
                 </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="section section-cream" style="position: relative; overflow: hidden;">
+            <div class="section-title section-title-themed relative z-10">
+                <p class="subtitle">Our Journey</p>
+                <h2>Kisah Cinta Kami</h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="max-w-lg mx-auto relative z-10" style="padding: 0 16px;">
+                <div style="position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--gold), var(--gold), transparent);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '28px' }}; position: relative;">
+                    <div style="flex-shrink: 0; width: 32px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 20px;">
+                        <div style="width: 14px; height: 14px; background: white; border: 3px solid var(--gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(201,162,39,0.15);"></div>
+                    </div>
+                    <div style="flex: 1; margin-left: 12px; padding: 20px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-left: 3px solid var(--gold-light); position: relative; overflow: hidden;">
+                        <div style="display: inline-block; padding: 4px 14px; background: linear-gradient(135deg, var(--gold-light), #F0E6C8); color: var(--gold-dark); border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">{{ $story['date'] ?? '' }}</div>
+                        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--dark); font-weight: 600; margin-bottom: 6px; line-height: 1.3;">{{ $story['title'] ?? '' }}</h3>
+                        <p style="font-size: 13px; line-height: 1.75; color: var(--text);">{{ $story['description'] ?? '' }}</p>
+                        <div style="position: absolute; bottom: -4px; right: 8px; font-family: 'Great Vibes', cursive; font-size: 3rem; color: var(--gold-light); opacity: 0.25; pointer-events: none; transform: rotate(-12deg);">❦</div>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </section>
         @endif

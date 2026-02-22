@@ -97,7 +97,7 @@
             </div>
 
             <div class="relative z-10 space-y-6">
-                <span class="font-accent text-5xl md:text-7xl text-slate-800">The Wedding Of</span>
+                <span class="font-accent text-5xl md:text-7xl text-slate-800">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</span>
                 <h2 class="font-heading text-6xl md:text-9xl text-slate-900">
                     @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
                     @if($order === 'bride_first')

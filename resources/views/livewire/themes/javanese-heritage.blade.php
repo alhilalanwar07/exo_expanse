@@ -596,7 +596,7 @@
                 </div>
 
                 <div data-reveal="up">
-                    <div class="text-gold uppercase tracking-[0.3em] text-[10px] mb-2" style="animation-delay: 0.1s;">The Wedding Of</div>
+                    <div class="text-gold uppercase tracking-[0.3em] text-[10px] mb-2" style="animation-delay: 0.1s;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</div>
                     <h1 class="hero-names">
                         {{ $order === 'bride_first' ? $invitation->bride_nickname : $invitation->groom_nickname }}
                         <span class="block font-script text-3xl md:text-4xl text-white opacity-80 my-1 md:my-2">&</span>
@@ -836,6 +836,35 @@
                     </button>
                     <img :src="imgSrc" class="max-h-[85vh] max-w-full border-2 border-gold rounded-lg object-contain">
                 </div>
+            </div>
+        </section>
+        @endif
+
+        <!-- LOVE STORY -->
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section class="section bg-[#F9F6F0]">
+            <div class="section-title text-center mb-10 md:mb-16" data-reveal="up">
+                <p class="font-script text-2xl md:text-3xl text-gold">Perjalanan Kami</p>
+                <h2 class="font-head">Kisah Cinta</h2>
+            </div>
+
+            <div class="max-w-2xl mx-auto px-4" style="position: relative;">
+                <div style="position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--java-gold), var(--java-gold), transparent);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div data-reveal="up" style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '28px' }}; position: relative;">
+                    <div style="flex-shrink: 0; width: 32px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 20px;">
+                        <div style="width: 14px; height: 14px; background: var(--java-cream); border: 3px solid var(--java-gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(212,175,55,0.15);"></div>
+                    </div>
+                    <div class="event-card" style="flex: 1; margin-left: 12px; margin-bottom: 0; border-left-width: 4px;">
+                        <div style="padding: 20px;">
+                            <div class="event-time-box" style="padding: 6px 16px; font-size: 11px; margin-bottom: 12px;">{{ $story['date'] ?? '' }}</div>
+                            <h3 class="font-head" style="font-size: 1.15rem; color: var(--java-brown); margin-bottom: 6px; line-height: 1.3;">{{ $story['title'] ?? '' }}</h3>
+                            <p class="font-serif text-gray-600" style="font-size: 13px; line-height: 1.75;">{{ $story['description'] ?? '' }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </section>
         @endif

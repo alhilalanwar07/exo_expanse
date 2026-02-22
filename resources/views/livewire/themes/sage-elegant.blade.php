@@ -268,7 +268,7 @@
         <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tr" alt="flower">
         
         <div class="text-center px-4 position-relative z-2" data-aos="zoom-in">
-            <div class="mb-3 text-primary-custom ls-2 text-uppercase fw-bold small">The Wedding Of</div>
+            <div class="mb-3 text-primary-custom ls-2 text-uppercase fw-bold small">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</div>
             
             <div class="position-relative d-inline-block py-4">
                 <!-- Lingkaran Hiasan Biru -->
@@ -469,6 +469,39 @@
                         </div>
                     </div>
                     @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        <!-- LOVE STORY -->
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section class="py-5 bg-light-custom">
+            <div class="container py-4">
+                <div class="text-center mb-5" data-aos="fade-up">
+                    <h2 class="font-script text-primary-custom display-4 mb-2">Our Journey</h2>
+                    <p class="text-muted">Kisah Cinta Kami</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div style="position: relative; padding-left: 40px;">
+                            <div style="position: absolute; left: 15px; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, transparent, var(--primary-color), var(--primary-light), transparent); border-radius: 2px;"></div>
+
+                            @foreach($invitation->love_story as $index => $story)
+                            <div data-aos="fade-up" data-aos-delay="{{ $index * 100 }}" style="position: relative; margin-bottom: {{ $loop->last ? '0' : '32px' }};">
+                                <div style="position: absolute; left: -33px; top: 20px; width: 16px; height: 16px; background: white; border: 3px solid var(--primary-color); border-radius: 50%; box-shadow: 0 0 0 4px rgba(72,52,212,0.15); z-index: 2;"></div>
+                                <div class="card card-custom p-4">
+                                    <div class="card-body">
+                                        <span class="badge bg-primary-custom rounded-pill px-3 py-1 mb-3" style="font-size: 11px; letter-spacing: 1px;">{{ $story['date'] ?? '' }}</span>
+                                        <h5 class="font-serif fw-bold mb-2">{{ $story['title'] ?? '' }}</h5>
+                                        <p class="text-muted small mb-0 lh-lg">{{ $story['description'] ?? '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

@@ -776,7 +776,7 @@ body {
 
         {{-- Top Section: Label + Arch + Names --}}
         <div class="cover-top">
-            <p class="cover-label animate-fade-up">The Wedding of</p>
+            <p class="cover-label animate-fade-up">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
             
             <div class="cover-arch">
                 <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" class="cover-img" alt="Cover">
@@ -974,6 +974,34 @@ body {
             </div>
         </section>
 
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="section" style="background: var(--sand);">
+            <div class="section-title">
+                <h2>Kisah Cinta Kami</h2>
+                <div class="title-leaf"></div>
+            </div>
+
+            <div style="position: relative; max-width: 500px; margin: 0 auto; padding: 0 16px;">
+                <div style="position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--sage-medium), var(--sage-medium), transparent);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div class="animate-fade-up" style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '28px' }}; position: relative; opacity: 0; animation-delay: {{ $index * 0.15 }}s;">
+                    <div style="flex-shrink: 0; width: 32px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 20px;">
+                        <div style="width: 14px; height: 14px; background: white; border: 3px solid var(--sage-medium); border-radius: 50%; box-shadow: 0 0 0 4px rgba(111,139,104,0.15);"></div>
+                    </div>
+                    <div style="flex: 1; margin-left: 12px; padding: 20px; background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border-left: 3px solid var(--dusty-pink); position: relative; overflow: hidden;">
+                        <div style="display: inline-block; padding: 4px 14px; background: var(--sage-light); color: var(--sage-dark); border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">{{ $story['date'] ?? '' }}</div>
+                        <h3 class="font-serif" style="font-size: 1.15rem; color: var(--sage-dark); font-weight: 600; margin-bottom: 6px; line-height: 1.3;">{{ $story['title'] ?? '' }}</h3>
+                        <p style="font-size: 13px; line-height: 1.75; color: var(--text-main);">{{ $story['description'] ?? '' }}</p>
+                        <div class="font-script" style="position: absolute; bottom: -4px; right: 8px; font-size: 3rem; color: var(--dusty-pink); opacity: 0.3; pointer-events: none; transform: rotate(-12deg);">❦</div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
         {{-- GIFT --}}
         @if($invitation->enable_gift)
         <section id="gift" class="section">
@@ -1113,19 +1141,21 @@ body {
                         </div>
                         
                         <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: bold; color: var(--sage-dark);">Konfirmasi Kehadiran</label>
-                            <div style="display: flex; gap: 10px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: bold; color: var(--sage-dark);">Konfirmasi Kehadiran</label>
+                            <div class="flex gap-2">
                                 <button type="button" @click="status = 'confirmed'"
+                                    :class="status === 'confirmed' ? 'shadow-md' : 'shadow-sm'"
                                     :style="status === 'confirmed' ? 'background: var(--sage-medium); color: white; border-color: var(--sage-medium);' : 'background: white; color: var(--sage-dark); border-color: #ddd;'"
-                                    style="flex: 1; padding: 10px; border: 2px solid; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    Hadir
+                                    class="flex-1 p-2 sm:p-3 border-2 rounded-xl cursor-pointer flex items-center justify-center gap-1 sm:gap-2 transition-all">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span class="font-semibold text-xs sm:text-sm whitespace-nowrap">Akan Hadir</span>
                                 </button>
                                 <button type="button" @click="status = 'declined'"
+                                    :class="status === 'declined' ? 'shadow-md' : 'shadow-sm'"
                                     :style="status === 'declined' ? 'background: #dc3545; color: white; border-color: #dc3545;' : 'background: white; color: var(--sage-dark); border-color: #ddd;'"
-                                    style="flex: 1; padding: 10px; border: 2px solid; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    Tidak Hadir
+                                    class="flex-1 p-2 sm:p-3 border-2 rounded-xl cursor-pointer flex items-center justify-center gap-1 sm:gap-2 transition-all">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    <span class="font-semibold text-xs sm:text-sm whitespace-nowrap">Tidak Hadir</span>
                                 </button>
                             </div>
                         </div>
@@ -1161,22 +1191,22 @@ body {
                                     <div style="font-weight: 700; color: var(--sage-dark);" x-text="wish.name"></div>
                                     <span style="font-size: 0.7rem; color: #aaa;" x-text="wish.time"></span>
                                 </div>
-                                <p style="font-size: 0.9rem; color: #666; font-style: italic; margin-bottom: 8px;" x-text="'\"' + wish.message + '\"'"></p>
+                                <p style="font-size: 0.9rem; color: #666; font-style: italic; margin-bottom: 8px;" x-text="`- ` + wish.message + ` -`"></p>
                                 <template x-if="wish.attendance_status">
-                                    <span>
+                                    <div class="mt-2 flex flex-wrap gap-2">
                                         <template x-if="wish.attendance_status === 'confirmed'">
-                                            <span style="display: inline-flex; align-items: center; gap: 4px; background: #DEF7EC; color: #03543F; font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 20px;">
-                                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                                Akan Hadir
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold" style="background-color: #DEF7EC; color: #03543F;">
+                                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                <span class="whitespace-nowrap">Akan Hadir</span>
                                             </span>
                                         </template>
                                         <template x-if="wish.attendance_status === 'declined'">
-                                            <span style="display: inline-flex; align-items: center; gap: 4px; background: #FDE8E8; color: #9B1C1C; font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 20px;">
-                                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                Tidak Hadir
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold" style="background-color: #FDE8E8; color: #9B1C1C;">
+                                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                <span class="whitespace-nowrap">Tidak Hadir</span>
                                             </span>
                                         </template>
-                                    </span>
+                                    </div>
                                 </template>
                             </div>
                         </template>

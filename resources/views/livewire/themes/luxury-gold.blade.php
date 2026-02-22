@@ -253,7 +253,7 @@
                     </div>
                 </div>
 
-                <h3 class="text-sm md:text-base uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-2 font-serif">The Wedding Of</h3>
+                <h3 class="text-sm md:text-base uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 mb-2 font-serif">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</h3>
                 <h1 class="font-script text-5xl md:text-7xl text-primary mb-4 text-shadow-gold">
                     {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
                 </h1>
@@ -505,6 +505,36 @@
                         </div>
                     </div>
                     @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="py-20 px-6 scroll-mt-16">
+            <div class="max-w-2xl mx-auto">
+                <div class="text-center mb-16" data-reveal>
+                    <h2 class="font-script text-5xl text-primary mb-2">Our Journey</h2>
+                    <p class="font-serif text-gray-500 dark:text-gray-400">Kisah Cinta Kami</p>
+                </div>
+
+                <div class="relative" style="padding-left: 32px;">
+                    <div class="absolute left-[15px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-primary/40 to-transparent"></div>
+
+                    <div class="space-y-8">
+                        @foreach($invitation->love_story as $index => $story)
+                        <div class="relative" data-reveal>
+                            <div class="absolute -left-[25px] top-6 w-4 h-4 rounded-full bg-white dark:bg-gray-800 border-[3px] border-primary shadow-[0_0_0_4px_rgba(197,168,111,0.15)] z-10"></div>
+                            <div class="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md p-6 rounded-2xl border border-primary/20 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+                                <div class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold mb-3 tracking-widest border border-primary/20">{{ $story['date'] ?? '' }}</div>
+                                <h3 class="font-serif text-xl font-bold text-text-dark dark:text-text-light mb-2 group-hover:text-primary transition-colors">{{ $story['title'] ?? '' }}</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ $story['description'] ?? '' }}</p>
+                                <div class="absolute -bottom-2 -right-2 font-script text-5xl text-primary/5 group-hover:text-primary/10 transition-colors rotate-[-12deg] pointer-events-none">❦</div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </section>

@@ -370,7 +370,7 @@
             
             {{-- Top Section: Names (centered) --}}
             <div style="position: relative; z-index: 2; text-align: center; width: 80%; max-width: 500px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <h3 class="font-serif mb-20" style="letter-spacing: 3px;">THE WEDDING OF</h3>
+                <h3 class="font-serif mb-20" style="letter-spacing: 3px;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</h3>
                 @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
                 <h1 class="font-script mb-20">
                     @if($order === 'bride_first')
@@ -513,6 +513,30 @@
                 </div>
             </div>
             @endif
+
+             {{-- Love Story --}}
+             @if($invitation->love_story && count($invitation->love_story) > 0)
+             <div class="card">
+                 <h2 class="font-serif mb-20" style="border-bottom: 1px solid var(--primary); display: inline-block; padding-bottom: 10px;">Kisah Cinta Kami</h2>
+
+                 <div style="position: relative; padding: 0;">
+                     <div style="position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--primary), var(--primary), transparent);"></div>
+
+                     @foreach($invitation->love_story as $index => $story)
+                     <div style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '24px' }}; position: relative;">
+                         <div style="flex-shrink: 0; width: 30px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 16px;">
+                             <div style="width: 12px; height: 12px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary), 0 0 20px rgba(212,175,55,0.3);"></div>
+                         </div>
+                         <div style="flex: 1; margin-left: 10px; padding: 18px; background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; position: relative; overflow: hidden; backdrop-filter: blur(10px);">
+                             <div style="display: inline-block; padding: 3px 12px; background: rgba(212,175,55,0.2); color: var(--primary); border-radius: 20px; font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px;">{{ $story['date'] ?? '' }}</div>
+                             <h3 class="font-serif" style="font-size: 1.1rem; color: var(--primary); margin-bottom: 5px; line-height: 1.3;">{{ $story['title'] ?? '' }}</h3>
+                             <p style="font-size: 12px; line-height: 1.7; color: #ccc; opacity: 0.9;">{{ $story['description'] ?? '' }}</p>
+                         </div>
+                     </div>
+                     @endforeach
+                 </div>
+             </div>
+             @endif
 
              {{-- Gift (Amplop Digital) --}}
              @if($invitation->enable_gift)

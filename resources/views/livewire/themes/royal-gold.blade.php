@@ -1154,7 +1154,7 @@ body {
         
         {{-- Top Section: Names --}}
         <div class="relative z-10 text-center text-white w-full max-w-sm px-6 flex-1 flex flex-col items-center justify-center">
-            <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">THE WEDDING OF</p>
+            <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
             
             @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
             @if($order === 'bride_first')
@@ -1223,7 +1223,9 @@ body {
             <div class="hero-bg"></div>
             
             {{-- Content --}}
-            <div class="hero-content">
+            <div class="hero-content relative z-10">
+                <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
+                
                 {{-- Couple Photo --}}
                 <div class="hero-photo">
                     <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple">
@@ -1516,6 +1518,35 @@ body {
                        x-text="lightboxCaption" 
                        class="absolute bottom-0 left-0 right-0 p-4 text-center text-white bg-gradient-to-t from-black/70 to-transparent rounded-b-lg"></p>
                 </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="section" style="background: var(--cream); position: relative; overflow: hidden;">
+            <div class="section-title" style="position: relative; z-index: 1;">
+                <p style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; color: var(--gold);">Our Journey</p>
+                <h2>Kisah Cinta Kami</h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="max-w-lg mx-auto" style="position: relative; z-index: 1; padding: 0 16px;">
+                <div style="position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--gold), var(--gold), transparent);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '28px' }}; position: relative;">
+                    <div style="flex-shrink: 0; width: 32px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 20px;">
+                        <div style="width: 14px; height: 14px; background: white; border: 3px solid var(--gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(201,162,39,0.15);"></div>
+                    </div>
+                    <div style="flex: 1; margin-left: 12px; padding: 20px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-left: 3px solid var(--gold-light); position: relative; overflow: hidden;">
+                        <div style="display: inline-block; padding: 4px 14px; background: var(--gold-light); color: var(--gold-dark); border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">{{ $story['date'] ?? '' }}</div>
+                        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--dark); font-weight: 600; margin-bottom: 6px; line-height: 1.3;">{{ $story['title'] ?? '' }}</h3>
+                        <p style="font-size: 13px; line-height: 1.75; color: var(--text);">{{ $story['description'] ?? '' }}</p>
+                        <div style="position: absolute; bottom: -4px; right: 8px; font-family: 'Great Vibes', cursive; font-size: 3rem; color: var(--gold-light); opacity: 0.25; pointer-events: none; transform: rotate(-12deg);">❦</div>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </section>
         @endif

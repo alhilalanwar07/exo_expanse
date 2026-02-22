@@ -1236,7 +1236,7 @@ body {
         
         {{-- Top Section: Names --}}
         <div class="relative z-10 text-center text-white w-full max-w-sm px-6 flex-1 flex flex-col items-center justify-center">
-            <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">THE WEDDING OF</p>
+            <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.9; margin-bottom: 24px;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
             
             @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
             @if($order === 'bride_first')
@@ -1304,8 +1304,13 @@ body {
             {{-- Background --}}
             <div class="hero-bg"></div>
             
+            {{-- Ornament --}}
+            <div class="absolute inset-0 w-full h-full pointer-events-none z-[1]" style="background-image: url('{{ asset('assets/themes/ornamen_atas_bawah.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.85;"></div>
+            
             {{-- Content --}}
-            <div class="hero-content">
+            <div class="hero-content relative z-10">
+                <p style="font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px;">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
+                
                 {{-- Couple Photo --}}
                 <div class="hero-photo">
                     <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple">
@@ -1603,6 +1608,60 @@ body {
         </section>
         @endif
 
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="section" style="background: var(--cream); position: relative; overflow: hidden;">
+            {{-- Background Ornament --}}
+            <div style="position: absolute; inset: 0; background-image: url('{{ asset('assets/themes/ornamen_atas_bawah.png') }}'); background-size: cover; background-position: center; opacity: 0.15; pointer-events: none; z-index: 0;"></div>
+
+            {{-- Section Title --}}
+            <div class="section-title" style="position: relative; z-index: 1;">
+                <p style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; color: var(--gold);">Our Journey</p>
+                <h2>Kisah Cinta Kami</h2>
+                <div class="divider"></div>
+            </div>
+
+            {{-- Timeline Container --}}
+            <div class="max-w-lg mx-auto" style="position: relative; z-index: 1; padding: 0 16px;">
+                
+                {{-- Vertical Line --}}
+                <div style="position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--gold), var(--gold), transparent);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div class="animate-fade-up" style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '28px' }}; position: relative; opacity: 0; animation-delay: {{ $index * 0.15 }}s;">
+                    
+                    {{-- Timeline Dot --}}
+                    <div style="flex-shrink: 0; width: 32px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 20px;">
+                        <div style="width: 14px; height: 14px; background: white; border: 3px solid var(--gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(212,165,165,0.2);"></div>
+                    </div>
+
+                    {{-- Story Card --}}
+                    <div class="card" style="flex: 1; margin-left: 12px; padding: 20px; border-left: 3px solid var(--gold-light); position: relative;">
+                        {{-- Year Badge --}}
+                        <div style="display: inline-block; padding: 4px 14px; background: var(--gold-light); color: var(--gold-dark); border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">
+                            {{ $story['date'] ?? '' }}
+                        </div>
+                        
+                        {{-- Title --}}
+                        <h3 class="font-serif" style="font-size: 1.15rem; color: var(--dark); font-weight: 600; margin-bottom: 6px; line-height: 1.3;">
+                            {{ $story['title'] ?? '' }}
+                        </h3>
+                        
+                        {{-- Description --}}
+                        <p style="font-size: 13px; line-height: 1.75; color: var(--text);">
+                            {{ $story['description'] ?? '' }}
+                        </p>
+
+                        {{-- Decorative Heart --}}
+                        <div class="font-script" style="position: absolute; bottom: -4px; right: 8px; font-size: 3rem; color: var(--gold-light); opacity: 0.35; pointer-events: none; transform: rotate(-12deg);">❦</div>
+                    </div>
+                </div>
+                @endforeach
+
+            </div>
+        </section>
+        @endif
+
         {{-- GIFT --}}
         @if($invitation->enable_gift)
         <section id="gift" class="section" style="background: linear-gradient(180deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%); position: relative; overflow: hidden;">
@@ -1848,39 +1907,41 @@ body {
                 <div class="rsvp-wishes-list">
                     <h3 class="rsvp-wishes-title">Ucapan Terbaru</h3>
                     
-                    <template x-for="wish in wishes" :key="wish.id">
-                        <div class="rsvp-wish-card">
-                            <div style="display: flex; gap: 12px;">
-                                <div class="rsvp-wish-avatar" x-text="wish.initial"></div>
-                                <div style="flex: 1; min-width: 0;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                                        <h4 class="rsvp-wish-name" x-text="wish.name"></h4>
-                                        <span class="rsvp-wish-time" x-text="wish.time"></span>
+                    <div style="max-height: 480px; overflow-y: auto; padding-right: 8px; scrollbar-width: thin; scrollbar-color: var(--gold) #f1f1f1;" class="wishes-container custom-scrollbar">
+                        <template x-for="wish in wishes" :key="wish.id">
+                            <div class="rsvp-wish-card">
+                                <div style="display: flex; gap: 12px;">
+                                    <div class="rsvp-wish-avatar" x-text="wish.initial"></div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                            <h4 class="rsvp-wish-name" x-text="wish.name"></h4>
+                                            <span class="rsvp-wish-time" x-text="wish.time"></span>
+                                        </div>
+                                        <p class="rsvp-wish-message" x-text="wish.message"></p>
+                                        <template x-if="wish.attendance_status">
+                                            <span class="rsvp-attendance-badge" :class="wish.attendance_status">
+                                                <template x-if="wish.attendance_status === 'confirmed'">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                </template>
+                                                <template x-if="wish.attendance_status === 'declined'">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                </template>
+                                                <span x-text="wish.attendance_status === 'confirmed' ? 'Akan Hadir' : 'Tidak Hadir'"></span>
+                                            </span>
+                                        </template>
                                     </div>
-                                    <p class="rsvp-wish-message" x-text="wish.message"></p>
-                                    <template x-if="wish.attendance_status">
-                                        <span class="rsvp-attendance-badge" :class="wish.attendance_status">
-                                            <template x-if="wish.attendance_status === 'confirmed'">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                            </template>
-                                            <template x-if="wish.attendance_status === 'declined'">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                            </template>
-                                            <span x-text="wish.attendance_status === 'confirmed' ? 'Akan Hadir' : 'Tidak Hadir'"></span>
-                                        </span>
-                                    </template>
                                 </div>
                             </div>
-                        </div>
-                    </template>
+                        </template>
 
-                    {{-- Empty State --}}
-                    <div x-show="wishes.length === 0" class="rsvp-empty">
-                        <div class="rsvp-empty-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        {{-- Empty State --}}
+                        <div x-show="wishes.length === 0" class="rsvp-empty">
+                            <div class="rsvp-empty-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            </div>
+                            <p class="rsvp-empty-text">Belum ada ucapan</p>
+                            <p class="rsvp-empty-subtext">Jadilah yang pertama memberikan ucapan!</p>
                         </div>
-                        <p class="rsvp-empty-text">Belum ada ucapan</p>
-                        <p class="rsvp-empty-subtext">Jadilah yang pertama memberikan ucapan!</p>
                     </div>
                 </div>
             </div>

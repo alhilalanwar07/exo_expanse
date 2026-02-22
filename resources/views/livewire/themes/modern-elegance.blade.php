@@ -164,7 +164,7 @@
             
             <div class="space-y-4 opacity-0 animate-[fadeInDown_1s_ease-out_1s_forwards]">
                 <p class="font-body text-[10px] tracking-[0.4em] uppercase text-gold-light border-y border-white/20 py-2 inline-block">
-                    The Wedding Of
+                    {{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}
                 </p>
             </div>
 

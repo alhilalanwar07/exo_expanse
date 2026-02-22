@@ -452,6 +452,33 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
             </div>
         </section>
 
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="section" style="background: var(--mystic-dark);">
+            <div class="section-title reveal-element">
+                <h2>Our Journey</h2>
+                <div class="mystic-divider"></div>
+            </div>
+
+            <div style="position: relative; max-width: 500px; margin: 0 auto; padding: 0 16px;">
+                <div style="position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--mystic-gold), var(--mystic-gold), transparent); box-shadow: 0 0 10px var(--mystic-gold);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div class="reveal-element delay-{{ min($index + 1, 3) }}" style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '30px' }}; position: relative;">
+                    <div style="flex-shrink: 0; width: 30px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 18px;">
+                        <div style="width: 14px; height: 14px; background: var(--mystic-dark); border: 3px solid var(--mystic-gold); border-radius: 50%; box-shadow: 0 0 15px var(--mystic-gold);"></div>
+                    </div>
+                    <div class="glass-card" style="flex: 1; margin-left: 10px; padding: 20px;">
+                        <div style="display: inline-block; padding: 3px 12px; background: rgba(212,175,55,0.2); color: var(--mystic-gold); border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">{{ $story['date'] ?? '' }}</div>
+                        <h3 style="color: var(--mystic-gold); font-size: 1.2rem; margin-bottom: 6px;">{{ $story['title'] ?? '' }}</h3>
+                        <p style="font-size: 13px; line-height: 1.7; color: var(--mystic-cream); opacity: 0.85;">{{ $story['description'] ?? '' }}</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
         {{-- GIFT --}}
         @if($invitation->enable_gift)
         <section id="gift" class="section" style="background: var(--mystic-dark);">

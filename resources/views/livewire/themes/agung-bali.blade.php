@@ -741,6 +741,33 @@ body {
         </section>
         @endif
 
+        {{-- LOVE STORY --}}
+        @if($invitation->love_story && count($invitation->love_story) > 0)
+        <section id="lovestory" class="section" style="background: white;">
+            <div class="section-title">
+                <h2>Kisah Cinta</h2>
+                <div class="bali-divider"><span>❖</span></div>
+            </div>
+
+            <div class="max-w-lg mx-auto" style="position: relative; padding: 0 16px;">
+                <div style="position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--bali-gold), var(--bali-gold), transparent);"></div>
+
+                @foreach($invitation->love_story as $index => $story)
+                <div class="animate-fade-up" style="display: flex; align-items: flex-start; margin-bottom: {{ $loop->last ? '0' : '28px' }}; position: relative; opacity: 0; animation-delay: {{ $index * 0.15 }}s;">
+                    <div style="flex-shrink: 0; width: 32px; display: flex; justify-content: center; position: relative; z-index: 2; padding-top: 20px;">
+                        <div style="width: 14px; height: 14px; background: var(--bali-cream); border: 3px solid var(--bali-gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(212,175,55,0.15);"></div>
+                    </div>
+                    <div class="card" style="flex: 1; margin-left: 12px; padding: 20px; border-left: 3px solid var(--bali-gold);">
+                        <div style="display: inline-block; padding: 4px 14px; background: var(--bali-brown); color: var(--bali-gold); border-radius: 2px; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; font-family: 'Cinzel Decorative', cursive;">{{ $story['date'] ?? '' }}</div>
+                        <h3 style="font-family: 'Cinzel Decorative', cursive; font-size: 1.1rem; color: var(--bali-brown); font-weight: 700; margin-bottom: 6px; line-height: 1.3;">{{ $story['title'] ?? '' }}</h3>
+                        <p style="font-size: 13px; line-height: 1.75; color: var(--text-main);">{{ $story['description'] ?? '' }}</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
         {{-- GIFT --}}
         @if($invitation->enable_gift)
         <section id="gift" class="section" style="background-color: var(--bali-brown); color: var(--bali-cream);">
