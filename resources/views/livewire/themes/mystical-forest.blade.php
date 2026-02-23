@@ -632,7 +632,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
                                 <span x-text="wish.name"></span>
                                 <span style="font-size: 0.7rem; opacity: 0.7; font-weight: normal; float: right;" x-text="wish.time"></span>
                             </div>
-                            <p style="font-size: 0.9rem; margin-top: 5px; font-style: italic;" x-text="'\"' + wish.message + '\"'"></p>
+                            <p style="font-size: 0.9rem; margin-top: 5px; font-style: italic;" x-text="'- ' + wish.message + ' -'"></p>
                             <template x-if="wish.attendance_status">
                                 <span>
                                     <template x-if="wish.attendance_status === 'confirmed'">

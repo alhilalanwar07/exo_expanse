@@ -939,7 +939,7 @@ body {
                                      <span x-text="wish.name"></span>
                                      <span style="font-size: 0.7rem; color: #aaa; font-weight: normal; float: right;" x-text="wish.time"></span>
                                  </div>
-                                 <p style="font-size: 13px; color: #555; margin: 8px 0;" x-text="'\"' + wish.message + '\"'"></p>
+                                 <p style="font-size: 13px; color: #555; margin: 8px 0;" x-text="'- ' + wish.message + ' -'"></p>
                                  <template x-if="wish.attendance_status">
                                      <span>
                                          <template x-if="wish.attendance_status === 'confirmed'">

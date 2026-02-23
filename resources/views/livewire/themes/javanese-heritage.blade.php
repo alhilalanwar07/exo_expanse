@@ -1032,7 +1032,7 @@
                                     <h4 class="font-bold text-gold text-sm" x-text="wish.name"></h4>
                                     <span class="text-[10px] text-gray-500" x-text="wish.time"></span>
                                 </div>
-                                <p class="text-xs md:text-sm text-gray-300 italic" x-text="'\"' + wish.message + '\"'"></p>
+                                <p class="text-xs md:text-sm text-gray-300 italic" x-text="'- ' + wish.message + ' -'"></p>
                                 <template x-if="wish.attendance_status">
                                     <span>
                                         <template x-if="wish.attendance_status === 'confirmed'">

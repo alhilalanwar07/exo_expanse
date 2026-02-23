@@ -17,7 +17,7 @@ class Welcome extends Component
     {
         // Pastikan Model Theme ada, jika tidak, mock
         if (class_exists(\App\Models\Theme::class)) {
-            return \App\Models\Theme::where('is_active', true)->limit(4)->get();
+            return \App\Models\Theme::where('is_active', true)->limit(8)->get();
         }
 
         return collect([]);
