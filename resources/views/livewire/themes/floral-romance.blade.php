@@ -640,7 +640,7 @@ body {
 .hero-countdown {
     display: flex;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 0px;
 }
 .hero-countdown-item {
     background: var(--gold);
@@ -665,7 +665,7 @@ body {
     margin-top: 4px;
 }
 .hero-date-display {
-    margin-top: 16px;
+    margin-top: 10px;
     text-align: center;
 }
 .hero-day {

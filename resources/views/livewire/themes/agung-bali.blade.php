@@ -7,6 +7,7 @@
 @endpush
 
 @push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <style>
 :root {
     --bali-gold: #D4AF37; /* Emas Prada */
@@ -57,6 +58,12 @@ body {
 
 .animate-fade-up { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-float { animation: float 4s ease-in-out infinite; }
+
+/* === REVEAL ON SCROLL === */
+.reveal-on-scroll {
+    opacity: 0; /* Hidden initially, Animate.css will take over */
+    --animate-duration: 1s; /* slightly faster for more snappy scroll */
+}
 
 /* === ORNAMENTS === */
 /* Border Khas Bali (Double Border) */
@@ -446,6 +453,91 @@ body {
     font-size: 2rem; color: #fff; margin: 10px 0;
 }
 
+/* === TEDUNG ANIMATION === */
+.tedung-wrapper {
+    position: absolute;
+    bottom: 0px; 
+    z-index: 5;
+    transform-origin: bottom center;
+    pointer-events: none; /* Prevent blocking clicks */
+}
+.tedung-left {
+    left: -20px;
+    animation: swayTedung 5s ease-in-out infinite alternate;
+}
+.tedung-right {
+    right: -20px;
+    animation: swayTedung 5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes swayTedung {
+    0% { transform: rotate(-3deg); }
+    100% { transform: rotate(3deg); }
+}
+
+.tedung-svg {
+    width: 140px;
+    height: auto;
+    filter: drop-shadow(4px 4px 10px rgba(0,0,0,0.6));
+}
+@media (min-width: 640px) {
+    .tedung-svg { width: 180px; }
+    .tedung-left { left: 20px; }
+    .tedung-right { right: 20px; }
+}
+
+/* === BACKGROUND ANIMATIONS (JEPUN & FIREFLIES) === */
+.bg-animation-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Bunga Jepun (Frangipani) Falling */
+.bunga-jepun {
+    position: absolute;
+    width: 24px; height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 15 C 65 25, 75 40, 85 45 C 70 55, 60 70, 50 85 C 40 70, 30 55, 15 45 C 25 40, 35 25, 50 15 Z' fill='%23FDFBF7' stroke='%23D4AF37' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23D4AF37'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: fallJepun 15s linear infinite;
+    opacity: 0;
+}
+@keyframes fallJepun {
+    0% { transform: translate(0, -50px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.9; }
+    90% { opacity: 0.9; }
+    100% { transform: translate(120px, 100vh) rotate(360deg); opacity: 0; }
+}
+.bunga-jepun:nth-child(1) { left: 10%; animation-delay: 0s; width: 28px; height: 28px; animation-duration: 16s; }
+.bunga-jepun:nth-child(2) { left: 30%; animation-delay: -4s; width: 20px; height: 20px; animation-duration: 19s; }
+.bunga-jepun:nth-child(3) { left: 55%; animation-delay: -7s; width: 32px; height: 32px; animation-duration: 22s; }
+.bunga-jepun:nth-child(4) { left: 75%; animation-delay: -2s; width: 22px; height: 22px; animation-duration: 15s; }
+.bunga-jepun:nth-child(5) { left: 90%; animation-delay: -9s; width: 26px; height: 26px; animation-duration: 18s; }
+
+/* Glowing Fireflies / Gold Dust */
+.firefly {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: #D4AF37;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px rgba(212,175,55,0.8);
+    animation: floatFirefly 8s ease-in-out infinite alternate;
+    opacity: 0;
+}
+@keyframes floatFirefly {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    50% { opacity: 0.8; transform: translateY(-30px) scale(1.5); }
+    100% { transform: translateY(-60px) scale(0.8); opacity: 0; }
+}
+.firefly:nth-child(6) { left: 20%; top: 80%; animation-delay: 0s; animation-duration: 9s; }
+.firefly:nth-child(7) { left: 40%; top: 60%; animation-delay: -2s; animation-duration: 7s; }
+.firefly:nth-child(8) { left: 60%; top: 90%; animation-delay: -4s; animation-duration: 11s; }
+.firefly:nth-child(9) { left: 80%; top: 70%; animation-delay: -1s; animation-duration: 8s; }
+.firefly:nth-child(10) { left: 15%; top: 40%; animation-delay: -3s; animation-duration: 6s; }
+
 </style>
 @endpush
 
@@ -478,6 +570,20 @@ body {
             const el = document.getElementById(id);
             if (el) observer.observe(el);
         });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('animate__fadeOutDown');
+                    entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                } else {
+                    entry.target.classList.remove('animate__fadeInUp');
+                    entry.target.classList.add('animate__animated', 'animate__fadeOutDown');
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+        
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
     },
     open() {
         this.opened = true;
@@ -524,10 +630,55 @@ body {
     </audio>
     @endif
 
+    @php
+        $tedungSvg = '
+        <svg viewBox="0 0 120 220" class="tedung-svg" xmlns="http://www.w3.org/2000/svg">
+            <!-- Tiang/Pole -->
+            <rect x="58" y="70" width="4" height="150" fill="#2C1A0F"/>
+            <!-- Gold bands -->
+            <rect x="56" y="100" width="8" height="6" fill="#D4AF37"/>
+            <rect x="56" y="140" width="8" height="6" fill="#D4AF37"/>
+            <rect x="56" y="180" width="8" height="6" fill="#D4AF37"/>
+            <!-- Payung Bawah -->
+            <path d="M 10 90 Q 60 -10 110 90 Z" fill="#FDFBF7"/>
+            <path d="M 60 20 L 30 90 M 60 20 L 45 90 M 60 20 L 75 90 M 60 20 L 90 90" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M 10 90 L 110 90 L 105 105 L 15 105 Z" fill="#D4AF37" />
+            <path d="M 15 105 Q 25 115 35 105 Q 45 115 55 105 Q 65 115 75 105 Q 85 115 95 105 Q 105 115 105 105" fill="none" stroke="#B8860B" stroke-width="2.5"/>
+            <!-- Tassels -->
+            <rect x="25" y="105" width="1.5" height="15" fill="#B8860B"/>
+            <rect x="45" y="105" width="1.5" height="15" fill="#B8860B"/>
+            <rect x="75" y="105" width="1.5" height="15" fill="#B8860B"/>
+            <rect x="95" y="105" width="1.5" height="15" fill="#B8860B"/>
+            <!-- Payung Atas -->
+            <path d="M 25 55 Q 60 -10 95 55 Z" fill="#FDFBF7"/>
+            <path d="M 60 5 L 40 55 M 60 5 L 50 55 M 60 5 L 70 55 M 60 5 L 80 55" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M 25 55 L 95 55 L 90 65 L 30 65 Z" fill="#D4AF37" />
+            <path d="M 30 65 Q 40 75 50 65 Q 60 75 70 65 Q 80 75 90 65" fill="none" stroke="#B8860B" stroke-width="2"/>
+            <!-- Finial -->
+            <path d="M 55 20 L 60 0 L 65 20 Z" fill="#D4AF37"/>
+            <circle cx="60" cy="0" r="5" fill="#D4AF37"/>
+            <circle cx="60" cy="-6" r="3" fill="#B8860B"/>
+            <rect x="59" y="-15" width="2" height="12" fill="#D4AF37"/>
+        </svg>
+        ';
+    @endphp
+
     {{-- COVER (Gate Candi Bentar Style) --}}
-    <div x-show="!opened" x-transition:leave="transition duration-1000" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="cover">
+    <div x-show="!opened" x-transition:leave="transition duration-1000" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="cover overflow-hidden">
         <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
         <div class="cover-frame"></div> {{-- Decorative border --}}
+        
+        {{-- Background Animations (Jepun & Fireflies) --}}
+        <div class="bg-animation-container">
+            <div class="bunga-jepun"></div><div class="bunga-jepun"></div>
+            <div class="bunga-jepun"></div><div class="bunga-jepun"></div><div class="bunga-jepun"></div>
+            <div class="firefly"></div><div class="firefly"></div><div class="firefly"></div>
+            <div class="firefly"></div><div class="firefly"></div>
+        </div>
+
+        {{-- Tedung Animation --}}
+        <div class="tedung-wrapper tedung-left">{!! $tedungSvg !!}</div>
+        <div class="tedung-wrapper tedung-right">{!! $tedungSvg !!}</div>
         
         {{-- Top Section: Names --}}
         <div class="relative z-10 text-center text-white w-full max-w-sm px-6 flex-1 flex flex-col items-center justify-center">
@@ -560,7 +711,7 @@ body {
     <main x-show="opened" x-transition>
         
         {{-- HERO --}}
-        <section id="home" class="hero-section" x-data="{
+        <section id="home" class="hero-section overflow-hidden" x-data="{
             days: 0, hours: 0, minutes: 0, seconds: 0,
             isActive: true,
             target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
@@ -592,6 +743,18 @@ body {
             <div class="hero-bg"></div>
             <div style="position: absolute; inset:0; background: linear-gradient(to top, #2C241B, transparent 80%); z-index: -1;"></div>
             
+            {{-- Background Animations (Jepun & Fireflies) --}}
+            <div class="bg-animation-container">
+                <div class="bunga-jepun"></div><div class="bunga-jepun"></div>
+                <div class="bunga-jepun"></div><div class="bunga-jepun"></div><div class="bunga-jepun"></div>
+                <div class="firefly"></div><div class="firefly"></div><div class="firefly"></div>
+                <div class="firefly"></div><div class="firefly"></div>
+            </div>
+
+            {{-- Tedung Animation --}}
+            <div class="tedung-wrapper tedung-left">{!! $tedungSvg !!}</div>
+            <div class="tedung-wrapper tedung-right">{!! $tedungSvg !!}</div>
+
             <div class="hero-frame">
                 {{-- Names --}}
                 <div class="hero-names-text">
@@ -621,8 +784,7 @@ body {
 
         {{-- INTRO --}}
         <section class="section">
-            <div class="max-w-lg mx-auto text-center">
-                <img src="https://img.icons8.com/ios/50/D4AF37/om.png" alt="Om Swastiastu" style="width: 40px; margin-bottom: 15px; display: inline-block;">
+            <div class="max-w-lg mx-auto text-center reveal-on-scroll">
                 <p class="font-bali-title text-xl text-bali-brown mb-4">Om Swastiastu</p>
                 <p class="text-sm leading-loose text-gray-700">
                     Atas Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa/Tuhan Yang Maha Esa, kami bermaksud mengundang Bapak/Ibu/Saudara/i pada Upacara Pawiwahan (Pernikahan) putra-putri kami.
@@ -632,7 +794,7 @@ body {
 
         {{-- COUPLE --}}
         <section id="couple" class="section" style="background: white;">
-            <div class="section-title">
+            <div class="section-title reveal-on-scroll">
                 <h2>Mempelai</h2>
                 <div class="bali-divider"><span>❖</span></div>
             </div>
@@ -641,7 +803,7 @@ body {
                 @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
                 
                 {{-- First Person --}}
-                <div class="couple-card">
+                <div class="couple-card reveal-on-scroll">
                     <div class="couple-photo-frame">
                         <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" loading="lazy">
                     </div>
@@ -649,10 +811,10 @@ body {
                     <p class="text-gray-600 text-sm italic">Putra/Putri dari: <br> {{ $order === 'bride_first' ? $invitation->bride_father : $invitation->groom_father }} & {{ $order === 'bride_first' ? $invitation->bride_mother : $invitation->groom_mother }}</p>
                 </div>
 
-                <div class="text-center my-4 font-script text-4xl text-bali-gold">&</div>
+                <div class="text-center my-4 font-script text-4xl text-bali-gold reveal-on-scroll">&</div>
 
                 {{-- Second Person --}}
-                <div class="couple-card">
+                <div class="couple-card reveal-on-scroll">
                     <div class="couple-photo-frame">
                         <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" loading="lazy">
                     </div>
@@ -664,14 +826,14 @@ body {
 
         {{-- EVENTS --}}
         <section id="events" class="section">
-            <div class="section-title">
+            <div class="section-title reveal-on-scroll">
                 <h2>Ringkasan Acara</h2>
                 <div class="bali-divider"><span>❖</span></div>
             </div>
             
             <div class="max-w-lg mx-auto">
                 {{-- Akad/Pawiwahan --}}
-                <div class="event-card">
+                <div class="event-card reveal-on-scroll">
                     <div class="event-card-inner">
                         <h3 class="event-title">Pawiwahan</h3>
                         <p class="event-date">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }}</p>
@@ -694,7 +856,7 @@ body {
 
                 {{-- Resepsi --}}
                 @if($invitation->resepsi_date)
-                <div class="event-card">
+                <div class="event-card reveal-on-scroll" style="transition-delay: 0.2s;">
                     <div class="event-card-inner">
                         <h3 class="event-title">Resepsi</h3>
                         <p class="event-date">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}</p>
@@ -720,12 +882,12 @@ body {
         {{-- GALLERY (Same Logic, Different Grid Style) --}}
         @if($invitation->enable_gallery == 1)
         <section id="gallery" class="section bg-white">
-            <div class="section-title">
+            <div class="section-title reveal-on-scroll">
                 <h2>Galeri Foto</h2>
                 <div class="bali-divider"><span>❖</span></div>
             </div>
             {{-- Logic Galeri Sama Persis --}}
-            <div class="max-w-lg mx-auto" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            <div class="max-w-lg mx-auto reveal-on-scroll" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                 @foreach($invitation->photos as $photo)
                 <div style="aspect-ratio: 1; border: 4px solid var(--bali-cream); box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;" 
                      @click="openLightbox('{{ $photo->url }}', '{{ $photo->caption ?? '' }}')">
@@ -744,7 +906,7 @@ body {
         {{-- LOVE STORY --}}
         @if($invitation->love_story && count($invitation->love_story) > 0)
         <section id="lovestory" class="section" style="background: white;">
-            <div class="section-title">
+            <div class="section-title reveal-on-scroll">
                 <h2>Kisah Cinta</h2>
                 <div class="bali-divider"><span>❖</span></div>
             </div>
@@ -771,16 +933,16 @@ body {
         {{-- GIFT --}}
         @if($invitation->enable_gift)
         <section id="gift" class="section" style="background-color: var(--bali-brown); color: var(--bali-cream);">
-            <div class="section-title">
+            <div class="section-title reveal-on-scroll">
                 <h2 style="color: var(--bali-gold);">Punia / Gift</h2>
                 <div class="bali-divider"><span>❖</span></div>
             </div>
-            <div class="max-w-md mx-auto text-center">
+            <div class="max-w-md mx-auto text-center reveal-on-scroll">
                 <p style="margin-bottom: 30px; opacity: 0.8; font-size: 14px;">Tanpa mengurangi rasa hormat, bagi keluarga dan sahabat yang ingin memberikan tanda kasih, dapat melalui:</p>
                 
                 @if($invitation->bank_accounts)
                     @foreach($invitation->bank_accounts as $account)
-                    <div class="gift-card" style="background: #2C241B; border-color: var(--bali-gold); text-align: left; margin-bottom: 15px;">
+                    <div class="gift-card reveal-on-scroll" style="background: #2C241B; border-color: var(--bali-gold); text-align: left; margin-bottom: 15px;">
                         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
                             <div style="font-size: 24px; color: var(--bali-gold);"><i class="fas fa-credit-card"></i></div> {{-- FontAwesome assumed or SVG --}}
                             <div>
@@ -796,7 +958,7 @@ body {
                     @endforeach
                 @elseif($invitation->bank_name)
                     {{-- Single Bank Logic Same as above but utilizing bank_name vars --}}
-                    <div class="gift-card" style="background: #2C241B; border-color: var(--bali-gold); text-align: left;">
+                    <div class="gift-card reveal-on-scroll" style="background: #2C241B; border-color: var(--bali-gold); text-align: left;">
                         <p style="font-weight: bold; color: var(--bali-gold);">{{ $invitation->bank_name }}</p>
                         <p style="font-family: monospace; font-size: 1.2rem;">{{ $invitation->bank_account }}</p>
                         <p style="opacity: 0.7; margin-bottom: 15px;">a.n {{ $invitation->bank_holder }}</p>
@@ -867,13 +1029,13 @@ body {
                 },
                 init() { this.loadWishes(); this.loadStats(); }
             }">
-            <div class="section-title">
+            <div class="section-title reveal-on-scroll">
                 <h2>Ucapan & Doa</h2>
                 <div class="bali-divider"><span>❖</span></div>
             </div>
             
             <div class="max-w-md mx-auto">
-                <div style="background: white; padding: 30px; border: 1px solid var(--bali-gold); box-shadow: 5px 5px 0 rgba(212,175,55,0.1);">
+                <div class="reveal-on-scroll" style="background: white; padding: 30px; border: 1px solid var(--bali-gold); box-shadow: 5px 5px 0 rgba(212,175,55,0.1);">
                     {{-- Success --}}
                     <div x-show="success" x-transition style="margin-bottom: 15px; padding: 10px; background: rgba(40, 167, 69, 0.2); border: 1px solid #28a745; border-radius: 8px; text-align: center; color: #155724;">
                         ✓ Terima kasih! Ucapan dan konfirmasi Anda telah tersimpan.
@@ -889,18 +1051,18 @@ body {
 
                        <div style="margin-bottom: 15px;">
                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Konfirmasi Kehadiran</label>
-                           <div style="display: flex; gap: 10px;">
+                           <div class="flex gap-2">
                                <button type="button" @click="status = 'confirmed'"
                                    :style="status === 'confirmed' ? 'background: var(--bali-gold); color: var(--bali-brown); border-color: var(--bali-gold);' : 'background: white; color: var(--bali-brown); border-color: #ddd;'"
-                                   style="flex: 1; padding: 10px; border: 2px solid; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                   <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                   Hadir
+                                   class="flex-1 py-3 px-2 border-2 rounded-lg cursor-pointer transition-all duration-300 flex flex-col items-center justify-center gap-2 text-[0.9rem] font-semibold">
+                                   <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                   <span>Hadir</span>
                                </button>
                                <button type="button" @click="status = 'declined'"
                                    :style="status === 'declined' ? 'background: #dc3545; color: white; border-color: #dc3545;' : 'background: white; color: var(--bali-brown); border-color: #ddd;'"
-                                   style="flex: 1; padding: 10px; border: 2px solid; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                   <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                   Tidak Hadir
+                                   class="flex-1 py-3 px-2 border-2 rounded-lg cursor-pointer transition-all duration-300 flex flex-col items-center justify-center gap-2 text-[0.9rem] font-semibold leading-tight text-center">
+                                   <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                   <span>Tidak Hadir</span>
                                </button>
                            </div>
                        </div>
@@ -929,7 +1091,7 @@ body {
                 </div>
                 
                 {{-- Wishes List --}}
-                <div style="margin-top: 40px;">
+                <div class="reveal-on-scroll" style="margin-top: 40px;">
                      <div class="text-center mb-4 font-bali-title text-bali-brown">Doa Restu</div>
                      
                      <div style="text-align: left; max-height: 400px; overflow-y: auto; padding-right: 5px;">
@@ -969,7 +1131,7 @@ body {
         @endif
 
         {{-- FOOTER --}}
-        <footer style="background: var(--bali-brown); color: var(--bali-cream); text-align: center; padding: 40px 20px 100px;">
+        <footer class="reveal-on-scroll" style="background: var(--bali-brown); color: var(--bali-cream); text-align: center; padding: 40px 20px 100px;">
             <p class="font-bali-title" style="font-size: 1.5rem; color: var(--bali-gold); margin-bottom: 10px;">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</p>
             <p style="font-size: 0.8rem;">Om Shanti Shanti Shanti Om</p>
         </footer>

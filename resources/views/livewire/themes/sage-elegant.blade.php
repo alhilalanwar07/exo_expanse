@@ -72,16 +72,12 @@
     @section('title', 'The Wedding of ' . $invitation->groom_nickname . ' & ' . $invitation->bride_nickname)
 
     @push('styles')
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
@@ -153,6 +149,45 @@
         .ornament-tr { top: 0; right: 0; transform: scaleX(-1); }
         .ornament-bl { bottom: 0; left: 0; } 
         .ornament-br { bottom: 0; right: 0; transform: scaleX(-1); }
+
+        /* ANIMASI CAPUNG */
+        .dragonfly {
+            position: absolute;
+            width: 65px;
+            top: 30px;
+            right: 30px;
+            z-index: 10;
+            opacity: 0;
+            /* Terbang selama 3 detik, setelah itu tetap di tempat */
+            animation: fly-in 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            transform-origin: center;
+        }
+
+        @keyframes fly-in {
+            0% { transform: translate(-80vw, 80vh) rotate(-60deg) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            60% { transform: translate(-60px, 40px) rotate(20deg) scale(1.2); }
+            100% { transform: translate(0, 0) rotate(-35deg) scale(1); opacity: 1; }
+        }
+
+        /* Animasi sayap mengepak */
+        .wing-l {
+            transform-origin: right center;
+            animation: flap-l 0.05s infinite alternate;
+        }
+        .wing-r {
+            transform-origin: left center;
+            animation: flap-r 0.05s infinite alternate;
+        }
+
+        @keyframes flap-l {
+            0% { transform: rotateY(0deg) skewY(0deg); }
+            100% { transform: rotateY(40deg) skewY(-10deg); }
+        }
+        @keyframes flap-r {
+            0% { transform: rotateY(0deg) skewY(0deg); }
+            100% { transform: rotateY(-40deg) skewY(10deg); }
+        }
 
         /* Profile Image */
         .couple-frame {
@@ -245,59 +280,186 @@
             transition: transform 0.5s;
         }
         .gallery-item:hover img { transform: scale(1.1); }
-        
+
+        /* ============================== */
+        /* ANIMATED BACKGROUNDS           */
+        /* ============================== */
+
+        /* Floating Orbs */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(60px);
+        }
+        @keyframes orb-float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -30px) scale(1.1); }
+            50% { transform: translate(-15px, -10px) scale(0.95); }
+            75% { transform: translate(10px, 20px) scale(1.05); }
+        }
+        @keyframes orb-float-reverse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-20px, 20px) scale(1.05); }
+            50% { transform: translate(15px, -15px) scale(0.9); }
+            75% { transform: translate(-10px, -25px) scale(1.1); }
+        }
+
+        /* Floating Particles */
+        .bg-particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes particle-drift {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.4; }
+            25% { transform: translateY(-20px) translateX(8px); opacity: 0.8; }
+            50% { transform: translateY(-10px) translateX(-5px); opacity: 0.6; }
+            75% { transform: translateY(-25px) translateX(12px); opacity: 1; }
+        }
+
+        /* Sparkle dots */
+        @keyframes sparkle-blink {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        .bg-sparkle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Wave Separator */
+        .wave-separator {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            margin-top: -1px;
+        }
+        .wave-separator svg {
+            display: block;
+            width: 100%;
+            height: 50px;
+        }
+        .wave-separator.flip {
+            transform: rotate(180deg);
+            margin-bottom: -1px;
+            margin-top: 0;
+        }
+
+        /* Section relative positioning */
+        .section-animated {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Heartbeat for heart icon */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+        }
+        .animate-heartbeat {
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        /* Gradient shimmer for dividers */
+        @keyframes shimmer-line {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-light), var(--primary-color), var(--primary-light), transparent);
+            background-size: 200% 100%;
+            animation: shimmer-line 3s linear infinite;
+        }
+
         /* Responsive text */
         @media (max-width: 576px) {
             h1.font-script { font-size: 3rem; }
             .flower-ornament { width: 100px; }
+            .bg-orb { filter: blur(40px); }
         }
     </style>
     @endpush
 
-    <!-- AUDIO PLAYER -->
     @if($invitation->background_music)
     <audio id="bgMusic" loop preload="auto">
         <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : asset('storage/' . $invitation->background_music) }}" type="audio/mpeg">
     </audio>
     @endif
 
-    <!-- 1. COVER SCREEN (MODAL) -->
-    <section id="cover-screen" x-show="!opened" x-transition:leave="transition ease-in duration-1000" x-transition:leave-start="transform translate-y-0" x-transition:leave-end="transform -translate-y-full">
-        <!-- Ornamen Bunga -->
-        <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tl" alt="flower">
-        <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tr" alt="flower">
+    <section id="cover-screen" x-show="!opened" x-transition:leave="transition ease-in duration-1000" x-transition:leave-start="transform translate-y-0" x-transition:leave-end="transform -translate-y-full" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://www.transparenttextures.com/patterns/diamond-upholstery.png' }}'); background-size: cover; background-position: center;">
         
-        <div class="text-center px-4 position-relative z-2" data-aos="zoom-in">
-            <div class="mb-3 text-primary-custom ls-2 text-uppercase fw-bold small">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</div>
+        <!-- Dark overlay to enhance text readability while keeping the photo clear -->
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 0;"></div>
+
+        <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tl z-1" alt="flower" style="opacity: 0.9;">
+        <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tr z-1" alt="flower" style="opacity: 0.9;">
+        
+        <svg class="dragonfly z-1" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M48,15 C48,15 50,10 52,15 C55,40 53,85 50,85 C47,85 45,40 48,15 Z" fill="#2c3e50"/>
+            <circle cx="48.5" cy="16" r="2.5" fill="#f0932b"/>
+            <circle cx="51.5" cy="16" r="2.5" fill="#f0932b"/>
+            <path class="wing-l" d="M49,25 C30,15 10,20 15,35 C20,45 47,35 49,25 Z" fill="rgba(104, 109, 224, 0.7)"/>
+            <path class="wing-l" d="M48,35 C25,35 5,45 10,55 C15,65 46,50 48,35 Z" fill="rgba(104, 109, 224, 0.5)"/>
+            <path class="wing-r" d="M51,25 C70,15 90,20 85,35 C80,45 53,35 51,25 Z" fill="rgba(104, 109, 224, 0.7)"/>
+            <path class="wing-r" d="M52,35 C75,35 95,45 90,55 C85,65 54,50 52,35 Z" fill="rgba(104, 109, 224, 0.5)"/>
+        </svg>
+
+        <div class="text-center px-4 position-relative z-2" data-aos="zoom-in" style="width: 100%;">
+            <div class="mb-4 text-white ls-2 text-uppercase fw-bold small" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</div>
             
-            <div class="position-relative d-inline-block py-4">
-                <!-- Lingkaran Hiasan Biru -->
-                <div class="position-absolute top-50 start-50 translate-middle border border-2 border-primary-subtle rounded-circle" style="width: 280px; height: 280px; z-index: -1;"></div>
-                <h1 class="font-script display-1 text-primary-custom mb-0">{{ $invitation->groom_nickname }}</h1>
-                <h1 class="font-script display-4 text-secondary mb-0">&</h1>
-                <h1 class="font-script display-1 text-primary-custom mb-0">{{ $invitation->bride_nickname }}</h1>
+            <div class="position-relative d-flex flex-column justify-content-center align-items-center mb-4" style="width: 280px; height: 280px; margin: 0 auto;">
+                <div class="position-absolute top-0 start-0 w-100 h-100 border border-2 border-white rounded-circle" style="z-index: -1; opacity: 0.6; box-shadow: 0 0 15px rgba(255,255,255,0.2);"></div>
+                <h1 class="font-script text-white mb-0 lh-1" style="font-size: 3.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.8);">{{ $invitation->groom_nickname }}</h1>
+                <h1 class="font-script display-5 text-white my-2 lh-1" style="text-shadow: 2px 2px 5px rgba(0,0,0,0.8);">&</h1>
+                <h1 class="font-script text-white mb-0 lh-1" style="font-size: 3.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.8);">{{ $invitation->bride_nickname }}</h1>
             </div>
 
-            <div class="mt-4 bg-white p-4 rounded-4 shadow-sm border border-light" style="max-width: 320px; margin: 0 auto;">
-                <p class="mb-1 text-muted small">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            <div class="mt-2 p-4 rounded-4 shadow-lg border border-light" style="max-width: 320px; margin: 0 auto; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);">
+                <p class="mb-1 text-muted small fw-bold">Kepada Yth. Bapak/Ibu/Saudara/i</p>
                 <div class="divider my-3 bg-primary opacity-25" style="height: 1px;"></div>
                 <h4 class="font-serif fw-bold text-dark mb-3" x-text="guestName">Tamu Undangan</h4>
-                <button @click="openInvitation()" class="btn btn-custom w-100">
+                <button @click="openInvitation()" class="btn btn-custom w-100 font-serif fw-bold" style="letter-spacing: 1px;">
                     <i class="fas fa-envelope-open-text me-2"></i> Buka Undangan
                 </button>
             </div>
         </div>
 
-        <img src="{{ asset('assets/themes/bunga_ungu_putih_pinggir_bawah.png') }}" class="flower-ornament ornament-bl" alt="flower">
-        <img src="{{ asset('assets/themes/bunga_ungu_putih_pinggir_bawah.png') }}" class="flower-ornament ornament-br" alt="flower">
+        <img src="{{ asset('assets/themes/bunga_ungu_putih_pinggir_bawah.png') }}" class="flower-ornament ornament-bl z-1" alt="flower" style="opacity: 0.9;">
+        <img src="{{ asset('assets/themes/bunga_ungu_putih_pinggir_bawah.png') }}" class="flower-ornament ornament-br z-1" alt="flower" style="opacity: 0.9;">
     </section>
 
-    <!-- MAIN CONTENT -->
     <div id="main-content" x-show="opened" style="display:none;">
         
         <!-- 2. HERO SECTION -->
-        <section id="home" class="min-vh-100 d-flex align-items-center justify-content-center position-relative pt-5 bg-light-custom">
-            <!-- Ornamen Bunga Biru -->
+        <section id="home" class="min-vh-100 d-flex align-items-center justify-content-center position-relative pt-5 bg-light-custom section-animated">
+            <!-- Animated Background Orbs -->
+            <div class="bg-orb" style="width: 300px; height: 300px; background: rgba(72,52,212,0.08); top: -80px; right: -80px; animation: orb-float 12s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 250px; height: 250px; background: rgba(104,109,224,0.06); bottom: -60px; left: -60px; animation: orb-float-reverse 15s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 180px; height: 180px; background: rgba(240,147,43,0.05); top: 40%; left: 50%; animation: orb-float 10s ease-in-out infinite 2s;"></div>
+
+            <!-- Floating Particles -->
+            <div class="bg-particle" style="width: 6px; height: 6px; background: rgba(72,52,212,0.3); top: 15%; left: 12%; animation: particle-drift 7s ease-in-out infinite;"></div>
+            <div class="bg-particle" style="width: 4px; height: 4px; background: rgba(104,109,224,0.25); top: 25%; right: 18%; animation: particle-drift 9s ease-in-out infinite 1s;"></div>
+            <div class="bg-particle" style="width: 5px; height: 5px; background: rgba(240,147,43,0.2); top: 60%; left: 80%; animation: particle-drift 8s ease-in-out infinite 2s;"></div>
+            <div class="bg-particle" style="width: 3px; height: 3px; background: rgba(72,52,212,0.2); top: 75%; left: 25%; animation: particle-drift 6s ease-in-out infinite 3s;"></div>
+
+            <!-- Sparkle dots -->
+            <div class="bg-sparkle" style="top: 20%; left: 30%; animation: sparkle-blink 4s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="top: 50%; right: 15%; animation: sparkle-blink 4s ease-in-out infinite 1.5s;"></div>
+            <div class="bg-sparkle" style="top: 70%; left: 65%; animation: sparkle-blink 4s ease-in-out infinite 3s;"></div>
+
             <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tl" alt="flower">
             <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" class="flower-ornament ornament-tr" alt="flower">
 
@@ -312,7 +474,6 @@
                     </div>
                 </div>
 
-                <!-- Countdown -->
                 <div class="row justify-content-center mt-5">
                     <div class="col-auto d-flex gap-2">
                         <div class="countdown-box">
@@ -336,34 +497,61 @@
             </div>
         </section>
 
-        <!-- 3. QUOTE (AYAT) -->
-        <section class="py-5 bg-white">
-            <div class="container text-center py-5">
+        <!-- Wave: Hero → Quote -->
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path d="M0,25 C360,50 720,0 1080,25 C1260,37.5 1350,37.5 1440,25 L1440,50 L0,50 Z" fill="white"></path>
+            </svg>
+        </div>
+
+        <!-- 3. QUOTE SECTION -->
+        <section class="py-5 bg-white section-animated">
+            <!-- Subtle orbs -->
+            <div class="bg-orb" style="width: 200px; height: 200px; background: rgba(72,52,212,0.04); top: -50px; left: -50px; animation: orb-float 14s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 150px; height: 150px; background: rgba(240,147,43,0.04); bottom: -30px; right: -30px; animation: orb-float-reverse 11s ease-in-out infinite;"></div>
+
+            <div class="container text-center py-5 position-relative z-1">
                 <div class="row justify-content-center">
                     <div class="col-lg-8" data-aos="fade-up">
-                        <div class="mb-4 text-primary-custom fs-1"><i class="fas fa-heart"></i></div>
+                        <div class="mb-4 text-primary-custom fs-1"><i class="fas fa-heart animate-heartbeat"></i></div>
+                        <div class="shimmer-divider mx-auto mb-4" style="width: 80px;"></div>
                         <p class="font-serif fs-5 text-muted fst-italic lh-lg">
                             "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang."
                         </p>
                         <p class="fw-bold text-primary-custom mt-3 ls-1">QS. Ar-Rum: 21</p>
+                        <div class="shimmer-divider mx-auto mt-4" style="width: 80px;"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. MEMPELAI (COUPLE) -->
-        <section id="couple" class="py-5 bg-light-custom position-relative">
-            <!-- Background Pattern -->
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); opacity: 0.5;"></div>
+        <!-- Wave: Quote → Couple -->
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path d="M0,25 C360,50 720,0 1080,25 C1260,37.5 1350,37.5 1440,25 L1440,50 L0,50 Z" fill="#e2e1fa"></path>
+            </svg>
+        </div>
+
+        <!-- 4. COUPLE SECTION -->
+        <section id="couple" class="py-5 bg-light-custom position-relative section-animated">
+            <!-- Animated background -->
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); opacity: 0.3;"></div>
+            <div class="bg-orb" style="width: 280px; height: 280px; background: rgba(72,52,212,0.06); top: 10%; right: -60px; animation: orb-float 13s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 220px; height: 220px; background: rgba(104,109,224,0.05); bottom: 5%; left: -40px; animation: orb-float-reverse 16s ease-in-out infinite;"></div>
+
+            <!-- Particles -->
+            <div class="bg-particle" style="width: 5px; height: 5px; background: rgba(72,52,212,0.2); top: 20%; left: 8%; animation: particle-drift 8s ease-in-out infinite;"></div>
+            <div class="bg-particle" style="width: 4px; height: 4px; background: rgba(240,147,43,0.2); top: 50%; right: 10%; animation: particle-drift 7s ease-in-out infinite 2s;"></div>
+            <div class="bg-particle" style="width: 3px; height: 3px; background: rgba(104,109,224,0.15); bottom: 20%; left: 30%; animation: particle-drift 9s ease-in-out infinite 1s;"></div>
 
             <div class="container py-4 position-relative z-1">
                 <div class="text-center mb-5" data-aos="fade-down">
                     <h2 class="font-script text-primary-custom display-4">Mempelai</h2>
+                    <div class="shimmer-divider mx-auto my-3" style="width: 60px;"></div>
                     <p class="text-muted">Dengan memohon Ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan kami:</p>
                 </div>
 
                 <div class="row g-5 justify-content-center align-items-center">
-                    <!-- Groom -->
                     <div class="col-md-5 text-center" data-aos="fade-right">
                         <div class="couple-frame mb-3 bg-white">
                             <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://placehold.co/400x400' }}" class="couple-img" alt="Groom">
@@ -380,7 +568,6 @@
                         <div class="font-script display-3 text-secondary">&</div>
                     </div>
 
-                    <!-- Bride -->
                     <div class="col-md-5 text-center" data-aos="fade-left">
                         <div class="couple-frame mb-3 bg-white">
                             <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://placehold.co/400x400' }}" class="couple-img" alt="Bride">
@@ -396,16 +583,29 @@
             </div>
         </section>
 
-        <!-- 5. EVENTS -->
-        <section id="event" class="py-5 bg-white">
-            <div class="container py-4">
+        <!-- Wave: Couple → Event -->
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path d="M0,25 C360,0 720,50 1080,25 C1260,12.5 1350,12.5 1440,25 L1440,50 L0,50 Z" fill="white"></path>
+            </svg>
+        </div>
+
+        <!-- 5. EVENTS SECTION -->
+        <section id="event" class="py-5 bg-white section-animated">
+            <!-- Background decoration -->
+            <div class="bg-orb" style="width: 250px; height: 250px; background: rgba(72,52,212,0.04); top: -40px; left: -60px; animation: orb-float 11s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 200px; height: 200px; background: rgba(240,147,43,0.04); bottom: -40px; right: -50px; animation: orb-float-reverse 14s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="top: 30%; right: 10%; animation: sparkle-blink 5s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="bottom: 25%; left: 15%; animation: sparkle-blink 5s ease-in-out infinite 2s;"></div>
+
+            <div class="container py-4 position-relative z-1">
                 <div class="text-center mb-5" data-aos="fade-up">
                     <span class="badge bg-primary-custom rounded-pill px-3 py-2 mb-2">SAVE THE DATE</span>
                     <h2 class="font-serif fw-bold display-6">Rangkaian Acara</h2>
+                    <div class="shimmer-divider mx-auto mt-3" style="width: 60px;"></div>
                 </div>
 
                 <div class="row justify-content-center g-4">
-                    <!-- Akad -->
                     <div class="col-md-6 col-lg-5" data-aos="flip-left">
                         <div class="card card-custom text-center p-4 h-100">
                             <div class="card-body">
@@ -427,7 +627,6 @@
                         </div>
                     </div>
 
-                    <!-- Resepsi -->
                     <div class="col-md-6 col-lg-5" data-aos="flip-right">
                         <div class="card card-custom text-center p-4 h-100">
                             <div class="card-body">
@@ -452,13 +651,26 @@
             </div>
         </section>
 
+        <!-- Wave: Event → Gallery -->
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path d="M0,25 C360,50 720,0 1080,25 C1260,37.5 1350,37.5 1440,25 L1440,50 L0,50 Z" fill="#e2e1fa"></path>
+            </svg>
+        </div>
+
         <!-- 6. GALLERY -->
         @if($invitation->enable_gallery)
-        <section id="gallery" class="py-5 bg-light-custom position-relative">
-            <div class="container py-4">
-                <div class="text-center mb-5">
+        <section id="gallery" class="py-5 bg-light-custom position-relative section-animated">
+            <!-- Animated bg -->
+            <div class="bg-orb" style="width: 220px; height: 220px; background: rgba(72,52,212,0.05); top: -50px; right: -40px; animation: orb-float 12s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 180px; height: 180px; background: rgba(240,147,43,0.04); bottom: -30px; left: -30px; animation: orb-float-reverse 10s ease-in-out infinite;"></div>
+            <div class="bg-particle" style="width: 5px; height: 5px; background: rgba(72,52,212,0.2); top: 20%; right: 15%; animation: particle-drift 8s ease-in-out infinite;"></div>
+            <div class="bg-particle" style="width: 4px; height: 4px; background: rgba(104,109,224,0.15); bottom: 30%; left: 10%; animation: particle-drift 7s ease-in-out infinite 1.5s;"></div>
+
+            <div class="container py-4 position-relative z-1">
+                <div class="text-center mb-5" data-aos="fade-up">
                     <h2 class="font-serif fw-bold display-6">Momen Bahagia</h2>
-                    <div class="mx-auto bg-primary-custom" style="width: 60px; height: 3px;"></div>
+                    <div class="shimmer-divider mx-auto mt-3" style="width: 60px;"></div>
                 </div>
 
                 <div class="row g-3">
@@ -474,12 +686,19 @@
         </section>
         @endif
 
-        <!-- LOVE STORY -->
+        <!-- Love Story Section -->
         @if($invitation->love_story && count($invitation->love_story) > 0)
-        <section class="py-5 bg-light-custom">
-            <div class="container py-4">
+        <section class="py-5 bg-light-custom section-animated">
+            <!-- bg decorations -->
+            <div class="bg-orb" style="width: 200px; height: 200px; background: rgba(72,52,212,0.05); top: 10%; left: -40px; animation: orb-float 14s ease-in-out infinite;"></div>
+            <div class="bg-orb" style="width: 160px; height: 160px; background: rgba(240,147,43,0.04); bottom: 10%; right: -30px; animation: orb-float-reverse 12s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="top: 25%; right: 20%; animation: sparkle-blink 4s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="bottom: 35%; left: 25%; animation: sparkle-blink 4s ease-in-out infinite 2s;"></div>
+
+            <div class="container py-4 position-relative z-1">
                 <div class="text-center mb-5" data-aos="fade-up">
                     <h2 class="font-script text-primary-custom display-4 mb-2">Our Journey</h2>
+                    <div class="shimmer-divider mx-auto my-3" style="width: 60px;"></div>
                     <p class="text-muted">Kisah Cinta Kami</p>
                 </div>
 
@@ -507,20 +726,32 @@
         </section>
         @endif
 
+        <!-- Wave: to Gift -->
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path d="M0,25 C360,0 720,50 1080,25 C1260,12.5 1350,12.5 1440,25 L1440,50 L0,50 Z" fill="white"></path>
+            </svg>
+        </div>
+
         <!-- 7. GIFT -->
         @if($invitation->enable_gift)
-        <section id="gift" class="py-5 bg-white">
-            <div class="container py-4 text-center">
+        <section id="gift" class="py-5 bg-white section-animated">
+            <!-- bg -->
+            <div class="bg-orb" style="width: 200px; height: 200px; background: rgba(72,52,212,0.04); top: -40px; right: -40px; animation: orb-float 12s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="top: 30%; left: 20%; animation: sparkle-blink 5s ease-in-out infinite;"></div>
+            <div class="bg-sparkle" style="bottom: 20%; right: 25%; animation: sparkle-blink 5s ease-in-out infinite 2.5s;"></div>
+
+            <div class="container py-4 text-center position-relative z-1">
                 <div class="row justify-content-center">
                     <div class="col-lg-6" data-aos="fade-up">
-                        <h2 class="font-script text-primary-custom display-4 mb-3">Wedding Gift</h2>
+                        <h2 class="font-script text-primary-custom display-4 mb-2">Wedding Gift</h2>
+                        <div class="shimmer-divider mx-auto my-3" style="width: 60px;"></div>
                         <p class="text-muted small mb-4">Kehadiran dan doa restu Anda adalah hadiah terindah bagi kami. Namun jika Anda ingin memberikan tanda kasih, dapat melalui:</p>
                         
                         @if($invitation->bank_accounts)
                             @foreach($invitation->bank_accounts as $acc)
                             <div class="card border-0 shadow-lg text-white text-start p-4 rounded-4 position-relative overflow-hidden mb-3" 
                                  style="background: linear-gradient(45deg, #4834d4, #686de0);">
-                                <!-- Pattern overlay -->
                                 <div class="position-absolute top-0 end-0 opacity-25 p-3">
                                     <i class="fas fa-university fa-5x"></i>
                                 </div>
@@ -553,9 +784,16 @@
         </section>
         @endif
 
+        <!-- Wave: Gift → RSVP -->
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path d="M0,25 C360,50 720,0 1080,25 C1260,37.5 1350,37.5 1440,25 L1440,50 L0,50 Z" fill="#e2e1fa"></path>
+            </svg>
+        </div>
+
         <!-- 8. RSVP -->
         @if($invitation->enable_rsvp)
-        <section id="rsvp" class="py-5 bg-light-custom"
+        <section id="rsvp" class="py-5 bg-light-custom section-animated"
             x-data="{
                 invitationId: {{ $invitation->id }},
                 name: '{{ request('kpd', '') }}',
@@ -671,7 +909,6 @@
                                     </button>
                                 </form>
 
-                                <!-- Wishes List -->
                                 <div class="mt-4 pt-4 border-top" style="max-height: 300px; overflow-y: auto;">
                                     <h6 class="fw-bold mb-3 small text-muted">Ucapan Terbaru</h6>
                                     <template x-for="wish in wishes" :key="wish.id">
@@ -707,18 +944,23 @@
         @endif
 
         <!-- FOOTER -->
-        <footer class="bg-dark text-white text-center py-5 pb-5 mb-5">
-            <h2 class="font-script mb-2">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h2>
-            <p class="small opacity-50 mb-0">Terima kasih atas kehadiran dan doa restu Anda.</p>
+        <footer class="bg-dark text-white text-center py-5 pb-5 mb-5 position-relative overflow-hidden">
+            <!-- Footer bg animation -->
+            <div class="bg-orb" style="width: 200px; height: 200px; background: rgba(72,52,212,0.1); top: -50px; left: -50px; animation: orb-float 10s ease-in-out infinite; filter: blur(40px);"></div>
+            <div class="bg-orb" style="width: 150px; height: 150px; background: rgba(104,109,224,0.08); bottom: -30px; right: -30px; animation: orb-float-reverse 12s ease-in-out infinite; filter: blur(40px);"></div>
+            <div class="position-relative z-1">
+                <div class="mb-3"><i class="fas fa-heart animate-heartbeat" style="color: var(--accent-color); font-size: 1.2rem;"></i></div>
+                <h2 class="font-script mb-2">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</h2>
+                <div class="shimmer-divider mx-auto my-3" style="width: 60px;"></div>
+                <p class="small opacity-50 mb-0">Terima kasih atas kehadiran dan doa restu Anda.</p>
+            </div>
         </footer>
     </div>
 
-    <!-- FLOATING BUTTONS -->
     <div class="floating-btn shadow" @click="toggleMusic()" x-show="audioElement" style="display:none;" x-transition>
         <i class="fas fa-compact-disc fs-4" :class="audioPlaying ? 'spin' : ''"></i>
     </div>
 
-    <!-- NAVBAR BOTTOM -->
     <nav class="navbar fixed-bottom navbar-bottom" x-show="opened" style="display:none;" x-transition>
         <div class="container px-2">
             <div class="w-100 d-flex justify-content-between px-3">
@@ -732,7 +974,6 @@
     </nav>
     
     @push('scripts')
-    <!-- Bootstrap & Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     @endpush
