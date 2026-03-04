@@ -5,7 +5,7 @@
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Aktifkan, nonaktifkan, dan atur ketersediaan (Premium/Gratis) koleksi tema Anda.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm focus:ring-4 focus:ring-indigo-500/20">
+            <button wire:click="$set('showImportModal', true)" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm focus:ring-4 focus:ring-indigo-500/20">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Buat Tema Baru
             </button>
@@ -35,7 +35,8 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
-                <input wire:model.live.debounce.300ms="search" type="text" class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 sm:text-sm transition-colors text-slate-800 dark:text-slate-200" placeholder="Cari berdasarkan nama tema atau slug...">
+                <input wire:model.live.debounce.300ms="search" type="text" class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-900 placeholder-slate-400 
+                focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 sm:text-sm transition-colors text-slate-800 dark:text-slate-200" placeholder="Cari berdasarkan nama tema atau slug...">
                 
                 <div wire:loading wire:target="search" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <svg class="w-4 h-4 text-indigo-500 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -153,5 +154,68 @@
             {{ $themes->links() }}
         </div>
     @endif
+
+    <!-- Modal Form Import Tema -->
+    <div x-data="{ show: $wire.entangle('showImportModal') }" x-cloak>
+        <template x-teleport="body">
+            <div x-show="show" class="fixed inset-0 z-[100] overflow-y-auto w-screen h-screen flex items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                
+                <!-- Background overlay -->
+                <div x-show="show" x-transition.opacity class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm transition-opacity" aria-hidden="true" @click="show = false"></div>
+
+                <!-- Modal panel -->
+                <div x-show="show" 
+                     x-transition:enter="ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="relative bg-white dark:bg-slate-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all w-full max-w-3xl border border-slate-200 dark:border-slate-700">
+                    <form wire:submit.prevent="importTheme">
+                        <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <div class="sm:flex sm:items-start">
+                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/50 sm:mx-0 sm:h-10 sm:w-10">
+                                    <svg class="h-6 w-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                    <h3 class="text-xl leading-6 font-bold text-slate-900 dark:text-white" id="modal-title">
+                                        Impor Tema Baru
+                                    </h3>
+                                    <div class="mt-2">
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                                            Masukkan kode array asosiatif PHP untuk konfigurasi tema baru.
+                                        </p>
+                                        
+                                        <div class="mb-4">
+                                            <label for="themeCode" class="sr-only">Kode Tema PHP</label>
+                                            <textarea wire:model="themeCode" id="themeCode" rows="15" 
+                                                class="w-full font-mono text-sm p-4 border border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-indigo-500 focus:border-indigo-500" 
+                                                placeholder="[&#10;  'name' => 'Nama Tema',&#10;  'slug' => 'slug-tema',&#10;  ...&#10;]"></textarea>
+                                            @error('themeCode') <span class="text-rose-500 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/50 px-4 py-4 sm:px-6 flex flex-col sm:flex-row-reverse gap-2 rounded-b-2xl">
+                            <button type="submit" class="w-full inline-flex justify-center items-center rounded-xl border border-transparent shadow-sm px-6 py-2.5 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto transition-colors disabled:opacity-50">
+                                <span wire:loading.remove wire:target="importTheme">Simpan Tema</span>
+                                <span wire:loading wire:target="importTheme" class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 animate-spin -ml-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    Menyimpan...
+                                </span>
+                            </button>
+                            <button type="button" @click="show = false" class="w-full inline-flex justify-center rounded-xl border border-slate-300 dark:border-slate-600 shadow-sm px-6 py-2.5 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto transition-colors">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </template>
+    </div>
 
 </div>

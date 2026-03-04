@@ -17,6 +17,9 @@ class ThemeManagement extends Component
 
     public $newThumbnail;
     public $uploadThemeId;
+    
+    public $showImportModal = false;
+    public $themeCode = '';
 
 
     #[Url(history: true)]
@@ -73,6 +76,41 @@ class ThemeManagement extends Component
             session()->flash('message', 'Thumbnail berhasil diperbarui.');
         }
     }
+
+    public function importTheme()
+    {
+        $this->validate([
+            'themeCode' => 'required|string'
+        ]);
+
+        try {
+            $code = trim($this->themeCode);
+            $code = rtrim($code, ",;"); // Remove trailing comma/semicolon for safety
+            
+            // Evaluasi string PHP menjadi array
+            $themeData = eval("return $code;");
+
+            if (!is_array($themeData)) {
+                throw new \Exception("Format tidak valid. Pastikan Anda menyalin array PHP yang benar.");
+            }
+
+            // Validasi data minimal (opsional)
+            if (!isset($themeData['slug']) || !isset($themeData['name'])) {
+                throw new \Exception("Array harus memiliki key 'name' dan 'slug'.");
+            }
+
+            Theme::create($themeData);
+
+            $this->reset(['themeCode', 'showImportModal']);
+            session()->flash('message', 'Tema baru berhasil ditambahkan.');
+            
+        } catch (\ParseError $e) {
+            $this->addError('themeCode', 'Gagal mem-parsing array PHP: Cek syntax array Anda (contoh: kurang kurung, koma, dsb).');
+        } catch (\Exception $e) {
+            $this->addError('themeCode', 'Error: ' . $e->getMessage());
+        }
+    }
+
 
     public function render()
     {

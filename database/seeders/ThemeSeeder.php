@@ -368,6 +368,30 @@ class ThemeSeeder extends Seeder
                 'button_style' => 'rounded',
                 'overlay_opacity' => 50,
             ],
+            /* DUMMY DATA UNTUK TES PASTE DI ADMIN:
+            [
+                'name' => 'Sapphire Dreams',
+                'slug' => 'sapphire-dreams',
+                'view_file' => 'themes.sapphire-dreams',
+                'thumbnail_url' => '',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#0A192F',
+                'secondary_color' => '#172A45',
+                'accent_color' => '#64FFDA',
+                'text_color' => '#CCD6F6',
+                'heading_color' => '#E2E8F0',
+                'background_color' => '#0A192F',
+                'heading_font' => 'Italiana',
+                'body_font' => 'Montserrat',
+                'accent_font' => 'sans-serif',
+                'container_max_width' => 480,
+                'heading_size' => 40,
+                'border_radius' => '16px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 30,
+            ],
+            */
         ];
 
         foreach ($themes as $themeData) {
