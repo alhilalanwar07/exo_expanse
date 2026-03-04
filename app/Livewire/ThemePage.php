@@ -47,8 +47,8 @@ class ThemePage extends Component
         // Metadata for SEO
         $this->metadata = [
             'title' => 'Undangan Pernikahan '.$this->invitation->groom_name.' & '.$this->invitation->bride_name,
-            'description' => 'Kami mengundang Anda untuk merayakan momen bahagia kami.',
-            'image' => $this->invitation->cover_image_url ?? '',
+            'description' => 'Kami mengundang Anda untuk merayakan momen pernikahan kami.',
+            'image' => $this->invitation->cover_image ? asset('storage/' . $this->invitation->cover_image) : asset('images/og-default.jpg'),
         ];
     }
 
