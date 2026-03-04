@@ -345,6 +345,29 @@ class ThemeSeeder extends Seeder
                 'button_style' => 'rounded',
                 'overlay_opacity' => 40,
             ],
+            // 15. Adat Bone - Tema Bugis Makassar/Adat Bone
+            [
+                'name' => 'Adat Bone',
+                'slug' => 'adat-bone',
+                'view_file' => 'themes.adat-bone',
+                'thumbnail_url' => '/images/themes/adat-bone.webp',
+                'is_active' => true,
+                'is_premium' => true,
+                'primary_color' => '#5d071f',
+                'secondary_color' => '#3d0d19',
+                'accent_color' => '#d4b051',
+                'text_color' => '#ffffff',
+                'heading_color' => '#d4b051',
+                'background_color' => '#5d071f',
+                'heading_font' => 'Fraunces',
+                'body_font' => 'sans-serif',
+                'accent_font' => 'Great Vibes',
+                'container_max_width' => 480,
+                'heading_size' => 45,
+                'border_radius' => '12px',
+                'button_style' => 'rounded',
+                'overlay_opacity' => 50,
+            ],
         ];
 
         foreach ($themes as $themeData) {
