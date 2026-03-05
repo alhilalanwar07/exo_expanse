@@ -132,7 +132,7 @@ class GuestImportService
      */
     public function generateWhatsAppUrl(\App\Models\Invitation $invitation, string $invitationUrl, string $guestName, ?string $phone = null): string
     {
-        $personalUrl = $invitationUrl.'?kpd='.urlencode($guestName);
+        $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
 
         $template = \App\Models\MessageTemplate::where('slug', 'universal')->first();
         if (! $template) {
@@ -143,8 +143,10 @@ class GuestImportService
         $inv = $invitation;
         $invitationTitle = $inv->title;
         if ($inv->groom_name && $inv->bride_name) {
-            $first = ($inv->custom_styles['name_order'] ?? 'groom_first') === 'bride_first' ? $inv->bride_name : $inv->groom_name;
-            $second = ($inv->custom_styles['name_order'] ?? 'groom_first') === 'bride_first' ? $inv->groom_name : $inv->bride_name;
+            $styles = $inv->custom_styles ?? [];
+            $order = $styles['name_order'] ?? 'groom_first';
+            $first = $order === 'bride_first' ? $inv->bride_name : $inv->groom_name;
+            $second = $order === 'bride_first' ? $inv->groom_name : $inv->bride_name;
             $invitationTitle = "The Wedding of {$first} dan {$second}";
         }
 
@@ -185,7 +187,7 @@ class GuestImportService
             $template->content
         );
 
-        $encodedMessage = urlencode($message);
+        $encodedMessage = rawurlencode($message);
 
         if ($phone) {
             return "https://wa.me/{$phone}?text={$encodedMessage}";

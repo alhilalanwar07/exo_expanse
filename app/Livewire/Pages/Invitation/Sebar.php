@@ -182,7 +182,7 @@ class Sebar extends Component
             $template->content
         );
 
-        return 'https://wa.me/?text='.urlencode($message);
+        return 'https://wa.me/?text='.rawurlencode($message);
     }
 
     /**
