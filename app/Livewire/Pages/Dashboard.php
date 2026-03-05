@@ -88,10 +88,16 @@ class Dashboard extends Component
 
     public function getWhatsAppUrl(): string
     {
-        $invitationUrl = $this->getShareUrl();
-        $message = "Assalamualaikum Wr. Wb.\n\nDengan penuh sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nKlik link berikut untuk membuka undangan:\n{$invitationUrl}\n\nTerima kasih 🙏";
+        $invitation = Invitation::where('slug', $this->shareInvitationSlug)->first();
+        if (! $invitation) {
+            return '#';
+        }
 
-        return 'https://wa.me/?text='.urlencode($message);
+        $invitationUrl = route('invitation.show', $this->shareInvitationSlug);
+        $importService = app(\App\Services\GuestImportService::class);
+        $recipientName = empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName;
+
+        return $importService->generateWhatsAppUrl($invitation, $invitationUrl, $recipientName);
     }
 
     public function openThemeModal(int $id, string $title, ?int $currentThemeId): void

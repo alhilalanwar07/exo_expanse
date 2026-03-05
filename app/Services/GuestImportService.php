@@ -23,7 +23,7 @@ class GuestImportService
 
         foreach ($names as $name) {
             $name = trim($name);
-            if (!empty($name)) {
+            if (! empty($name)) {
                 $guests[] = ['name' => $name];
             }
         }
@@ -39,7 +39,7 @@ class GuestImportService
     {
         $guests = [];
         $handle = fopen($file->getRealPath(), 'r');
-        
+
         if ($handle === false) {
             return [];
         }
@@ -57,22 +57,23 @@ class GuestImportService
 
         while (($row = fgetcsv($handle)) !== false) {
             $name = trim($row[$nameIndex] ?? '');
-            
-            if (!empty($name)) {
+
+            if (! empty($name)) {
                 $guest = ['name' => $name];
-                
+
                 if ($phoneIndex !== null && isset($row[$phoneIndex])) {
                     $phone = trim($row[$phoneIndex]);
-                    if (!empty($phone)) {
+                    if (! empty($phone)) {
                         $guest['phone_number'] = $this->normalizePhone($phone);
                     }
                 }
-                
+
                 $guests[] = $guest;
             }
         }
 
         fclose($handle);
+
         return $guests;
     }
 
@@ -102,15 +103,15 @@ class GuestImportService
     {
         // Remove non-numeric characters
         $phone = preg_replace('/[^0-9]/', '', $phone);
-        
+
         // Convert 08xx to 628xx
         if (Str::startsWith($phone, '0')) {
-            $phone = '62' . substr($phone, 1);
+            $phone = '62'.substr($phone, 1);
         }
-        
+
         // Add 62 if not present
-        if (!Str::startsWith($phone, '62')) {
-            $phone = '62' . $phone;
+        if (! Str::startsWith($phone, '62')) {
+            $phone = '62'.$phone;
         }
 
         return $phone;
@@ -122,22 +123,67 @@ class GuestImportService
     public function validateGuests(array $guests): array
     {
         return array_filter($guests, function ($guest) {
-            return !empty($guest['name']) && strlen($guest['name']) <= 255;
+            return ! empty($guest['name']) && strlen($guest['name']) <= 255;
         });
     }
 
     /**
      * Generate WhatsApp URL for a single guest.
      */
-    public function generateWhatsAppUrl(string $invitationUrl, string $guestName, ?string $phone = null): string
+    public function generateWhatsAppUrl(\App\Models\Invitation $invitation, string $invitationUrl, string $guestName, ?string $phone = null): string
     {
-        $personalUrl = $invitationUrl . '?kpd=' . urlencode($guestName);
-        
-        $message = "Assalamualaikum Wr. Wb.\n\n";
-        $message .= "Kepada Yth.\n*{$guestName}*\n\n";
-        $message .= "Dengan penuh sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\n";
-        $message .= "Klik link berikut untuk membuka undangan:\n{$personalUrl}\n\n";
-        $message .= "Terima kasih 🙏";
+        $personalUrl = $invitationUrl.'?kpd='.urlencode($guestName);
+
+        $template = \App\Models\MessageTemplate::where('slug', 'universal')->first();
+        if (! $template) {
+            return '#';
+        }
+
+        // Generate Title
+        $inv = $invitation;
+        $invitationTitle = $inv->title;
+        if ($inv->groom_name && $inv->bride_name) {
+            $first = ($inv->custom_styles['name_order'] ?? 'groom_first') === 'bride_first' ? $inv->bride_name : $inv->groom_name;
+            $second = ($inv->custom_styles['name_order'] ?? 'groom_first') === 'bride_first' ? $inv->groom_name : $inv->bride_name;
+            $invitationTitle = "The Wedding of {$first} dan {$second}";
+        }
+
+        // Generate Event Details
+        $details = [];
+        if ($inv->akad_date) {
+            $akadDate = \Carbon\Carbon::parse($inv->akad_date);
+            $akadTime = $inv->akad_time ? \Carbon\Carbon::parse($inv->akad_time)->format('H:i') : '';
+
+            $details[] = 'Pada: Akad Pernikahan';
+            $details[] = '🗓️ Tanggal: '.$akadDate->translatedFormat('d-m-Y');
+            if ($akadTime) {
+                $details[] = "🕛 Pukul: {$akadTime} - Selesai";
+            }
+            if ($inv->akad_address) {
+                $details[] = "📍 Lokasi: {$inv->akad_address}";
+            }
+            $details[] = '';
+        }
+        if ($inv->resepsi_date) {
+            $receptionDate = \Carbon\Carbon::parse($inv->resepsi_date);
+            $receptionTime = $inv->resepsi_time ? \Carbon\Carbon::parse($inv->resepsi_time)->format('H:i') : '';
+
+            $details[] = 'Pada: Resepsi Pernikahan';
+            $details[] = '🗓️ Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
+            if ($receptionTime) {
+                $details[] = "🕛 Pukul: {$receptionTime} - Selesai";
+            }
+            if ($inv->resepsi_address) {
+                $details[] = "📍 Lokasi: {$inv->resepsi_address}";
+            }
+        }
+        $eventDetails = implode("\n", $details);
+
+        $message = str_replace(
+            ['{nama}', '{judul}', '{detail_acara}', '{link}'],
+            [$guestName, $invitationTitle, $eventDetails, $personalUrl],
+            $template->content
+        );
 
         $encodedMessage = urlencode($message);
 

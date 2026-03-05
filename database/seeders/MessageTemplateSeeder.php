@@ -22,13 +22,11 @@ class MessageTemplateSeeder extends Seeder
 Yth. Bapak/Ibu/Saudara/i
 {nama}
 Di Tempat
-----------
-
+-----------
 Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,
-==========
+===========
 {judul}
-==========
-
+===========
 {detail_acara}
 
 Link undangan bisa diakses lengkap di:
@@ -36,7 +34,11 @@ Link undangan bisa diakses lengkap di:
 
 Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir di acara kami
 Mohon maaf perihal undangan hanya di bagikan melalui pesan ini
-Terima kasih banyak atas perhatiannya 🙏
+Terima kasih banyak atas perhatiannya
+
+
+Note:
+Untuk mendapatkan hasil yg bagus, harap buka melalui google chrome terupdate dan matikan mode gelap dari hp
 EOT,
             ],
             [

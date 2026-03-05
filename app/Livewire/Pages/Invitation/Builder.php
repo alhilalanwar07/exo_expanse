@@ -688,7 +688,7 @@ class Builder extends Component
         $invitation = Invitation::find($this->invitationId);
         $baseUrl = route('invitation.show', $invitation->slug);
 
-        return $importService->generateWhatsAppUrl($baseUrl, $guestName, $phone);
+        return $importService->generateWhatsAppUrl($invitation, $baseUrl, $guestName, $phone);
     }
 
     // ==================

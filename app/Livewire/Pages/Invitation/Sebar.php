@@ -116,28 +116,28 @@ class Sebar extends Component
             $akadTime = $inv->akad_time ? Carbon::parse($inv->akad_time)->format('H:i') : '';
 
             $details[] = 'Pada: Akad Pernikahan';
-            $details[] = '📆 Tanggal: '.$akadDate->translatedFormat('d-m-Y');
+            $details[] = '🗓️ Tanggal: '.$akadDate->translatedFormat('d-m-Y');
             if ($akadTime) {
-                $details[] = "⏰ Pukul: {$akadTime} - Selesai";
+                $details[] = "🕛 Pukul: {$akadTime} - Selesai";
             }
-            if ($inv->akad_location) {
-                $details[] = "📍 Lokasi: {$inv->akad_location}";
+            if ($inv->akad_address) {
+                $details[] = "📍 Lokasi: {$inv->akad_address}";
             }
             $details[] = '';
         }
 
         // Resepsi
-        if ($inv->event_date) {
-            $receptionDate = Carbon::parse($inv->event_date);
-            $receptionTime = $inv->reception_time ? Carbon::parse($inv->reception_time)->format('H:i') : '';
+        if ($inv->resepsi_date) {
+            $receptionDate = Carbon::parse($inv->resepsi_date);
+            $receptionTime = $inv->resepsi_time ? Carbon::parse($inv->resepsi_time)->format('H:i') : '';
 
             $details[] = 'Pada: Resepsi Pernikahan';
-            $details[] = '📆 Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
+            $details[] = '🗓️ Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
             if ($receptionTime) {
-                $details[] = "⏰ Pukul: {$receptionTime} - Selesai";
+                $details[] = "🕛 Pukul: {$receptionTime} - Selesai";
             }
-            if ($inv->reception_location) {
-                $details[] = "📍 Lokasi: {$inv->reception_location}";
+            if ($inv->resepsi_address) {
+                $details[] = "📍 Lokasi: {$inv->resepsi_address}";
             }
         }
 
@@ -152,10 +152,11 @@ class Sebar extends Component
         $inv = $this->invitation;
 
         if ($inv->groom_name && $inv->bride_name) {
-            $first = $inv->name_order === 'bride_first' ? $inv->bride_name : $inv->groom_name;
-            $second = $inv->name_order === 'bride_first' ? $inv->groom_name : $inv->bride_name;
+            $order = $inv->custom_styles['name_order'] ?? 'groom_first';
+            $first = $order === 'bride_first' ? $inv->bride_name : $inv->groom_name;
+            $second = $order === 'bride_first' ? $inv->groom_name : $inv->bride_name;
 
-            return "The Wedding of\n{$first} & {$second}";
+            return "The Wedding of {$first} dan {$second}";
         }
 
         return $inv->title;
