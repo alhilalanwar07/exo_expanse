@@ -1,3 +1,4 @@
+@props(['metadata' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
@@ -9,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- Title & Description -->
-    <title>@yield('title', 'Wedding Invitation')</title>
+    <title>{{ $metadata['title'] ?? $title ?? 'Wedding Invitation' }}</title>
     <meta name="description" content="{{ $metadata['description'] ?? 'You are invited to our wedding celebration' }}">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     
@@ -20,6 +21,7 @@
         <meta property="og:image" content="{{ $metadata['image'] ?? asset('images/og-default.jpg') }}">
         <meta property="og:image:alt" content="{{ $metadata['image_alt'] ?? 'Wedding Invitation' }}">
         <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ $metadata['url'] ?? request()->url() }}">
         <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $metadata['title'] ?? 'Wedding Invitation' }}">

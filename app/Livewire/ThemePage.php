@@ -61,6 +61,7 @@ class ThemePage extends Component
             'title' => 'Undangan Pernikahan - '.$groomOrBride,
             'description' => $this->invitation->title,
             'image' => $ogImage,
+            'url' => request()->url(),
         ];
     }
 
