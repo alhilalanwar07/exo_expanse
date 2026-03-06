@@ -1,4 +1,4 @@
-﻿@section('title', 'Wedding of ' . $invitation->groom_nickname . ' & ' . $invitation->bride_nickname)
+@section('title', 'Wedding of ' . $invitation->groom_nickname . ' & ' . $invitation->bride_nickname)
 
 @push('fonts')
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Parisienne&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -321,10 +321,6 @@ a { color: inherit; text-decoration: none; }
             <div class="text-center w-full mt-10">
                 <div class="mb-2 text-center animate__animated animate__fadeInDown animate__slower" style="letter-spacing:3px; text-transform: uppercase; font-size: 13px;">The Wedding Of</div>
                 
-                <div class="color-accent text-center animate__animated animate__zoomIn animate__slower font-accent" style="font-size:75px;line-height:0.9; margin-top: 10px;">
-                    {{ substr($invitation->groom_nickname, 0, 1) }}{{ substr($invitation->bride_nickname, 0, 1) }}
-                </div>
-                
                 <div class="mb-2 color-accent text-center animate__animated animate__fadeInDown animate__slower font-latin" style="font-size:36px;line-height:1.2;">
                     {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
                 </div>
@@ -488,11 +484,11 @@ a { color: inherit; text-decoration: none; }
                             <div style="position: absolute; left: -30px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--inv-accent); border: 3px solid var(--inv-bg);"></div>
                             
                             <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(212,176,81,0.2); border-radius: 12px; padding: 20px;">
-                                @if(!empty($story['year']))
-                                <div class="color-accent font-accent" style="font-size: 14px; margin-bottom: 4px;">{{ $story['year'] }}</div>
+                                @if(!empty($story['date']))
+                                <div class="color-accent font-accent" style="font-size: 14px; margin-bottom: 4px;">{{ $story['date'] ?? '' }}</div>
                                 @endif
                                 <div class="color-accent" style="font-size: 18px; font-weight: 600; margin-bottom: 8px; font-family: var(--font-base);">{{ $story['title'] ?? '' }}</div>
-                                <div style="font-size: 13px; opacity: 0.8; line-height: 1.7;">{{ $story['content'] ?? '' }}</div>
+                                <div style="font-size: 13px; opacity: 0.8; line-height: 1.7;">{{ $story['description'] ?? '' }}</div>
                             </div>
                         </div>
                         @endforeach

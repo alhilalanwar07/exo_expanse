@@ -34,6 +34,9 @@ class Builder extends Component
     #[Validate('required|string|max:255')]
     public string $title = 'Pernikahan Andi & Rina';
 
+    #[Validate('required|string|max:255')]
+    public string $slug = 'pernikahan-andi-rina';
+
     public string $cover_title = 'Andi & Rina';
 
     public string $cover_subtitle = 'The Wedding of';
@@ -219,6 +222,7 @@ class Builder extends Component
     {
         // Basic
         $this->title = $invitation->title ?? 'Untitled Invitation';
+        $this->slug = $invitation->slug ?? \Illuminate\Support\Str::slug($this->title);
         $this->cover_photo = $invitation->cover_image;
         $this->event_date = $invitation->akad_date?->format('Y-m-d')
             ?? $invitation->resepsi_date?->format('Y-m-d')
@@ -293,6 +297,7 @@ class Builder extends Component
     {
         return [
             'title' => $this->title,
+            'slug' => $this->slug,
             'theme_id' => $this->theme_id,
 
             // Couple
@@ -378,6 +383,16 @@ class Builder extends Component
         if (array_key_exists($tab, $this->tabs)) {
             $this->tab = $tab;
         }
+    }
+
+    public function updatedTitle(string $value): void
+    {
+        $this->slug = \Illuminate\Support\Str::slug($value);
+    }
+
+    public function updatedSlug(string $value): void
+    {
+        $this->slug = \Illuminate\Support\Str::slug($value);
     }
 
     public function loadExistingPhotos(Invitation $invitation): void
@@ -697,7 +712,10 @@ class Builder extends Component
 
     public function save(): void
     {
-        $this->validate();
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:invitations,slug'.($this->invitationId ? ','.$this->invitationId : ''),
+        ]);
 
         $service = app(InvitationService::class);
         $data = $this->prepareInvitationData();
@@ -770,7 +788,10 @@ class Builder extends Component
 
     public function publish(): void
     {
-        $this->validate();
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:invitations,slug'.($this->invitationId ? ','.$this->invitationId : ''),
+        ]);
 
         $service = app(InvitationService::class);
         $data = $this->prepareInvitationData();

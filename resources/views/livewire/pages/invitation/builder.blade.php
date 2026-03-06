@@ -145,6 +145,16 @@
                                 @error('title') <span class="text-rose-500 text-sm mt-1">{{ $message }}</span> @enderror
                             </div>
 
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">URL / Slug Undangan *</label>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hidden sm:inline-block">{{ url('/i') }}/</span>
+                                    <input wire:model.blur="slug" type="text" class="flex-1 px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all" placeholder="pernikahan-andi-rina">
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">Link undangan: {{ url('/i') }}/<span class="font-medium text-slate-700 dark:text-slate-300">{{ $slug }}</span></p>
+                                @error('slug') <span class="text-rose-500 text-sm mt-1">{{ $message }}</span> @enderror
+                            </div>
+
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Teks Kecil Atas</label>

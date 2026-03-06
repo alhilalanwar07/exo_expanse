@@ -15,7 +15,7 @@ class InvitationService
     public function create(User $user, array $data): Invitation
     {
         $data['user_id'] = $user->id;
-        $data['slug'] = $this->generateUniqueSlug($data['title'] ?? 'undangan');
+        $data['slug'] = ! empty($data['slug']) ? $data['slug'] : $this->generateUniqueSlug($data['title'] ?? 'undangan');
 
         return Invitation::create($data);
     }
@@ -25,8 +25,8 @@ class InvitationService
      */
     public function update(Invitation $invitation, array $data): Invitation
     {
-        // Regenerate slug if title changed
-        if (isset($data['title']) && $data['title'] !== $invitation->title) {
+        // Regenerate slug if title changed and no explicit slug provided
+        if (isset($data['title']) && $data['title'] !== $invitation->title && empty($data['slug'])) {
             $data['slug'] = $this->generateUniqueSlug($data['title'], $invitation->id);
         }
 
