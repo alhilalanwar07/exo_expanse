@@ -135,9 +135,7 @@ class GuestImportService
         $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
 
         $template = \App\Models\MessageTemplate::where('slug', 'universal')->first();
-        if (! $template) {
-            return '#';
-        }
+        $templateContent = $template ? $template->content : "Kepada Yth. {nama},\n\nKami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami:\n\n{judul}\n\n{detail_acara}\n\nSilakan buka klik link berikut untuk info selengkapnya:\n{link}\n\nKehadiran dan doa restu Anda adalah kebahagiaan bagi kami.\nTerima kasih.";
 
         // Generate Title
         $inv = $invitation;
@@ -184,15 +182,15 @@ class GuestImportService
         $message = str_replace(
             ['{nama}', '{judul}', '{detail_acara}', '{link}'],
             [$guestName, $invitationTitle, $eventDetails, $personalUrl],
-            $template->content
+            $templateContent
         );
 
         $encodedMessage = rawurlencode($message);
 
         if ($phone) {
-            return "https://wa.me/{$phone}?text={$encodedMessage}";
+            return "https://api.whatsapp.com/send?phone={$phone}&text={$encodedMessage}";
         }
 
-        return "https://wa.me/?text={$encodedMessage}";
+        return "https://api.whatsapp.com/send?text={$encodedMessage}";
     }
 }
