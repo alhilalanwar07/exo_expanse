@@ -61,14 +61,14 @@
                                             <svg class="w-5 h-5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/></svg>
                                         </div>
                                     </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-slate-900 dark:text-white max-w-[200px] truncate" title="{{ $invitation->title }}">
-                                            {{ $invitation->title ?? 'Tanpa Judul' }}
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-slate-900 dark:text-white max-w-[200px] truncate" title="{{ $invitation->title }}">
+                                                {{ $invitation->title ?? 'Tanpa Judul' }}
+                                            </div>
+                                            <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank" class="text-sm text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 transition-colors hover:underline">
+                                                {{ url('/i/' . $invitation->slug) }}
+                                            </a>
                                         </div>
-                                        <a href="{{ route('invitation.show', $invitation->slug) }}" target="_blank" class="text-sm text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 transition-colors hover:underline">
-                                            {{ url('/i/' . $invitation->slug) }}
-                                        </a>
-                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
