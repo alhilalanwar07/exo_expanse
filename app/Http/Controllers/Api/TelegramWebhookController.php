@@ -4,19 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateArticleFromTelegram;
-use App\Models\Article;
-use App\Models\User;
 use App\Services\TelegramBotService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class TelegramWebhookController extends Controller
 {
     public function handle(Request $request, TelegramBotService $telegram): JsonResponse
     {
-        Log::info('Telegram webhook received', ['payload' => $request->all()]);
-
         // Verify webhook secret token
         $secretToken = config('services.telegram.webhook_secret');
         if ($secretToken && $request->header('X-Telegram-Bot-Api-Secret-Token') !== $secretToken) {
@@ -55,12 +50,11 @@ class TelegramWebhookController extends Controller
             return response()->json(['ok' => true]);
         }
 
+        // Send processing notification to user
         $telegram->sendMessage($chatId, "⏳ <b>Memproses artikel...</b>\n\nJudul: <i>{$caption}</i>\n\nSedang mengunduh gambar dan generate artikel. Mohon tunggu...");
 
         // Dispatch job for async processing
-        Log::info('Dispatching GenerateArticleFromTelegram', ['chatId' => $chatId, 'caption' => $caption, 'photoCount' => count($photos)]);
         GenerateArticleFromTelegram::dispatch((string) $chatId, $caption, $photos, (string) ($message['message_id'] ?? ''));
-        Log::info('Job dispatched successfully');
 
         return response()->json(['ok' => true]);
     }
