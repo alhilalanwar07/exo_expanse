@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\ArticleManagement as AdminArticleManagement;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\UserManagement as AdminUserManagement;
 use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
@@ -8,6 +9,8 @@ use App\Livewire\Admin\Settings as AdminSettings;
 use App\Http\Middleware\IsAdmin;
 use App\Livewire\Pages\Auth\Login;
 use App\Livewire\Pages\Auth\Register;
+use App\Livewire\Pages\BlogList;
+use App\Livewire\Pages\BlogShow;
 use App\Livewire\Pages\Dashboard;
 use App\Livewire\Pages\Welcome;
 use App\Livewire\ThemePage;
@@ -22,6 +25,10 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', Welcome::class)->name('home');
+
+// Blog Routes
+Route::get('/blog', BlogList::class)->name('articles.index');
+Route::get('/blog/{slug}', BlogShow::class)->name('articles.show');
 
 // Guest Routes (Not Authenticated)
 Route::middleware('guest')->group(function () {
@@ -40,6 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/invitations', AdminInvitationManagement::class)->name('invitations');
         Route::get('/themes', AdminThemeManagement::class)->name('themes');
         Route::get('/settings', AdminSettings::class)->name('settings');
+        Route::get('/articles', AdminArticleManagement::class)->name('articles');
     });
 
     // Invitation Management

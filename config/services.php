@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+        'allowed_chat_ids' => array_filter(explode(',', env('TELEGRAM_ALLOWED_CHAT_IDS', ''))),
+    ],
+
+    'nvidia' => [
+        'base_url' => env('NVIDIA_API_BASE_URL', 'https://integrate.api.nvidia.com/v1'),
+        'api_key' => env('NVIDIA_API_KEY'),
+        'model' => env('NVIDIA_MODEL', 'meta/llama-3.3-70b-instruct'),
+    ],
+
 ];
