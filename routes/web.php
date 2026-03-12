@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsAdmin;
+use App\Livewire\Admin\ArticleForm as AdminArticleForm;
 use App\Livewire\Admin\ArticleManagement as AdminArticleManagement;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
@@ -50,6 +51,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/themes', AdminThemeManagement::class)->name('themes');
         Route::get('/settings', AdminSettings::class)->name('settings');
         Route::get('/articles', AdminArticleManagement::class)->name('articles');
+        Route::get('/articles/create', AdminArticleForm::class)->name('articles.create');
+        Route::get('/articles/{id}/edit', AdminArticleForm::class)->name('articles.edit');
     });
 
     // Invitation Management

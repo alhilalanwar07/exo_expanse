@@ -2,8 +2,12 @@
     <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Kelola Artikel</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Artikel blog yang dibuat via Telegram Bot.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Buat, edit, dan kelola artikel blog.</p>
         </div>
+        <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors" wire:navigate>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Buat Artikel
+        </a>
     </div>
 
     <!-- Table Card -->
@@ -75,6 +79,7 @@
                                     @if($article->status === 'published')
                                         <a href="{{ route('articles.show', $article->slug) }}" target="_blank" class="text-indigo-500 hover:text-indigo-700 text-sm font-medium">Lihat</a>
                                     @endif
+                                    <a href="{{ route('admin.articles.edit', $article->id) }}" class="text-blue-500 hover:text-blue-700 text-sm font-medium" wire:navigate>Edit</a>
                                     <button wire:click="togglePublish({{ $article->id }})" class="text-amber-500 hover:text-amber-700 text-sm font-medium">
                                         {{ $article->status === 'published' ? 'Unpublish' : 'Publish' }}
                                     </button>
