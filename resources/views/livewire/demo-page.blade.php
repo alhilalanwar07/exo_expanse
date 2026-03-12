@@ -10,7 +10,7 @@
     @endpush
 
     {{-- Demo Banner --}}
-    <div class="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg" id="demo-banner">
+    <div class="fixed top-0 left-0 right-0 z-[999999] bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg" id="demo-banner">
         <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
                 <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 backdrop-blur-sm whitespace-nowrap">
@@ -21,13 +21,14 @@
             </div>
 
             <div class="flex items-center gap-2">
-                {{-- Theme Selector --}}
+                {{-- Theme Selector — full page redirect so JS re-initializes --}}
                 <select
-                    wire:model.live="themeSlug"
+                    x-data
+                    x-on:change="window.location.href = '{{ route('invitation.demo') }}?theme=' + $event.target.value"
                     class="text-xs bg-white/15 border border-white/30 rounded-lg px-3 py-1.5 text-white focus:ring-2 focus:ring-white/30 focus:border-white/50 max-w-[180px] backdrop-blur-sm [&>option]:text-slate-900"
                 >
                     @foreach($themes as $t)
-                        <option value="{{ $t['slug'] }}">
+                        <option value="{{ $t['slug'] }}" @selected($t['slug'] === $themeSlug)>
                             {{ $t['name'] }}{{ $t['is_premium'] ? ' ★' : '' }}
                         </option>
                     @endforeach
@@ -44,16 +45,6 @@
     {{-- Spacer for fixed banner --}}
     <div class="h-[44px]"></div>
 
-    {{-- Loading state --}}
-    <div wire:loading wire:target="themeSlug" class="fixed inset-0 z-[9998] bg-white/80 dark:bg-slate-900/80 flex items-center justify-center backdrop-blur-sm">
-        <div class="text-center">
-            <svg class="w-10 h-10 animate-spin text-indigo-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Memuat tema...</p>
-        </div>
-    </div>
-
     {{-- Theme Content --}}
-    <div wire:loading.remove wire:target="themeSlug">
-        @livewire($themeComponent, ['invitation' => $invitation, 'metadata' => $metadata], key($themeSlug))
-    </div>
+    @livewire($themeComponent, ['invitation' => $invitation, 'metadata' => $metadata], key($themeSlug))
 </div>

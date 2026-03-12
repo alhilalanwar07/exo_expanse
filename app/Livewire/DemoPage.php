@@ -45,12 +45,6 @@ class DemoPage extends Component
         $this->resolveTheme($themeService);
     }
 
-    public function updatedThemeSlug(ThemeService $themeService): void
-    {
-        $this->invitation = $this->buildDemoInvitation($themeService);
-        $this->resolveTheme($themeService);
-    }
-
     private function resolveTheme(ThemeService $themeService): void
     {
         $theme = $this->invitation->theme;
