@@ -94,7 +94,16 @@
             prose-p:text-slate-600 dark:prose-p:text-slate-300
             prose-a:text-rose-500 prose-a:no-underline hover:prose-a:underline
             prose-img:rounded-xl prose-img:shadow-md">
-            {!! strip_tags($article->content, '<p><br><h2><h3><h4><strong><em><ul><ol><li><blockquote><a><img>') !!}
+            @php
+                $rawContent = $article->content ?? '';
+                $hasHtmlTags = $rawContent !== strip_tags($rawContent);
+            @endphp
+
+            @if($hasHtmlTags)
+                {!! strip_tags($rawContent, '<p><br><h2><h3><h4><strong><em><ul><ol><li><blockquote><a><img>') !!}
+            @else
+                {!! nl2br(e($rawContent)) !!}
+            @endif
         </article>
 
         <!-- Share & Back -->
