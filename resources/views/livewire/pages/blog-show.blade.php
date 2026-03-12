@@ -94,7 +94,7 @@
             prose-p:text-slate-600 dark:prose-p:text-slate-300
             prose-a:text-rose-500 prose-a:no-underline hover:prose-a:underline
             prose-img:rounded-xl prose-img:shadow-md">
-            {!! clean($article->content) !!}
+            {!! strip_tags($article->content, '<p><br><h2><h3><h4><strong><em><ul><ol><li><blockquote><a><img>') !!}
         </article>
 
         <!-- Share & Back -->
