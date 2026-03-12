@@ -9,6 +9,7 @@ use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
 use App\Livewire\Admin\Settings as AdminSettings;
 use App\Livewire\Admin\ThemeManagement as AdminThemeManagement;
 use App\Livewire\Admin\UserManagement as AdminUserManagement;
+use App\Livewire\DemoPage;
 use App\Livewire\Pages\Auth\Login;
 use App\Livewire\Pages\Auth\Register;
 use App\Livewire\Pages\BlogList;
@@ -75,4 +76,5 @@ Route::middleware('auth')->group(function () {
 });
 
 // Public Invitation View
+Route::get('/i/demo', DemoPage::class)->name('invitation.demo');
 Route::get('/i/{slug}', ThemePage::class)->name('invitation.show');
