@@ -17,6 +17,21 @@
     </script>
     @endpush
 
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            <x-logo variant="full" />
+            <div class="flex items-center gap-4">
+                <a href="{{ route('articles.index') }}" class="text-sm font-medium text-rose-500">Blog</a>
+                @auth
+                <a href="{{ route('dashboard') }}" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-rose-500 transition-colors">Dashboard</a>
+                @else
+                <a href="{{ route('login') }}" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-rose-500 transition-colors">Masuk</a>
+                @endauth
+            </div>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <div class="bg-gradient-to-br from-rose-500 to-amber-500 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

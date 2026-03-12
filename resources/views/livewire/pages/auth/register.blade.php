@@ -8,7 +8,7 @@
     <div class="relative w-full max-w-md">
         <!-- Logo -->
         <div class="text-center mb-8">
-            <a href="/" class="text-3xl font-bold bg-gradient-to-r from-rose-400 to-amber-400 bg-clip-text text-transparent">ExoInvite</a>
+            <x-logo variant="full" :white="true" class="justify-center" />
             <p class="mt-2 text-slate-300">Buat akun baru</p>
         </div>
 

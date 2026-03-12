@@ -4,7 +4,7 @@
     <nav class="fixed top-0 inset-x-0 z-50 transition-all duration-300"
          :class="scrolled ? 'navbar-glass py-3 shadow-2xl' : 'py-5'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <a href="{{ route('home') }}" class="text-2xl font-bold text-gradient">ExoInvite</a>
+            <x-logo variant="full" :white="true" />
             <!-- Desktop Nav -->
             <div class="hidden md:flex items-center gap-8">
                 <a href="#features" class="text-sm text-white/70 hover:text-white transition-colors">Fitur</a>
@@ -395,7 +395,7 @@
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
                 <!-- Brand -->
                 <div class="lg:col-span-1">
-                    <div class="text-2xl font-bold text-gradient mb-4">ExoInvite</div>
+                    <x-logo variant="full" :white="true" class="mb-4" />
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">Platform undangan digital premium #1 di Indonesia. Buat undangan berkesan dalam hitungan menit.</p>
                     <div class="flex gap-4">
                         <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all" aria-label="Instagram">
