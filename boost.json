@@ -1,9 +1,0 @@
-{
-    "agents": [
-        "gemini"
-    ],
-    "guidelines": true,
-    "packages": [
-        "filament/filament"
-    ]
-}

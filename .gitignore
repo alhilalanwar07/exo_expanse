@@ -22,3 +22,27 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Published vendor assets (regenerated via artisan)
+/public/css/filament
+/public/js/filament
+/public/fonts/filament
+/public/vendor/livewire
+
+# Lock files (optional — uncomment if team uses different OS/PHP versions)
+# composer.lock
+# package-lock.json
+
+# IDE / AI agent config
+/.agent
+/.gemini
+
+# Supervisor config (server-specific)
+/supervisor
+
+# Temporary/debug scripts
+check_status.php
+
+# Gemini AI tool config
+boost.json
+GEMINI.md
