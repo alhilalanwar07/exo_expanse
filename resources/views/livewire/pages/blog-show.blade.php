@@ -94,7 +94,7 @@
             prose-p:text-slate-600 dark:prose-p:text-slate-300
             prose-a:text-rose-500 prose-a:no-underline hover:prose-a:underline
             prose-img:rounded-xl prose-img:shadow-md">
-            {!! \Illuminate\Support\Str::markdown($article->content) !!}
+            {!! clean($article->content) !!}
         </article>
 
         <!-- Share & Back -->

@@ -86,13 +86,15 @@ Keahlianmu:
 
 Panduan penulisan:
 1. JANGAN mulai dengan judul (judul ditampilkan terpisah oleh sistem)
-2. Gunakan format Markdown: ## untuk H2, ### untuk H3, **bold**, *italic*
-3. Setiap paragraf 2-4 kalimat, mudah di-scan
-4. Sertakan bullet points/numbered list untuk informasi penting
-5. Tulis minimal 800-1200 kata
-6. Gunakan transition words antar paragraf
-7. Sertakan data/statistik bila relevan (gunakan angka yang masuk akal)
-8. Buat internal linking suggestions dengan format [teks link](/path)
+2. Gunakan format HTML semantik: <h2> untuk H2, <h3> untuk H3, <strong> untuk bold, <em> untuk italic
+3. Bungkus setiap paragraf dalam tag <p>
+4. Gunakan <ul>/<ol> dengan <li> untuk list
+5. Gunakan <blockquote> untuk kutipan penting
+6. Tulis minimal 800-1200 kata
+7. Gunakan transition words antar paragraf
+8. Sertakan data/statistik bila relevan (gunakan angka yang masuk akal)
+9. Buat internal link dengan format <a href="/path">teks link</a>
+10. JANGAN gunakan format Markdown sama sekali, HANYA HTML
 SYSTEM;
     }
 
@@ -118,55 +120,54 @@ meta_keywords: [5-8 keyword relevan dipisahkan koma, termasuk LSI keywords]
 ---META_END---
 
 ---CONTENT_START---
-[Tulis artikel lengkap di sini dengan struktur:]
+[Tulis artikel lengkap dalam format HTML (BUKAN Markdown) dengan struktur:]
 
-## [H2 Introduction - gunakan keyword utama secara natural]
+<h2>[Introduction - gunakan keyword utama secara natural]</h2>
+<p>Paragraf pembuka yang menarik, langsung address masalah/kebutuhan pembaca. Gunakan hook yang kuat: pertanyaan, fakta menarik, atau situasi relatable. Masukkan keyword utama di 100 kata pertama.</p>
 
-Paragraf pembuka yang menarik, langsung address masalah/kebutuhan pembaca. Gunakan hook yang kuat: pertanyaan, fakta menarik, atau situasi relatable. Masukkan keyword utama di 100 kata pertama.
+<h2>[Heading yang mengandung keyword/variasi keyword]</h2>
+<p>Pembahasan mendalam...</p>
 
-## [H2 yang mengandung keyword/variasi keyword]
+<h3>[Sub-topik]</h3>
+<p>Detail penjelasan...</p>
 
-Pembahasan mendalam dengan sub-section jika perlu:
+<h2>[Manfaat/Keuntungan/Tips (sesuai konteks)]</h2>
+<ul>
+  <li><strong>Point 1</strong>: Penjelasan detail</li>
+  <li><strong>Point 2</strong>: Penjelasan detail</li>
+  <li><strong>Point 3</strong>: Penjelasan detail</li>
+</ul>
 
-### [H3 sub-topik]
-Detail penjelasan...
+<h2>FAQ - Pertanyaan yang Sering Diajukan</h2>
 
-### [H3 sub-topik]
-Detail penjelasan...
+<h3>Pertanyaan 1?</h3>
+<p>Jawaban informatif...</p>
 
-## [H2 - Manfaat/Keuntungan/Tips (sesuai konteks)]
+<h3>Pertanyaan 2?</h3>
+<p>Jawaban informatif...</p>
 
-- **Point 1**: Penjelasan detail
-- **Point 2**: Penjelasan detail
-- **Point 3**: Penjelasan detail
+<h3>Pertanyaan 3?</h3>
+<p>Jawaban informatif...</p>
 
-## [H2 - FAQ atau Pertanyaan Umum]
-
-### Pertanyaan 1?
-Jawaban informatif...
-
-### Pertanyaan 2?
-Jawaban informatif...
-
-### Pertanyaan 3?
-Jawaban informatif...
-
-## Kesimpulan
-
-Ringkasan engaging yang memperkuat pesan utama. Sertakan CTA (call-to-action) yang relevan.
+<h2>Kesimpulan</h2>
+<p>Ringkasan engaging yang memperkuat pesan utama. Sertakan CTA (call-to-action) yang relevan.</p>
 
 ---CONTENT_END---
 
 KETENTUAN PENTING:
+- WAJIB tulis dalam format HTML, BUKAN Markdown
+- Gunakan tag semantik: <h2>, <h3>, <p>, <ul>, <ol>, <li>, <strong>, <em>, <blockquote>, <a>
+- Setiap paragraf HARUS dibungkus <p>...</p>
+- JANGAN gunakan simbol Markdown seperti ##, **, -, * untuk formatting
 - Bahasa Indonesia yang natural, tidak kaku/robotic
 - Keyword utama muncul di: paragraf pertama, minimal 2 heading H2, dan kesimpulan
 - Gunakan variasi keyword (LSI) secara natural di seluruh artikel
-- Sertakan section FAQ dengan 3-5 pertanyaan relevan (ini sangat penting untuk featured snippets Google)
+- Sertakan section FAQ dengan 3-5 pertanyaan relevan (penting untuk featured snippets Google)
 - Setiap H2 section minimal 150 kata
 - Total artikel minimal 800 kata
 - Tulis seolah kamu expert di topik ini
-- Gunakan numbered list atau bullet points minimal 2x dalam artikel
-- Sisipkan internal link relevan ke /blog atau fitur ExoInvite seperti /i/demo
+- Gunakan <ol> atau <ul> minimal 2x dalam artikel
+- Sisipkan internal link relevan dengan <a href="/blog">blog</a> atau <a href="/i/demo">fitur ExoInvite</a>
 PROMPT;
 
         return $prompt;
@@ -229,7 +230,7 @@ PROMPT;
 
     private function extractExcerpt(string $content, int $length = 200): string
     {
-        $plainText = strip_tags(str_replace(["\n", "\r", '#', '*', '-'], ' ', $content));
+        $plainText = strip_tags($content);
         $plainText = preg_replace('/\s+/', ' ', trim($plainText));
 
         return str(substr($plainText, 0, $length))->trim()->toString();
