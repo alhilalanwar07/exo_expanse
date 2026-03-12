@@ -15,7 +15,46 @@
         </div>
     @endif
 
-    <form wire:submit="save" class="space-y-8">
+    @if($generateError)
+        <div class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm font-medium">
+            {{ $generateError }}
+        </div>
+    @endif
+
+    {{-- Generate All Banner --}}
+    <div class="mb-6 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start gap-3">
+            <div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
+                <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <div>
+                <h3 class="font-semibold text-slate-900 dark:text-white text-sm">AI Content Generator</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Isi judul lalu klik generate — AI akan membuat konten, SEO, dan ringkasan otomatis.</p>
+            </div>
+        </div>
+        <button
+            type="button"
+            wire:click="generateAll"
+            wire:loading.attr="disabled"
+            wire:target="generateAll,regenerateContent"
+            class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-wait text-white text-sm font-medium rounded-xl transition-colors whitespace-nowrap"
+        >
+            <svg wire:loading.remove wire:target="generateAll" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <svg wire:loading wire:target="generateAll" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            <span wire:loading.remove wire:target="generateAll">Generate Semua</span>
+            <span wire:loading wire:target="generateAll">Sedang generate...</span>
+        </button>
+    </div>
+
+    <form wire:submit="save" class="space-y-8 relative">
+        {{-- Loading overlay --}}
+        <div wire:loading wire:target="generateAll,regenerateContent" class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
+            <div class="text-center">
+                <svg class="w-10 h-10 animate-spin text-purple-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                <p class="text-sm font-medium text-slate-700 dark:text-slate-300">AI sedang menulis artikel...</p>
+                <p class="text-xs text-slate-400 mt-1">Proses ini membutuhkan beberapa saat</p>
+            </div>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {{-- Main Content --}}
             <div class="lg:col-span-2 space-y-6">
@@ -41,9 +80,24 @@
                 </div>
 
                 {{-- Content Editor --}}
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6" wire:ignore>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Konten Artikel <span class="text-red-500">*</span></label>
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Konten Artikel <span class="text-red-500">*</span></label>
+                        <button
+                            type="button"
+                            wire:click="regenerateContent"
+                            wire:loading.attr="disabled"
+                            wire:target="generateAll,regenerateContent"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-wait text-white text-xs font-medium rounded-lg transition-colors"
+                        >
+                            <svg wire:loading.remove wire:target="regenerateContent" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            <svg wire:loading wire:target="regenerateContent" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                            <span wire:loading.remove wire:target="regenerateContent">Regenerate Konten</span>
+                            <span wire:loading wire:target="regenerateContent">Generating...</span>
+                        </button>
+                    </div>
                     <div
+                        wire:ignore
                         x-data="{
                             content: @entangle('content'),
                             init() {
@@ -51,6 +105,11 @@
                                 editor.innerHTML = this.content;
                                 editor.addEventListener('input', () => {
                                     this.content = editor.innerHTML;
+                                });
+
+                                Livewire.on('content-updated', (event) => {
+                                    editor.innerHTML = event.content;
+                                    this.content = event.content;
                                 });
                             }
                         }"
@@ -96,7 +155,6 @@
                     </div>
                     @error('content') <p class="text-xs text-red-500 mt-2">{{ $message }}</p> @enderror
                 </div>
-
                 {{-- Excerpt --}}
                 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
                     <label for="excerpt" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Ringkasan / Excerpt</label>

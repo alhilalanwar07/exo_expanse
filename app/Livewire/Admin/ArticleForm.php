@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Article;
+use App\Services\ArticleGeneratorService;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -35,6 +36,10 @@ class ArticleForm extends Component
 
     public ?string $existing_image = null;
 
+    public bool $generating = false;
+
+    public ?string $generateError = null;
+
     public function mount(?int $id = null): void
     {
         if ($id) {
@@ -61,6 +66,74 @@ class ArticleForm extends Component
     public function generateSlug(): void
     {
         $this->slug = Str::slug($this->title);
+    }
+
+    /**
+     * Generate all fields (content + SEO + excerpt) from the title using AI.
+     */
+    public function generateAll(): void
+    {
+        if (empty(trim($this->title))) {
+            $this->generateError = 'Masukkan judul artikel terlebih dahulu.';
+
+            return;
+        }
+
+        $this->generating = true;
+        $this->generateError = null;
+
+        $service = app(ArticleGeneratorService::class);
+        $result = $service->generate($this->title);
+
+        if ($result) {
+            $this->content = $result['content'];
+            $this->excerpt = $result['excerpt'];
+            $this->meta_description = $result['meta_description'];
+            $this->focus_keyword = $result['focus_keyword'];
+            $this->meta_keywords = $result['meta_keywords'];
+
+            if (empty($this->slug)) {
+                $this->slug = Str::slug($this->title);
+            }
+
+            $this->dispatch('content-updated', content: $this->content);
+        } else {
+            $this->generateError = 'Gagal generate artikel. Coba lagi nanti.';
+        }
+
+        $this->generating = false;
+    }
+
+    /**
+     * Regenerate only the content, then auto-update SEO + excerpt to match.
+     */
+    public function regenerateContent(): void
+    {
+        if (empty(trim($this->title))) {
+            $this->generateError = 'Masukkan judul artikel terlebih dahulu.';
+
+            return;
+        }
+
+        $this->generating = true;
+        $this->generateError = null;
+
+        $service = app(ArticleGeneratorService::class);
+        $result = $service->generate($this->title);
+
+        if ($result) {
+            $this->content = $result['content'];
+            $this->excerpt = $result['excerpt'];
+            $this->meta_description = $result['meta_description'];
+            $this->focus_keyword = $result['focus_keyword'];
+            $this->meta_keywords = $result['meta_keywords'];
+
+            $this->dispatch('content-updated', content: $this->content);
+        } else {
+            $this->generateError = 'Gagal regenerate konten. Coba lagi nanti.';
+        }
+
+        $this->generating = false;
     }
 
     public function save(): void
