@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\SitemapController;
+use App\Http\Middleware\IsAdmin;
 use App\Livewire\Admin\ArticleManagement as AdminArticleManagement;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
-use App\Livewire\Admin\UserManagement as AdminUserManagement;
 use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
-use App\Livewire\Admin\ThemeManagement as AdminThemeManagement;
 use App\Livewire\Admin\Settings as AdminSettings;
-use App\Http\Middleware\IsAdmin;
+use App\Livewire\Admin\ThemeManagement as AdminThemeManagement;
+use App\Livewire\Admin\UserManagement as AdminUserManagement;
 use App\Livewire\Pages\Auth\Login;
 use App\Livewire\Pages\Auth\Register;
 use App\Livewire\Pages\BlogList;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', Welcome::class)->name('home');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Blog Routes
 Route::get('/blog', BlogList::class)->name('articles.index');

@@ -1,9 +1,27 @@
 <div>
+    {{-- CollectionPage Structured Data --}}
+    @push('seo')
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'CollectionPage',
+        'name' => 'Blog ExoInvite',
+        'description' => 'Artikel terbaru seputar tips undangan digital, inspirasi pernikahan, dan panduan membuat undangan online.',
+        'url' => route('articles.index'),
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => 'ExoInvite',
+            'url' => url('/'),
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+    @endpush
+
     <!-- Hero Section -->
     <div class="bg-gradient-to-br from-rose-500 to-amber-500 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
-            <p class="text-lg text-white/80">Artikel & inspirasi terbaru dari ExoInvite</p>
+            <p class="text-lg text-white/80">Artikel & inspirasi terbaru seputar undangan digital dari ExoInvite</p>
         </div>
     </div>
 
@@ -24,7 +42,7 @@
                         <!-- Image -->
                         <div class="aspect-video overflow-hidden bg-slate-100 dark:bg-slate-700">
                             @if($article->image)
-                                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
                                     <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,10 +53,13 @@
                         </div>
                         <!-- Content -->
                         <div class="p-5">
-                            <time class="text-xs text-slate-400 font-medium">{{ $article->published_at->translatedFormat('d F Y') }}</time>
+                            <time class="text-xs text-slate-400 font-medium" datetime="{{ $article->published_at->toIso8601String() }}">{{ $article->published_at->translatedFormat('d F Y') }}</time>
                             <h2 class="mt-2 text-lg font-bold text-slate-900 dark:text-white group-hover:text-rose-500 transition-colors line-clamp-2">{{ $article->title }}</h2>
                             @if($article->excerpt)
                                 <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-3">{{ $article->excerpt }}</p>
+                            @endif
+                            @if($article->reading_time)
+                                <span class="mt-2 inline-block text-xs text-slate-400">{{ $article->reading_time }} menit baca</span>
                             @endif
                         </div>
                     </a>

@@ -20,7 +20,18 @@ class BlogShow extends Component
 
     public function render()
     {
+        $ogImage = $this->article->image
+            ? asset('storage/'.$this->article->image)
+            : null;
+
         return view('livewire.pages.blog-show')
-            ->title($this->article->title . ' - ExoInvite Blog');
+            ->title($this->article->title.' - ExoInvite Blog')
+            ->layoutData([
+                'metaDescription' => $this->article->getEffectiveMetaDescription(),
+                'metaKeywords' => $this->article->meta_keywords,
+                'canonicalUrl' => route('articles.show', $this->article->slug),
+                'ogType' => 'article',
+                'ogImage' => $ogImage,
+            ]);
     }
 }

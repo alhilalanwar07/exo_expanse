@@ -16,6 +16,10 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
+        'meta_description',
+        'focus_keyword',
+        'meta_keywords',
+        'reading_time',
         'content',
         'image',
         'telegram_chat_id',
@@ -53,10 +57,22 @@ class Article extends Model
         $counter = 1;
 
         while (static::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         return $slug;
+    }
+
+    public static function calculateReadingTime(string $content): int
+    {
+        $wordCount = str_word_count(strip_tags($content));
+
+        return max(1, (int) ceil($wordCount / 200));
+    }
+
+    public function getEffectiveMetaDescription(): string
+    {
+        return $this->meta_description ?: Str::limit(strip_tags($this->excerpt ?? $this->content), 155);
     }
 }

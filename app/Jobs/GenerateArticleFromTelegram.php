@@ -18,6 +18,7 @@ class GenerateArticleFromTelegram implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 2;
+
     public int $timeout = 180;
 
     public function __construct(
@@ -42,6 +43,7 @@ class GenerateArticleFromTelegram implements ShouldQueue
 
             if (! $user) {
                 $telegram->sendMessage($this->chatId, '❌ Gagal: Tidak ada user di sistem.');
+
                 return;
             }
 
@@ -63,6 +65,7 @@ class GenerateArticleFromTelegram implements ShouldQueue
             if (! $result) {
                 $article->update(['status' => 'failed']);
                 $telegram->sendMessage($this->chatId, "❌ <b>Gagal membuat artikel</b>\n\nJudul: <i>{$this->title}</i>\nAI tidak dapat menghasilkan konten. Silakan coba lagi.");
+
                 return;
             }
 
@@ -70,6 +73,10 @@ class GenerateArticleFromTelegram implements ShouldQueue
             $article->update([
                 'content' => $result['content'],
                 'excerpt' => $result['excerpt'],
+                'meta_description' => $result['meta_description'] ?? null,
+                'focus_keyword' => $result['focus_keyword'] ?? null,
+                'meta_keywords' => $result['meta_keywords'] ?? null,
+                'reading_time' => Article::calculateReadingTime($result['content']),
                 'status' => 'published',
                 'published_at' => now(),
             ]);

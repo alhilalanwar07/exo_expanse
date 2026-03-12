@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.guest')]
-#[Title('Blog - ExoInvite')]
+#[Title('Blog - Artikel & Tips Undangan Digital | ExoInvite')]
 class BlogList extends Component
 {
     use WithPagination;
@@ -23,6 +23,9 @@ class BlogList extends Component
 
         return view('livewire.pages.blog-list', [
             'articles' => $articles,
+        ])->layoutData([
+            'metaDescription' => 'Baca artikel terbaru seputar tips undangan digital, inspirasi pernikahan, dan panduan membuat undangan online di ExoInvite.',
+            'canonicalUrl' => route('articles.index'),
         ]);
     }
 }
