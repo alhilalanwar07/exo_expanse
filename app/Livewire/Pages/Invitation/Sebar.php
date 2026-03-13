@@ -116,12 +116,12 @@ class Sebar extends Component
             $akadTime = $inv->akad_time ? Carbon::parse($inv->akad_time)->format('H:i') : '';
 
             $details[] = 'Pada: Akad Pernikahan';
-            $details[] = '📅 Tanggal: '.$akadDate->translatedFormat('d-m-Y');
+            $details[] = '> Tanggal: '.$akadDate->translatedFormat('d-m-Y');
             if ($akadTime) {
-                $details[] = "⏰ Pukul: {$akadTime} - Selesai";
+                $details[] = "> Pukul: {$akadTime} - Selesai";
             }
             if ($inv->akad_address) {
-                $details[] = "📌 Lokasi: {$inv->akad_address}";
+                $details[] = "> Lokasi: {$inv->akad_address}";
             }
             $details[] = '';
         }
@@ -132,12 +132,12 @@ class Sebar extends Component
             $receptionTime = $inv->resepsi_time ? Carbon::parse($inv->resepsi_time)->format('H:i') : '';
 
             $details[] = 'Pada: Resepsi Pernikahan';
-            $details[] = '📅 Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
+            $details[] = '> Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
             if ($receptionTime) {
-                $details[] = "⏰ Pukul: {$receptionTime} - Selesai";
+                $details[] = "> Pukul: {$receptionTime} - Selesai";
             }
             if ($inv->resepsi_address) {
-                $details[] = "📌 Lokasi: {$inv->resepsi_address}";
+                $details[] = "> Lokasi: {$inv->resepsi_address}";
             }
         }
 
