@@ -151,7 +151,7 @@ class ArticleForm extends Component
             'focus_keyword' => 'nullable|string|max:100',
             'meta_keywords' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10240',
         ]);
 
         $data = [
@@ -173,7 +173,8 @@ class ArticleForm extends Component
         }
 
         if ($this->image) {
-            $data['image'] = $this->image->store('articles', 'public');
+            $imageService = app(\App\Services\ImageService::class);
+            $data['image'] = $imageService->storeAsWebp($this->image, 'articles');
         }
 
         if ($this->article) {

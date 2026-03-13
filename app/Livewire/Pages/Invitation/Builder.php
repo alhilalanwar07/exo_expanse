@@ -445,7 +445,8 @@ class Builder extends Component
                 Storage::disk('public')->delete($this->cover_photo);
             }
 
-            $path = $this->coverPhotoUpload->store('invitations/covers', 'public');
+            $imageService = app(\App\Services\ImageService::class);
+            $path = $imageService->storeAsWebp($this->coverPhotoUpload, 'invitations/covers');
             $this->cover_photo = $path;
             $this->coverPhotoUpload = null;
         }
@@ -470,7 +471,8 @@ class Builder extends Component
                 Storage::disk('public')->delete($this->groom_photo);
             }
 
-            $path = $this->groomPhotoUpload->store('invitations/mempelai', 'public');
+            $imageService = app(\App\Services\ImageService::class);
+            $path = $imageService->storeAsWebp($this->groomPhotoUpload, 'invitations/mempelai');
             $this->groom_photo = $path;
             $this->groomPhotoUpload = null;
         }
@@ -495,7 +497,8 @@ class Builder extends Component
                 Storage::disk('public')->delete($this->bride_photo);
             }
 
-            $path = $this->bridePhotoUpload->store('invitations/mempelai', 'public');
+            $imageService = app(\App\Services\ImageService::class);
+            $path = $imageService->storeAsWebp($this->bridePhotoUpload, 'invitations/mempelai');
             $this->bride_photo = $path;
             $this->bridePhotoUpload = null;
         }
@@ -768,8 +771,9 @@ class Builder extends Component
             if ($photo) {
                 \Log::info('Saving photo', ['index' => $index]);
 
-                // Store file
-                $path = $photo->store('invitations/gallery/'.$invitation->id, 'public');
+                // Store file as WebP
+                $imageService = app(\App\Services\ImageService::class);
+                $path = $imageService->storeAsWebp($photo, 'invitations/gallery/'.$invitation->id);
 
                 // Create InvitationPhoto record
                 $savedPhoto = InvitationPhoto::create([

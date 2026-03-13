@@ -70,7 +70,8 @@ class ThemeManagement extends Component
                 Storage::disk('public')->delete($oldPath);
             }
 
-            $path = $this->newThumbnail->store('themes', 'public');
+            $imageService = app(\App\Services\ImageService::class);
+            $path = $imageService->storeAsWebp($this->newThumbnail, 'themes');
             $theme->update(['thumbnail_url' => '/storage/'.$path]);
 
             $this->reset(['uploadThemeId', 'newThumbnail']);
