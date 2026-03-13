@@ -218,9 +218,9 @@ class Sebar extends Component
         }
 
         if ($count > 0) {
-            session()->flash('success', "{$count} penerima berhasil disimpan ke daftar tamu!");
+            $this->dispatch('toast', message: "{$count} penerima berhasil disimpan ke daftar tamu!", type: 'success');
         } else {
-            session()->flash('info', 'Semua penerima sudah ada di daftar tamu.');
+            $this->dispatch('toast', message: 'Semua penerima sudah ada di daftar tamu.', type: 'info');
         }
     }
 

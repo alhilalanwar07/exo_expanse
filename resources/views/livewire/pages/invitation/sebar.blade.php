@@ -1,4 +1,14 @@
-<div class="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+<div class="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+     x-data="{ toast: { show: false, message: '', type: 'success' } }"
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+
+    <!-- Toast Notification -->
+    <div x-show="toast.show" x-transition.opacity.duration.300ms
+         class="fixed top-4 right-4 z-50 max-w-sm px-5 py-3 rounded-xl shadow-2xl text-white font-medium text-sm flex items-center gap-3"
+         :class="toast.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'">
+        <span x-text="toast.type === 'success' ? '✅' : 'ℹ️'" class="text-lg"></span>
+        <span x-text="toast.message"></span>
+    </div>
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
