@@ -4,6 +4,7 @@ namespace App\Livewire\Pages\Invitation;
 
 use App\Models\Invitation;
 use App\Models\MessageTemplate;
+use App\Services\GuestImportService;
 use App\Services\GuestService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,8 @@ class Sebar extends Component
     public array $recipients = [];
 
     public string $newRecipient = '';
+
+    public string $searchRecipient = '';
 
     public bool $linksGenerated = false;
 
@@ -66,16 +69,75 @@ class Sebar extends Component
         return route('invitation.show', $this->invitation->slug);
     }
 
+    #[Computed]
+    public function existingGuests(): array
+    {
+        return $this->invitation->guests()->pluck('name')->map(fn ($n) => mb_strtolower($n))->toArray();
+    }
+
+    public function isExistingGuest(string $name): bool
+    {
+        return in_array(mb_strtolower($name), $this->existingGuests);
+    }
+
+    #[Computed]
+    public function groupedRecipients(): array
+    {
+        $search = mb_strtolower(trim($this->searchRecipient));
+        $grouped = [];
+        foreach ($this->recipients as $index => $recipient) {
+            if ($search !== '' && ! str_contains(mb_strtolower($recipient['name']), $search)) {
+                continue;
+            }
+            $date = $recipient['created_at'] ?? now()->format('Y-m-d');
+            $grouped[$date][] = ['name' => $recipient['name'], 'index' => $index];
+        }
+        krsort($grouped);
+
+        return $grouped;
+    }
+
+    public function getRecipientNames(): array
+    {
+        return array_column($this->recipients, 'name');
+    }
+
     public function addRecipient(): void
     {
         $name = trim($this->newRecipient);
+        $existingNames = $this->getRecipientNames();
 
-        if (! empty($name) && ! in_array($name, $this->recipients)) {
-            $this->recipients[] = $name;
+        if (! empty($name) && ! in_array($name, $existingNames)) {
+            $this->recipients[] = ['name' => $name, 'created_at' => now()->format('Y-m-d')];
             $this->linksGenerated = false;
         }
 
         $this->newRecipient = '';
+    }
+
+    public function loadExistingGuests(): void
+    {
+        $guests = $this->invitation->guests()->select('name', 'created_at')->get();
+        $existingNames = $this->getRecipientNames();
+        $added = 0;
+
+        foreach ($guests as $guest) {
+            if (! in_array($guest->name, $existingNames)) {
+                $this->recipients[] = [
+                    'name' => $guest->name,
+                    'created_at' => $guest->created_at->format('Y-m-d'),
+                ];
+                $added++;
+            }
+        }
+
+        $this->linksGenerated = false;
+
+        if ($added > 0) {
+            $this->dispatch('toast', message: "{$added} tamu berhasil dimuat ke daftar penerima.", type: 'success');
+        } else {
+            $this->dispatch('toast', message: 'Semua tamu sudah ada di daftar penerima.', type: 'info');
+        }
     }
 
     public function removeRecipient(int $index): void
@@ -84,6 +146,16 @@ class Sebar extends Component
             unset($this->recipients[$index]);
             $this->recipients = array_values($this->recipients);
         }
+    }
+
+    public function removeByDate(string $date): void
+    {
+        $this->recipients = array_values(array_filter(
+            $this->recipients,
+            fn ($r) => ($r['created_at'] ?? '') !== $date
+        ));
+        $this->linksGenerated = false;
+        $this->dispatch('toast', message: 'Penerima tanggal '.Carbon::parse($date)->translatedFormat('d M Y').' telah dihapus.', type: 'success');
     }
 
     public function generateLinks(): void
@@ -102,66 +174,6 @@ class Sebar extends Component
         return $this->baseUrl.'?kpd='.urlencode($name);
     }
 
-    /**
-     * Format event details for WhatsApp message.
-     */
-    private function formatEventDetails(): string
-    {
-        $inv = $this->invitation;
-        $details = [];
-
-        // Akad
-        if ($inv->akad_date) {
-            $akadDate = Carbon::parse($inv->akad_date);
-            $akadTime = $inv->akad_time ? Carbon::parse($inv->akad_time)->format('H:i') : '';
-
-            $details[] = 'Pada: Akad Pernikahan';
-            $details[] = '> Tanggal: '.$akadDate->translatedFormat('d-m-Y');
-            if ($akadTime) {
-                $details[] = "> Pukul: {$akadTime} - Selesai";
-            }
-            if ($inv->akad_address) {
-                $details[] = "> Lokasi: {$inv->akad_address}";
-            }
-            $details[] = '';
-        }
-
-        // Resepsi
-        if ($inv->resepsi_date) {
-            $receptionDate = Carbon::parse($inv->resepsi_date);
-            $receptionTime = $inv->resepsi_time ? Carbon::parse($inv->resepsi_time)->format('H:i') : '';
-
-            $details[] = 'Pada: Resepsi Pernikahan';
-            $details[] = '> Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
-            if ($receptionTime) {
-                $details[] = "> Pukul: {$receptionTime} - Selesai";
-            }
-            if ($inv->resepsi_address) {
-                $details[] = "> Lokasi: {$inv->resepsi_address}";
-            }
-        }
-
-        return implode("\n", $details);
-    }
-
-    /**
-     * Get the invitation title.
-     */
-    private function getInvitationTitle(): string
-    {
-        $inv = $this->invitation;
-
-        if ($inv->groom_name && $inv->bride_name) {
-            $order = $inv->custom_styles['name_order'] ?? 'groom_first';
-            $first = $order === 'bride_first' ? $inv->bride_name : $inv->groom_name;
-            $second = $order === 'bride_first' ? $inv->groom_name : $inv->bride_name;
-
-            return "The Wedding of {$first} dan {$second}";
-        }
-
-        return $inv->title;
-    }
-
     public function getWhatsAppUrl(string $name): string
     {
         $template = $this->selectedTemplate;
@@ -169,20 +181,15 @@ class Sebar extends Component
             return '#';
         }
 
-        // $personalUrl = $this->getPersonalUrl($name); // Inside string interpolation issues
-        $personalUrl = $this->baseUrl.'?kpd='.urlencode($name);
+        $service = app(GuestImportService::class);
 
-        $eventDetails = $this->formatEventDetails();
-        $invitationTitle = $this->getInvitationTitle();
-
-        // Replace placeholders
-        $message = str_replace(
-            ['{nama}', '{judul}', '{detail_acara}', '{link}'],
-            [$name, $invitationTitle, $eventDetails, $personalUrl],
+        return $service->generateWhatsAppUrl(
+            $this->invitation,
+            $this->baseUrl,
+            $name,
+            null,
             $template->content
         );
-
-        return 'https://wa.me/?text='.rawurlencode($message);
     }
 
     /**
@@ -195,11 +202,14 @@ class Sebar extends Component
             return '';
         }
 
+        $service = app(GuestImportService::class);
         $recipientName = trim($this->newRecipient) ?: '[Nama Penerima]';
+        $invitationTitle = $service->getInvitationTitle($this->invitation);
+        $eventDetails = $service->formatEventDetails($this->invitation);
 
         return str_replace(
             ['{nama}', '{judul}', '{detail_acara}', '{link}'],
-            [$recipientName, '[Judul Undangan]', '[Detail Akad & Resepsi]', '[Link Undangan]'],
+            [$recipientName, $invitationTitle, $eventDetails, $this->baseUrl.'?kpd=...'],
             $template->content
         );
     }
@@ -209,7 +219,8 @@ class Sebar extends Component
         $guestService = app(GuestService::class);
 
         $count = 0;
-        foreach ($this->recipients as $name) {
+        foreach ($this->recipients as $recipient) {
+            $name = $recipient['name'];
             $exists = $this->invitation->guests()->where('name', $name)->exists();
             if (! $exists) {
                 $guestService->addGuest($this->invitation, ['name' => $name]);

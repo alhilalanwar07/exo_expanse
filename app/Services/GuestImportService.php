@@ -193,4 +193,60 @@ class GuestImportService
 
         return "https://api.whatsapp.com/send?text={$encodedMessage}";
     }
+
+    /**
+     * Get the invitation title.
+     */
+    public function getInvitationTitle(\App\Models\Invitation $invitation): string
+    {
+        if ($invitation->groom_name && $invitation->bride_name) {
+            $styles = $invitation->custom_styles ?? [];
+            $order = $styles['name_order'] ?? 'groom_first';
+            $first = $order === 'bride_first' ? $invitation->bride_name : $invitation->groom_name;
+            $second = $order === 'bride_first' ? $invitation->groom_name : $invitation->bride_name;
+
+            return "The Wedding of {$first} dan {$second}";
+        }
+
+        return $invitation->title;
+    }
+
+    /**
+     * Format event details for WhatsApp message.
+     */
+    public function formatEventDetails(\App\Models\Invitation $invitation): string
+    {
+        $details = [];
+
+        if ($invitation->akad_date) {
+            $akadDate = \Carbon\Carbon::parse($invitation->akad_date);
+            $akadTime = $invitation->akad_time ? \Carbon\Carbon::parse($invitation->akad_time)->format('H:i') : '';
+
+            $details[] = 'Pada: Akad Pernikahan';
+            $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$akadDate->translatedFormat('d-m-Y');
+            if ($akadTime) {
+                $details[] = "\u{1F55B} Pukul: {$akadTime} - Selesai";
+            }
+            if ($invitation->akad_address) {
+                $details[] = "\u{1F4CD} Lokasi: {$invitation->akad_address}";
+            }
+            $details[] = '';
+        }
+
+        if ($invitation->resepsi_date) {
+            $receptionDate = \Carbon\Carbon::parse($invitation->resepsi_date);
+            $receptionTime = $invitation->resepsi_time ? \Carbon\Carbon::parse($invitation->resepsi_time)->format('H:i') : '';
+
+            $details[] = 'Pada: Resepsi Pernikahan';
+            $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$receptionDate->translatedFormat('d-m-Y');
+            if ($receptionTime) {
+                $details[] = "\u{1F55B} Pukul: {$receptionTime} - Selesai";
+            }
+            if ($invitation->resepsi_address) {
+                $details[] = "\u{1F4CD} Lokasi: {$invitation->resepsi_address}";
+            }
+        }
+
+        return implode("\n", $details);
+    }
 }

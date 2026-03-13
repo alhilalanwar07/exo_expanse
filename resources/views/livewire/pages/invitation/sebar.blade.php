@@ -3,11 +3,53 @@
      x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
 
     <!-- Toast Notification -->
-    <div x-show="toast.show" x-transition.opacity.duration.300ms
-         class="fixed top-4 right-4 z-50 max-w-sm px-5 py-3 rounded-xl shadow-2xl text-white font-medium text-sm flex items-center gap-3"
-         :class="toast.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'">
-        <span x-text="toast.type === 'success' ? '✅' : 'ℹ️'" class="text-lg"></span>
-        <span x-text="toast.message"></span>
+    <div x-show="toast.show" x-cloak
+         x-transition:enter="transform ease-out duration-300 transition"
+         x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+         x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed top-5 right-5 z-50 w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5 pointer-events-auto"
+         :class="toast.type === 'success' ? 'bg-white dark:bg-slate-800' : 'bg-white dark:bg-slate-800'">
+        <div class="p-4">
+            <div class="flex items-start">
+                <div class="shrink-0">
+                    <!-- Success Icon -->
+                    <template x-if="toast.type === 'success'">
+                        <svg class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </template>
+                    <!-- Info Icon -->
+                    <template x-if="toast.type === 'info'">
+                        <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                        </svg>
+                    </template>
+                </div>
+                <div class="ml-3 w-0 flex-1 pt-0.5">
+                    <p class="text-sm font-medium text-slate-900 dark:text-white" x-text="toast.type === 'success' ? 'Berhasil!' : 'Informasi'"></p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400" x-text="toast.message"></p>
+                </div>
+                <div class="ml-4 flex shrink-0">
+                    <button @click="toast.show = false" class="inline-flex rounded-md text-slate-400 hover:text-slate-500 dark:hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2">
+                        <span class="sr-only">Close</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Progress bar -->
+        <div class="h-1 w-full" :class="toast.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-blue-100 dark:bg-blue-900/30'">
+            <div class="h-full transition-all duration-[3000ms] ease-linear"
+                 :class="toast.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'"
+                 :style="toast.show ? 'width: 0%' : 'width: 100%'"
+                 x-init="$watch('toast.show', val => { if(val) { $nextTick(() => $el.style.width = '0%'); setTimeout(() => $el.style.width = '100%', 50) } })">
+            </div>
+        </div>
     </div>
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700">
@@ -82,19 +124,63 @@
                 </div>
             </div>
 
-            <!-- Recipient Tags -->
-            <div class="flex flex-wrap gap-2 mb-4">
-                @foreach($recipients as $index => $recipient)
-                    <span class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-full text-sm font-medium shadow-md">
-                        {{ $recipient }}
-                        <button wire:click="removeRecipient({{ $index }})" class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </span>
-                @endforeach
-                @if(empty($recipients))
+            <!-- Search Recipients -->
+            @if(count($recipients) > 5)
+                <div class="mb-4">
+                    <div class="relative">
+                        <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <input 
+                            type="text" 
+                            wire:model.live.debounce.300ms="searchRecipient"
+                            class="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-800 dark:text-white placeholder-slate-400 text-sm focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                            placeholder="Cari penerima..."
+                        >
+                        @if($searchRecipient)
+                            <button wire:click="$set('searchRecipient', '')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
+            <!-- Recipient Tags (grouped by date) -->
+            <div class="space-y-4 mb-4">
+                @forelse($this->groupedRecipients as $date => $group)
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                {{ \Carbon\Carbon::parse($date)->translatedFormat('d M Y') }}
+                                <span class="text-slate-400 dark:text-slate-500 font-normal">({{ count($group) }} penerima)</span>
+                            </span>
+                            <button 
+                                wire:click="removeByDate('{{ $date }}')"
+                                wire:confirm="Hapus semua penerima tanggal {{ \Carbon\Carbon::parse($date)->translatedFormat('d M Y') }}?"
+                                class="text-xs text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium flex items-center gap-1 transition-colors"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Hapus tanggal ini
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($group as $item)
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-full text-sm font-medium shadow-md">
+                                    {{ $item['name'] }}
+                                    @if($this->isExistingGuest($item['name']))
+                                        <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" title="Sudah ada di daftar tamu">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    @endif
+                                    <button wire:click="removeRecipient({{ $item['index'] }})" class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                @empty
                     <span class="text-slate-400 dark:text-slate-500 text-sm italic">Belum ada penerima...</span>
-                @endif
+                @endforelse
             </div>
 
             <!-- Add Input -->
@@ -113,6 +199,19 @@
                     + Tambah
                 </button>
             </div>
+
+            <!-- Load Existing Guests -->
+            @if($invitation->guests()->count() > 0)
+                <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <button 
+                        wire:click="loadExistingGuests"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        Muat Daftar Tamu ({{ $invitation->guests()->count() }} tamu)
+                    </button>
+                </div>
+            @endif
         </div>
 
         <!-- Step 2: Message Template -->
@@ -190,17 +289,34 @@
                 </div>
                 
                 <div class="divide-y divide-slate-100 dark:divide-slate-700">
-                    @foreach($recipients as $recipient)
+                    @foreach($this->groupedRecipients as $date => $group)
+                        <!-- Date Group Header -->
+                        <div class="px-6 py-3 bg-slate-50 dark:bg-slate-700/50">
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                {{ \Carbon\Carbon::parse($date)->translatedFormat('d M Y') }} — {{ count($group) }} penerima
+                            </span>
+                        </div>
+                        @foreach($group as $item)
                         <div class="p-5 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                 <div>
                                     <p class="text-slate-500 dark:text-slate-400 text-sm">Kepada:</p>
-                                    <p class="text-lg font-bold text-slate-800 dark:text-white">{{ $recipient }}</p>
+                                    <p class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                        {{ $item['name'] }}
+                                        @if($this->isExistingGuest($item['name']))
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-medium rounded-full">
+                                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                Tersimpan
+                                            </span>
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="flex gap-2">
                                     <!-- Copy Button -->
                                     <button 
-                                        onclick="navigator.clipboard.writeText('{{ $this->getPersonalUrl($recipient) }}'); this.querySelector('span').textContent='Copied!'; setTimeout(() => this.querySelector('span').textContent='📋 Copy', 1500);"
+                                        onclick="navigator.clipboard.writeText('{{ $this->getPersonalUrl($item['name']) }}'); this.querySelector('span').textContent='Copied!'; setTimeout(() => this.querySelector('span').textContent='📋 Copy', 1500);"
                                         class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-2"
                                     >
                                         <span>📋 Copy</span>
@@ -208,7 +324,7 @@
                                     
                                     <!-- WhatsApp Button -->
                                     <a 
-                                        href="{{ $this->getWhatsAppUrl($recipient) }}"
+                                        href="{{ $this->getWhatsAppUrl($item['name']) }}"
                                         target="_blank"
                                         class="px-4 py-2.5 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2 shadow-lg shadow-green-500/30"
                                     >
@@ -220,7 +336,7 @@
                                     
                                     <!-- Share Button -->
                                     <button 
-                                        onclick="navigator.share ? navigator.share({title: '{{ $invitation->title }}', url: '{{ $this->getPersonalUrl($recipient) }}'}) : alert('Share tidak didukung browser ini')"
+                                        onclick="navigator.share ? navigator.share({title: '{{ $invitation->title }}', url: '{{ $this->getPersonalUrl($item['name']) }}'}) : alert('Share tidak didukung browser ini')"
                                         class="px-4 py-2.5 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/30"
                                     >
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,6 +347,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endforeach
                     @endforeach
                 </div>
             </div>
