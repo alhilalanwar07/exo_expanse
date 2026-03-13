@@ -287,8 +287,7 @@
                             <div x-data="{ copied: false }" class="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 text-center relative group">
                                 <div class="h-10 mb-6 flex items-center justify-center">
                                     <img src="{{ $account['bank_logo'] ?? '' }}" 
-                                         class="max-h-full opacity-80" 
-                                         onerror="this.src='https://indoinvite.com/nikah/template/modern-lite/images/atm-card.png'">
+                                         class="max-h-full opacity-80" >
                                 </div>
                                 <div class="font-body text-slate-400 text-xs mb-1 uppercase tracking-widest font-bold">{{ $account['bank_name'] ?? 'Bank' }}</div>
                                 <div class="font-heading text-2xl mb-4 tracking-widest">{{ $account['account_number'] ?? '' }}</div>

@@ -290,8 +290,8 @@
                             </div>
                         @endif
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 sm:translate-y-full sm:group-hover:translate-y-0 transition-transform duration-500">
                         <h3 class="text-lg font-bold text-white mb-2">{{ $theme->name }}</h3>
                         <div class="flex items-center gap-2">
                             <a href="{{ route('invitation.demo', ['theme' => $theme->slug]) }}" class="inline-flex items-center gap-1 px-3 py-1 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-medium rounded-full hover:bg-white transition-colors">

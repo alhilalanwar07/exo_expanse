@@ -48,9 +48,9 @@
         <div x-transition>
             <label class="block text-sm font-medium mb-2 opacity-80">Jumlah Orang</label>
             <select wire:model="pax" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-current transition-all bg-white">
-                @for($i = 1; $i <= 5; $i++)
+                @foreach(range(1, 5) as $i)
                     <option value="{{ $i }}">{{ $i }} Orang</option>
-                @endfor
+                @endforeach
             </select>
             @error('pax') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
         </div>
