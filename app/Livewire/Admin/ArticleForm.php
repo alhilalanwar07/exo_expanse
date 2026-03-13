@@ -97,8 +97,10 @@ class ArticleForm extends Component
             }
 
             $this->dispatch('content-updated', content: $this->content);
+            $this->dispatch('toast', message: 'Artikel berhasil di-generate!', type: 'success');
         } else {
             $this->generateError = 'Gagal generate artikel. Coba lagi nanti.';
+            $this->dispatch('toast', message: 'Gagal generate artikel.', type: 'error');
         }
 
         $this->generating = false;
@@ -129,8 +131,10 @@ class ArticleForm extends Component
             $this->meta_keywords = $result['meta_keywords'];
 
             $this->dispatch('content-updated', content: $this->content);
+            $this->dispatch('toast', message: 'Konten berhasil di-regenerate!', type: 'success');
         } else {
             $this->generateError = 'Gagal regenerate konten. Coba lagi nanti.';
+            $this->dispatch('toast', message: 'Gagal regenerate konten.', type: 'error');
         }
 
         $this->generating = false;
@@ -174,14 +178,13 @@ class ArticleForm extends Component
 
         if ($this->article) {
             $this->article->update($data);
-            session()->flash('success', 'Artikel berhasil diperbarui.');
+            $this->dispatch('toast', message: 'Artikel berhasil diperbarui.', type: 'success');
         } else {
             $data['user_id'] = auth()->id();
-            Article::create($data);
-            session()->flash('success', 'Artikel berhasil dibuat.');
+            $article = Article::create($data);
+            $this->dispatch('toast', message: 'Artikel berhasil dibuat.', type: 'success');
+            $this->redirect(route('admin.articles.edit', $article->id), navigate: true);
         }
-
-        $this->redirect(route('admin.articles'), navigate: true);
     }
 
     public function removeImage(): void
@@ -190,6 +193,26 @@ class ArticleForm extends Component
         if ($this->article) {
             $this->article->update(['image' => null]);
         }
+        $this->dispatch('toast', message: 'Gambar berhasil dihapus.', type: 'success');
+    }
+
+    public function togglePublish(): void
+    {
+        if (! $this->article) {
+            return;
+        }
+
+        if ($this->article->status === 'published') {
+            $this->article->update(['status' => 'draft', 'published_at' => null]);
+            $this->status = 'draft';
+            $this->dispatch('toast', message: 'Artikel berhasil di-unpublish.', type: 'success');
+        } else {
+            $this->article->update(['status' => 'published', 'published_at' => now()]);
+            $this->status = 'published';
+            $this->dispatch('toast', message: 'Artikel berhasil dipublikasikan!', type: 'success');
+        }
+
+        $this->article->refresh();
     }
 
     public function render()

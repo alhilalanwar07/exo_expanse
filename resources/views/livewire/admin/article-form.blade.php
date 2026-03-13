@@ -193,6 +193,15 @@
                             </span>
                             <span wire:loading wire:target="save">Menyimpan...</span>
                         </button>
+                        @if($article)
+                            <button type="button" wire:click="togglePublish"
+                                class="px-4 py-2.5 text-sm font-medium rounded-xl transition-colors {{ $article->status === 'published' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-900/50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-900/50' }}">
+                                <span wire:loading.remove wire:target="togglePublish">
+                                    {{ $article->status === 'published' ? 'Unpublish' : 'Publish' }}
+                                </span>
+                                <span wire:loading wire:target="togglePublish">...</span>
+                            </button>
+                        @endif
                     </div>
                 </div>
 
