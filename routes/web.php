@@ -32,6 +32,9 @@ Route::get('/', Welcome::class)->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/img/{token}', [ImageController::class, 'show'])->name('image.show');
 
+// Block direct storage access — all files served through /img/{token}
+Route::get('/storage/{path}', fn () => abort(403))->where('path', '.*');
+
 // Blog Routes
 Route::get('/blog', BlogList::class)->name('articles.index');
 Route::get('/blog/{slug}', BlogShow::class)->name('articles.show');

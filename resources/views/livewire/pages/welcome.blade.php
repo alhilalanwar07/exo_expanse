@@ -278,7 +278,7 @@
                 <div class="group relative rounded-3xl overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-slate-100">
                     <div class="aspect-[3/4] relative bg-slate-100 flex items-center justify-center overflow-hidden">
                         @if($theme->thumbnail_url)
-                            <img src="{{ asset($theme->thumbnail_url) }}" alt="{{ $theme->name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <img src="{{ $theme->protected_thumbnail }}" alt="{{ $theme->name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         @else
                             <div class="absolute inset-0 bg-gradient-to-br {{ $gradients[$index % count($gradients)] }} flex items-center justify-center">
                                 <span class="text-7xl group-hover:scale-125 transition-transform duration-500">{{ $emojis[$index % count($emojis)] }}</span>

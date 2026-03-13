@@ -74,7 +74,8 @@ return [
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        // Disabled — images served through /img/{token} route with watermark protection
+        // public_path('storage') => storage_path('app/public'),
     ],
 
 ];

@@ -47,7 +47,7 @@ class ThemePage extends Component
         if ($this->invitation->cover_image) {
             $ogImage = asset('storage/'.$this->invitation->cover_image);
         } elseif ($this->invitation->theme && $this->invitation->theme->thumbnail_url) {
-            $ogImage = asset($this->invitation->theme->thumbnail_url);
+            $ogImage = $this->invitation->theme->protected_thumbnail;
         }
 
         // groom atau bride yang pertama

@@ -47,6 +47,28 @@ class Theme extends Model
     }
 
     // ==================
+    // ACCESSORS
+    // ==================
+
+    /**
+     * Get a protected URL for the thumbnail (hides storage path, adds watermark).
+     */
+    public function getProtectedThumbnailAttribute(): ?string
+    {
+        if (! $this->thumbnail_url) {
+            return null;
+        }
+
+        // Storage-based uploads: strip /storage/ prefix and use img_url()
+        if (str_starts_with($this->thumbnail_url, '/storage/')) {
+            return img_url(str_replace('/storage/', '', $this->thumbnail_url));
+        }
+
+        // Static public assets (e.g. /images/themes/...) — serve as-is
+        return asset($this->thumbnail_url);
+    }
+
+    // ==================
     // METHODS
     // ==================
 

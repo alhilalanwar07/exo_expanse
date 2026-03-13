@@ -62,7 +62,7 @@ class DemoPage extends Component
         $this->metadata = [
             'title' => 'Demo Tema Undangan Digital - ExoInvite',
             'description' => 'Preview tema undangan digital ExoInvite. Lihat berbagai pilihan tema premium untuk undangan pernikahan online Anda.',
-            'image' => $theme?->thumbnail_url ? asset($theme->thumbnail_url) : asset('images/og-default.jpg'),
+            'image' => $theme?->thumbnail_url ? $theme->protected_thumbnail : asset('images/og-default.jpg'),
             'url' => request()->url(),
         ];
     }
