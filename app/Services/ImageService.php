@@ -76,6 +76,13 @@ class ImageService
             return null;
         }
 
+        // Convert palette images to true color (WebP doesn't support palette)
+        if (! imageistruecolor($image)) {
+            imagepalettetotruecolor($image);
+        }
+        imagealphablending($image, true);
+        imagesavealpha($image, true);
+
         $width = imagesx($image);
         $height = imagesy($image);
 
@@ -153,12 +160,12 @@ class ImageService
             return $file->store($directory, 'public');
         }
 
-        // Preserve transparency for PNG/GIF
-        if (in_array($extension, ['png', 'gif'])) {
+        // Convert palette images to true color (WebP doesn't support palette)
+        if (! imageistruecolor($image)) {
             imagepalettetotruecolor($image);
-            imagealphablending($image, true);
-            imagesavealpha($image, true);
         }
+        imagealphablending($image, true);
+        imagesavealpha($image, true);
 
         $filename = Str::random(40).'.webp';
         $path = rtrim($directory, '/').'/'.$filename;
