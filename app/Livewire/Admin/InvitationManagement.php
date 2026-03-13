@@ -17,6 +17,7 @@ class InvitationManagement extends Component
     public $search = '';
 
     public bool $isDeleteModalOpen = false;
+
     public ?int $deletingInvitationId = null;
 
     public function updatingSearch()
@@ -35,6 +36,7 @@ class InvitationManagement extends Component
         if ($this->deletingInvitationId) {
             $invitation = Invitation::findOrFail($this->deletingInvitationId);
             $invitation->delete();
+            $this->dispatch('toast', message: 'Undangan berhasil dihapus.', type: 'success');
         }
         $this->isDeleteModalOpen = false;
         $this->deletingInvitationId = null;
@@ -45,17 +47,17 @@ class InvitationManagement extends Component
         // Fitur pencarian mencari berdasar judul/slug atau nama user
         $invitations = Invitation::with(['user:id,name', 'theme:id,name'])
             ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('slug', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('user', function ($q) {
-                          $q->where('name', 'like', '%' . $this->search . '%');
-                      });
+                $query->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('slug', 'like', '%'.$this->search.'%')
+                    ->orWhereHas('user', function ($q) {
+                        $q->where('name', 'like', '%'.$this->search.'%');
+                    });
             })
             ->latest()
             ->paginate(10);
 
         return view('livewire.admin.invitation-management', [
-            'invitations' => $invitations
+            'invitations' => $invitations,
         ]);
     }
 }

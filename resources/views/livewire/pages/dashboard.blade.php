@@ -1,4 +1,8 @@
-<div>
+<div x-data="{ toast: { show: false, message: '', type: 'success' } }"
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+
+    <x-toast-notification />
+
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div>
             <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
@@ -11,13 +15,6 @@
             Buat Undangan Baru
         </a>
     </div>
-
-    <!-- Flash Message -->
-    @if (session()->has('message'))
-        <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl">
-            {{ session('message') }}
-        </div>
-    @endif
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

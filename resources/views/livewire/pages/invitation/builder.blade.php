@@ -1,4 +1,9 @@
-<div class="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+<div class="min-h-screen bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+     x-data="{ toast: { show: false, message: '', type: 'success' } }"
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+
+    <x-toast-notification />
+
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-12xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
@@ -38,16 +43,6 @@
             </div>
         </div>
     </header>
-
-    <!-- Flash Messages -->
-    @if(session('success'))
-        <div class="max-w-12xl mx-auto px-4 mt-4">
-            <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 flex items-center gap-3">
-                <span class="text-2xl">✅</span>
-                <p class="text-emerald-700 dark:text-emerald-300">{{ session('success') }}</p>
-            </div>
-        </div>
-    @endif
 
     <!-- Main Content -->
     <div class="max-w-12xl mx-auto px-4 py-4 md:py-6">

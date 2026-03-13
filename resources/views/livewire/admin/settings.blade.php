@@ -1,24 +1,12 @@
-<div>
+<div x-data="{ toast: { show: false, message: '', type: 'success' } }"
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+
+    <x-toast-notification />
+
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Pengaturan Sistem</h1>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Kelola konfigurasi dasar aplikasi dan preferensi aksesibilitas situs.</p>
     </div>
-
-    <!-- Tampilan Toast / Notification -->
-    @if($notificationMessage)
-        <div class="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 flex items-start gap-3 transition-all" 
-             x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)">
-            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <div class="flex-1">
-                <h3 class="text-sm font-medium text-emerald-800 dark:text-emerald-300">{{ $notificationMessage }}</h3>
-            </div>
-            <button @click="show = false" class="text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-        </div>
-    @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Sidebar Menu Pengaturan (Opsional visual saja) -->

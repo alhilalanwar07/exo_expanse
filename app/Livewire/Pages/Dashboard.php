@@ -54,7 +54,7 @@ class Dashboard extends Component
             $invitation = Invitation::where('user_id', Auth::id())->findOrFail($this->invitationIdToDelete);
             $invitation->delete();
 
-            session()->flash('message', 'Undangan berhasil dihapus.');
+            $this->dispatch('toast', message: 'Undangan berhasil dihapus.', type: 'success');
         }
 
         $this->confirmingInvitationDeletion = false;
@@ -120,7 +120,7 @@ class Dashboard extends Component
             $invitation = Invitation::where('user_id', Auth::id())->findOrFail($this->invitationIdToChangeTheme);
             $invitation->update(['theme_id' => $this->selectedThemeId]);
 
-            session()->flash('message', 'Tema berhasil diubah.');
+            $this->dispatch('toast', message: 'Tema berhasil diubah.', type: 'success');
             $this->closeThemeModal();
         }
     }

@@ -602,7 +602,7 @@ class Builder extends Component
     public function addGuestsFromText(): void
     {
         if (! $this->invitationId) {
-            session()->flash('error', 'Simpan undangan terlebih dahulu sebelum menambahkan tamu.');
+            $this->dispatch('toast', message: 'Simpan undangan terlebih dahulu sebelum menambahkan tamu.', type: 'error');
 
             return;
         }
@@ -615,7 +615,7 @@ class Builder extends Component
         $guestData = $importService->validateGuests($guestData);
 
         if (empty($guestData)) {
-            session()->flash('error', 'Tidak ada tamu yang valid untuk ditambahkan.');
+            $this->dispatch('toast', message: 'Tidak ada tamu yang valid untuk ditambahkan.', type: 'error');
 
             return;
         }
@@ -625,7 +625,7 @@ class Builder extends Component
         $this->guestInput = '';
         $this->loadGuests($invitation);
 
-        session()->flash('success', "{$count} tamu berhasil ditambahkan!");
+        $this->dispatch('toast', message: "{$count} tamu berhasil ditambahkan!", type: 'success');
     }
 
     public function updatedGuestFile(): void
@@ -638,13 +638,13 @@ class Builder extends Component
     public function importGuestsFromFile(): void
     {
         if (! $this->invitationId) {
-            session()->flash('error', 'Simpan undangan terlebih dahulu sebelum import tamu.');
+            $this->dispatch('toast', message: 'Simpan undangan terlebih dahulu sebelum import tamu.', type: 'error');
 
             return;
         }
 
         if (! $this->guestFile) {
-            session()->flash('error', 'Pilih file terlebih dahulu.');
+            $this->dispatch('toast', message: 'Pilih file terlebih dahulu.', type: 'error');
 
             return;
         }
@@ -657,7 +657,7 @@ class Builder extends Component
         $guestData = $importService->validateGuests($guestData);
 
         if (empty($guestData)) {
-            session()->flash('error', 'Tidak ada tamu yang valid dalam file.');
+            $this->dispatch('toast', message: 'Tidak ada tamu yang valid dalam file.', type: 'error');
 
             return;
         }
@@ -667,7 +667,7 @@ class Builder extends Component
         $this->guestFile = null;
         $this->loadGuests($invitation);
 
-        session()->flash('success', "{$count} tamu berhasil diimport dari file!");
+        $this->dispatch('toast', message: "{$count} tamu berhasil diimport dari file!", type: 'success');
     }
 
     public function deleteGuest(int $guestId): void
@@ -734,7 +734,7 @@ class Builder extends Component
         // Save new photos
         $this->savePhotos($invitation);
 
-        session()->flash('success', 'Undangan berhasil disimpan!');
+        $this->dispatch('toast', message: 'Undangan berhasil disimpan!', type: 'success');
 
         // Update ID jika ini adalah create baru
         if (! $this->invitationId) {
@@ -809,7 +809,7 @@ class Builder extends Component
 
         $service->publish($invitation);
 
-        session()->flash('success', 'Undangan berhasil dipublikasikan!');
+        $this->dispatch('toast', message: 'Undangan berhasil dipublikasikan!', type: 'success');
 
         $this->redirect(route('dashboard'));
     }

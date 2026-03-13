@@ -12,7 +12,7 @@ class extends Component
         $invitationType = InvitationType::from($type);
         
         if (!$invitationType->isAvailable()) {
-            session()->flash('error', 'Mohon maaf, tipe undangan ini belum tersedia. Coming soon!');
+            $this->dispatch('toast', message: 'Mohon maaf, tipe undangan ini belum tersedia. Coming soon!', type: 'error');
             return;
         }
         
@@ -30,17 +30,15 @@ class extends Component
     }
 }; ?>
 
-<div>
+<div x-data="{ toast: { show: false, message: '', type: 'success' } }"
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+
+    <x-toast-notification />
+
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Buat Acara Baru</h1>
         <p class="text-slate-600 dark:text-slate-400 mt-2">Pilih jenis acara yang ingin Anda buat undangannya</p>
     </div>
-
-    @if(session('error'))
-        <div class="mb-6 p-4 bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-xl text-amber-700 dark:text-amber-300">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <!-- Available Types Section -->
     <div class="mb-10">

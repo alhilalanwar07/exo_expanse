@@ -1,4 +1,8 @@
-<div>
+<div x-data="{ toast: { show: false, message: '', type: 'success' } }"
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+
+    <x-toast-notification />
+
     <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Kelola Tema</h1>
@@ -12,11 +16,6 @@
         </div>
     </div>
 
-    @if (session()->has('message'))
-        <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl">
-            {{ session('message') }}
-        </div>
-    @endif
     @error('newThumbnail')
         <div class="mb-6 p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl">
             {{ $message }}

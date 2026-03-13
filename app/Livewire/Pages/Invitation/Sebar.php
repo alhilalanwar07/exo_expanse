@@ -161,7 +161,7 @@ class Sebar extends Component
     public function generateLinks(): void
     {
         if (empty($this->recipients)) {
-            session()->flash('error', 'Tambahkan minimal 1 penerima terlebih dahulu');
+            $this->dispatch('toast', message: 'Tambahkan minimal 1 penerima terlebih dahulu', type: 'error');
 
             return;
         }
