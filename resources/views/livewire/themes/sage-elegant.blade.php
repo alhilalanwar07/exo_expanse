@@ -394,11 +394,11 @@
 
     @if($invitation->background_music)
     <audio id="bgMusic" loop preload="auto">
-        <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : asset('storage/' . $invitation->background_music) }}" type="audio/mpeg">
+        <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}" type="audio/mpeg">
     </audio>
     @endif
 
-    <section id="cover-screen" x-show="!opened" x-transition:leave="transition ease-in duration-1000" x-transition:leave-start="transform translate-y-0" x-transition:leave-end="transform -translate-y-full" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://www.transparenttextures.com/patterns/diamond-upholstery.png' }}'); background-size: cover; background-position: center;">
+    <section id="cover-screen" x-show="!opened" x-transition:leave="transition ease-in duration-1000" x-transition:leave-start="transform translate-y-0" x-transition:leave-end="transform -translate-y-full" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://www.transparenttextures.com/patterns/diamond-upholstery.png' }}'); background-size: cover; background-position: center;">
         
         <!-- Dark overlay to enhance text readability while keeping the photo clear -->
         <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 0;"></div>
@@ -470,7 +470,7 @@
                 
                 <div class="mt-4">
                     <div class="couple-frame p-2 bg-white shadow">
-                        <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1621621667797-e06afc217fb0?w=600' }}" class="couple-img object-fit-cover" alt="Couple">
+                        <img src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1621621667797-e06afc217fb0?w=600' }}" class="couple-img object-fit-cover" alt="Couple">
                     </div>
                 </div>
 
@@ -554,7 +554,7 @@
                 <div class="row g-5 justify-content-center align-items-center">
                     <div class="col-md-5 text-center" data-aos="fade-right">
                         <div class="couple-frame mb-3 bg-white">
-                            <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://placehold.co/400x400' }}" class="couple-img" alt="Groom">
+                            <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://placehold.co/400x400' }}" class="couple-img" alt="Groom">
                         </div>
                         <h2 class="font-script text-primary-custom">{{ $invitation->groom_name }}</h2>
                         <p class="text-muted mb-0">Putra dari Bpk. {{ $invitation->groom_father }}</p>
@@ -570,7 +570,7 @@
 
                     <div class="col-md-5 text-center" data-aos="fade-left">
                         <div class="couple-frame mb-3 bg-white">
-                            <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://placehold.co/400x400' }}" class="couple-img" alt="Bride">
+                            <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://placehold.co/400x400' }}" class="couple-img" alt="Bride">
                         </div>
                         <h2 class="font-script text-primary-custom">{{ $invitation->bride_name }}</h2>
                         <p class="text-muted mb-0">Putri dari Bpk. {{ $invitation->bride_father }}</p>

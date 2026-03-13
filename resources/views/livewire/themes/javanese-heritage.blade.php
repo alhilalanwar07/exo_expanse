@@ -506,7 +506,7 @@
     @php
         $musicSrc = str_starts_with($invitation->background_music, 'http') 
             ? $invitation->background_music 
-            : asset('storage/' . $invitation->background_music);
+            : img_url($invitation->background_music);
     @endphp
     <audio id="bgMusic" loop preload="auto">
         <source src="{{ $musicSrc }}" type="audio/mpeg">
@@ -523,7 +523,7 @@
          aria-label="Wedding invitation cover"
          class="cover">
 
-        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
+        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
 
         <div class="particle"></div><div class="particle"></div><div class="particle"></div>
         <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
@@ -586,13 +586,13 @@
         
         <!-- HERO SECTION -->
         <section id="home" class="hero-section">
-            <div class="absolute inset-0 bg-cover bg-center opacity-25" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
+            <div class="absolute inset-0 bg-cover bg-center opacity-25" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
             <div class="batik-overlay opacity-30"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-[var(--java-brown)] via-[rgba(62,39,35,0.4)] to-[var(--java-brown)]"></div>
             
             <div class="relative z-10 w-full max-w-lg mt-8">
                 <div class="hero-photo-frame" data-reveal="up">
-                    <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" class="hero-photo-img" alt="{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}" loading="lazy" decoding="async">
+                    <img src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" class="hero-photo-img" alt="{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}" loading="lazy" decoding="async">
                 </div>
 
                 <div data-reveal="up">
@@ -648,9 +648,9 @@
                         <div class="absolute inset-0 border-[2px] md:border-[3px] border-gold rounded-[40px_40px_0_0] md:rounded-[50px_50px_0_0] rotate-3"></div>
                          <div class="absolute inset-0 border-[2px] md:border-[3px] border-brown rounded-[40px_40px_0_0] md:rounded-[50px_50px_0_0] -rotate-3 bg-white">
                              @if($order === 'bride_first')
-                                <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->bride_name }}" loading="lazy" decoding="async">
+                                <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->bride_name }}" loading="lazy" decoding="async">
                             @else
-                                <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->groom_name }}" loading="lazy" decoding="async">
+                                <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->groom_name }}" loading="lazy" decoding="async">
                             @endif
                          </div>
                     </div>
@@ -676,9 +676,9 @@
                         <div class="absolute inset-0 border-[2px] md:border-[3px] border-gold rounded-[40px_40px_0_0] md:rounded-[50px_50px_0_0] -rotate-3"></div>
                          <div class="absolute inset-0 border-[2px] md:border-[3px] border-brown rounded-[40px_40px_0_0] md:rounded-[50px_50px_0_0] rotate-3 bg-white">
                              @if($order === 'bride_first')
-                                <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->groom_name }}" loading="lazy" decoding="async">
+                                <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->groom_name }}" loading="lazy" decoding="async">
                             @else
-                                <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->bride_name }}" loading="lazy" decoding="async">
+                                <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-full h-full object-cover rounded-[36px_36px_0_0] md:rounded-[46px_46px_0_0] p-1" alt="{{ $invitation->bride_name }}" loading="lazy" decoding="async">
                             @endif
                          </div>
                     </div>
@@ -698,7 +698,7 @@
         <div class="gunungan-divider bottom bg-[#F9F6F0]"></div>
 
         <!-- COUNTDOWN -->
-        <section class="py-16 md:py-24 px-4 relative bg-fixed bg-cover bg-center" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');">
+        <section class="py-16 md:py-24 px-4 relative bg-fixed bg-cover bg-center" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');">
             <div class="absolute inset-0 bg-[var(--java-brown)] opacity-85"></div>
             
             <div class="relative z-10 max-w-3xl mx-auto text-center" data-reveal="up">
@@ -822,9 +822,9 @@
             <div x-data="{ lightboxOpen: false, imgSrc: '', caption: '', open(url, cap) { this.imgSrc = url; this.caption = cap; this.lightboxOpen = true; }, close() { this.lightboxOpen = false; } }">
                 <div class="columns-2 md:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6 px-2 md:px-4 max-w-6xl mx-auto">
                     @foreach($invitation->photos as $photo)
-                    <div class="break-inside-avoid relative group cursor-pointer" data-reveal="up" role="button" tabindex="0" @click="open('{{ asset('storage/' . $photo) }}', '')" @keydown.enter="open('{{ asset('storage/' . $photo) }}', '')">
+                    <div class="break-inside-avoid relative group cursor-pointer" data-reveal="up" role="button" tabindex="0" @click="open('{{ img_url($photo) }}', '')" @keydown.enter="open('{{ img_url($photo) }}', '')">
                         <div class="overflow-hidden rounded-lg p-2 md:p-3 bg-white shadow-md border border-gold hover:shadow-xl hover:scale-105 transition duration-300">
-                            <img src="{{ asset('storage/' . $photo) }}" alt="Wedding gallery moment" class="w-full h-auto object-cover rounded" loading="lazy" decoding="async">
+                            <img src="{{ img_url($photo) }}" alt="Wedding gallery moment" class="w-full h-auto object-cover rounded" loading="lazy" decoding="async">
                         </div>
                     </div>
                     @endforeach

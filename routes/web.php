@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsAdmin;
 use App\Livewire\Admin\ArticleForm as AdminArticleForm;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 // Public Routes
 Route::get('/', Welcome::class)->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/img/{token}', [ImageController::class, 'show'])->name('image.show');
 
 // Blog Routes
 Route::get('/blog', BlogList::class)->name('articles.index');

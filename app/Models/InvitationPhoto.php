@@ -24,10 +24,10 @@ class InvitationPhoto extends Model
     }
 
     /**
-     * Get the full URL for the photo
+     * Get the full URL for the photo (protected/watermarked)
      */
     public function getUrlAttribute(): string
     {
-        return asset('storage/' . $this->path);
+        return img_url($this->path);
     }
 }

@@ -228,12 +228,12 @@ a { color: inherit; text-decoration: none; }
     }
 }">
     @if($invitation->music_url)
-    <audio id="bgMusic" loop><source src="{{ asset('storage/' . $invitation->music_url) }}" type="audio/mpeg"></audio>
+    <audio id="bgMusic" loop><source src="{{ img_url($invitation->music_url) }}" type="audio/mpeg"></audio>
     @endif
 
     {{-- COVER OVERLAY --}}
     <div x-show="!opened" x-transition.opacity.duration.800ms id="s03-cover-overlay">
-        <div class="s03-mobile" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : asset('themes/special-03/assets/cover.jpg') }}'); background-size: cover; background-position: center; display: flex;">
+        <div class="s03-mobile" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : asset('themes/special-03/assets/cover.jpg') }}'); background-size: cover; background-position: center; display: flex;">
             <div class="s03-deco s03-cover-deco">
                 <img class="deco-tl" src="{{ asset('themes/special-03/assets/eks-15-asset-01.png') }}" alt="" style="opacity:.75;transform:translate(0,0);">
                 <img class="deco-tr" src="{{ asset('themes/special-03/assets/eks-15-asset-01.png') }}" alt="" style="opacity:.75;transform:translate(0,0) scaleX(-1);">
@@ -270,7 +270,7 @@ a { color: inherit; text-decoration: none; }
 
         {{-- Slide 1: OPENING --}}
         <div id="slide-1" data-index="1" class="s03-slide">
-            <div class="s03-mobile" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : asset('themes/special-03/assets/cover.jpg') }}'); background-size:cover; background-position:center; display:flex;">
+            <div class="s03-mobile" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : asset('themes/special-03/assets/cover.jpg') }}'); background-size:cover; background-position:center; display:flex;">
                 <div class="s03-deco s03-cover-deco">
                     <img class="deco-tl" src="{{ asset('themes/special-03/assets/eks-15-asset-01.png') }}" alt="">
                     <img class="deco-tr" src="{{ asset('themes/special-03/assets/eks-15-asset-01.png') }}" alt="">
@@ -314,13 +314,13 @@ a { color: inherit; text-decoration: none; }
                             : ['role'=>'Putra','name'=>$invitation->groom_name,'father'=>$invitation->groom_father,'mother'=>$invitation->groom_mother,'photo'=>$invitation->groom_photo];
                     @endphp
                     <div class="s03-reveal" style="font-size:11px;letter-spacing:3px;text-transform:uppercase;opacity:0.5;margin-bottom:16px;">Assalamu'alaikum Wr. Wb.</div>
-                    <div class="s03-reveal d1 s03-photo"><img src="{{ $p1['photo'] ? asset('storage/'.$p1['photo']) : asset('themes/s03-modern/assets/placeholder-groom.jpg') }}" alt=""></div>
+                    <div class="s03-reveal d1 s03-photo"><img src="{{ $p1['photo'] ? img_url($p1['photo']) : asset('themes/s03-modern/assets/placeholder-groom.jpg') }}" alt=""></div>
                     <div class="s03-reveal d1 font-script color-accent" style="font-size:28px;margin:8px 0 4px;">{{ $p1['name'] }}</div>
                     <div class="s03-reveal d2" style="font-size:13px;opacity:0.7;">{{ $p1['role'] }} dari {{ $p1['father'] }} & {{ $p1['mother'] }}</div>
 
                     <div class="s03-reveal d2 color-accent font-script" style="font-size:36px;margin:12px 0;">&</div>
 
-                    <div class="s03-reveal d3 s03-photo"><img src="{{ $p2['photo'] ? asset('storage/'.$p2['photo']) : asset('themes/s03-modern/assets/placeholder-bride.jpg') }}" alt=""></div>
+                    <div class="s03-reveal d3 s03-photo"><img src="{{ $p2['photo'] ? img_url($p2['photo']) : asset('themes/s03-modern/assets/placeholder-bride.jpg') }}" alt=""></div>
                     <div class="s03-reveal d3 font-script color-accent" style="font-size:28px;margin:8px 0 4px;">{{ $p2['name'] }}</div>
                     <div class="s03-reveal d4" style="font-size:13px;opacity:0.7;">{{ $p2['role'] }} dari {{ $p2['father'] }} & {{ $p2['mother'] }}</div>
                 </div>

@@ -299,12 +299,12 @@ a { color: inherit; text-decoration: none; }
 
     @if($invitation->music_url)
     <audio id="bgMusic" loop>
-        <source src="{{ asset('storage/' . $invitation->music_url) }}" type="audio/mpeg">
+        <source src="{{ img_url($invitation->music_url) }}" type="audio/mpeg">
     </audio>
     @endif
 
     {{-- COVER OVERLAY --}}
-    <div x-show="!opened" x-transition.opacity.duration.1000ms id="cover-overlay" class="container-mobile" style="position: absolute; left: 50%; transform: translateX(-50%); text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(93,7,31,0.8), 0 0 4px rgba(0,0,0,1); background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : asset('assets/themes/adat-bone/bg_bone.webp') }}');">
+    <div x-show="!opened" x-transition.opacity.duration.1000ms id="cover-overlay" class="container-mobile" style="position: absolute; left: 50%; transform: translateX(-50%); text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(93,7,31,0.8), 0 0 4px rgba(0,0,0,1); background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : asset('assets/themes/adat-bone/bg_bone.webp') }}');">
         <div class="frame">
             <img class="frame-lc animate__animated animate__fadeInLeft animate__slower" src="{{ asset('assets/themes/adat-bone/left.webp') }}" alt="frame" style="width: auto;">
             <img class="frame-rc animate__animated animate__fadeInRight animate__slower" src="{{ asset('assets/themes/adat-bone/right.webp') }}" alt="frame" style="width: auto;">
@@ -350,7 +350,7 @@ a { color: inherit; text-decoration: none; }
         
         {{-- Slide 1: OPENING --}}
         <div id="slide-1" data-index="1" class="satumomen_slide">
-            <div class="container-mobile" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}');">
+            <div class="container-mobile" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}');">
                 <div class="frame">
                     <img class="frame-lc animate__animated animate__fadeInLeft animate__slower" src="{{ asset('assets/themes/adat-bone/left.webp') }}" alt="frame">
                     <img class="frame-rc animate__animated animate__fadeInRight animate__slower" src="{{ asset('assets/themes/adat-bone/right.webp') }}" alt="frame">
@@ -404,7 +404,7 @@ a { color: inherit; text-decoration: none; }
                     @endphp
                     <div class="mb-4">
                         <div class="photo-frame mb-3 animate__animated animate__fadeInDown animate__slower">
-                            <img src="{{ $p1_photo ? asset('storage/' . $p1_photo) : $p1_fallback }}" alt="Photo 1">
+                            <img src="{{ $p1_photo ? img_url($p1_photo) : $p1_fallback }}" alt="Photo 1">
                         </div>
                         <div class="animate__animated animate__fadeInLeft animate__slower">
                             <div class="color-accent font-accent text-2xl mb-1">{{ $p1_name }}</div>
@@ -432,7 +432,7 @@ a { color: inherit; text-decoration: none; }
                             <div class="text-sm opacity-80 leading-relaxed">{{ $p2_role }} dari<br>{{ $p2_father }} & {{ $p2_mother }}</div>
                         </div>
                         <div class="photo-frame animate__animated animate__fadeInUp animate__slower">
-                            <img src="{{ $p2_photo ? asset('storage/' . $p2_photo) : $p2_fallback }}" alt="Photo 2">
+                            <img src="{{ $p2_photo ? img_url($p2_photo) : $p2_fallback }}" alt="Photo 2">
                         </div>
                     </div>
                 </div>

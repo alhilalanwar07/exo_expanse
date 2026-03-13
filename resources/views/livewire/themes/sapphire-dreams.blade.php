@@ -202,7 +202,7 @@ body {
     @php
         $musicSrc = str_starts_with($invitation->background_music, 'http') 
             ? $invitation->background_music 
-            : asset('storage/' . $invitation->background_music);
+            : img_url($invitation->background_music);
     @endphp
     <audio id="bgMusic" loop preload="auto">
         <source src="{{ $musicSrc }}" type="audio/mpeg">
@@ -211,7 +211,7 @@ body {
 
     {{-- COVER --}}
     <div x-show="!opened" class="fixed inset-0 z-[100] flex flex-col justify-between" style="background-color: var(--navy)">
-        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
+        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
         <div class="cover-overlay"></div>
         
         <div class="relative z-10 w-full flex-1 flex flex-col items-center justify-center p-6 text-center anime-cover">
@@ -243,7 +243,7 @@ body {
         
         {{-- HERO --}}
         <section id="home" class="hero-section min-h-screen flex flex-col items-center justify-center relative bg-dark">
-            <div class="cover-bg" style="opacity: 0.15; background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}');"></div>
+            <div class="cover-bg" style="opacity: 0.15; background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}');"></div>
             
             <div class="z-10 text-center px-4 anime-stagger">
                 <p class="section-subtitle">We Are Getting Married</p>
@@ -263,7 +263,7 @@ body {
             <div class="max-w-md mx-auto space-y-12">
                 @if($order === 'bride_first')
                     <div class="card anime-element">
-                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Bride">
+                        <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Bride">
                         <h3 class="font-serif text-2xl text-silver mb-1">{{ $invitation->bride_name }}</h3>
                         <p class="text-sm text-text-muted mb-4">Putri Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
                         @if($invitation->bride_instagram)
@@ -272,7 +272,7 @@ body {
                     </div>
                     <div class="text-center font-serif text-4xl text-cyan anime-element">&</div>
                     <div class="card anime-element">
-                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Groom">
+                        <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Groom">
                         <h3 class="font-serif text-2xl text-silver mb-1">{{ $invitation->groom_name }}</h3>
                         <p class="text-sm text-text-muted mb-4">Putra Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
                         @if($invitation->groom_instagram)
@@ -281,7 +281,7 @@ body {
                     </div>
                 @else
                     <div class="card anime-element">
-                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Groom">
+                        <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Groom">
                         <h3 class="font-serif text-2xl text-silver mb-1">{{ $invitation->groom_name }}</h3>
                         <p class="text-sm text-text-muted mb-4">Putra Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
                         @if($invitation->groom_instagram)
@@ -290,7 +290,7 @@ body {
                     </div>
                     <div class="text-center font-serif text-4xl text-cyan anime-element">&</div>
                     <div class="card anime-element">
-                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Bride">
+                        <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-2 border-cyan" alt="Bride">
                         <h3 class="font-serif text-2xl text-silver mb-1">{{ $invitation->bride_name }}</h3>
                         <p class="text-sm text-text-muted mb-4">Putri Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
                         @if($invitation->bride_instagram)

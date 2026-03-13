@@ -33,7 +33,7 @@
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
             <div class="flex items-center gap-5">
                 @if($invitation->cover_photo)
-                    <img src="{{ asset('storage/' . $invitation->cover_photo) }}" class="w-20 h-20 rounded-full object-cover border-4 border-rose-200 dark:border-rose-800">
+                    <img src="{{ img_url($invitation->cover_photo) }}" class="w-20 h-20 rounded-full object-cover border-4 border-rose-200 dark:border-rose-800">
                 @else
                     <div class="w-20 h-20 rounded-full bg-gradient-to-br from-rose-100 to-amber-100 dark:from-rose-900/30 dark:to-amber-900/30 flex items-center justify-center">
                         <span class="text-3xl">💍</span>

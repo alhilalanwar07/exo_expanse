@@ -63,7 +63,7 @@
         class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 overflow-hidden"
     >
         <div class="absolute inset-0 opacity-50 grayscale">
-            <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop' }}" class="w-full h-full object-cover">
+            <img src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop' }}" class="w-full h-full object-cover">
         </div>
         
         <div class="relative z-10 text-center text-white px-6 max-w-2xl">
@@ -93,7 +93,7 @@
         {{-- Hero Section --}}
         <section class="relative h-screen flex flex-col items-center justify-center text-center p-6 overflow-hidden">
             <div class="absolute inset-0 z-0">
-                <img src="{{ $invitation->hero_image ? asset('storage/' . $invitation->hero_image) : 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop' }}" class="w-full h-full object-cover opacity-20">
+                <img src="{{ $invitation->hero_image ? img_url($invitation->hero_image) : 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop' }}" class="w-full h-full object-cover opacity-20">
             </div>
 
             <div class="relative z-10 space-y-6">
@@ -130,7 +130,7 @@
                         {{-- Bride --}}
                         <div class="text-center group">
                             <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                                <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
+                                <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->bride_name }}</h3>
                             <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putri Dari</p>
@@ -142,7 +142,7 @@
                         {{-- Groom --}}
                         <div class="text-center group">
                             <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden -rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                                <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
+                                <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->groom_name }}</h3>
                             <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putra Dari</p>
@@ -154,7 +154,7 @@
                         {{-- Groom --}}
                         <div class="text-center group">
                             <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                                <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
+                                <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974' }}" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->groom_name }}</h3>
                             <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putra Dari</p>
@@ -166,7 +166,7 @@
                         {{-- Bride --}}
                         <div class="text-center group">
                             <div class="relative w-64 h-80 mx-auto mb-8 rounded-[4rem] overflow-hidden -rotate-2 group-hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                                <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
+                                <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" class="w-full h-full object-cover">
                             </div>
                             <h3 class="font-heading text-4xl text-slate-800 mb-4">{{ $invitation->bride_name }}</h3>
                             <p class="font-body text-sm text-slate-500 mb-4 uppercase tracking-widest">Putri Dari</p>
@@ -235,7 +235,7 @@
                     <div class="columns-1 md:columns-3 gap-6 space-y-6 max-w-6xl mx-auto">
                         @foreach($invitation->gallery_images as $image)
                             <div class="break-inside-avoid rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition-transform duration-500">
-                                <img src="{{ asset('storage/' . $image) }}" class="w-full">
+                                <img src="{{ img_url($image) }}" class="w-full">
                             </div>
                         @endforeach
                     </div>
@@ -330,7 +330,7 @@
                     <span x-show="playing">🎵</span>
                     <span x-show="!playing">🔇</span>
                 </button>
-                <audio x-ref="audio" loop autoplay src="{{ asset('storage/' . $invitation->music_url) }}"></audio>
+                <audio x-ref="audio" loop autoplay src="{{ img_url($invitation->music_url) }}"></audio>
             </div>
         @endif
 

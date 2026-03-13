@@ -284,7 +284,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
                         @foreach($invitation->photos as $photo)
                             <div class="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                                <img src="{{ asset('storage/' . $photo->path) }}"
+                                <img src="{{ img_url($photo->path) }}"
                                      alt="Gallery"
                                      class="w-full h-64 object-cover hover:scale-105 transition-transform duration-300">
                             </div>

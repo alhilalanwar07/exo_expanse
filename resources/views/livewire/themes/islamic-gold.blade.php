@@ -53,7 +53,7 @@
             inset: 0;
             background-size: cover; 
             background-position: center;
-            background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1511285560982-1356c11d4606?q=80&w=1000&auto=format&fit=crop' }}');
+            background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1511285560982-1356c11d4606?q=80&w=1000&auto=format&fit=crop' }}');
             opacity: 0.6;
         }
 
@@ -347,7 +347,7 @@
         {{-- Audio Player --}}
         @if($invitation->background_music)
             <audio x-ref="bgMusic" loop>
-                <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : asset('storage/' . $invitation->background_music) }}" type="audio/mp3">
+                <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}" type="audio/mp3">
             </audio>
             
             {{-- Music Toggle FAB --}}
@@ -413,7 +413,7 @@
                     {{-- Bride --}}
                     <h2 class="font-script mb-20" style="font-size: 2.5rem;">Mempelai Wanita</h2>
                     <div class="couple-img">
-                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80' }}" alt="Bride">
+                        <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80' }}" alt="Bride">
                     </div>
                     <h1 class="font-serif gold-txt" style="font-size: 2rem;">{{ $invitation->bride_name }}</h1>
                     <p style="font-size: 0.9rem; margin-top: 10px;">Putri dari Bpk. {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
@@ -423,7 +423,7 @@
                     {{-- Groom --}}
                     <h2 class="font-script mb-20" style="font-size: 2.5rem;">Mempelai Pria</h2>
                     <div class="couple-img">
-                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80' }}" alt="Groom">
+                        <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80' }}" alt="Groom">
                     </div>
                     <h1 class="font-serif gold-txt" style="font-size: 2rem;">{{ $invitation->groom_name }}</h1>
                     <p style="font-size: 0.9rem; margin-top: 10px;">Putra dari Bpk. {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
@@ -431,7 +431,7 @@
                     {{-- Groom --}}
                     <h2 class="font-script mb-20" style="font-size: 2.5rem;">Mempelai Pria</h2>
                     <div class="couple-img">
-                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80' }}" alt="Groom">
+                        <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80' }}" alt="Groom">
                     </div>
                     <h1 class="font-serif gold-txt" style="font-size: 2rem;">{{ $invitation->groom_name }}</h1>
                     <p style="font-size: 0.9rem; margin-top: 10px;">Putra dari Bpk. {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
@@ -441,7 +441,7 @@
                     {{-- Bride --}}
                     <h2 class="font-script mb-20" style="font-size: 2.5rem;">Mempelai Wanita</h2>
                     <div class="couple-img">
-                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80' }}" alt="Bride">
+                        <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80' }}" alt="Bride">
                     </div>
                     <h1 class="font-serif gold-txt" style="font-size: 2rem;">{{ $invitation->bride_name }}</h1>
                     <p style="font-size: 0.9rem; margin-top: 10px;">Putri dari Bpk. {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>

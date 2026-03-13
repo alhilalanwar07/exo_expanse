@@ -144,7 +144,7 @@
 
     {{-- Audio Element --}}
     @if($invitation->music_url)
-        <audio x-ref="audioPlayer" src="{{ asset('storage/' . $invitation->music_url) }}" loop preload="auto"></audio>
+        <audio x-ref="audioPlayer" src="{{ img_url($invitation->music_url) }}" loop preload="auto"></audio>
     @endif
 
     {{-- 1. COVER OVERLAY --}}
@@ -154,7 +154,7 @@
         {{-- Background Image with Ken Burns --}}
         <div class="absolute inset-0 overflow-hidden">
             <div class="w-full h-full bg-cover bg-center ken-burns opacity-60"
-                 style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop' }}')">
+                 style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop' }}')">
             </div>
             <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70"></div>
         </div>
@@ -273,7 +273,7 @@
                             <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                             <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
                             <div class="relative w-full h-full overflow-hidden bg-gray-200">
-                                 <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
+                                 <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
                                       class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
                             </div>
                         </div>
@@ -290,7 +290,7 @@
                             <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                             <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
                             <div class="relative w-full h-full overflow-hidden bg-gray-200">
-                                 <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
+                                 <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
                                       class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
                             </div>
                         </div>
@@ -307,7 +307,7 @@
                             <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                             <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
                             <div class="relative w-full h-full overflow-hidden bg-gray-200">
-                                 <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
+                                 <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974' }}" 
                                       class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
                             </div>
                         </div>
@@ -324,7 +324,7 @@
                             <div class="absolute inset-0 border border-gold translate-x-3 translate-y-3 transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                             <div class="absolute inset-0 border border-gold/30 -translate-x-3 -translate-y-3 transition-transform duration-500 group-hover:-translate-x-2 group-hover:-translate-y-2"></div>
                             <div class="relative w-full h-full overflow-hidden bg-gray-200">
-                                 <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
+                                 <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1928' }}" 
                                       class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100">
                             </div>
                         </div>
@@ -439,8 +439,8 @@
         <section id="gallery" class="py-2 bg-white">
             <div class="grid grid-cols-2 md:grid-cols-3 gap-1">
                 @foreach($metadata['gallery'] as $img)
-                    <div @click="openGallery('{{ asset('storage/' . $img) }}')" class="reveal-zoom aspect-square overflow-hidden group cursor-pointer">
-                        <img src="{{ asset('storage/' . $img) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div @click="openGallery('{{ img_url($img) }}')" class="reveal-zoom aspect-square overflow-hidden group cursor-pointer">
+                        <img src="{{ img_url($img) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     </div>
                 @endforeach
             </div>

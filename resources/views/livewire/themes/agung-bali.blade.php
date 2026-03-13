@@ -623,7 +623,7 @@ body {
     @php
         $musicSrc = str_starts_with($invitation->background_music, 'http') 
             ? $invitation->background_music 
-            : asset('storage/' . $invitation->background_music);
+            : img_url($invitation->background_music);
     @endphp
     <audio id="bgMusic" loop preload="auto">
         <source src="{{ $musicSrc }}" type="audio/mpeg">
@@ -665,7 +665,7 @@ body {
 
     {{-- COVER (Gate Candi Bentar Style) --}}
     <div x-show="!opened" x-transition:leave="transition duration-1000" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="cover overflow-hidden">
-        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
+        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
         <div class="cover-frame"></div> {{-- Decorative border --}}
         
         {{-- Background Animations (Jepun & Fireflies) --}}
@@ -805,7 +805,7 @@ body {
                 {{-- First Person --}}
                 <div class="couple-card reveal-on-scroll">
                     <div class="couple-photo-frame">
-                        <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" loading="lazy">
+                        <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? img_url(($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" loading="lazy">
                     </div>
                     <h3 class="couple-name">{{ $order === 'bride_first' ? $invitation->bride_name : $invitation->groom_name }}</h3>
                     <p class="text-gray-600 text-sm italic">Putra/Putri dari: <br> {{ $order === 'bride_first' ? $invitation->bride_father : $invitation->groom_father }} & {{ $order === 'bride_first' ? $invitation->bride_mother : $invitation->groom_mother }}</p>
@@ -816,7 +816,7 @@ body {
                 {{-- Second Person --}}
                 <div class="couple-card reveal-on-scroll">
                     <div class="couple-photo-frame">
-                        <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" loading="lazy">
+                        <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? img_url(($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" loading="lazy">
                     </div>
                     <h3 class="couple-name">{{ $order === 'bride_first' ? $invitation->groom_name : $invitation->bride_name }}</h3>
                     <p class="text-gray-600 text-sm italic">Putra/Putri dari: <br> {{ $order === 'bride_first' ? $invitation->groom_father : $invitation->bride_father }} & {{ $order === 'bride_first' ? $invitation->groom_mother : $invitation->bride_mother }}</p>

@@ -1140,7 +1140,7 @@ body {
     @php
         $musicSrc = str_starts_with($invitation->background_music, 'http') 
             ? $invitation->background_music 
-            : asset('storage/' . $invitation->background_music);
+            : img_url($invitation->background_music);
     @endphp
     <audio id="bgMusic" loop preload="auto">
         <source src="{{ $musicSrc }}" type="audio/mpeg">
@@ -1149,7 +1149,7 @@ body {
 
     {{-- COVER --}}
     <div x-show="!opened" x-transition:leave="transition duration-700" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="cover">
-        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
+        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' }}');"></div>
         <div class="cover-overlay"></div>
         
         {{-- Top Section: Names --}}
@@ -1228,7 +1228,7 @@ body {
                 
                 {{-- Couple Photo --}}
                 <div class="hero-photo">
-                    <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple">
+                    <img src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600' }}" alt="Couple">
                 </div>
                 
                 {{-- Names --}}
@@ -1299,7 +1299,7 @@ body {
                 @if($order === 'bride_first')
                     {{-- Bride --}}
                     <div class="card couple-card">
-                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
+                        <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
                         <h3 class="couple-name">{{ $invitation->bride_name }}</h3>
                         <p class="text-gray-500 text-sm mb-3">Putri dari Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
                         @if($invitation->bride_instagram)
@@ -1312,7 +1312,7 @@ body {
 
                     {{-- Groom --}}
                     <div class="card couple-card me-2">
-                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
+                        <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
                         <h3 class="couple-name">{{ $invitation->groom_name }}</h3>
                         <p class="text-gray-500 text-sm mb-3">Putra dari Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
                         @if($invitation->groom_instagram)
@@ -1325,7 +1325,7 @@ body {
                 @else
                     {{-- Groom --}}
                     <div class="card couple-card me-2">
-                        <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
+                        <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}" class="couple-photo" alt="Groom" loading="lazy">
                         <h3 class="couple-name">{{ $invitation->groom_name }}</h3>
                         <p class="text-gray-500 text-sm mb-3">Putra dari Bapak {{ $invitation->groom_father }} & Ibu {{ $invitation->groom_mother }}</p>
                         @if($invitation->groom_instagram)
@@ -1338,7 +1338,7 @@ body {
 
                     {{-- Bride --}}
                     <div class="card couple-card">
-                        <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
+                        <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-photo" alt="Bride" loading="lazy">
                         <h3 class="couple-name">{{ $invitation->bride_name }}</h3>
                         <p class="text-gray-500 text-sm mb-3">Putri dari Bapak {{ $invitation->bride_father }} & Ibu {{ $invitation->bride_mother }}</p>
                         @if($invitation->bride_instagram)

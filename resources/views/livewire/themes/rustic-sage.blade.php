@@ -744,7 +744,7 @@ body {
 }">
     @if($invitation->background_music)
     <audio id="bgMusic" loop preload="auto">
-        <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : asset('storage/' . $invitation->background_music) }}" type="audio/mpeg">
+        <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}" type="audio/mpeg">
     </audio>
     @endif
 
@@ -779,7 +779,7 @@ body {
             <p class="cover-label animate-fade-up">{{ $invitation->custom_styles['cover_subtitle'] ?? 'THE WEDDING OF' }}</p>
             
             <div class="cover-arch">
-                <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" class="cover-img" alt="Cover">
+                <img src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" class="cover-img" alt="Cover">
             </div>
             
             @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
@@ -849,7 +849,7 @@ body {
             {{-- Photo Frame --}}
             <div class="hero-photo-wrapper animate-fade-up" style="animation-delay: 0.1s;">
                 <div class="hero-photo-frame">
-                    <img src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" alt="Couple">
+                    <img src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500' }}" alt="Couple">
                 </div>
             </div>
 
@@ -913,7 +913,7 @@ body {
                 {{-- First --}}
                 <div class="couple-card">
                     <div class="couple-img-frame">
-                        <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400' }}" class="couple-img">
+                        <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? img_url(($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400' }}" class="couple-img">
                     </div>
                     <h3 class="couple-name-text">{{ $order === 'bride_first' ? $invitation->bride_name : $invitation->groom_name }}</h3>
                     <p style="font-size: 0.9rem; color: #888;">Putra/Putri Bpk. {{ $order === 'bride_first' ? $invitation->bride_father : $invitation->groom_father }} & Ibu {{ $order === 'bride_first' ? $invitation->bride_mother : $invitation->groom_mother }}</p>
@@ -922,7 +922,7 @@ body {
                 {{-- Second --}}
                 <div class="couple-card">
                     <div class="couple-img-frame">
-                        <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-img">
+                        <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? img_url(($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-img">
                     </div>
                     <h3 class="couple-name-text">{{ $order === 'bride_first' ? $invitation->groom_name : $invitation->bride_name }}</h3>
                     <p style="font-size: 0.9rem; color: #888;">Putra/Putri Bpk. {{ $order === 'bride_first' ? $invitation->groom_father : $invitation->bride_father }} & Ibu {{ $order === 'bride_first' ? $invitation->groom_mother : $invitation->bride_mother }}</p>

@@ -57,7 +57,7 @@
                         <!-- Image -->
                         <div class="aspect-video overflow-hidden bg-slate-100 dark:bg-slate-700">
                             @if($article->image)
-                                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                <img src="{{ img_url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
                                     <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

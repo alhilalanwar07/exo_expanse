@@ -7,7 +7,7 @@
         '@type' => 'Article',
         'headline' => $article->title,
         'description' => $article->getEffectiveMetaDescription(),
-        'image' => $article->image ? asset('storage/' . $article->image) : null,
+        'image' => $article->image ? img_url($article->image) : null,
         'author' => [
             '@type' => 'Person',
             'name' => $article->user->name ?? 'Admin',
@@ -99,7 +99,7 @@
         <!-- Featured Image -->
         @if($article->image)
             <figure class="rounded-2xl overflow-hidden mb-10 shadow-lg">
-                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-auto max-h-[500px] object-cover" loading="eager">
+                <img src="{{ img_url($article->image) }}" alt="{{ $article->title }}" class="w-full h-auto max-h-[500px] object-cover" loading="eager">
             </figure>
         @endif
 

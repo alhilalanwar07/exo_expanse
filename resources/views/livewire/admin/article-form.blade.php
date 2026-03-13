@@ -218,7 +218,7 @@
                         </div>
                     @elseif($existing_image)
                         <div class="relative">
-                            <img src="{{ asset('storage/' . $existing_image) }}" alt="Current" class="w-full rounded-xl object-cover aspect-video">
+                            <img src="{{ img_url($existing_image) }}" alt="Current" class="w-full rounded-xl object-cover aspect-video">
                             <button type="button" wire:click="removeImage" class="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-lg hover:bg-red-600">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </button>

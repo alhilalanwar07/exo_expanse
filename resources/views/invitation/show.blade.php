@@ -33,7 +33,7 @@
         @if($invitation->music_enabled && $invitation->music_url && !str_contains($invitation->theme->slug, 'elegan-nature')) 
              {{-- Elegan Nature might have its own player or we can inject generic one --}}
              {{-- For now, let's keep generic player only if theme doesn't strictly prohibit it --}}
-             <div x-data="audioPlayer('{{ asset('storage/' . $invitation->music_url) }}')" class="fixed bottom-6 right-6 z-50">
+             <div x-data="audioPlayer('{{ img_url($invitation->music_url) }}')" class="fixed bottom-6 right-6 z-50">
                 <button 
                     @click="toggle"
                     class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all shadow-lg animate-spin-slow"
@@ -43,7 +43,7 @@
                     <span x-show="playing">🎵</span>
                 </button>
                 <audio x-ref="audio" loop>
-                    <source src="{{ asset('storage/' . $invitation->music_url) }}" type="audio/mpeg">
+                    <source src="{{ img_url($invitation->music_url) }}" type="audio/mpeg">
                 </audio>
             </div>
         @endif
@@ -177,7 +177,7 @@
                 </footer>
 
                 @if($invitation->music_enabled && $invitation->music_url)
-                    <div x-data="audioPlayer('{{ asset('storage/' . $invitation->music_url) }}')" class="fixed bottom-6 right-6 z-50">
+                    <div x-data="audioPlayer('{{ img_url($invitation->music_url) }}')" class="fixed bottom-6 right-6 z-50">
                         <button 
                             @click="toggle"
                             class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all shadow-lg animate-spin-slow"
@@ -187,7 +187,7 @@
                             <span x-show="playing">🎵</span>
                         </button>
                         <audio x-ref="audio" loop>
-                            <source src="{{ asset('storage/' . $invitation->music_url) }}" type="audio/mpeg">
+                            <source src="{{ img_url($invitation->music_url) }}" type="audio/mpeg">
                         </audio>
                     </div>
                 @endif

@@ -106,7 +106,7 @@
 
         init() {
             @if($invitation->background_music)
-                this.audio = new Audio('{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : asset('storage/' . $invitation->background_music) }}');
+                this.audio = new Audio('{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}');
                 this.audio.loop = true;
             @endif
             this.loadWishes();
@@ -248,7 +248,7 @@
                     <div class="absolute inset-0 rounded-full border-2 border-primary/60 transform scale-105"></div>
                     <div class="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-xl relative">
                         <img alt="Couple" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                             src="{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxXvCjnbjW1W6nD3HvPKMp-I4sDLOIR1BWTYBpMl4x4M5WwhTFZnmRMZ6hUss1h5rcxiZcYHql24tWYR7UdOxsQk6VHNONp2cVEm6aJW1pk3-tdqA7GQXtlyX7BJaAzG5ogXefCPG-a1Xih0nEoEhXoc_Qy9Spdr0xhWmB4JGH9iluLwepXdnuYgWqyqRjRB_ylB6L29BxBQwpWEmrWIE0fV1nvH2u5IuqoD_DHujwBdw5-DyOQEmh4OD7SobCDmjAqdHlIQxT6f6i' }}" />
+                             src="{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxXvCjnbjW1W6nD3HvPKMp-I4sDLOIR1BWTYBpMl4x4M5WwhTFZnmRMZ6hUss1h5rcxiZcYHql24tWYR7UdOxsQk6VHNONp2cVEm6aJW1pk3-tdqA7GQXtlyX7BJaAzG5ogXefCPG-a1Xih0nEoEhXoc_Qy9Spdr0xhWmB4JGH9iluLwepXdnuYgWqyqRjRB_ylB6L29BxBQwpWEmrWIE0fV1nvH2u5IuqoD_DHujwBdw5-DyOQEmh4OD7SobCDmjAqdHlIQxT6f6i' }}" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
                 </div>
@@ -372,7 +372,7 @@
                 <div class="text-center group" data-reveal>
                     <div class="w-48 h-48 mx-auto rounded-full border-4 border-primary/20 p-2 mb-6 relative hover:scale-105 transition-transform duration-500">
                         <div class="w-full h-full rounded-full overflow-hidden shadow-2xl">
-                            <img src="{{ $invitation->groom_photo ? asset('storage/' . $invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}"
+                            <img src="{{ $invitation->groom_photo ? img_url($invitation->groom_photo) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}"
                                  class="w-full h-full object-cover" alt="Groom">
                         </div>
                         <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs uppercase tracking-widest font-bold shadow-lg">Groom</div>
@@ -386,7 +386,7 @@
                 <div class="text-center group" data-reveal>
                     <div class="w-48 h-48 mx-auto rounded-full border-4 border-primary/20 p-2 mb-6 relative hover:scale-105 transition-transform duration-500">
                         <div class="w-full h-full rounded-full overflow-hidden shadow-2xl">
-                            <img src="{{ $invitation->bride_photo ? asset('storage/' . $invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}"
+                            <img src="{{ $invitation->bride_photo ? img_url($invitation->bride_photo) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}"
                                  class="w-full h-full object-cover" alt="Bride">
                         </div>
                         <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs uppercase tracking-widest font-bold shadow-lg">Bride</div>
@@ -496,7 +496,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 auto-rows-[200px]">
                     @foreach($invitation->gallery as $index => $photo)
                     <div class="relative overflow-hidden rounded-xl cursor-pointer group {{ $index % 3 == 0 ? 'md:row-span-2' : '' }}" data-reveal>
-                        <img src="{{ asset('storage/' . $photo) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Gallery">
+                        <img src="{{ img_url($photo) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Gallery">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>

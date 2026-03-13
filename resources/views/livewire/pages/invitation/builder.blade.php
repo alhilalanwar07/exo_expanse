@@ -165,7 +165,7 @@
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Foto Cover</label>
                                 @if($this->cover_photo)
                                     <div class="relative inline-block">
-                                        <img src="{{ asset('storage/' . $this->cover_photo) }}" alt="Cover" class="w-40 h-40 object-cover rounded-xl">
+                                        <img src="{{ img_url($this->cover_photo) }}" alt="Cover" class="w-40 h-40 object-cover rounded-xl">
                                         <button wire:click="removeCoverPhoto" type="button" class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600">
                                             ✕
                                         </button>
@@ -422,7 +422,7 @@
                                     <div class="flex flex-col items-center">
                                         @if($this->groom_photo)
                                             <div class="relative group">
-                                                <img src="{{ asset('storage/' . $this->groom_photo) }}" alt="Groom" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                                                <img src="{{ img_url($this->groom_photo) }}" alt="Groom" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                                                 <button wire:click="removeGroomPhoto" type="button" class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-sm">✕</button>
                                             </div>
                                         @else
@@ -447,7 +447,7 @@
                                     <div class="flex flex-col items-center">
                                         @if($this->bride_photo)
                                             <div class="relative group">
-                                                <img src="{{ asset('storage/' . $this->bride_photo) }}" alt="Bride" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                                                <img src="{{ img_url($this->bride_photo) }}" alt="Bride" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                                                 <button wire:click="removeBridePhoto" type="button" class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-sm">✕</button>
                                             </div>
                                         @else

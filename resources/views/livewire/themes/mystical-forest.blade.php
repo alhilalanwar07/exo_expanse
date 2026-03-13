@@ -315,7 +315,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
 }">
     @if($invitation->background_music)
     <audio id="bgMusic" loop preload="auto">
-        <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : asset('storage/' . $invitation->background_music) }}" type="audio/mpeg">
+        <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}" type="audio/mpeg">
     </audio>
     @endif
 
@@ -329,7 +329,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
 
     {{-- COVER --}}
     <div x-show="!opened" x-transition:leave="transition duration-[1.5s] ease-in-out" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-110" class="cover">
-        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? asset('storage/' . $invitation->cover_image) : 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=1200' }}');"></div>
+        <div class="cover-bg" style="background-image: url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=1200' }}');"></div>
         <div class="cover-overlay"></div>
         
         {{-- Top Section: Names --}}
@@ -363,7 +363,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
         <section id="home" class="hero-section" style="background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200');"> <div style="position: absolute; inset:0; background: var(--mystic-overlay);"></div>
             
             <div class="hero-content-box reveal-element">
-                <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1589159637956-2a8729122449?w=400' }}" class="hero-couple-img">
+                <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? img_url(($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1589159637956-2a8729122449?w=400' }}" class="hero-couple-img">
                 
                 <h2 style="font-size: 2.5rem; color: var(--mystic-gold); margin-bottom: 10px;">
                     {{ $order === 'bride_first' ? $invitation->bride_nickname : $invitation->groom_nickname }}
@@ -398,7 +398,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
                 {{-- Couple 1 --}}
                 <div class="couple-card-mystic reveal-element delay-1">
                     <div class="couple-img-frame-mystic">
-                        <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400' }}" class="couple-img-mystic">
+                        <img src="{{ ($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo) ? img_url(($order === 'bride_first' ? $invitation->bride_photo : $invitation->groom_photo)) : 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400' }}" class="couple-img-mystic">
                     </div>
                     <h3 style="color: var(--mystic-gold); font-size: 2rem;">{{ $order === 'bride_first' ? $invitation->bride_name : $invitation->groom_name }}</h3>
                     <p style="opacity: 0.8;">Child of Mr. {{ $order === 'bride_first' ? $invitation->bride_father : $invitation->groom_father }} & Mrs. {{ $order === 'bride_first' ? $invitation->bride_mother : $invitation->groom_mother }}</p>
@@ -409,7 +409,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
                 {{-- Couple 2 --}}
                 <div class="couple-card-mystic reveal-element delay-3">
                     <div class="couple-img-frame-mystic">
-                        <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? asset('storage/' . ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-img-mystic">
+                        <img src="{{ ($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo) ? img_url(($order === 'bride_first' ? $invitation->groom_photo : $invitation->bride_photo)) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400' }}" class="couple-img-mystic">
                     </div>
                     <h3 style="color: var(--mystic-gold); font-size: 2rem;">{{ $order === 'bride_first' ? $invitation->groom_name : $invitation->bride_name }}</h3>
                     <p style="opacity: 0.8;">Child of Mr. {{ $order === 'bride_first' ? $invitation->groom_father : $invitation->bride_father }} & Mrs. {{ $order === 'bride_first' ? $invitation->groom_mother : $invitation->bride_mother }}</p>
