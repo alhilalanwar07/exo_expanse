@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Theme;
+use App\Services\ImageService;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -70,7 +71,7 @@ class ThemeManagement extends Component
                 Storage::disk('public')->delete($oldPath);
             }
 
-            $imageService = app(\App\Services\ImageService::class);
+            $imageService = app(ImageService::class);
             $path = $imageService->storeAsWebp($this->newThumbnail, 'themes');
             $theme->update(['thumbnail_url' => '/storage/'.$path]);
 

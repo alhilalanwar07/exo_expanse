@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Computed;
-use Livewire\Component;
-use App\Models\User;
 use App\Models\Invitation;
 use App\Models\Theme;
+use App\Models\User;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('components.layouts.admin')]
 class Dashboard extends Component
@@ -20,7 +20,7 @@ class Dashboard extends Component
             'total_invitations' => Invitation::count(),
             'total_themes' => Theme::count(),
             // Mocking active invitations for demonstration
-            'active_invitations' => Invitation::where('is_published', true)->count() ?? 0, 
+            'active_invitations' => Invitation::where('is_published', true)->count() ?? 0,
         ];
     }
 

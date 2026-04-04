@@ -6,7 +6,6 @@ use App\Models\Invitation;
 use App\Models\Theme;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class DummyDashboardSeeder extends Seeder
 {
@@ -18,17 +17,18 @@ class DummyDashboardSeeder extends Seeder
         // Memastikan tidak duplikasi berantai if di-run berkali-kali
         if (User::count() > 50) {
             $this->command->info('Data palsu sudah cukup banyak. Melewati seeding...');
+
             return;
         }
 
         // Tembak factory untuk buat 25 pengguna baru
         $users = User::factory(25)->create([
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         // Tambahkan 3 admin tambahan supaya seru
         User::factory(3)->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         // Ambil semua tema yang ada di database (hasil ThemeSeeder)
@@ -44,7 +44,7 @@ class DummyDashboardSeeder extends Seeder
         $totalUndangan = 0;
         foreach ($users as $user) {
             $jumlahUndangan = rand(0, 3);
-            
+
             for ($i = 0; $i < $jumlahUndangan; $i++) {
                 Invitation::factory()->create([
                     'user_id' => $user->id,

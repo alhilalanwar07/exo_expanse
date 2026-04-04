@@ -8,9 +8,12 @@ use App\Models\InvitationPhoto;
 use App\Models\Theme;
 use App\Services\GuestImportService;
 use App\Services\GuestService;
+use App\Services\ImageService;
 use App\Services\InvitationService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -222,7 +225,7 @@ class Builder extends Component
     {
         // Basic
         $this->title = $invitation->title ?? 'Untitled Invitation';
-        $this->slug = $invitation->slug ?? \Illuminate\Support\Str::slug($this->title);
+        $this->slug = $invitation->slug ?? Str::slug($this->title);
         $this->cover_photo = $invitation->cover_image;
         $this->event_date = $invitation->akad_date?->format('Y-m-d')
             ?? $invitation->resepsi_date?->format('Y-m-d')
@@ -363,7 +366,7 @@ class Builder extends Component
     }
 
     #[Computed]
-    public function themes(): \Illuminate\Database\Eloquent\Collection
+    public function themes(): Collection
     {
         return Theme::orderBy('name')->get();
     }
@@ -387,12 +390,12 @@ class Builder extends Component
 
     public function updatedTitle(string $value): void
     {
-        $this->slug = \Illuminate\Support\Str::slug($value);
+        $this->slug = Str::slug($value);
     }
 
     public function updatedSlug(string $value): void
     {
-        $this->slug = \Illuminate\Support\Str::slug($value);
+        $this->slug = Str::slug($value);
     }
 
     public function loadExistingPhotos(Invitation $invitation): void
@@ -445,7 +448,7 @@ class Builder extends Component
                 Storage::disk('public')->delete($this->cover_photo);
             }
 
-            $imageService = app(\App\Services\ImageService::class);
+            $imageService = app(ImageService::class);
             $path = $imageService->storeAsWebp($this->coverPhotoUpload, 'invitations/covers');
             $this->cover_photo = $path;
             $this->coverPhotoUpload = null;
@@ -471,7 +474,7 @@ class Builder extends Component
                 Storage::disk('public')->delete($this->groom_photo);
             }
 
-            $imageService = app(\App\Services\ImageService::class);
+            $imageService = app(ImageService::class);
             $path = $imageService->storeAsWebp($this->groomPhotoUpload, 'invitations/mempelai');
             $this->groom_photo = $path;
             $this->groomPhotoUpload = null;
@@ -497,7 +500,7 @@ class Builder extends Component
                 Storage::disk('public')->delete($this->bride_photo);
             }
 
-            $imageService = app(\App\Services\ImageService::class);
+            $imageService = app(ImageService::class);
             $path = $imageService->storeAsWebp($this->bridePhotoUpload, 'invitations/mempelai');
             $this->bride_photo = $path;
             $this->bridePhotoUpload = null;
@@ -772,7 +775,7 @@ class Builder extends Component
                 \Log::info('Saving photo', ['index' => $index]);
 
                 // Store file as WebP
-                $imageService = app(\App\Services\ImageService::class);
+                $imageService = app(ImageService::class);
                 $path = $imageService->storeAsWebp($photo, 'invitations/gallery/'.$invitation->id);
 
                 // Create InvitationPhoto record

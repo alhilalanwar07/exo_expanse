@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Article;
 use App\Services\ArticleGeneratorService;
+use App\Services\ImageService;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -173,7 +174,7 @@ class ArticleForm extends Component
         }
 
         if ($this->image) {
-            $imageService = app(\App\Services\ImageService::class);
+            $imageService = app(ImageService::class);
             $data['image'] = $imageService->storeAsWebp($this->image, 'articles');
         }
 

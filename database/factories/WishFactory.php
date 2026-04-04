@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Invitation;
+use App\Models\Wish;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Wish>
+ * @extends Factory<Wish>
  */
 class WishFactory extends Factory
 {

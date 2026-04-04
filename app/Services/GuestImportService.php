@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Invitation;
+use App\Models\MessageTemplate;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
@@ -130,11 +133,11 @@ class GuestImportService
     /**
      * Generate WhatsApp URL for a single guest.
      */
-    public function generateWhatsAppUrl(\App\Models\Invitation $invitation, string $invitationUrl, string $guestName, ?string $phone = null): string
+    public function generateWhatsAppUrl(Invitation $invitation, string $invitationUrl, string $guestName, ?string $phone = null): string
     {
         $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
 
-        $template = \App\Models\MessageTemplate::where('slug', 'universal')->first();
+        $template = MessageTemplate::where('slug', 'universal')->first();
         $templateContent = $template ? $template->content : "Kepada Yth. {nama},\n\nKami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami:\n\n{judul}\n\n{detail_acara}\n\nSilakan buka klik link berikut untuk info selengkapnya:\n{link}\n\nKehadiran dan doa restu Anda adalah kebahagiaan bagi kami.\nTerima kasih.";
 
         // Generate Title
@@ -151,8 +154,8 @@ class GuestImportService
         // Generate Event Details
         $details = [];
         if ($inv->akad_date) {
-            $akadDate = \Carbon\Carbon::parse($inv->akad_date);
-            $akadTime = $inv->akad_time ? \Carbon\Carbon::parse($inv->akad_time)->format('H:i') : '';
+            $akadDate = Carbon::parse($inv->akad_date);
+            $akadTime = $inv->akad_time ? Carbon::parse($inv->akad_time)->format('H:i') : '';
 
             $details[] = 'Pada: Akad Pernikahan';
             $details[] = '🗓️ Tanggal: '.$akadDate->translatedFormat('d-m-Y');
@@ -165,8 +168,8 @@ class GuestImportService
             $details[] = '';
         }
         if ($inv->resepsi_date) {
-            $receptionDate = \Carbon\Carbon::parse($inv->resepsi_date);
-            $receptionTime = $inv->resepsi_time ? \Carbon\Carbon::parse($inv->resepsi_time)->format('H:i') : '';
+            $receptionDate = Carbon::parse($inv->resepsi_date);
+            $receptionTime = $inv->resepsi_time ? Carbon::parse($inv->resepsi_time)->format('H:i') : '';
 
             $details[] = 'Pada: Resepsi Pernikahan';
             $details[] = '🗓️ Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
@@ -197,7 +200,7 @@ class GuestImportService
     /**
      * Get the invitation title.
      */
-    public function getInvitationTitle(\App\Models\Invitation $invitation): string
+    public function getInvitationTitle(Invitation $invitation): string
     {
         if ($invitation->groom_name && $invitation->bride_name) {
             $styles = $invitation->custom_styles ?? [];
@@ -214,13 +217,13 @@ class GuestImportService
     /**
      * Format event details for WhatsApp message.
      */
-    public function formatEventDetails(\App\Models\Invitation $invitation): string
+    public function formatEventDetails(Invitation $invitation): string
     {
         $details = [];
 
         if ($invitation->akad_date) {
-            $akadDate = \Carbon\Carbon::parse($invitation->akad_date);
-            $akadTime = $invitation->akad_time ? \Carbon\Carbon::parse($invitation->akad_time)->format('H:i') : '';
+            $akadDate = Carbon::parse($invitation->akad_date);
+            $akadTime = $invitation->akad_time ? Carbon::parse($invitation->akad_time)->format('H:i') : '';
 
             $details[] = 'Pada: Akad Pernikahan';
             $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$akadDate->translatedFormat('d-m-Y');
@@ -234,8 +237,8 @@ class GuestImportService
         }
 
         if ($invitation->resepsi_date) {
-            $receptionDate = \Carbon\Carbon::parse($invitation->resepsi_date);
-            $receptionTime = $invitation->resepsi_time ? \Carbon\Carbon::parse($invitation->resepsi_time)->format('H:i') : '';
+            $receptionDate = Carbon::parse($invitation->resepsi_date);
+            $receptionTime = $invitation->resepsi_time ? Carbon::parse($invitation->resepsi_time)->format('H:i') : '';
 
             $details[] = 'Pada: Resepsi Pernikahan';
             $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$receptionDate->translatedFormat('d-m-Y');

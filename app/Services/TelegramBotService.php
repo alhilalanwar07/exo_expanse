@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Storage;
 class TelegramBotService
 {
     private string $botToken;
+
     private string $apiBase;
 
     public function __construct()
     {
         $this->botToken = config('services.telegram.bot_token');
-        $this->apiBase = 'https://api.telegram.org/bot' . $this->botToken;
+        $this->apiBase = 'https://api.telegram.org/bot'.$this->botToken;
     }
 
     /**
@@ -23,7 +24,7 @@ class TelegramBotService
     public function sendMessage(string $chatId, string $text, ?string $parseMode = 'HTML'): bool
     {
         try {
-            $response = Http::timeout(10)->post($this->apiBase . '/sendMessage', [
+            $response = Http::timeout(10)->post($this->apiBase.'/sendMessage', [
                 'chat_id' => $chatId,
                 'text' => $text,
                 'parse_mode' => $parseMode,
@@ -32,6 +33,7 @@ class TelegramBotService
             return $response->successful();
         } catch (\Exception $e) {
             Log::error('Telegram sendMessage failed', ['error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -43,7 +45,7 @@ class TelegramBotService
     {
         try {
             // Get file path from Telegram
-            $response = Http::timeout(10)->get($this->apiBase . '/getFile', [
+            $response = Http::timeout(10)->get($this->apiBase.'/getFile', [
                 'file_id' => $fileId,
             ]);
 
@@ -57,13 +59,14 @@ class TelegramBotService
             // Download the file
             $fileContent = Http::timeout(30)->get($downloadUrl)->body();
             $extension = pathinfo($filePath, PATHINFO_EXTENSION) ?: 'jpg';
-            $storagePath = 'articles/' . uniqid('img_', true) . '.' . $extension;
+            $storagePath = 'articles/'.uniqid('img_', true).'.'.$extension;
 
             Storage::disk('public')->put($storagePath, $fileContent);
 
             return $storagePath;
         } catch (\Exception $e) {
             Log::error('Telegram file download failed', ['error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -84,11 +87,12 @@ class TelegramBotService
                 $params['secret_token'] = $secret;
             }
 
-            $response = Http::timeout(10)->post($this->apiBase . '/setWebhook', $params);
+            $response = Http::timeout(10)->post($this->apiBase.'/setWebhook', $params);
 
             return $response->successful() && $response->json('ok');
         } catch (\Exception $e) {
             Log::error('Telegram setWebhook failed', ['error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -99,7 +103,8 @@ class TelegramBotService
     public function removeWebhook(): bool
     {
         try {
-            $response = Http::post($this->apiBase . '/deleteWebhook');
+            $response = Http::post($this->apiBase.'/deleteWebhook');
+
             return $response->successful();
         } catch (\Exception $e) {
             return false;

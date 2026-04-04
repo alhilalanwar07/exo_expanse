@@ -1,29 +1,27 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-4 sm:px-6 lg:px-8">
-    <!-- Background Effects -->
-    <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-rose-500/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl"></div>
-    </div>
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#fdf8ef] via-[#fffdf8] to-[#f3e8d3] py-12 px-4 sm:px-6 lg:px-8">
+    <img src="{{ asset('assets/themes/bunga_biru_putih_pinggir_atas.png') }}" alt="Ornamen" class="pointer-events-none absolute top-0 right-0 w-48 sm:w-72 opacity-80" />
+    <img src="{{ asset('assets/themes/bunga_ungu_putih_pinggir_bawah.png') }}" alt="Ornamen" class="pointer-events-none absolute bottom-0 left-0 w-48 sm:w-72 opacity-70" />
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(197,150,79,0.2),transparent_42%),radial-gradient(circle_at_82%_83%,rgba(149,105,59,0.15),transparent_38%)]"></div>
 
-    <div class="relative w-full max-w-md">
-        <!-- Logo -->
+    <div class="relative mx-auto w-full max-w-lg">
         <div class="text-center mb-8">
-            <x-logo variant="full" :white="true" class="justify-center" />
-            <p class="mt-2 text-slate-300">Masuk ke akun Anda</p>
+            <x-logo variant="full" class="justify-center" />
+            <p class="mt-2 text-sm font-medium tracking-[0.2em] uppercase text-[#9a6f3f]">Welcome Back</p>
+            <h1 class="mt-4 text-3xl sm:text-4xl font-semibold text-[#4b2f18] font-playfair-display">Masuk ke Akun Anda</h1>
+            <p class="mt-2 text-[#7b6248]">Lanjutkan mengelola undangan digital Anda dengan pengalaman premium.</p>
         </div>
 
-        <!-- Global Error Alert -->
         @if($errors->any())
-            <div class="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl backdrop-blur-sm">
+            <div class="mb-6 p-4 rounded-2xl border border-rose-200 bg-rose-50/90 shadow-sm">
                 <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0">
-                        <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <div class="flex-shrink-0 mt-0.5">
+                        <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0"/>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-red-400 font-medium">Login Gagal</h3>
-                        <ul class="mt-1 text-red-300 text-sm list-disc list-inside">
+                        <h3 class="font-semibold text-rose-700">Login belum berhasil</h3>
+                        <ul class="mt-1 text-sm text-rose-700/90 list-disc list-inside space-y-1">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -33,47 +31,43 @@
             </div>
         @endif
 
-        <!-- Login Form -->
-        <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-slate-700/50">
-            <form wire:submit="login" class="space-y-6">
-                <!-- Email -->
+        <div class="rounded-[28px] border border-[#e8d9be] bg-white/85 backdrop-blur-xl p-7 sm:p-8 shadow-[0_24px_60px_-24px_rgba(119,77,31,0.45)]">
+            <form wire:submit="login" class="space-y-5">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-200 mb-2">Email</label>
-                    <input 
-                        wire:model="email" 
-                        type="email" 
+                    <label for="email" class="block text-sm font-semibold text-[#65472a] mb-2">Email</label>
+                    <input
+                        wire:model="email"
+                        type="email"
                         id="email"
-                        class="w-full px-4 py-3 bg-slate-900/50 border {{ $errors->has('email') ? 'border-red-500' : 'border-slate-600' }} rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                        class="w-full px-4 py-3 rounded-xl bg-[#fffaf2] border {{ $errors->has('email') ? 'border-rose-400' : 'border-[#e9d9bd]' }} text-[#4b2f18] placeholder-[#b9a58b] focus:outline-none focus:ring-2 focus:ring-[#c79d62] focus:border-transparent transition-all"
                         placeholder="nama@email.com"
                         autocomplete="email"
                     >
                 </div>
 
-                <!-- Password -->
                 <div>
-                    <label for="password" class="block text-sm font-medium text-slate-200 mb-2">Password</label>
-                    <input 
-                        wire:model="password" 
-                        type="password" 
+                    <label for="password" class="block text-sm font-semibold text-[#65472a] mb-2">Password</label>
+                    <input
+                        wire:model="password"
+                        type="password"
                         id="password"
-                        class="w-full px-4 py-3 bg-slate-900/50 border {{ $errors->has('password') ? 'border-red-500' : 'border-slate-600' }} rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                        class="w-full px-4 py-3 rounded-xl bg-[#fffaf2] border {{ $errors->has('password') ? 'border-rose-400' : 'border-[#e9d9bd]' }} text-[#4b2f18] placeholder-[#b9a58b] focus:outline-none focus:ring-2 focus:ring-[#c79d62] focus:border-transparent transition-all"
                         placeholder="Masukkan password"
                         autocomplete="current-password"
                     >
                 </div>
 
-                <!-- Remember Me -->
                 <div class="flex items-center justify-between">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input wire:model="remember" type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-700 text-rose-500 focus:ring-rose-500 focus:ring-offset-0">
-                        <span class="text-sm text-slate-300">Ingat saya</span>
+                    <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-[#7e6548]">
+                        <input wire:model="remember" type="checkbox" class="w-4 h-4 rounded border-[#ccb894] text-[#a37036] focus:ring-[#c79d62]">
+                        Ingat saya
                     </label>
+                    <span class="text-xs text-[#9a6f3f]">Aman & terenkripsi</span>
                 </div>
 
-                <!-- Submit Button -->
-                <button 
+                <button
                     type="submit"
-                    class="w-full py-4 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-semibold rounded-xl hover:opacity-90 transition-all transform hover:scale-[1.02] shadow-lg shadow-rose-500/30 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                    class="w-full py-4 rounded-xl text-white font-semibold bg-gradient-to-r from-[#b17a3d] via-[#c9964f] to-[#8e5d2a] hover:opacity-95 transition-all shadow-lg shadow-amber-700/30 disabled:opacity-70 disabled:cursor-not-allowed"
                     wire:loading.attr="disabled"
                     wire:target="login"
                 >
@@ -93,18 +87,14 @@
                 </button>
             </form>
 
-            <!-- Register Link -->
-            <p class="mt-6 text-center text-slate-300">
-                Belum punya akun? 
-                <a href="{{ route('register') }}" class="text-rose-400 hover:text-rose-300 font-medium hover:underline">
-                    Daftar sekarang
-                </a>
+            <p class="mt-6 text-center text-[#7e6548]">
+                Belum punya akun?
+                <a href="{{ route('register') }}" class="font-semibold text-[#9a6f3f] hover:text-[#7f582d] hover:underline">Daftar sekarang</a>
             </p>
         </div>
 
-        <!-- Footer -->
-        <p class="mt-8 text-center text-slate-500 text-sm">
-            &copy; {{ date('Y') }} ExoInvite. All rights reserved.
+        <p class="mt-8 text-center text-xs text-[#9f8462]">
+            &copy; {{ date('Y') }} ExoInvite. Crafted with elegance.
         </p>
     </div>
 </div>

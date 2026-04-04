@@ -54,6 +54,17 @@ class Login extends Component
             return;
         }
 
+        if (! Auth::user()?->hasVerifiedEmail()) {
+            Auth::logout();
+            session()->invalidate();
+            session()->regenerateToken();
+            RateLimiter::clear($throttleKey);
+
+            $this->addError('email', 'Akun belum aktif. Silakan cek email untuk aktivasi akun.');
+
+            return;
+        }
+
         RateLimiter::clear($throttleKey);
         session()->regenerate();
 

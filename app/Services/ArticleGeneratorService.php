@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ArticleGeneratorService
 {
@@ -215,7 +216,7 @@ PROMPT;
 
         // Fallback meta_description from excerpt
         if (empty($result['meta_description'])) {
-            $result['meta_description'] = \Illuminate\Support\Str::limit($result['excerpt'], 155);
+            $result['meta_description'] = Str::limit($result['excerpt'], 155);
         }
 
         return $result;
@@ -225,7 +226,7 @@ PROMPT;
     {
         $value = trim($value, " \t\n\r\0\x0B[]\"'");
 
-        return \Illuminate\Support\Str::limit($value, $maxLength, '');
+        return Str::limit($value, $maxLength, '');
     }
 
     private function extractExcerpt(string $content, int $length = 200): string

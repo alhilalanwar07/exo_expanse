@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Livewire\Themes\FloralRomance;
+use App\Livewire\Themes\Generic;
+use App\Livewire\Themes\ModernElegance;
+use App\Livewire\Themes\RoyalGold;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,10 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Livewire\Livewire::component('themes.royal-gold', \App\Livewire\Themes\RoyalGold::class);
-        \Livewire\Livewire::component('themes.floral-romance', \App\Livewire\Themes\FloralRomance::class);
-        \Livewire\Livewire::component('themes.modern-elegance', \App\Livewire\Themes\ModernElegance::class);
-        \Livewire\Livewire::component('themes.generic', \App\Livewire\Themes\Generic::class);
+        Livewire::component('themes.royal-gold', RoyalGold::class);
+        Livewire::component('themes.floral-romance', FloralRomance::class);
+        Livewire::component('themes.modern-elegance', ModernElegance::class);
+        Livewire::component('themes.generic', Generic::class);
         Paginator::useTailwind();
     }
 }

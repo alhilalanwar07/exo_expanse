@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\MobileAccessController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsAdmin;
@@ -16,8 +17,14 @@ use App\Livewire\Pages\Auth\Register;
 use App\Livewire\Pages\BlogList;
 use App\Livewire\Pages\BlogShow;
 use App\Livewire\Pages\Dashboard;
+use App\Livewire\Pages\Invitation\Builder;
+use App\Livewire\Pages\Invitation\Sebar;
+use App\Livewire\Pages\Invitation\TypeSelector;
 use App\Livewire\Pages\Welcome;
 use App\Livewire\ThemePage;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -45,8 +52,46 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
 });
 
+Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    if (! $request->hasValidSignature()) {
+        abort(403);
+    }
+
+    $user = User::query()->findOrFail($id);
+
+    if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        abort(403);
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
+    return redirect()->route('verification.success');
+})->middleware('throttle:6,1')->name('verification.verify');
+
+Route::get('/email/verified/success', fn () => view('auth.activation-success'))
+    ->name('verification.success');
+
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function (Request $request) {
+        return view('auth.verification-notice', [
+            'email' => $request->user()?->email,
+        ]);
+    })->name('verification.notice');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $user = $request->user();
+
+        if ($user && ! $user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
+
+        return back()->with('status', 'verification-link-sent');
+    })->middleware('throttle:6,1')->name('verification.send');
+
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     // Admin Routes
@@ -62,12 +107,13 @@ Route::middleware('auth')->group(function () {
     });
 
     // Invitation Management
-    Route::get('/invitations/new', \App\Livewire\Pages\Invitation\TypeSelector::class)->name('invitations.new');
-    Route::get('/invitations/create', \App\Livewire\Pages\Invitation\Builder::class)->name('invitations.create');
-    Route::get('/invitations/{id}/edit', \App\Livewire\Pages\Invitation\Builder::class)->name('invitations.edit');
+    Route::get('/invitations/new', TypeSelector::class)->name('invitations.new');
+    Route::get('/invitations/create', Builder::class)->name('invitations.create');
+    Route::get('/invitations/{id}/edit', Builder::class)->name('invitations.edit');
+    Route::post('/mobile/access/issue', [MobileAccessController::class, 'issue'])->name('mobile.access.issue');
 
     // To be migrated
-    Route::get('/invitations/{id}/sebar', \App\Livewire\Pages\Invitation\Sebar::class)->name('invitations.sebar');
+    Route::get('/invitations/{id}/sebar', Sebar::class)->name('invitations.sebar');
     // Route::get('/invitations/{invitation}/customize', \App\Livewire\ThemeCustomizer::class)->name('invitations.customize');
 
     // Logout

@@ -47,6 +47,7 @@ class TelegramWebhookController extends Controller
         $allowedChatIds = config('services.telegram.allowed_chat_ids', []);
         if (! empty($allowedChatIds) && ! in_array((string) $chatId, $allowedChatIds)) {
             $telegram->sendMessage($chatId, '⛔ Maaf, Anda tidak memiliki akses untuk membuat artikel.');
+
             return response()->json(['ok' => true]);
         }
 

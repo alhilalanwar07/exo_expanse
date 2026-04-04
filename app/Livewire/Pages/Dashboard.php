@@ -3,6 +3,8 @@
 namespace App\Livewire\Pages;
 
 use App\Models\Invitation;
+use App\Models\Theme;
+use App\Services\GuestImportService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -94,7 +96,7 @@ class Dashboard extends Component
         }
 
         $invitationUrl = route('invitation.show', $this->shareInvitationSlug);
-        $importService = app(\App\Services\GuestImportService::class);
+        $importService = app(GuestImportService::class);
         $recipientName = empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName;
 
         return $importService->generateWhatsAppUrl($invitation, $invitationUrl, $recipientName);
@@ -142,7 +144,7 @@ class Dashboard extends Component
                 ])
                 ->latest()
                 ->get(),
-            'themes' => \App\Models\Theme::where('is_active', true)->get(),
+            'themes' => Theme::where('is_active', true)->get(),
         ]);
     }
 }

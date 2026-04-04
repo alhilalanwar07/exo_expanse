@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Enums\GuestStatus;
+use App\Models\Guest;
 use App\Models\Invitation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Guest>
+ * @extends Factory<Guest>
  */
 class GuestFactory extends Factory
 {

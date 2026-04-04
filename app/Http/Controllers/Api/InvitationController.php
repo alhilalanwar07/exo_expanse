@@ -9,6 +9,7 @@ use App\Models\Invitation;
 use App\Models\Wish;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class InvitationController extends Controller
 {
@@ -26,7 +27,7 @@ class InvitationController extends Controller
                 'name' => $validated['name'],
             ],
             [
-                'slug' => \Illuminate\Support\Str::slug($validated['name']),
+                'slug' => Str::slug($validated['name']),
                 'status' => GuestStatus::from($validated['status']),
                 'pax' => $validated['status'] === 'confirmed' ? $validated['pax'] : 0,
             ]

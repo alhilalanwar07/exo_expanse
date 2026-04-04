@@ -57,7 +57,7 @@ class Register extends Component
 
         Auth::login($user);
 
-        return $this->redirect(route('dashboard'));
+        return $this->redirect(route('verification.notice'));
     }
 
     public function render()

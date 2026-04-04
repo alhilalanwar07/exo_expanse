@@ -127,7 +127,7 @@ enum InvitationType: string
      */
     public static function available(): array
     {
-        return array_filter(self::cases(), fn($type) => $type->isAvailable());
+        return array_filter(self::cases(), fn ($type) => $type->isAvailable());
     }
 
     /**
@@ -137,7 +137,7 @@ enum InvitationType: string
     {
         $available = [];
         $comingSoon = [];
-        
+
         foreach (self::cases() as $type) {
             if ($type->isAvailable()) {
                 $available[] = $type;
@@ -145,7 +145,7 @@ enum InvitationType: string
                 $comingSoon[] = $type;
             }
         }
-        
+
         return [
             'available' => $available,
             'coming_soon' => $comingSoon,

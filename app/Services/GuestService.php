@@ -54,7 +54,7 @@ class GuestService
      */
     private function generateGuestSlug(string $name): string
     {
-        return Str::slug($name) . '-' . Str::random(4);
+        return Str::slug($name).'-'.Str::random(4);
     }
 
     /**

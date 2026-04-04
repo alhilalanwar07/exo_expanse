@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -77,7 +78,7 @@ class UserManagement extends Component
         ];
 
         if ($this->password) {
-            $data['password'] = \Illuminate\Support\Facades\Hash::make($this->password);
+            $data['password'] = Hash::make($this->password);
         }
 
         User::updateOrCreate(['id' => $this->editingUserId], $data);
