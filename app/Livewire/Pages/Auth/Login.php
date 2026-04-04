@@ -55,14 +55,14 @@ class Login extends Component
         }
 
         if (! Auth::user()?->hasVerifiedEmail()) {
+            $unverifiedEmail = Auth::user()->email;
             Auth::logout();
             session()->invalidate();
             session()->regenerateToken();
             RateLimiter::clear($throttleKey);
+            session(['verification.email' => $unverifiedEmail]);
 
-            $this->addError('email', 'Akun belum aktif. Silakan cek email untuk aktivasi akun.');
-
-            return;
+            return $this->redirect(route('verification.notice'), navigate: true);
         }
 
         RateLimiter::clear($throttleKey);

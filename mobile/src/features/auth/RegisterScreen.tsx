@@ -14,16 +14,47 @@ export function RegisterScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeVariant, setNoticeVariant] = useState<'success' | 'error'>('error');
   const [nameFocused, setNameFocused] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [passwordConfirmFocused, setPasswordConfirmFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegister = async () => {
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      setNotice('Nama, email, dan password wajib diisi.');
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+    const trimmedConfirm = passwordConfirmation.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedPassword || !trimmedConfirm) {
+      setNotice('Semua kolom wajib diisi.');
+      setNoticeVariant('error');
+      return;
+    }
+
+    if (trimmedName.length > 255) {
+      setNotice('Nama tidak boleh lebih dari 255 karakter.');
+      setNoticeVariant('error');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setNotice('Format email tidak valid.');
+      setNoticeVariant('error');
+      return;
+    }
+
+    if (trimmedPassword.length < 8) {
+      setNotice('Password minimal 8 karakter.');
+      setNoticeVariant('error');
+      return;
+    }
+
+    if (trimmedPassword !== trimmedConfirm) {
+      setNotice('Konfirmasi password tidak cocok.');
       setNoticeVariant('error');
       return;
     }
@@ -33,9 +64,9 @@ export function RegisterScreen() {
       setNotice(null);
 
       const result = await registerAccount({
-        name,
-        email,
-        password,
+        name: trimmedName,
+        email: trimmedEmail,
+        password: trimmedPassword,
       });
 
       setNoticeVariant('success');
@@ -46,6 +77,7 @@ export function RegisterScreen() {
       );
 
       setPassword('');
+      setPasswordConfirmation('');
     } catch (error) {
       setNoticeVariant('error');
       setNotice(error instanceof Error ? error.message : 'Registrasi gagal. Silakan coba lagi.');
@@ -85,6 +117,7 @@ export function RegisterScreen() {
                   placeholderTextColor={colors.textSecondary}
                   style={styles.input}
                   autoCapitalize="words"
+                  maxLength={255}
                 />
               </View>
             </View>
@@ -133,12 +166,35 @@ export function RegisterScreen() {
                   secureTextEntry
                 />
               </View>
+              <Text style={styles.hint}>Gunakan kombinasi huruf dan angka agar lebih aman.</Text>
+            </View>
+
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Konfirmasi Password</Text>
+              <View
+                style={[
+                  styles.inputWrapper,
+                  passwordConfirmFocused && styles.inputWrapperFocused,
+                ]}
+              >
+                <Text style={styles.inputIcon}>🔑</Text>
+                <TextInput
+                  value={passwordConfirmation}
+                  onChangeText={setPasswordConfirmation}
+                  onFocus={() => setPasswordConfirmFocused(true)}
+                  onBlur={() => setPasswordConfirmFocused(false)}
+                  placeholder="Ulangi password"
+                  placeholderTextColor={colors.textSecondary}
+                  style={styles.input}
+                  secureTextEntry
+                />
+              </View>
             </View>
           </View>
 
           {notice ? (
             <View style={[styles.noticeBox, noticeVariant === 'success' ? styles.noticeBoxSuccess : null]}>
-              <Text style={styles.noticeIcon}>ℹ️</Text>
+              <Text style={styles.noticeIcon}>{noticeVariant === 'success' ? '✅' : 'ℹ️'}</Text>
               <Text style={[styles.notice, noticeVariant === 'success' ? styles.noticeSuccess : null]}>{notice}</Text>
             </View>
           ) : null}
@@ -237,6 +293,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
+  hint: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    marginTop: -4,
+  },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -270,6 +331,7 @@ const styles = StyleSheet.create({
     padding: 12,
     gap: 10,
     alignItems: 'flex-start',
+    marginTop: 4,
   },
   noticeIcon: {
     fontSize: 18,
@@ -290,6 +352,7 @@ const styles = StyleSheet.create({
   },
   buttonsSection: {
     gap: 12,
+    marginTop: 4,
   },
   primaryButton: {
     backgroundColor: colors.accent,

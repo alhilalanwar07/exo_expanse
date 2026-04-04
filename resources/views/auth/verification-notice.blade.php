@@ -25,8 +25,9 @@
 
             <div class="rounded-[28px] border border-[#e8d9be] bg-white/90 backdrop-blur-xl p-8 shadow-[0_24px_60px_-24px_rgba(119,77,31,0.45)]">
                 <p class="text-[#6b5338] leading-relaxed">
+                    @php $displayEmail = $email ?? session('verification.email') ?? null; @endphp
                     Kami sudah mengirim link aktivasi ke
-                    <span class="font-semibold text-[#9a6f3f]">{{ $email ?? 'email Anda' }}</span>.
+                    <span class="font-semibold text-[#9a6f3f]">{{ $displayEmail ?? 'email Anda' }}</span>.
                     Setelah aktivasi, Anda bisa login dan mulai mengelola undangan digital.
                 </p>
 
@@ -46,25 +47,36 @@
                 @endif
 
                 <div class="mt-7 flex flex-col sm:flex-row gap-3">
-                    <form method="POST" action="{{ route('verification.send') }}" class="flex-1">
-                        @csrf
-                        <button
-                            type="submit"
-                            class="w-full py-3.5 rounded-xl text-white font-semibold bg-gradient-to-r from-[#b17a3d] via-[#c9964f] to-[#8e5d2a] hover:opacity-95 transition-all"
-                        >
-                            Kirim Ulang Email Aktivasi
-                        </button>
-                    </form>
+                    @auth
+                        {{-- User masih login: bisa kirim ulang & logout --}}
+                        <form method="POST" action="{{ route('verification.send') }}" class="flex-1">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="w-full py-3.5 rounded-xl text-white font-semibold bg-gradient-to-r from-[#b17a3d] via-[#c9964f] to-[#8e5d2a] hover:opacity-95 transition-all"
+                            >
+                                Kirim Ulang Email Aktivasi
+                            </button>
+                        </form>
 
-                    <form method="POST" action="{{ route('logout') }}" class="sm:w-40">
-                        @csrf
-                        <button
-                            type="submit"
-                            class="w-full py-3.5 rounded-xl border border-[#d8c4a2] text-[#7a5a36] font-medium hover:bg-[#faf3e7] transition-all"
+                        <form method="POST" action="{{ route('logout') }}" class="sm:w-40">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="w-full py-3.5 rounded-xl border border-[#d8c4a2] text-[#7a5a36] font-medium hover:bg-[#faf3e7] transition-all"
+                            >
+                                Logout
+                            </button>
+                        </form>
+                    @else
+                        {{-- User sudah logout: tampilkan tombol kembali ke login --}}
+                        <a
+                            href="{{ route('login') }}"
+                            class="flex-1 flex items-center justify-center py-3.5 rounded-xl text-white font-semibold bg-gradient-to-r from-[#b17a3d] via-[#c9964f] to-[#8e5d2a] hover:opacity-95 transition-all text-center"
                         >
-                            Logout
-                        </button>
-                    </form>
+                            Kembali ke Halaman Login
+                        </a>
+                    @endauth
                 </div>
             </div>
 

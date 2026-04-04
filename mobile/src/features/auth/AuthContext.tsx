@@ -35,7 +35,7 @@ function mapApiSessionToAuthSession(apiSession: MobileApiSession): AuthSession {
     workspaceId: apiSession.workspace_id,
     workspaceLabel: apiSession.workspace_label,
     ownerName: apiSession.owner_name,
-    deviceAlias: apiSession.device_alias,
+    deviceAlias: apiSession.device_alias ?? null,
     accessToken: apiSession.access_token,
     refreshToken: apiSession.refresh_token,
     connectedAt: new Date().toISOString(),
@@ -70,16 +70,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       let nextSession = await readAuthSession();
 
       if (nextSession && isExpired(nextSession.expiresAt)) {
-        if (nextSession.refreshToken) {
-          try {
-            const refreshedSession = await refreshMobileSession(nextSession.refreshToken);
-            nextSession = mapApiSessionToAuthSession(refreshedSession);
-            await writeAuthSession(nextSession);
-          } catch {
-            await clearAuthSession();
-            nextSession = null;
-          }
-        } else {
+        try {
+          const refreshedSession = await refreshMobileSession(nextSession.refreshToken);
+          nextSession = mapApiSessionToAuthSession(refreshedSession);
+          await writeAuthSession(nextSession);
+        } catch {
           await clearAuthSession();
           nextSession = null;
         }

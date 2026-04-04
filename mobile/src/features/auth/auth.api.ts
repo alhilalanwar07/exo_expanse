@@ -4,7 +4,7 @@ export interface MobileApiSession {
   workspace_id: string;
   workspace_label: string;
   owner_name: string;
-  device_alias: string;
+  device_alias: string | null;
   access_token: string;
   refresh_token: string;
   expires_at: string;

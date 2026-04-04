@@ -24,6 +24,16 @@ export function LoginScreen() {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setNotice('Format email tidak valid.');
+      return;
+    }
+
+    if (password.trim().length < 8) {
+      setNotice('Password minimal 8 karakter.');
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       setNotice(null);

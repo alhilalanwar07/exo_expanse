@@ -52,6 +52,13 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
 });
 
+// Email Verification Notice (accessible without auth — needed after logout-on-unverified)
+Route::get('/email/verify', function (\Illuminate\Http\Request $request) {
+    return view('auth.verification-notice', [
+        'email' => $request->user()?->email ?? session('verification.email'),
+    ]);
+})->name('verification.notice');
+
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
     if (! $request->hasValidSignature()) {
         abort(403);
@@ -76,12 +83,6 @@ Route::get('/email/verified/success', fn () => view('auth.activation-success'))
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/email/verify', function (Request $request) {
-        return view('auth.verification-notice', [
-            'email' => $request->user()?->email,
-        ]);
-    })->name('verification.notice');
-
     Route::post('/email/verification-notification', function (Request $request) {
         $user = $request->user();
 

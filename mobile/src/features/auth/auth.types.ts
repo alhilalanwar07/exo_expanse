@@ -2,9 +2,9 @@ export interface AuthSession {
   workspaceId: string;
   workspaceLabel: string;
   ownerName: string;
-  deviceAlias: string;
+  deviceAlias: string | null;
   accessToken: string;
-  refreshToken: string | null;
+  refreshToken: string;
   connectedAt: string;
   expiresAt: string;
 }
