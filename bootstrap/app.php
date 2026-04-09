@@ -22,11 +22,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->cors(
             paths: ['api/*', 'sanctum/csrf-cookie'],
             allowedMethods: ['*'],
-            allowedOrigins: ['*'], // Izinkan semua untuk mobile development
+            allowedOrigins: [
+                'http://localhost:8081',
+                'http://127.0.0.1:8081',
+                'https://exoinvite.site',
+                '*' // Tetap sertakan wildcard untuk mobile native
+            ],
             allowedHeaders: ['*'],
             exposedHeaders: [],
             maxAge: 0,
-            supportsCredentials: false
+            supportsCredentials: true
         );
 
         $middleware->append([
