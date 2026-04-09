@@ -14,16 +14,20 @@ Route::prefix('invitations/{invitation}')->group(function () {
 });
 
 Route::prefix('mobile/access')->group(function () {
-    Route::post('/exchange', [MobileAccessController::class, 'exchange']);
-    Route::post('/refresh', [MobileAccessController::class, 'refresh']);
+    Route::post('/exchange', [MobileAccessController::class, 'exchange'])
+        ->middleware('throttle:mobile-access');
+    Route::post('/refresh', [MobileAccessController::class, 'refresh'])
+        ->middleware('throttle:mobile-refresh');
 
     Route::middleware('mobile.session')->group(function () {
         Route::post('/revoke', [MobileAccessController::class, 'revoke']);
         Route::get('/devices', [MobileAccessController::class, 'devices']);
+        Route::get('/invitations', [\App\Http\Controllers\Api\MobileInvitationController::class, 'index']);
+        Route::get('/invitations/{id}', [\App\Http\Controllers\Api\MobileInvitationController::class, 'show']);
     });
 });
 
-Route::prefix('mobile/auth')->group(function () {
+Route::prefix('mobile/auth')->middleware('throttle:mobile-auth')->group(function () {
     Route::post('/register', [MobileAuthController::class, 'register']);
     Route::post('/login', [MobileAuthController::class, 'login']);
 });

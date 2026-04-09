@@ -1,5 +1,6 @@
 export type GuestStackParamList = {
-  PublicHome: undefined;
+  Welcome: undefined;
+  Home: undefined;
   ThemeCatalog: undefined;
   AuthChoice:
     | {
@@ -9,9 +10,12 @@ export type GuestStackParamList = {
   Login: undefined;
   Register: undefined;
   ConnectDevice: undefined;
+  Profile: undefined;
 };
 
 export type AppStackParamList = {
   Home: undefined;
   InvitationHub: undefined;
+  ConnectDevice: undefined;
+  Profile: undefined;
 };

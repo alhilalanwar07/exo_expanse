@@ -1,86 +1,136 @@
+import React, { useEffect, useState } from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AuthChoiceScreen } from '../features/auth/AuthChoiceScreen';
-import { ConnectDeviceScreen } from '../features/auth/ConnectDeviceScreen';
+import { WelcomeScreen } from '../screens/WelcomeScreen';
+import { HomeScreen } from '../screens/HomeScreen';
+import { UndanganScreen } from '../screens/UndanganScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { RegisterScreen } from '../features/auth/RegisterScreen';
-import { useAuth } from '../features/auth/AuthContext';
-import { HomeScreen } from '../screens/HomeScreen';
-import { InvitationHubScreen } from '../screens/InvitationHubScreen';
-import { LoadingScreen } from '../screens/LoadingScreen';
-import { PublicHomeScreen } from '../screens/PublicHomeScreen';
-import { ThemeCatalogScreen } from '../screens/ThemeCatalogScreen';
-import { colors } from '../shared/theme/colors';
-import type { AppStackParamList, GuestStackParamList } from './types';
 
-const GuestStack = createNativeStackNavigator<GuestStackParamList>();
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+import { C } from '../shared/theme/catalogStyles';
+import { F } from '../shared/theme/fonts';
 
-function GuestNavigator() {
+const COLORS = {
+  primary: C.primary,
+  surface: C.background,
+};
+
+const FONTS = {
+  label: F.label,
+};
+
+// -- Types
+export type MainTabParamList = {
+  Home: undefined;
+  Undangan: undefined;
+  Profil: undefined;
+};
+
+export type RootStackParamList = {
+  Welcome: undefined;
+  Main: undefined;
+  Login: undefined;
+  Register: undefined;
+};
+
+// -- Navigators
+const Tab = createBottomTabNavigator<MainTabParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+function MainTabs() {
   return (
-    <GuestStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerShadowVisible: false,
-        headerTitleStyle: { color: colors.textPrimary },
-      }}
-    >
-      <GuestStack.Screen
-        name="PublicHome"
-        component={PublicHomeScreen}
-        options={{ title: 'Exo Expanse' }}
-      />
-      <GuestStack.Screen
-        name="ThemeCatalog"
-        component={ThemeCatalogScreen}
-        options={{ title: 'Pilih Tema' }}
-      />
-      <GuestStack.Screen
-        name="AuthChoice"
-        component={AuthChoiceScreen}
-        options={{ title: 'Masuk atau Daftar' }}
-      />
-      <GuestStack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-      <GuestStack.Screen
-        name="Register"
-        component={RegisterScreen}
-        options={{ title: 'Register' }}
-      />
-      <GuestStack.Screen
-        name="ConnectDevice"
-        component={ConnectDeviceScreen}
-        options={{ title: 'Hubungkan Perangkat' }}
-      />
-    </GuestStack.Navigator>
-  );
-}
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarStyle: {
+          position: 'absolute',
+          bottom: 25,
+          left: 20,
+          right: 20,
+          height: 65,
+          borderRadius: 35,
+          backgroundColor: COLORS.surface,
+          borderTopWidth: 0,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.1,
+          shadowRadius: 20,
+          elevation: 5,
+        },
+        tabBarLabelStyle: {
+          fontFamily: FONTS.label,
+          fontSize: 10,
+          paddingBottom: 8,
+        },
+        tabBarIcon: ({ color, size, focused }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = 'home';
 
-function AppNavigator() {
-  return (
-    <AppStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerShadowVisible: false,
-        headerTitleStyle: { color: colors.textPrimary },
-      }}
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Undangan') {
+            iconName = focused ? 'mail' : 'mail-outline';
+          } else if (route.name === 'Profil') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+
+          // Shifting the icon slightly down to center perfectly above the label
+          return <Ionicons name={iconName} size={24} color={color} style={{ marginTop: 6 }} />;
+        },
+      })}
     >
-      <AppStack.Screen name="Home" component={HomeScreen} options={{ title: 'Beranda' }} />
-      <AppStack.Screen
-        name="InvitationHub"
-        component={InvitationHubScreen}
-        options={{ title: 'Invitation Hub' }}
-      />
-    </AppStack.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Undangan" component={UndanganScreen} />
+      <Tab.Screen name="Profil" component={ProfileScreen} />
+    </Tab.Navigator>
   );
 }
 
 export function RootNavigator() {
-  const { session, isHydrating } = useAuth();
+  const [isAppReady, setIsAppReady] = useState(false);
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>('Welcome');
 
-  if (isHydrating) {
-    return <LoadingScreen />;
+  useEffect(() => {
+    async function checkFirstLaunch() {
+      try {
+        const hasLaunched = await AsyncStorage.getItem('HAS_LAUNCHED');
+        if (hasLaunched === 'true') {
+          setInitialRoute('Main');
+        } else {
+          setInitialRoute('Welcome');
+        }
+      } catch (error) {
+        setInitialRoute('Welcome');
+      } finally {
+        setIsAppReady(true);
+      }
+    }
+    checkFirstLaunch();
+  }, []);
+
+  if (!isAppReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
   }
 
-  return <NavigationContainer>{session ? <AppNavigator /> : <GuestNavigator />}</NavigationContainer>;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="Main" component={MainTabs} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

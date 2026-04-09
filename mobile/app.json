@@ -32,6 +32,10 @@
         "authFlow": "access-code",
         "stage": "stage-1"
       }
-    }
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store"
+    ]
   }
 }

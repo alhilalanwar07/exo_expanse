@@ -1,155 +1,254 @@
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
-import { env, isUsingFallbackApiBaseUrl } from '../config/env';
-import { useAuth } from '../features/auth/AuthContext';
-import type { AppStackParamList } from '../navigation/types';
-import { ScreenContainer } from '../shared/components/ScreenContainer';
-import { colors } from '../shared/theme/colors';
+import { COLORS, FONTS, SIZES } from '../constants/theme';
 
-const setupChecklist = [
-  'Tahap 2: aktifkan endpoint exchange token mobile owner',
-  'Tahap 3: dashboard owner + daftar undangan',
-  'Tahap 4: editor undangan (cover, mempelai, acara, settings)',
-  'Tahap 5: tamu, sebar link, dan WhatsApp generator',
+// Mock Data
+const CATEGORIES = ['Semua', 'Pernikahan', 'Ulang Tahun', 'Digital', 'Minimalis'];
+
+const MOCK_DATA = [
+  { id: '1', title: 'Romantic Rose', status: 'Gratis' },
+  { id: '2', title: 'Golden Classic', status: 'Premium' },
+  { id: '3', title: 'Minimalist White', status: 'Gratis' },
+  { id: '4', title: 'Royal Blue', status: 'Premium' },
+  { id: '5', title: 'Neon Party', status: 'Gratis' },
+  { id: '6', title: 'Rustic Wood', status: 'Premium' },
 ];
 
 export function HomeScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
-  const { session, disconnectDevice } = useAuth();
+  const [activeCategory, setActiveCategory] = useState('Semua');
+
+  const renderCard = ({ item }: { item: typeof MOCK_DATA[0] }) => {
+    const isPremium = item.status === 'Premium';
+
+    return (
+      <View style={styles.cardContainer}>
+        <View style={styles.imagePlaceholder}>
+          <View
+            style={[
+              styles.badge,
+              { backgroundColor: isPremium ? COLORS.premium : COLORS.surface },
+            ]}
+          >
+            <Text
+              style={[
+                styles.badgeText,
+                { color: isPremium ? COLORS.textLight : COLORS.primary },
+              ]}
+            >
+              {item.status}
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.cardTitle} numberOfLines={1}>
+          {item.title}
+        </Text>
+      </View>
+    );
+  };
 
   return (
-    <ScreenContainer>
-      <View style={styles.heroCard}>
-        <Text style={styles.appLabel}>Exo Expanse Mobile</Text>
-        <Text style={styles.title}>{session?.workspaceLabel ?? 'Workspace Owner'}</Text>
-        <Text style={styles.subtitle}>Pemilik: {session?.ownerName ?? '-'}</Text>
-        <Text style={styles.subtitle}>Perangkat: {session?.deviceAlias ?? '-'}</Text>
-        <Text style={styles.subtitle}>Base URL API: {env.apiBaseUrl}</Text>
-        {isUsingFallbackApiBaseUrl ? (
-          <Text style={styles.warning}>
-            Gunakan EXPO_PUBLIC_API_BASE_URL pada file .env agar tidak memakai fallback.
-          </Text>
-        ) : null}
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <View style={styles.container}>
+        {/* 1. Header */}
+        <View style={styles.headerRow}>
+          <Text style={styles.greetingText}>Halo, Budi! 👋</Text>
+          <Pressable style={styles.bellIcon}>
+            <Ionicons name="notifications-outline" size={24} color={COLORS.text} />
+          </Pressable>
+        </View>
 
-        <Pressable
-          onPress={() => navigation.navigate('InvitationHub')}
-          style={({ pressed }) => [styles.primaryButton, pressed && styles.buttonPressed]}
-        >
-          <Text style={styles.primaryButtonText}>Buka Invitation Hub</Text>
-        </Pressable>
+        {/* 2. Search Bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color={COLORS.textMuted} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Cari tema undangan..."
+            placeholderTextColor={COLORS.textMuted}
+            autoCorrect={false}
+          />
+        </View>
 
-        <Pressable
-          onPress={disconnectDevice}
-          style={({ pressed }) => [styles.secondaryButton, pressed && styles.buttonPressed]}
-        >
-          <Text style={styles.secondaryButtonText}>Putuskan Perangkat</Text>
-        </Pressable>
+        {/* 3. Category Chips */}
+        <View style={styles.categoriesWrapper}>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={CATEGORIES}
+            keyExtractor={(item) => item}
+            contentContainerStyle={styles.categoriesList}
+            renderItem={({ item }) => {
+              const isActive = item === activeCategory;
+              return (
+                <Pressable
+                  onPress={() => setActiveCategory(item)}
+                  style={[
+                    styles.chip,
+                    isActive ? styles.chipActive : styles.chipInactive,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      isActive ? styles.chipTextActive : styles.chipTextInactive,
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                </Pressable>
+              );
+            }}
+          />
+        </View>
+
+        {/* 4. Template Grid */}
+        <FlatList
+          data={MOCK_DATA}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={styles.gridContainer}
+          columnWrapperStyle={styles.gridColumnWrapper}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderCard}
+        />
       </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Roadmap Mobile Owner</Text>
-        {setupChecklist.map((item) => (
-          <View key={item} style={styles.itemRow}>
-            <View style={styles.dot} />
-            <Text style={styles.itemText}>{item}</Text>
-          </View>
-        ))}
-      </View>
-    </ScreenContainer>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  heroCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  container: {
+    flex: 1,
+  },
+  // Header
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SIZES.padding,
+    paddingTop: SIZES.padding,
+    paddingBottom: 12,
+  },
+  greetingText: {
+    fontFamily: FONTS.headline,
+    fontSize: 22,
+    color: COLORS.text,
+  },
+  bellIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.border,
-    padding: 18,
+    borderColor: COLORS.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.surface,
+  },
+  // Search
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: SIZES.radius,
+    marginHorizontal: SIZES.padding,
+    paddingHorizontal: 12,
+    height: 48,
+    marginBottom: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: FONTS.body,
+    fontSize: 14,
+    color: COLORS.text,
+  },
+  // Categories
+  categoriesWrapper: {
+    marginBottom: 16,
+  },
+  categoriesList: {
+    paddingHorizontal: SIZES.padding,
     gap: 8,
   },
-  appLabel: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 1,
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chipActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  chipInactive: {
+    backgroundColor: 'transparent',
+    borderColor: COLORS.border,
+  },
+  chipText: {
+    fontFamily: FONTS.label,
+    fontSize: 13,
+  },
+  chipTextActive: {
+    color: COLORS.textLight,
+  },
+  chipTextInactive: {
+    color: COLORS.textMuted,
+  },
+  // Grid
+  gridContainer: {
+    paddingHorizontal: SIZES.padding,
+    paddingBottom: 100, // 5. Clears bottom tab bar
+    gap: 16,
+  },
+  gridColumnWrapper: {
+    gap: 16,
+  },
+  cardContainer: {
+    flex: 1,
+  },
+  imagePlaceholder: {
+    aspectRatio: 0.75, // Tall rectangle
+    backgroundColor: COLORS.border,
+    borderRadius: SIZES.radius,
+    marginBottom: 8,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  badge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  badgeText: {
+    fontFamily: FONTS.label,
+    fontSize: 10,
     textTransform: 'uppercase',
   },
-  title: {
-    color: colors.textPrimary,
-    fontSize: 24,
-    fontWeight: '800',
-  },
-  subtitle: {
-    color: colors.textSecondary,
+  cardTitle: {
+    fontFamily: FONTS.label,
     fontSize: 14,
-  },
-  warning: {
-    color: colors.warning,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  primaryButton: {
-    marginTop: 8,
-    backgroundColor: colors.accent,
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 14,
-  },
-  secondaryButton: {
-    marginTop: 4,
-    borderColor: colors.accent,
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-    backgroundColor: '#FFF8EF',
-  },
-  secondaryButtonText: {
-    color: colors.accent,
-    fontWeight: '700',
-    fontSize: 14,
-  },
-  buttonPressed: {
-    opacity: 0.9,
-  },
-  section: {
-    marginTop: 20,
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 18,
-    gap: 12,
-  },
-  sectionTitle: {
-    color: colors.textPrimary,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  itemRow: {
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'flex-start',
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 999,
-    backgroundColor: colors.accent,
-    marginTop: 7,
-  },
-  itemText: {
-    flex: 1,
-    color: colors.textPrimary,
-    fontSize: 15,
-    lineHeight: 22,
+    color: COLORS.text,
   },
 });

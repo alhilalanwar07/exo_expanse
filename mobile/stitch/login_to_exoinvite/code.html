@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "surface-dim": "#e9d2f1",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#4a4455",
+                    "on-primary-container": "#ede0ff",
+                    "surface-variant": "#f2dbfa",
+                    "primary": "#630ed4",
+                    "on-secondary-fixed": "#400200",
+                    "on-tertiary-container": "#ffe2ab",
+                    "inverse-surface": "#3a2b42",
+                    "tertiary-fixed-dim": "#f9bd22",
+                    "primary-fixed": "#eaddff",
+                    "tertiary-container": "#836100",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "inverse-on-surface": "#fcebff",
+                    "secondary-fixed": "#ffdad4",
+                    "on-secondary-container": "#fffbff",
+                    "surface": "#fff7fc",
+                    "secondary": "#b51c0b",
+                    "on-secondary-fixed-variant": "#910900",
+                    "secondary-container": "#d93723",
+                    "tertiary-fixed": "#ffdf9f",
+                    "outline-variant": "#ccc3d8",
+                    "surface-tint": "#732ee4",
+                    "surface-container": "#fbe8ff",
+                    "on-primary-fixed": "#25005a",
+                    "on-primary-fixed-variant": "#5a00c6",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#7c3aed",
+                    "background": "#fff7fc",
+                    "surface-bright": "#fff7fc",
+                    "surface-container-high": "#f8e0ff",
+                    "secondary-fixed-dim": "#ffb4a7",
+                    "on-background": "#24162c",
+                    "tertiary": "#654a00",
+                    "inverse-primary": "#d2bbff",
+                    "primary-fixed-dim": "#d2bbff",
+                    "on-surface": "#24162c",
+                    "surface-container-highest": "#f2dbfa",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#7b7487",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#feefff",
+                    "on-tertiary-fixed": "#261a00",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fff7fc;
+            color: #24162c;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col items-center justify-start overflow-x-hidden">
+<!-- TopAppBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full active:scale-95 transition-transform duration-200 hover:bg-zinc-100/50">
+<span class="material-symbols-outlined text-zinc-900" data-icon="arrow_back">arrow_back</span>
+</button>
+</div>
+<span class="text-xl font-bold tracking-widest uppercase text-zinc-900 dark:text-zinc-50 font-['Plus_Jakarta_Sans']">Exoinvite</span>
+<div class="w-10"></div> <!-- Spacer for symmetry -->
+</nav>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-md px-8 pt-28 pb-12 flex flex-col min-h-screen">
+<!-- Header Section -->
+<header class="mb-12">
+<h1 class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-2">Masuk ke Akun</h1>
+<p class="text-on-surface-variant font-body">Silakan masuk untuk melanjutkan rencana perayaan Anda.</p>
+</header>
+<!-- Form Section -->
+<form class="space-y-6">
+<!-- Email Input -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1">Email Address</label>
+<div class="relative">
+<input class="w-full h-14 px-5 bg-surface-container-highest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface font-body placeholder:text-outline placeholder:font-normal" placeholder="nama@email.com" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1">Password</label>
+<div class="relative">
+<input class="w-full h-14 px-5 bg-surface-container-highest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface font-body placeholder:text-outline" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline" type="button">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</button>
+</div>
+<div class="flex justify-end">
+<a class="font-label text-sm font-semibold text-primary active:scale-95 transition-all" href="#">Lupa Password?</a>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-14 mt-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold rounded-full shadow-[0_8px_32px_rgba(99,14,212,0.15)] active:scale-95 transition-all duration-200" type="submit">
+                Masuk
+            </button>
+</form>
+<!-- Social Divider -->
+<div class="mt-12 mb-8 flex items-center gap-4">
+<div class="h-[1px] flex-grow bg-outline-variant/30"></div>
+<span class="font-label text-[11px] font-medium uppercase tracking-[0.1rem] text-outline">Atau masuk dengan</span>
+<div class="h-[1px] flex-grow bg-outline-variant/30"></div>
+</div>
+<!-- Social Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center h-14 bg-surface-container-low border border-outline-variant/10 rounded-xl hover:bg-surface-container transition-colors active:scale-95">
+<img alt="Google Logo" class="w-6 h-6 mr-2" data-alt="Official Google logo with vibrant primary colors on a white background for social login button" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzNZzbte7zWdrjsD1OmmzdvsA1kxo06qZaX6cQX0L7b-VRQ9iEGM-FN1kGQVt_dQU9wPJUof5rZcCD4YcnR77RxYm9PlMk1puNrSBTuILH6s7kApbdaVUt_lbcE5oyvMhQO2y6Uw9vokEnjt6J5WOgnq1wyaAf_xLWptqTAeN5lZRP82i1xDpoybcuVxccoVpwuzLpDwOKVwtyNCiBiwu3CBiStsQ-M2pkT11DyJi90adZ7O3NaBVsjg2q9fR2J8MMiAjEeDMIOLrp"/>
+<span class="font-headline font-bold text-sm">Google</span>
+</button>
+<button class="flex items-center justify-center h-14 bg-zinc-900 text-white rounded-xl active:scale-95">
+<span class="material-symbols-outlined mr-2" data-icon="apple" style="font-variation-settings: 'FILL' 1;">ios</span>
+<span class="font-headline font-bold text-sm">Apple</span>
+</button>
+</div>
+<!-- Footer -->
+<footer class="mt-auto pt-12 pb-6 text-center">
+<p class="font-body text-on-surface-variant text-sm">
+                Belum punya akun? 
+                <a class="font-headline font-extrabold text-secondary hover:underline ml-1" href="#">Daftar sekarang</a>
+</p>
+</footer>
+</main>
+<!-- Decorative Element (Atelier Style) -->
+<div class="fixed -bottom-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10"></div>
+<div class="fixed top-20 -left-12 w-48 h-48 bg-secondary/5 rounded-full blur-[60px] -z-10"></div>
+</body></html>
