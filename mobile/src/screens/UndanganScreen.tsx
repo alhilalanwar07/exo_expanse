@@ -10,11 +10,11 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { readAuthSession } from '../features/auth/auth.storage';
 import { COLORS, FONTS, SIZES } from '../constants/theme';
 import { env } from '../config/env';
 
@@ -58,11 +58,10 @@ export function UndanganScreen() {
         try {
           setIsLoading(true);
 
-          // 1. Check if token exists in SecureStore
-          // Note: Looking for our session payload stringified
-          const sessionRaw = await SecureStore.getItemAsync('exo.mobile.auth.session');
+          // 1. Check if auth session exists (platform-aware: web uses AsyncStorage, native uses SecureStore)
+          const session = await readAuthSession();
           
-          if (!sessionRaw) {
+          if (!session) {
             // 2. NO token
             if (isActive) {
               setIsLoggedIn(false);
@@ -71,14 +70,7 @@ export function UndanganScreen() {
             return;
           }
 
-          // Parse session for the token
-          let token = '';
-          try {
-            const session = JSON.parse(sessionRaw);
-            token = session.accessToken;
-          } catch (e) {
-            token = sessionRaw; // fallback if just token was stored
-          }
+          const token = session.accessToken;
 
           if (!token) {
             if (isActive) {
