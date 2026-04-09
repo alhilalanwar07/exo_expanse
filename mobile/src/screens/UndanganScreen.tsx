@@ -108,6 +108,7 @@ export function UndanganScreen() {
           const responseData = await response.json();
 
           if (isActive) {
+            console.log(`✅ API Connected: Berhasil mengambil ${responseData.data?.length || 0} data dari ${env.apiBaseUrl}`);
             // 4. Populate array and stats
             const list = (responseData.data || []).map((item: any) => ({
               id: item.id,

@@ -15,6 +15,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
+        $middleware->cors(
+            paths: ['api/*', 'sanctum/csrf-cookie'],
+            allowedMethods: ['*'],
+            allowedOrigins: ['*'], // Izinkan semua untuk mobile development
+            allowedHeaders: ['*'],
+            exposedHeaders: [],
+            maxAge: 0,
+            supportsCredentials: false
+        );
+
         $middleware->append([
             ForceHttpsInProduction::class,
             AddStrictTransportSecurityHeader::class,
