@@ -17,30 +17,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Navbar } from '../../shared/components/Navbar';
 import { F } from '../../shared/theme/fonts';
+import { useAppTheme } from '../../shared/theme/index';
 import { useAuth } from './AuthContext';
-import type { GuestStackParamList } from '../../navigation/types';
+import type { RootStackParamList } from '../../navigation/RootNavigator';
 
-// ── Design tokens ────────────────────────────────────────────────────────────
-const C = {
-  background: '#FFF7FC',
-  fieldBg: '#EDE0FF',
-  primary: '#630ED4',
-  onPrimary: '#FFFFFF',
-  onSurface: '#24162C',
-  onSurfaceVariant: '#4A4455',
-  outline: '#7B7487',
-  outlineVariant: '#CCC3D8',
-  error: '#BA1A1A',
-  errorContainer: '#FFDAD6',
-  loginLinkColor: '#630ED4',
-  googleBg: '#FFFFFF',
-  googleBorder: '#E2E8F0',
-  googleText: '#1A1A2E',
-  appleBg: '#111111',
-  appleText: '#FFFFFF',
-  strengthColors: ['#F97316', '#FBBF24', '#38BDF8', '#22C55E'],
-  strengthBg: 'rgba(204,195,216,0.4)',
-} as const;
+const STRENGTH_COLORS = ['#F97316', '#FBBF24', '#38BDF8', '#22C55E'] as const;
 
 function getPasswordStrength(pw: string) {
   let s = 0;
@@ -49,14 +30,20 @@ function getPasswordStrength(pw: string) {
   if (/\d/.test(pw)) s++;
   if (/[^A-Za-z0-9]/.test(pw)) s++;
   const labels = ['Lemah', 'Cukup', 'Bagus', 'Kuat'];
-  return { score: s, label: labels[Math.max(0, s - 1)] ?? 'Lemah', color: C.strengthColors[Math.max(0, s - 1)] ?? C.strengthColors[0] };
+  return {
+    score: s,
+    label: labels[Math.max(0, s - 1)] ?? 'Lemah',
+    color: STRENGTH_COLORS[Math.max(0, s - 1)] ?? STRENGTH_COLORS[0],
+  };
 }
 
 export function RegisterScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<GuestStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { registerAccount } = useAuth();
+  const { theme } = useAppTheme();
   const { width } = useWindowDimensions();
   const isCompact = width <= 390;
+  const s = makeStyles(theme, isCompact);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -77,26 +64,17 @@ export function RegisterScreen() {
     const p = password.trim();
     const c = passwordConfirm.trim();
 
-    if (!n || !e || !p || !c) {
-      setNotice('Semua kolom wajib diisi.'); setNoticeVariant('error'); return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-      setNotice('Format email tidak valid.'); setNoticeVariant('error'); return;
-    }
-    if (p.length < 8) {
-      setNotice('Password minimal 8 karakter.'); setNoticeVariant('error'); return;
-    }
-    if (p !== c) {
-      setNotice('Konfirmasi password tidak cocok.'); setNoticeVariant('error'); return;
-    }
-    if (!termsAccepted) {
-      setNotice('Harap setujui Syarat & Ketentuan terlebih dahulu.'); setNoticeVariant('error'); return;
-    }
+    if (!n || !e || !p || !c) { setNotice('Semua kolom wajib diisi.'); setNoticeVariant('error'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setNotice('Format email tidak valid.'); setNoticeVariant('error'); return; }
+    if (p.length < 8) { setNotice('Password minimal 8 karakter.'); setNoticeVariant('error'); return; }
+    if (p !== c) { setNotice('Konfirmasi password tidak cocok.'); setNoticeVariant('error'); return; }
+    if (!termsAccepted) { setNotice('Harap setujui Syarat & Ketentuan terlebih dahulu.'); setNoticeVariant('error'); return; }
 
     try {
       setIsSubmitting(true);
       setNotice(null);
       await registerAccount({ name: n, email: e, password: p });
+      navigation.replace('Main');
     } catch {
       setNotice('Pendaftaran gagal. Silakan coba lagi.');
       setNoticeVariant('error');
@@ -106,212 +84,185 @@ export function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={s.safeArea} edges={['top']}>
       <Navbar title="Daftar Akun Baru" onBackPress={() => navigation.goBack()} />
-      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={s.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
-          contentContainerStyle={[styles.scroll, isCompact && styles.scrollCompact]}
+          contentContainerStyle={s.scroll}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* ── Page Header ─────────────────── */}
-          <View style={[styles.header, isCompact && styles.headerCompact]}>
-            <Text style={[styles.title, isCompact && styles.titleCompact]}>Daftar Akun Baru</Text>
-            <Text style={[styles.subtitle, isCompact && styles.subtitleCompact]}>
+          {/* Header */}
+          <View style={s.header}>
+            <Text style={s.title}>Daftar Akun Baru</Text>
+            <Text style={s.subtitle}>
               Bergabunglah dengan Exoinvite dan mulailah menciptakan momen spesial Anda.
             </Text>
           </View>
 
-          {/* ── Form ────────────────────────── */}
-          <View style={[styles.form, isCompact && styles.formCompact]}>
+          {/* Form */}
+          <View style={s.form}>
 
-            {/* Nama Lengkap */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.label}>NAMA LENGKAP</Text>
+            {/* Nama */}
+            <View style={s.fieldGroup}>
+              <Text style={s.label}>NAMA LENGKAP</Text>
               <TextInput
                 value={name}
                 onChangeText={setName}
                 placeholder="Masukkan nama lengkap"
-                placeholderTextColor={C.outline}
-                style={[styles.input, isCompact && styles.inputCompact]}
+                placeholderTextColor={theme.outline}
+                style={s.input}
                 autoCapitalize="words"
                 autoComplete="name"
                 returnKeyType="next"
-                selectionColor={C.primary}
+                selectionColor={theme.primary}
               />
             </View>
 
-            {/* Alamat Email */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.label}>ALAMAT EMAIL</Text>
+            {/* Email */}
+            <View style={s.fieldGroup}>
+              <Text style={s.label}>ALAMAT EMAIL</Text>
               <TextInput
                 value={email}
                 onChangeText={setEmail}
                 placeholder="contoh@email.com"
-                placeholderTextColor={C.outline}
-                style={[styles.input, isCompact && styles.inputCompact]}
+                placeholderTextColor={theme.outline}
+                style={s.input}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
                 returnKeyType="next"
-                selectionColor={C.primary}
+                selectionColor={theme.primary}
               />
             </View>
 
-            {/* Kata Sandi */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.label}>KATA SANDI</Text>
-              <View style={styles.passwordWrap}>
+            {/* Password */}
+            <View style={s.fieldGroup}>
+              <Text style={s.label}>KATA SANDI</Text>
+              <View style={s.passwordWrap}>
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
                   placeholder="••••••••"
-                  placeholderTextColor={C.outline}
-                  style={[styles.input, styles.inputPassword, isCompact && styles.inputCompact]}
+                  placeholderTextColor={theme.outline}
+                  style={[s.input, s.inputPassword]}
                   secureTextEntry={!isPasswordVisible}
                   autoComplete="password"
                   returnKeyType="next"
-                  selectionColor={C.primary}
+                  selectionColor={theme.primary}
                 />
-                <Pressable
-                  onPress={() => setIsPasswordVisible((v) => !v)}
-                  style={styles.eyeBtn}
-                  hitSlop={8}
-                >
+                <Pressable onPress={() => setIsPasswordVisible((v) => !v)} style={s.eyeBtn} hitSlop={8}>
                   <MaterialCommunityIcons
                     name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
-                    color={C.outline}
+                    color={theme.outline}
                   />
                 </Pressable>
               </View>
-              {/* Password strength bars */}
               {password.length > 0 ? (
-                <View style={styles.strengthRow}>
+                <View style={s.strengthRow}>
                   {[1, 2, 3, 4].map((slot) => (
                     <View
                       key={slot}
-                      style={[
-                        styles.strengthBar,
-                        slot <= strength.score ? { backgroundColor: strength.color } : null,
-                      ]}
+                      style={[s.strengthBar, slot <= strength.score ? { backgroundColor: strength.color } : null]}
                     />
                   ))}
-                  <Text style={[styles.strengthLabel, { color: strength.color }]}>
-                    {strength.label}
-                  </Text>
+                  <Text style={[s.strengthLabel, { color: strength.color }]}>{strength.label}</Text>
                 </View>
               ) : null}
             </View>
 
-            {/* Konfirmasi Kata Sandi */}
-            <View style={styles.fieldGroup}>
-              <Text style={styles.label}>KONFIRMASI KATA SANDI</Text>
-              <View style={styles.passwordWrap}>
+            {/* Konfirmasi */}
+            <View style={s.fieldGroup}>
+              <Text style={s.label}>KONFIRMASI KATA SANDI</Text>
+              <View style={s.passwordWrap}>
                 <TextInput
                   value={passwordConfirm}
                   onChangeText={setPasswordConfirm}
                   placeholder="••••••••"
-                  placeholderTextColor={C.outline}
-                  style={[styles.input, styles.inputPassword, isCompact && styles.inputCompact]}
+                  placeholderTextColor={theme.outline}
+                  style={[s.input, s.inputPassword]}
                   secureTextEntry={!isPasswordConfirmVisible}
                   autoComplete="password"
                   returnKeyType="done"
-                  selectionColor={C.primary}
+                  selectionColor={theme.primary}
                   onSubmitEditing={handleRegister}
                 />
-                <Pressable
-                  onPress={() => setIsPasswordConfirmVisible((v) => !v)}
-                  style={styles.eyeBtn}
-                  hitSlop={8}
-                >
+                <Pressable onPress={() => setIsPasswordConfirmVisible((v) => !v)} style={s.eyeBtn} hitSlop={8}>
                   <MaterialCommunityIcons
                     name={isPasswordConfirmVisible ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
-                    color={C.outline}
+                    color={theme.outline}
                   />
                 </Pressable>
               </View>
             </View>
 
-            {/* Terms checkbox */}
-            <Pressable
-              onPress={() => setTermsAccepted((v) => !v)}
-              style={styles.termsRow}
-            >
-              <View style={[styles.checkbox, termsAccepted && styles.checkboxChecked]}>
-                {termsAccepted ? (
-                  <MaterialCommunityIcons name="check" size={14} color={C.onPrimary} />
-                ) : null}
+            {/* Terms */}
+            <Pressable onPress={() => setTermsAccepted((v) => !v)} style={s.termsRow}>
+              <View style={[s.checkbox, termsAccepted && s.checkboxChecked]}>
+                {termsAccepted ? <MaterialCommunityIcons name="check" size={14} color="#FFFFFF" /> : null}
               </View>
-              <Text style={styles.termsText}>
+              <Text style={s.termsText}>
                 Saya menyetujui{' '}
-                <Text style={styles.termsLink}>Syarat & Ketentuan</Text>
+                <Text style={s.termsLink}>Syarat & Ketentuan</Text>
                 {' '}dan{' '}
-                <Text style={styles.termsLink}>Kebijakan Privasi</Text>
+                <Text style={s.termsLink}>Kebijakan Privasi</Text>
               </Text>
             </Pressable>
 
             {/* Notice */}
             {notice ? (
-              <View style={[styles.noticeBox, noticeVariant === 'success' && styles.successBox]}>
+              <View style={[s.noticeBox, noticeVariant === 'success' && s.successBox]}>
                 <MaterialCommunityIcons
                   name={noticeVariant === 'success' ? 'check-circle-outline' : 'alert-circle-outline'}
                   size={16}
-                  color={noticeVariant === 'success' ? '#1A6B3C' : C.error}
+                  color={noticeVariant === 'success' ? theme.successIcon : theme.error}
                 />
-                <Text style={[styles.noticeText, noticeVariant === 'success' && styles.successText]}>
-                  {notice}
-                </Text>
+                <Text style={[s.noticeText, noticeVariant === 'success' && s.successText]}>{notice}</Text>
               </View>
             ) : null}
 
-            {/* Primary CTA */}
+            {/* CTA */}
             <Pressable
               onPress={handleRegister}
               disabled={isSubmitting}
-              style={({ pressed }) => [
-                styles.primaryBtn,
-                pressed && styles.pressed,
-                isSubmitting && styles.disabled,
-              ]}
+              style={({ pressed }) => [s.primaryBtn, pressed && s.pressed, isSubmitting && s.disabled]}
             >
-              <Text style={[styles.primaryBtnText, isCompact && styles.primaryBtnTextCompact]}>
-                {isSubmitting ? 'Mendaftar...' : 'Daftar'}
-              </Text>
+              <Text style={s.primaryBtnText}>{isSubmitting ? 'Mendaftar...' : 'Daftar'}</Text>
             </Pressable>
 
             {/* Divider */}
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>ATAU DAFTAR DENGAN</Text>
-              <View style={styles.dividerLine} />
+            <View style={s.dividerRow}>
+              <View style={s.dividerLine} />
+              <Text style={s.dividerText}>ATAU DAFTAR DENGAN</Text>
+              <View style={s.dividerLine} />
             </View>
 
             {/* Social */}
-            <View style={styles.socialRow}>
+            <View style={s.socialRow}>
               <Pressable
                 onPress={() => console.log('Google')}
-                style={({ pressed }) => [styles.socialBtn, styles.googleBtn, pressed && styles.pressed]}
+                style={({ pressed }) => [s.socialBtn, s.googleBtn, pressed && s.pressed]}
               >
                 <MaterialCommunityIcons name="google" size={18} color="#EA4335" />
-                <Text style={styles.googleText}>Google</Text>
+                <Text style={s.googleText}>Google</Text>
               </Pressable>
               <Pressable
                 onPress={() => console.log('Apple')}
-                style={({ pressed }) => [styles.socialBtn, styles.appleBtn, pressed && styles.pressed]}
+                style={({ pressed }) => [s.socialBtn, s.appleBtn, pressed && s.pressed]}
               >
-                <MaterialCommunityIcons name="apple" size={18} color={C.appleText} />
-                <Text style={styles.appleText}>Apple</Text>
+                <MaterialCommunityIcons name="apple" size={18} color={theme.appleText} />
+                <Text style={s.appleText}>Apple</Text>
               </Pressable>
             </View>
           </View>
 
-          {/* ── Footer ──────────────────────── */}
-          <View style={[styles.footer, isCompact && styles.footerCompact]}>
-            <Text style={styles.footerText}>Sudah punya akun? </Text>
+          {/* Footer */}
+          <View style={s.footer}>
+            <Text style={s.footerText}>Sudah punya akun? </Text>
             <Pressable onPress={() => navigation.navigate('Login')} hitSlop={8}>
-              <Text style={styles.footerLink}>Masuk</Text>
+              <Text style={s.footerLink}>Masuk</Text>
             </Pressable>
           </View>
         </ScrollView>
@@ -320,193 +271,148 @@ export function RegisterScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: C.background },
-  flex: { flex: 1 },
+function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boolean) {
+  return StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: t.background },
+    flex: { flex: 1 },
+    scroll: {
+      flexGrow: 1,
+      paddingHorizontal: isCompact ? 18 : 24,
+      paddingTop: isCompact ? 20 : 28,
+      paddingBottom: isCompact ? 28 : 36,
+    },
 
-  scroll: {
-    flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 36,
-  },
-  scrollCompact: {
-    paddingHorizontal: 18,
-    paddingTop: 20,
-    paddingBottom: 28,
-  },
+    header: { gap: isCompact ? 8 : 10, marginBottom: isCompact ? 24 : 32 },
+    title: {
+      color: t.onSurface,
+      fontSize: isCompact ? 26 : 30,
+      fontFamily: F.display,
+      letterSpacing: -0.5,
+      lineHeight: isCompact ? 34 : 38,
+    },
+    subtitle: {
+      color: t.onSurfaceVariant,
+      fontSize: isCompact ? 13 : 14,
+      lineHeight: isCompact ? 20 : 22,
+      fontFamily: F.body,
+    },
 
-  header: { gap: 10, marginBottom: 32 },
-  headerCompact: { gap: 8, marginBottom: 24 },
-  title: {
-    color: C.onSurface,
-    fontSize: 30,
-    fontFamily: F.display,
-    letterSpacing: -0.5,
-    lineHeight: 38,
-  },
-  titleCompact: { fontSize: 26, lineHeight: 34 },
-  subtitle: {
-    color: C.onSurfaceVariant,
-    fontSize: 14,
-    lineHeight: 22,
-    fontFamily: F.body,
-  },
-  subtitleCompact: { fontSize: 13, lineHeight: 20 },
+    form: { gap: isCompact ? 14 : 18 },
+    fieldGroup: { gap: 7 },
+    label: {
+      color: t.onSurfaceVariant,
+      fontSize: 10,
+      fontFamily: F.labelBold,
+      letterSpacing: 0.8,
+      textTransform: 'uppercase',
+    },
 
-  form: { gap: 18 },
-  formCompact: { gap: 14 },
+    input: {
+      backgroundColor: t.fieldBg,
+      borderRadius: 14,
+      paddingHorizontal: 18,
+      paddingVertical: isCompact ? 13 : 16,
+      color: t.onSurface,
+      fontSize: isCompact ? 14 : 15,
+      fontFamily: F.body,
+    },
+    inputPassword: { paddingRight: 48 },
 
-  fieldGroup: { gap: 7 },
-  label: {
-    color: C.onSurfaceVariant,
-    fontSize: 10,
-    fontFamily: F.labelBold,
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-  },
+    passwordWrap: { position: 'relative' },
+    eyeBtn: {
+      position: 'absolute',
+      right: 14,
+      top: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 36,
+    },
 
-  input: {
-    backgroundColor: C.fieldBg,
-    borderRadius: 14,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    color: C.onSurface,
-    fontSize: 15,
-    fontFamily: F.body,
-  },
-  inputCompact: { paddingVertical: 13, fontSize: 14 },
-  inputPassword: { flex: 1, paddingRight: 48 },
+    strengthRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2 },
+    strengthBar: {
+      flex: 1,
+      height: 3,
+      borderRadius: 1.5,
+      backgroundColor: t.isDark ? 'rgba(255,255,255,0.1)' : 'rgba(204,195,216,0.4)',
+    },
+    strengthLabel: { fontSize: 10, fontFamily: F.labelBold, width: 36, textAlign: 'right' },
 
-  passwordWrap: { position: 'relative' },
-  eyeBtn: {
-    position: 'absolute',
-    right: 14,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 36,
-  },
+    termsRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: -2 },
+    checkbox: {
+      width: 20,
+      height: 20,
+      borderRadius: 5,
+      borderWidth: 1.5,
+      borderColor: t.outlineVariant,
+      backgroundColor: t.fieldBg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 1,
+      flexShrink: 0,
+    },
+    checkboxChecked: { backgroundColor: t.primary, borderColor: t.primary },
+    termsText: { flex: 1, color: t.onSurfaceVariant, fontSize: 12, lineHeight: 18, fontFamily: F.body },
+    termsLink: { color: t.primary, fontFamily: F.labelBold },
 
-  strengthRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    marginTop: 2,
-  },
-  strengthBar: {
-    flex: 1,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: C.strengthBg,
-  },
-  strengthLabel: {
-    fontSize: 10,
-    fontFamily: F.labelBold,
-    width: 36,
-    textAlign: 'right',
-  },
+    noticeBox: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 8,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: t.errorContainer,
+      backgroundColor: t.errorContainer,
+      padding: 12,
+    },
+    successBox: { borderColor: t.successBg, backgroundColor: t.successBg },
+    noticeText: { flex: 1, color: t.error, fontSize: 13, lineHeight: 19, fontFamily: F.body },
+    successText: { color: t.successText },
 
-  // Terms
-  termsRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    marginTop: -2,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    borderWidth: 1.5,
-    borderColor: C.outlineVariant,
-    backgroundColor: C.fieldBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 1,
-    flexShrink: 0,
-  },
-  checkboxChecked: {
-    backgroundColor: C.primary,
-    borderColor: C.primary,
-  },
-  termsText: {
-    flex: 1,
-    color: C.onSurfaceVariant,
-    fontSize: 12,
-    lineHeight: 18,
-    fontFamily: F.body,
-  },
-  termsLink: { color: C.primary, fontFamily: F.labelBold },
+    primaryBtn: {
+      height: 56,
+      borderRadius: 999,
+      backgroundColor: t.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: t.primary,
+      shadowOpacity: 0.28,
+      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 8 },
+      elevation: 6,
+      marginTop: 4,
+    },
+    primaryBtnText: { color: '#FFFFFF', fontSize: isCompact ? 15 : 17, fontFamily: F.labelBold },
 
-  // Notice
-  noticeBox: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: C.errorContainer,
-    backgroundColor: C.errorContainer,
-    padding: 12,
-  },
-  successBox: {
-    borderColor: '#D1FAE5',
-    backgroundColor: '#D1FAE5',
-  },
-  noticeText: { flex: 1, color: C.error, fontSize: 13, lineHeight: 19 },
-  successText: { color: '#1A6B3C' },
+    dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+    dividerLine: { flex: 1, height: 1, backgroundColor: t.outlineVariant, opacity: 0.5 },
+    dividerText: { color: t.outline, fontSize: 10, fontFamily: F.labelBold, letterSpacing: 1.2 },
 
-  // Primary CTA
-  primaryBtn: {
-    height: 56,
-    borderRadius: 999,
-    backgroundColor: C.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: C.primary,
-    shadowOpacity: 0.28,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
-    marginTop: 4,
-  },
-  primaryBtnText: { color: C.onPrimary, fontSize: 17, fontFamily: F.labelBold },
-  primaryBtnTextCompact: { fontSize: 15 },
+    socialRow: { flexDirection: 'row', gap: 12 },
+    socialBtn: {
+      flex: 1,
+      height: 52,
+      borderRadius: 14,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+    },
+    googleBtn: { backgroundColor: t.googleBg, borderWidth: 1, borderColor: t.googleBorder },
+    appleBtn: { backgroundColor: t.appleBg },
+    googleText: { color: t.googleText, fontSize: 14, fontFamily: F.labelBold },
+    appleText: { color: t.appleText, fontSize: 14, fontFamily: F.labelBold },
 
-  // Divider
-  dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: C.outlineVariant, opacity: 0.5 },
-  dividerText: { color: C.outline, fontSize: 10, fontFamily: F.labelBold, letterSpacing: 1.2 },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: isCompact ? 20 : 28,
+    },
+    footerText: { color: t.onSurfaceVariant, fontSize: 14, fontFamily: F.body },
+    footerLink: { color: t.primary, fontSize: 14, fontFamily: F.labelBold },
 
-  // Social
-  socialRow: { flexDirection: 'row', gap: 12 },
-  socialBtn: {
-    flex: 1,
-    height: 52,
-    borderRadius: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  googleBtn: { backgroundColor: C.googleBg, borderWidth: 1, borderColor: C.googleBorder },
-  appleBtn: { backgroundColor: C.appleBg },
-  googleText: { color: C.googleText, fontSize: 14, fontFamily: F.labelBold },
-  appleText: { color: C.appleText, fontSize: 14, fontFamily: F.labelBold },
-
-  // Footer
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 28,
-  },
-  footerCompact: { marginTop: 20 },
-  footerText: { color: C.onSurfaceVariant, fontSize: 14, fontFamily: F.body },
-  footerLink: { color: C.loginLinkColor, fontSize: 14, fontFamily: F.labelBold },
-
-  pressed: { opacity: 0.86, transform: [{ scale: 0.98 }] },
-  disabled: { opacity: 0.6 },
-});
+    pressed: { opacity: 0.86, transform: [{ scale: 0.98 }] },
+    disabled: { opacity: 0.6 },
+  });
+}

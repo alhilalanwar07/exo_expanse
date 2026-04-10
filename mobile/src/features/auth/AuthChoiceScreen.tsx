@@ -7,30 +7,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { GuestStackParamList } from '../../navigation/types';
 import { F } from '../../shared/theme/fonts';
-
-// ── Design tokens ────────────────────────────────────────────────────────────
-const C = {
-  background: '#FFF7FC',
-  surfaceContainerLow: '#FEEFFF',
-  surfaceContainerHighest: '#F2DBFA',
-  primary: '#630ED4',
-  primaryContainer: '#7C3AED',
-  onPrimary: '#FFFFFF',
-  onSurface: '#24162C',
-  onSurfaceVariant: '#4A4455',
-  outline: '#7B7487',
-  outlineVariant: '#CCC3D8',
-  teal: '#0D9DAD',
-  tealBg: '#E6F7F9',
-  amber: '#B45309',
-  amberBg: '#FDF3E2',
-} as const;
+import { useAppTheme } from '../../shared/theme/index';
 
 export function AuthChoiceScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<GuestStackParamList>>();
   const route = useRoute<RouteProp<GuestStackParamList, 'AuthChoice'>>();
+  const { theme } = useAppTheme();
   const { width } = useWindowDimensions();
   const isCompact = width <= 390;
+  const s = makeStyles(theme, isCompact);
 
   const intentLabel =
     route.params?.intent === 'theme'
@@ -38,96 +23,84 @@ export function AuthChoiceScreen() {
       : 'mengelola undangan Anda';
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <View style={[styles.container, isCompact && styles.containerCompact]}>
+    <SafeAreaView style={s.safeArea} edges={['top', 'bottom']}>
+      <View style={s.container}>
 
-        {/* Back button */}
+        {/* Back */}
         <Pressable
           onPress={() => navigation.goBack()}
-          style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]}
+          style={({ pressed }) => [s.backBtn, pressed && s.pressed]}
         >
-          <MaterialCommunityIcons name="arrow-left" size={22} color={C.primary} />
+          <MaterialCommunityIcons name="arrow-left" size={22} color={theme.primary} />
         </Pressable>
 
-        {/* Brand + header */}
-        <View style={[styles.topSection, isCompact && styles.topSectionCompact]}>
-          <Text style={[styles.brandName, isCompact && styles.brandNameCompact]}>Exoinvite</Text>
-          <Text style={[styles.title, isCompact && styles.titleCompact]}>Akses Akun Owner</Text>
-          <Text style={[styles.subtitle, isCompact && styles.subtitleCompact]}>
+        {/* Header */}
+        <View style={s.topSection}>
+          <Text style={s.brandName}>Exoinvite</Text>
+          <Text style={s.title}>Akses Akun Owner</Text>
+          <Text style={s.subtitle}>
             Untuk {intentLabel}, silakan masuk atau buat akun baru.
           </Text>
         </View>
 
         {/* Options card */}
-        <View style={[styles.card, isCompact && styles.cardCompact]}>
+        <View style={s.card}>
 
           {/* Masuk */}
           <Pressable
             onPress={() => navigation.navigate('Login')}
-            style={({ pressed }) => [styles.optionBtn, styles.optionBtnPrimary, pressed && styles.pressed]}
+            style={({ pressed }) => [s.optionBtn, s.optionBtnPrimary, pressed && s.pressed]}
           >
-            <View style={[styles.optionIcon, styles.optionIconPrimary]}>
-              <MaterialCommunityIcons name="login-variant" size={20} color={C.onPrimary} />
+            <View style={[s.optionIcon, s.optionIconPrimary]}>
+              <MaterialCommunityIcons name="login-variant" size={20} color="#FFFFFF" />
             </View>
-            <View style={styles.optionContent}>
-              <Text style={[styles.optionTitle, styles.optionTitlePrimary, isCompact && styles.optionTitleCompact]}>
-                Masuk
-              </Text>
-              <Text style={[styles.optionSub, isCompact && styles.optionSubCompact]}>
-                Gunakan email dan password Anda
-              </Text>
+            <View style={s.optionContent}>
+              <Text style={[s.optionTitle, s.optionTitlePrimary]}>Masuk</Text>
+              <Text style={s.optionSub}>Gunakan email dan password Anda</Text>
             </View>
-            <MaterialCommunityIcons name="chevron-right" size={20} color={C.onPrimary} />
+            <MaterialCommunityIcons name="chevron-right" size={20} color="#FFFFFF" />
           </Pressable>
 
-          {/* Daftar Akun */}
+          {/* Daftar */}
           <Pressable
             onPress={() => navigation.navigate('Register')}
-            style={({ pressed }) => [styles.optionBtn, styles.optionBtnSecondary, pressed && styles.pressed]}
+            style={({ pressed }) => [s.optionBtn, s.optionBtnSecondary, pressed && s.pressed]}
           >
-            <View style={[styles.optionIcon, styles.optionIconSecondary]}>
-              <MaterialCommunityIcons name="account-plus-outline" size={20} color={C.primary} />
+            <View style={[s.optionIcon, s.optionIconSecondary]}>
+              <MaterialCommunityIcons name="account-plus-outline" size={20} color={theme.primary} />
             </View>
-            <View style={styles.optionContent}>
-              <Text style={[styles.optionTitle, styles.optionTitleSecondary, isCompact && styles.optionTitleCompact]}>
-                Daftar Akun
-              </Text>
-              <Text style={[styles.optionSubSecondary, isCompact && styles.optionSubCompact]}>
-                Buat akun baru dalam hitungan detik
-              </Text>
+            <View style={s.optionContent}>
+              <Text style={[s.optionTitle, s.optionTitleSecondary]}>Daftar Akun</Text>
+              <Text style={s.optionSubSecondary}>Buat akun baru dalam hitungan detik</Text>
             </View>
-            <MaterialCommunityIcons name="chevron-right" size={20} color={C.primary} />
+            <MaterialCommunityIcons name="chevron-right" size={20} color={theme.primary} />
           </Pressable>
 
           {/* Divider */}
-          <View style={styles.dividerRow}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>atau</Text>
-            <View style={styles.dividerLine} />
+          <View style={s.dividerRow}>
+            <View style={s.dividerLine} />
+            <Text style={s.dividerText}>atau</Text>
+            <View style={s.dividerLine} />
           </View>
 
-          {/* Connect Device */}
+          {/* Kode Akses */}
           <Pressable
             onPress={() => navigation.navigate('ConnectDevice')}
-            style={({ pressed }) => [styles.optionBtn, styles.optionBtnTertiary, pressed && styles.pressed]}
+            style={({ pressed }) => [s.optionBtn, s.optionBtnTertiary, pressed && s.pressed]}
           >
-            <View style={[styles.optionIcon, styles.optionIconTertiary]}>
-              <MaterialCommunityIcons name="link-variant" size={20} color={C.amber} />
+            <View style={[s.optionIcon, s.optionIconTertiary]}>
+              <MaterialCommunityIcons name="link-variant" size={20} color={theme.amber} />
             </View>
-            <View style={styles.optionContent}>
-              <Text style={[styles.optionTitle, styles.optionTitleTertiary, isCompact && styles.optionTitleCompact]}>
-                Masuk dengan Kode Akses
-              </Text>
-              <Text style={[styles.optionSubTertiary, isCompact && styles.optionSubCompact]}>
-                Hubungkan perangkat owner dengan aman
-              </Text>
+            <View style={s.optionContent}>
+              <Text style={[s.optionTitle, s.optionTitleTertiary]}>Masuk dengan Kode Akses</Text>
+              <Text style={s.optionSubTertiary}>Hubungkan perangkat owner dengan aman</Text>
             </View>
-            <MaterialCommunityIcons name="chevron-right" size={20} color={C.amber} />
+            <MaterialCommunityIcons name="chevron-right" size={20} color={theme.amber} />
           </Pressable>
         </View>
 
-        {/* Security footnote */}
-        <Text style={[styles.footnote, isCompact && styles.footnoteCompact]}>
+        {/* Footnote */}
+        <Text style={s.footnote}>
           🔒 Sesi login diamankan per perangkat dan dapat dicabut kapan saja dari dashboard.
         </Text>
       </View>
@@ -135,128 +108,114 @@ export function AuthChoiceScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: C.background },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 32,
-    justifyContent: 'center',
-    gap: 28,
-  },
-  containerCompact: {
-    paddingHorizontal: 18,
-    paddingBottom: 24,
-    gap: 22,
-  },
+function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boolean) {
+  return StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: t.background },
+    container: {
+      flex: 1,
+      paddingHorizontal: isCompact ? 18 : 24,
+      paddingTop: 16,
+      paddingBottom: isCompact ? 24 : 32,
+      justifyContent: 'center',
+      gap: isCompact ? 22 : 28,
+    },
 
-  // Back button
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: C.surfaceContainerHighest,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'flex-start',
-  },
+    backBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: t.surfaceContainerHighest,
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'flex-start',
+    },
 
-  // Top section
-  topSection: { gap: 10 },
-  topSectionCompact: { gap: 8 },
-  brandName: {
-    color: C.primary,
-    fontSize: 22,
-    fontFamily: F.display,
-    letterSpacing: -0.5,
-  },
-  brandNameCompact: { fontSize: 18 },
-  title: {
-    color: C.onSurface,
-    fontSize: 28,
-    fontFamily: F.display,
-    letterSpacing: -0.4,
-    lineHeight: 36,
-  },
-  titleCompact: { fontSize: 24, lineHeight: 32 },
-  subtitle: {
-    color: C.onSurfaceVariant,
-    fontSize: 15,
-    lineHeight: 23,
-    fontFamily: F.body,
-  },
-  subtitleCompact: { fontSize: 14, lineHeight: 21 },
+    topSection: { gap: isCompact ? 8 : 10 },
+    brandName: {
+      color: t.primary,
+      fontSize: isCompact ? 18 : 22,
+      fontFamily: F.display,
+      letterSpacing: -0.5,
+    },
+    title: {
+      color: t.onSurface,
+      fontSize: isCompact ? 24 : 28,
+      fontFamily: F.display,
+      letterSpacing: -0.4,
+      lineHeight: isCompact ? 32 : 36,
+    },
+    subtitle: {
+      color: t.onSurfaceVariant,
+      fontSize: isCompact ? 14 : 15,
+      lineHeight: isCompact ? 21 : 23,
+      fontFamily: F.body,
+    },
 
-  // Card
-  card: {
-    backgroundColor: C.surfaceContainerLow,
-    borderRadius: 24,
-    padding: 16,
-    gap: 10,
-  },
-  cardCompact: { borderRadius: 20, padding: 14, gap: 8 },
+    card: {
+      backgroundColor: t.surfaceContainerLow,
+      borderRadius: isCompact ? 20 : 24,
+      padding: isCompact ? 14 : 16,
+      gap: isCompact ? 8 : 10,
+    },
 
-  // Option buttons
-  optionBtn: {
-    flexDirection: 'row',
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-    alignItems: 'center',
-    gap: 12,
-  },
-  optionBtnPrimary: { backgroundColor: C.primary },
-  optionBtnSecondary: {
-    backgroundColor: C.surfaceContainerHighest,
-    borderWidth: 1,
-    borderColor: C.outlineVariant,
-  },
-  optionBtnTertiary: {
-    backgroundColor: C.amberBg,
-    borderWidth: 1,
-    borderColor: '#F7D8AB',
-  },
+    optionBtn: {
+      flexDirection: 'row',
+      borderRadius: 16,
+      paddingVertical: 14,
+      paddingHorizontal: 14,
+      alignItems: 'center',
+      gap: 12,
+    },
+    optionBtnPrimary: { backgroundColor: t.primary },
+    optionBtnSecondary: {
+      backgroundColor: t.surfaceContainerHighest,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+    },
+    optionBtnTertiary: {
+      backgroundColor: t.amberBg,
+      borderWidth: 1,
+      borderColor: t.amberBorder,
+    },
 
-  optionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  optionIconPrimary: { backgroundColor: 'rgba(255,255,255,0.22)' },
-  optionIconSecondary: { backgroundColor: '#EDE0FF' },
-  optionIconTertiary: { backgroundColor: '#FEF3C7' },
+    optionIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    },
+    optionIconPrimary: { backgroundColor: 'rgba(255,255,255,0.22)' },
+    optionIconSecondary: { backgroundColor: t.isDark ? 'rgba(192,132,252,0.15)' : '#EDE0FF' },
+    optionIconTertiary: { backgroundColor: t.isDark ? 'rgba(251,191,36,0.15)' : '#FEF3C7' },
 
-  optionContent: { flex: 1, gap: 2 },
-  optionTitle: { fontSize: 16, fontFamily: F.heading },
-  optionTitleCompact: { fontSize: 15 },
-  optionTitlePrimary: { color: C.onPrimary },
-  optionTitleSecondary: { color: C.primary },
-  optionTitleTertiary: { color: C.amber },
+    optionContent: { flex: 1, gap: 2 },
+    optionTitle: {
+      fontSize: isCompact ? 15 : 16,
+      fontFamily: F.heading,
+    },
+    optionTitlePrimary: { color: '#FFFFFF' },
+    optionTitleSecondary: { color: t.primary },
+    optionTitleTertiary: { color: t.amber },
 
-  optionSub: { color: 'rgba(255,255,255,0.8)', fontSize: 12, lineHeight: 17, fontFamily: F.body },
-  optionSubSecondary: { color: C.onSurfaceVariant, fontSize: 12, lineHeight: 17, fontFamily: F.body },
-  optionSubTertiary: { color: C.amber, fontSize: 12, lineHeight: 17, opacity: 0.8, fontFamily: F.body },
-  optionSubCompact: { fontSize: 11, lineHeight: 15 },
+    optionSub: { color: 'rgba(255,255,255,0.8)', fontSize: isCompact ? 11 : 12, lineHeight: 17, fontFamily: F.body },
+    optionSubSecondary: { color: t.onSurfaceVariant, fontSize: isCompact ? 11 : 12, lineHeight: 17, fontFamily: F.body },
+    optionSubTertiary: { color: t.amber, fontSize: isCompact ? 11 : 12, lineHeight: 17, opacity: 0.85, fontFamily: F.body },
 
-  // Divider
-  dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 2 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: C.outlineVariant, opacity: 0.5 },
-  dividerText: { color: C.outline, fontSize: 12, fontFamily: F.label },
+    dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 2 },
+    dividerLine: { flex: 1, height: 1, backgroundColor: t.outlineVariant, opacity: 0.5 },
+    dividerText: { color: t.outline, fontSize: 12, fontFamily: F.label },
 
-  // Footnote
-  footnote: {
-    color: C.outline,
-    fontSize: 12,
-    lineHeight: 18,
-    textAlign: 'center',
-    paddingHorizontal: 8,
-    fontFamily: F.body,
-  },
-  footnoteCompact: { fontSize: 11, lineHeight: 16 },
+    footnote: {
+      color: t.outline,
+      fontSize: isCompact ? 11 : 12,
+      lineHeight: isCompact ? 16 : 18,
+      textAlign: 'center',
+      paddingHorizontal: 8,
+      fontFamily: F.body,
+    },
 
-  pressed: { opacity: 0.86, transform: [{ scale: 0.985 }] },
-});
+    pressed: { opacity: 0.86, transform: [{ scale: 0.985 }] },
+  });
+}

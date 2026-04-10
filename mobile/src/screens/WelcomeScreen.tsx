@@ -14,157 +14,115 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { F } from '../shared/theme/fonts';
+import { useAppTheme } from '../shared/theme/index';
 
 const TERMS_OF_SERVICE_URL = 'https://exoinvite.site/terms-of-service';
 const PRIVACY_POLICY_URL = 'https://exoinvite.site/privacy-policy';
 
-// Design tokens from "The Digital Atelier" system
-const C = {
-  background: '#FFF7FC',
-  surface: '#FFF7FC',
-  surfaceContainerLow: '#FEEFFF',
-  surfaceContainerHigh: '#F8E0FF',
-  surfaceContainerHighest: '#F2DBFA',
-  primary: '#630ED4',
-  primaryContainer: '#7C3AED',
-  onPrimary: '#FFFFFF',
-  onSurface: '#24162C',
-  onSurfaceVariant: '#4A4455',
-  outline: '#7B7487',
-  outlineVariant: '#CCC3D8',
-  secondary: '#B51C0B',
-  onSecondary: '#FFFFFF',
-};
-
 export function WelcomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { theme } = useAppTheme();
   const { width } = useWindowDimensions();
   const isCompact = width <= 390;
+  const s = makeStyles(theme, isCompact);
 
   const openLink = async (url: string) => {
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) await Linking.openURL(url);
   };
 
+  const goToMain = async () => {
+    await AsyncStorage.setItem('HAS_LAUNCHED', 'true');
+    navigation.replace('Main');
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={s.safeArea} edges={['top', 'bottom']}>
       <ScrollView
-        contentContainerStyle={[styles.scrollContent, isCompact && styles.scrollContentCompact]}
+        contentContainerStyle={s.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Brand Header */}
-        <View style={styles.brandHeader}>
-          <Text style={[styles.brandName, isCompact && styles.brandNameCompact]}>Exoinvite</Text>
+        {/* Brand */}
+        <View style={s.brandHeader}>
+          <Text style={s.brandName}>Exoinvite</Text>
         </View>
 
-        {/* Illustration: Asymmetric Editorial Cards */}
-        <View style={[styles.illustrationSection, isCompact && styles.illustrationSectionCompact]}>
-          {/* Back card - rotated left */}
-          <View style={[styles.illustrationCardBack, isCompact && styles.illustrationCardBackCompact]}>
-            <View style={styles.illustrationPlaceholderBack}>
-              <View style={styles.illustrationDot} />
-              <View style={[styles.illustrationDot, { backgroundColor: C.primaryContainer, opacity: 0.5 }]} />
+        {/* Illustration */}
+        <View style={s.illustrationSection}>
+          <View style={s.illustrationCardBack}>
+            <View style={s.illustrationPlaceholderBack}>
+              <View style={s.illustrationDot} />
+              <View style={[s.illustrationDot, { opacity: 0.4 }]} />
             </View>
           </View>
-
-          {/* Front card - rotated right, overlaps */}
-          <View style={[styles.illustrationCardFront, isCompact && styles.illustrationCardFrontCompact]}>
-            <View style={styles.illustrationPlaceholderFront}>
-              {/* Decorative lines simulating invitation card */}
-              <Text style={styles.illustrationCardLabel}>✦ Exoinvite</Text>
-              <Text style={styles.illustrationCardSubLabel}>Digital Atelier</Text>
-              <View style={styles.illustrationLine} />
-              <View style={[styles.illustrationLine, { width: '60%', opacity: 0.5 }]} />
+          <View style={s.illustrationCardFront}>
+            <View style={s.illustrationPlaceholderFront}>
+              <Text style={s.illustrationCardLabel}>✦ Exoinvite</Text>
+              <Text style={s.illustrationCardSubLabel}>Digital Atelier</Text>
+              <View style={s.illustrationLine} />
+              <View style={[s.illustrationLine, { width: '60%', opacity: 0.5 }]} />
             </View>
-            <View style={styles.illustrationCardOverlay} />
+            <View style={s.illustrationCardOverlay} />
           </View>
-
-          {/* Decorative glow blob */}
-          <View style={styles.glowBlob} />
+          <View style={s.glowBlob} />
         </View>
 
-        {/* Text Content */}
-        <View style={[styles.textSection, isCompact && styles.textSectionCompact]}>
-          <Text style={[styles.headline, isCompact && styles.headlineCompact]}>
-            Buat Undangan Digital Hitungan Menit
-          </Text>
-          <Text style={[styles.subtitle, isCompact && styles.subtitleCompact]}>
+        {/* Text */}
+        <View style={s.textSection}>
+          <Text style={s.headline}>Buat Undangan Digital Hitungan Menit</Text>
+          <Text style={s.subtitle}>
             Rayakan momen spesial Anda dengan undangan digital yang elegan, interaktif, dan mudah
             dibagikan.
           </Text>
         </View>
 
-        {/* Action Buttons */}
-        <View style={[styles.actionsSection, isCompact && styles.actionsSectionCompact]}>
-          {/* Primary CTA */}
+        {/* Actions */}
+        <View style={s.actionsSection}>
           <Pressable
-            onPress={async () => {
-              await AsyncStorage.setItem('HAS_LAUNCHED', 'true');
-              navigation.replace('Main');
-            }}
-            style={({ pressed }) => [styles.primaryButton, pressed && styles.buttonPressed]}
+            onPress={goToMain}
+            style={({ pressed }) => [s.primaryButton, pressed && s.buttonPressed]}
           >
-            <Text style={[styles.primaryButtonText, isCompact && styles.primaryButtonTextCompact]}>
-              Mulai Menggunakan Aplikasi
-            </Text>
-            <Text style={styles.primaryButtonArrow}>→</Text>
+            <Text style={s.primaryButtonText}>Mulai Menggunakan Aplikasi</Text>
+            <Text style={s.primaryButtonArrow}>→</Text>
           </Pressable>
 
-          {/* Ghost / Guest CTA */}
           <Pressable
-            onPress={async () => {
-              await AsyncStorage.setItem('HAS_LAUNCHED', 'true');
-              navigation.replace('Main');
-            }}
-            style={({ pressed }) => [styles.ghostButton, pressed && styles.buttonPressed]}
+            onPress={goToMain}
+            style={({ pressed }) => [s.ghostButton, pressed && s.buttonPressed]}
           >
-            <Text style={[styles.ghostButtonText, isCompact && styles.ghostButtonTextCompact]}>
-              Jelajahi Dulu
-            </Text>
+            <Text style={s.ghostButtonText}>Jelajahi Dulu</Text>
           </Pressable>
 
-          {/* Divider */}
-          <View style={styles.dividerRow}>
-            <View style={styles.dividerLine} />
-            <Text style={[styles.dividerText, isCompact && styles.dividerTextCompact]}>
-              ATAU MASUK DENGAN
-            </Text>
-            <View style={styles.dividerLine} />
+          <View style={s.dividerRow}>
+            <View style={s.dividerLine} />
+            <Text style={s.dividerText}>ATAU MASUK DENGAN</Text>
+            <View style={s.dividerLine} />
           </View>
 
-          {/* Social Auth */}
-          <View style={[styles.socialRow, isCompact && styles.socialRowCompact]}>
+          <View style={s.socialRow}>
             <Pressable
               onPress={() => console.log('Google')}
-              style={({ pressed }) => [
-                styles.socialButton,
-                styles.googleButton,
-                pressed && styles.buttonPressed,
-              ]}
+              style={({ pressed }) => [s.socialButton, s.googleButton, pressed && s.buttonPressed]}
             >
-              <Text style={[styles.socialButtonText, styles.googleButtonText]}>G  Google</Text>
+              <Text style={[s.socialButtonText, s.googleButtonText]}>G  Google</Text>
             </Pressable>
             <Pressable
               onPress={() => console.log('Apple')}
-              style={({ pressed }) => [
-                styles.socialButton,
-                styles.appleButton,
-                pressed && styles.buttonPressed,
-              ]}
+              style={({ pressed }) => [s.socialButton, s.appleButton, pressed && s.buttonPressed]}
             >
-              <Text style={[styles.socialButtonText, styles.appleButtonText]}>  Apple</Text>
+              <Text style={[s.socialButtonText, s.appleButtonText]}>  Apple</Text>
             </Pressable>
           </View>
         </View>
 
         {/* Legal */}
-        <Text style={[styles.legalText, isCompact && styles.legalTextCompact]}>
+        <Text style={s.legalText}>
           By continuing, you agree to our{' '}
-          <Text onPress={() => void openLink(TERMS_OF_SERVICE_URL)} style={styles.legalLink}>
+          <Text onPress={() => void openLink(TERMS_OF_SERVICE_URL)} style={s.legalLink}>
             Terms of Service
           </Text>{' '}
           and{' '}
-          <Text onPress={() => void openLink(PRIVACY_POLICY_URL)} style={styles.legalLink}>
+          <Text onPress={() => void openLink(PRIVACY_POLICY_URL)} style={s.legalLink}>
             Privacy Policy
           </Text>
           .
@@ -174,331 +132,249 @@ export function WelcomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: C.background,
-  },
-  scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 36,
-    alignItems: 'center',
-  },
-  scrollContentCompact: {
-    paddingHorizontal: 18,
-    paddingTop: 14,
-    paddingBottom: 28,
-  },
+function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boolean) {
+  return StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: t.background },
+    scrollContent: {
+      paddingHorizontal: isCompact ? 18 : 24,
+      paddingTop: isCompact ? 14 : 20,
+      paddingBottom: isCompact ? 28 : 36,
+      alignItems: 'center',
+    },
 
-  // Brand Header
-  brandHeader: {
-    alignSelf: 'flex-start',
-    marginBottom: 28,
-  },
-  brandName: {
-    color: C.primary,
-    fontSize: 28,
-    fontFamily: F.display,
-    letterSpacing: -0.8,
-  },
-  brandNameCompact: {
-    fontSize: 24,
-  },
+    brandHeader: { alignSelf: 'flex-start', marginBottom: 28 },
+    brandName: {
+      color: t.primary,
+      fontSize: isCompact ? 24 : 28,
+      fontFamily: F.display,
+      letterSpacing: -0.8,
+    },
 
-  // Illustration Section
-  illustrationSection: {
-    width: '100%',
-    height: 320,
-    position: 'relative',
-    marginBottom: 36,
-  },
-  illustrationSectionCompact: {
-    height: 240,
-    marginBottom: 28,
-  },
-  illustrationCardBack: {
-    position: 'absolute',
-    left: -8,
-    top: 0,
-    width: '80%',
-    aspectRatio: 3 / 4,
-    borderRadius: 28,
-    overflow: 'hidden',
-    backgroundColor: C.surfaceContainerHigh,
-    transform: [{ rotate: '-3deg' }],
-    shadowColor: C.onSurface,
-    shadowOpacity: 0.06,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
-    zIndex: 1,
-  },
-  illustrationCardBackCompact: {
-    borderRadius: 22,
-  },
-  illustrationPlaceholderBack: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
-    flexDirection: 'row',
-  },
-  illustrationDot: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: C.primary,
-    opacity: 0.15,
-  },
-  illustrationCardFront: {
-    position: 'absolute',
-    right: -6,
-    top: 36,
-    width: '72%',
-    aspectRatio: 3 / 4,
-    borderRadius: 28,
-    overflow: 'hidden',
-    backgroundColor: C.surfaceContainerHighest,
-    transform: [{ rotate: '5deg' }],
-    borderWidth: 3,
-    borderColor: C.surface,
-    shadowColor: C.primary,
-    shadowOpacity: 0.18,
-    shadowRadius: 32,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 8,
-    zIndex: 2,
-  },
-  illustrationCardFrontCompact: {
-    borderRadius: 22,
-    top: 26,
-  },
-  illustrationPlaceholderFront: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-    gap: 8,
-  },
-  illustrationCardLabel: {
-    color: C.primary,
-    fontSize: 18,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-    textAlign: 'center',
-  },
-  illustrationCardSubLabel: {
-    color: C.onSurfaceVariant,
-    fontSize: 11,
-    fontWeight: '500',
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-    marginBottom: 14,
-  },
-  illustrationLine: {
-    width: '80%',
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: C.outlineVariant,
-    marginTop: 6,
-  },
-  illustrationCardOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '35%',
-    backgroundColor: C.primary,
-    opacity: 0.08,
-  },
-  glowBlob: {
-    position: 'absolute',
-    bottom: -16,
-    left: 0,
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: '#FFDF9F',
-    opacity: 0.35,
-    // blur not available in RN without extra lib; we just use opacity
-    zIndex: 0,
-  },
+    illustrationSection: {
+      width: '100%',
+      height: isCompact ? 240 : 320,
+      position: 'relative',
+      marginBottom: isCompact ? 28 : 36,
+    },
+    illustrationCardBack: {
+      position: 'absolute',
+      left: -8,
+      top: 0,
+      width: '80%',
+      aspectRatio: 3 / 4,
+      borderRadius: isCompact ? 22 : 28,
+      overflow: 'hidden',
+      backgroundColor: t.surfaceContainerHigh,
+      transform: [{ rotate: '-3deg' }],
+      shadowColor: t.onSurface,
+      shadowOpacity: 0.06,
+      shadowRadius: 20,
+      shadowOffset: { width: 0, height: 8 },
+      elevation: 4,
+      zIndex: 1,
+    },
+    illustrationPlaceholderBack: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 12,
+      flexDirection: 'row',
+    },
+    illustrationDot: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: t.primary,
+      opacity: 0.15,
+    },
+    illustrationCardFront: {
+      position: 'absolute',
+      right: -6,
+      top: isCompact ? 26 : 36,
+      width: '72%',
+      aspectRatio: 3 / 4,
+      borderRadius: isCompact ? 22 : 28,
+      overflow: 'hidden',
+      backgroundColor: t.surfaceContainerHighest,
+      transform: [{ rotate: '5deg' }],
+      borderWidth: 3,
+      borderColor: t.surface,
+      shadowColor: t.primary,
+      shadowOpacity: 0.18,
+      shadowRadius: 32,
+      shadowOffset: { width: 0, height: 12 },
+      elevation: 8,
+      zIndex: 2,
+    },
+    illustrationPlaceholderFront: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 24,
+      gap: 8,
+    },
+    illustrationCardLabel: {
+      color: t.primary,
+      fontSize: 18,
+      fontFamily: F.display,
+      letterSpacing: 0.5,
+      textAlign: 'center',
+    },
+    illustrationCardSubLabel: {
+      color: t.onSurfaceVariant,
+      fontSize: 11,
+      fontFamily: F.label,
+      letterSpacing: 2,
+      textTransform: 'uppercase',
+      marginBottom: 14,
+    },
+    illustrationLine: {
+      width: '80%',
+      height: 2,
+      borderRadius: 1,
+      backgroundColor: t.outlineVariant,
+      marginTop: 6,
+    },
+    illustrationCardOverlay: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: '35%',
+      backgroundColor: t.primary,
+      opacity: 0.08,
+    },
+    glowBlob: {
+      position: 'absolute',
+      bottom: -16,
+      left: 0,
+      width: 96,
+      height: 96,
+      borderRadius: 48,
+      backgroundColor: '#FFDF9F',
+      opacity: 0.35,
+      zIndex: 0,
+    },
 
-  // Text
-  textSection: {
-    width: '100%',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 4,
-    marginBottom: 32,
-  },
-  textSectionCompact: {
-    gap: 8,
-    marginBottom: 24,
-  },
-  headline: {
-    color: C.onSurface,
-    textAlign: 'center',
-    fontSize: 34,
-    lineHeight: 42,
-    fontFamily: F.display,
-    letterSpacing: -0.5,
-  },
-  headlineCompact: {
-    fontSize: 28,
-    lineHeight: 36,
-  },
-  subtitle: {
-    color: C.onSurfaceVariant,
-    textAlign: 'center',
-    fontSize: 15,
-    lineHeight: 23,
-    fontFamily: F.body,
-    paddingHorizontal: 12,
-  },
-  subtitleCompact: {
-    fontSize: 14,
-    lineHeight: 21,
-    paddingHorizontal: 4,
-  },
+    textSection: {
+      width: '100%',
+      alignItems: 'center',
+      gap: isCompact ? 8 : 12,
+      paddingHorizontal: 4,
+      marginBottom: isCompact ? 24 : 32,
+    },
+    headline: {
+      color: t.onSurface,
+      textAlign: 'center',
+      fontSize: isCompact ? 28 : 34,
+      lineHeight: isCompact ? 36 : 42,
+      fontFamily: F.display,
+      letterSpacing: -0.5,
+    },
+    subtitle: {
+      color: t.onSurfaceVariant,
+      textAlign: 'center',
+      fontSize: isCompact ? 14 : 15,
+      lineHeight: isCompact ? 21 : 23,
+      fontFamily: F.body,
+      paddingHorizontal: isCompact ? 4 : 12,
+    },
 
-  // Actions
-  actionsSection: {
-    width: '100%',
-    gap: 14,
-    marginBottom: 28,
-  },
-  actionsSectionCompact: {
-    gap: 11,
-    marginBottom: 22,
-  },
-  primaryButton: {
-    width: '100%',
-    height: 56,
-    borderRadius: 999,
-    backgroundColor: C.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    shadowColor: C.primary,
-    shadowOpacity: 0.22,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
-  },
-  primaryButtonText: {
-    color: C.onPrimary,
-    fontSize: 16,
-    fontFamily: F.labelBold,
-    letterSpacing: 0.2,
-  },
-  primaryButtonTextCompact: {
-    fontSize: 15,
-  },
-  primaryButtonArrow: {
-    color: C.onPrimary,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  ghostButton: {
-    width: '100%',
-    height: 52,
-    borderRadius: 999,
-    backgroundColor: C.surfaceContainerLow,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ghostButtonText: {
-    color: C.primary,
-    fontSize: 15,
-    fontFamily: F.label,
-  },
-  ghostButtonTextCompact: {
-    fontSize: 14,
-  },
+    actionsSection: {
+      width: '100%',
+      gap: isCompact ? 11 : 14,
+      marginBottom: isCompact ? 22 : 28,
+    },
+    primaryButton: {
+      width: '100%',
+      height: 56,
+      borderRadius: 999,
+      backgroundColor: t.primary,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      shadowColor: t.primary,
+      shadowOpacity: 0.28,
+      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 8 },
+      elevation: 6,
+    },
+    primaryButtonText: {
+      color: '#FFFFFF',
+      fontSize: isCompact ? 15 : 16,
+      fontFamily: F.labelBold,
+      letterSpacing: 0.2,
+    },
+    primaryButtonArrow: {
+      color: '#FFFFFF',
+      fontSize: 18,
+      fontFamily: F.labelBold,
+    },
+    ghostButton: {
+      width: '100%',
+      height: 52,
+      borderRadius: 999,
+      backgroundColor: t.surfaceContainerLow,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    ghostButtonText: {
+      color: t.primary,
+      fontSize: isCompact ? 14 : 15,
+      fontFamily: F.label,
+    },
 
-  // Divider
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginVertical: 4,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: C.outlineVariant,
-    opacity: 0.4,
-  },
-  dividerText: {
-    color: C.outline,
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1.2,
-  },
-  dividerTextCompact: {
-    fontSize: 9,
-    letterSpacing: 1,
-  },
+    dividerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      marginVertical: 4,
+    },
+    dividerLine: {
+      flex: 1,
+      height: 1,
+      backgroundColor: t.outlineVariant,
+      opacity: 0.4,
+    },
+    dividerText: {
+      color: t.outline,
+      fontSize: isCompact ? 9 : 10,
+      fontFamily: F.labelBold,
+      letterSpacing: 1.2,
+    },
 
-  // Social
-  socialRow: {
-    flexDirection: 'row',
-    gap: 14,
-  },
-  socialRowCompact: {
-    gap: 10,
-  },
-  socialButton: {
-    flex: 1,
-    height: 52,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.2,
-  },
-  googleButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: C.outlineVariant,
-  },
-  appleButton: {
-    backgroundColor: '#111111',
-    borderColor: '#111111',
-  },
-  socialButtonText: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  googleButtonText: {
-    color: '#1F2937',
-  },
-  appleButtonText: {
-    color: '#FFFFFF',
-  },
+    socialRow: { flexDirection: 'row', gap: isCompact ? 10 : 14 },
+    socialButton: {
+      flex: 1,
+      height: 52,
+      borderRadius: 14,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1.2,
+    },
+    googleButton: {
+      backgroundColor: t.googleBg,
+      borderColor: t.googleBorder,
+    },
+    appleButton: {
+      backgroundColor: t.appleBg,
+      borderColor: t.appleBg,
+    },
+    socialButtonText: { fontSize: 14, fontFamily: F.labelBold },
+    googleButtonText: { color: t.googleText },
+    appleButtonText: { color: t.appleText },
 
-  // Legal
-  legalText: {
-    color: '#9B8FAD',
-    textAlign: 'center',
-    fontSize: 11,
-    lineHeight: 16,
-    fontFamily: F.body,
-    paddingHorizontal: 12,
-  },
-  legalTextCompact: {
-    fontSize: 10,
-    lineHeight: 14,
-  },
-  legalLink: {
-    color: C.primary,
-    fontWeight: '700',
-  },
+    legalText: {
+      color: t.outline,
+      textAlign: 'center',
+      fontSize: isCompact ? 10 : 11,
+      lineHeight: isCompact ? 14 : 16,
+      fontFamily: F.body,
+      paddingHorizontal: 12,
+    },
+    legalLink: { color: t.primary, fontFamily: F.labelBold },
 
-  // Interaction
-  buttonPressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.978 }],
-  },
-});
+    buttonPressed: { opacity: 0.88, transform: [{ scale: 0.978 }] },
+  });
+}

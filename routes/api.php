@@ -3,8 +3,12 @@
 use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\MobileAccessController;
 use App\Http\Controllers\Api\MobileAuthController;
+use App\Http\Controllers\Api\MobileThemeController;
 use App\Http\Controllers\Api\TelegramWebhookController;
 use Illuminate\Support\Facades\Route;
+
+// ── Public theme catalog (no auth) ──────────────────────────────────────────
+Route::get('mobile/themes', [MobileThemeController::class, 'index']);
 
 Route::prefix('invitations/{invitation}')->group(function () {
     Route::post('/rsvp', [InvitationController::class, 'submitRsvp']);
