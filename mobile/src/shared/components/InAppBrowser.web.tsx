@@ -64,7 +64,7 @@ export function InAppBrowser({ uri, onLoadEnd, onError, hasError }: Props) {
 
   return (
     <View style={s.root}>
-      {/* @ts-expect-error: iframe is a valid DOM element on Expo Web */}
+      {/* iframe — valid DOM element on Expo Web (React Native Web renders to the real DOM) */}
       <iframe
         src={uri}
         onLoad={handleLoad}
