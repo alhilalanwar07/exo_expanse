@@ -128,14 +128,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // Public Invitation View
-// The demo route removes X-Frame-Options so it can be embedded in the mobile app's in-app browser (iframe on web).
-Route::get('/i/demo', DemoPage::class)
-    ->name('invitation.demo')
-    ->middleware(function (\Illuminate\Http\Request $request, \Closure $next) {
-        /** @var \Illuminate\Http\Response $response */
-        $response = $next($request);
-        $response->headers->remove('X-Frame-Options');
-        $response->headers->set('Content-Security-Policy', "frame-ancestors *");
-        return $response;
-    });
+// allow.iframe removes X-Frame-Options so the demo can be embedded in the mobile app's in-app browser.
+Route::get('/i/demo', DemoPage::class)->name('invitation.demo')->middleware('allow.iframe');
 Route::get('/i/{slug}', ThemePage::class)->name('invitation.show');

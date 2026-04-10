@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'mobile.session' => AuthenticateMobileSession::class,
+            'allow.iframe'   => \App\Http\Middleware\AllowIframeEmbedding::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
