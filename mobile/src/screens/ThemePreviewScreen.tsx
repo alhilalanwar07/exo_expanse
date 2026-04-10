@@ -1,9 +1,10 @@
 /**
  * ThemePreviewScreen
  *
- * Renders the invitation demo URL inside a WebView (in-app browser).
- * Also provides "Gunakan Tema" CTA at the bottom that navigates to the
- * "apply theme" flow (currently a placeholder — to be wired to invitation picker).
+ * Full-screen in-app demo viewer. Uses:
+ *  - react-native-webview  on iOS/Android
+ *  - <iframe>              on Expo Web
+ * (handled by InAppBrowser.tsx / InAppBrowser.web.tsx via Metro platform resolution)
  */
 
 import { useState } from 'react';
@@ -12,18 +13,17 @@ import {
   Text,
   Pressable,
   StyleSheet,
-  ActivityIndicator,
   Platform,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
+import { InAppBrowser } from '../shared/components/InAppBrowser';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'ThemePreview'>;
@@ -39,16 +39,24 @@ export function ThemePreviewScreen() {
 
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  // Key to force-remount the browser on refresh
+  const [reloadKey, setReloadKey] = useState(0);
 
   const s = makeStyles(theme);
 
+  const handleRefresh = () => {
+    setHasError(false);
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  };
+
   return (
     <View style={[s.root, { paddingBottom: insets.bottom }]}>
-      {/* ── Slim top bar ───────────────────────────────── */}
+      {/* ── Top bar ─────────────────────────────────────── */}
       <SafeAreaView style={s.topBar} edges={['top']}>
         <Pressable
           onPress={() => navigation.goBack()}
-          style={({ pressed }) => [s.backBtn, pressed && s.pressed]}
+          style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
           hitSlop={10}
         >
           <Ionicons name="arrow-back" size={22} color={theme.onSurface} />
@@ -63,49 +71,29 @@ export function ThemePreviewScreen() {
           )}
         </View>
 
-        {/* Reload button */}
         <Pressable
-          onPress={() => { setHasError(false); setLoading(true); }}
-          style={({ pressed }) => [s.reloadBtn, pressed && s.pressed]}
+          onPress={handleRefresh}
+          style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
           hitSlop={10}
         >
           <Ionicons name="refresh-outline" size={20} color={theme.onSurfaceVariant} />
         </Pressable>
       </SafeAreaView>
 
-      {/* ── WebView ─────────────────────────────────────── */}
-      <View style={s.webWrap}>
-        {!hasError ? (
-          <WebView
-            source={{ uri: previewUrl }}
-            style={s.webView}
-            onLoadStart={() => setLoading(true)}
-            onLoadEnd={() => setLoading(false)}
-            onError={() => { setLoading(false); setHasError(true); }}
-            javaScriptEnabled
-            domStorageEnabled
-            allowsInlineMediaPlayback
-            startInLoadingState={false}
-            overScrollMode="never"
-          />
-        ) : (
-          <View style={s.errorBox}>
-            <MaterialCommunityIcons name="wifi-off" size={52} color={theme.outline} />
-            <Text style={s.errorTitle}>Gagal Memuat Demo</Text>
-            <Text style={s.errorSub}>Periksa koneksi, lalu tekan refresh.</Text>
-          </View>
-        )}
-
-        {/* Loading overlay */}
-        {loading && !hasError && (
-          <View style={s.loadingOverlay}>
-            <ActivityIndicator size="large" color={theme.primary} />
-            <Text style={s.loadingText}>Memuat demo...</Text>
-          </View>
-        )}
+      {/* ── Browser ─────────────────────────────────────── */}
+      <View style={s.browserWrap}>
+        <InAppBrowser
+          key={reloadKey}
+          uri={previewUrl}
+          loading={loading}
+          hasError={hasError}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+          onError={() => { setLoading(false); setHasError(true); }}
+        />
       </View>
 
-      {/* ── Bottom action bar ───────────────────────────── */}
+      {/* ── Bottom bar ──────────────────────────────────── */}
       <View style={[s.bottomBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <Pressable
           onPress={() => navigation.goBack()}
@@ -117,7 +105,6 @@ export function ThemePreviewScreen() {
         <Pressable
           onPress={() => {
             // TODO: navigate to invitation picker / apply-theme flow
-            // navigation.navigate('ApplyTheme', { themeId: id });
             navigation.goBack();
           }}
           style={({ pressed }) => [s.btnPrimary, pressed && s.pressed]}
@@ -137,7 +124,6 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       backgroundColor: t.background,
     },
 
-    // Top bar
     topBar: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -148,20 +134,13 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       backgroundColor: t.surface,
       gap: 10,
     },
-    backBtn: {
+    iconBtn: {
       width: 38,
       height: 38,
       borderRadius: 12,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: t.surfaceContainerLow,
-    },
-    reloadBtn: {
-      width: 38,
-      height: 38,
-      borderRadius: 12,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     titleWrap: {
       flex: 1,
@@ -188,51 +167,11 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       color: '#FFFFFF',
     },
 
-    // WebView container
-    webWrap: {
+    browserWrap: {
       flex: 1,
-      position: 'relative',
-    },
-    webView: {
-      flex: 1,
-      backgroundColor: t.background,
+      overflow: 'hidden',
     },
 
-    // Loading overlay
-    loadingOverlay: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: t.background,
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 12,
-    },
-    loadingText: {
-      fontFamily: F.body,
-      fontSize: 14,
-      color: t.onSurfaceVariant,
-    },
-
-    // Error state
-    errorBox: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 12,
-      paddingHorizontal: 32,
-    },
-    errorTitle: {
-      fontFamily: F.display,
-      fontSize: 20,
-      color: t.onSurface,
-    },
-    errorSub: {
-      fontFamily: F.body,
-      fontSize: 14,
-      color: t.onSurfaceVariant,
-      textAlign: 'center',
-    },
-
-    // Bottom action bar
     bottomBar: {
       flexDirection: 'row',
       gap: 12,
