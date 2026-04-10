@@ -2,6 +2,7 @@ export type GuestStackParamList = {
   Welcome: undefined;
   Home: undefined;
   ThemeCatalog: undefined;
+  ThemePreview: { id: number; name: string; previewUrl: string; isPremium: boolean };
   AuthChoice:
     | {
         intent?: 'theme' | 'manage';
@@ -18,4 +19,5 @@ export type AppStackParamList = {
   InvitationHub: undefined;
   ConnectDevice: undefined;
   Profile: undefined;
+  ThemePreview: { id: number; name: string; previewUrl: string; isPremium: boolean };
 };

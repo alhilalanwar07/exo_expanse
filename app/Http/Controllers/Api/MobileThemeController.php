@@ -26,8 +26,8 @@ class MobileThemeController extends Controller
                 'is_premium'    => $theme->is_premium,
                 'thumbnail_url' => $theme->protected_thumbnail,
                 'preview_url'   => $theme->slug
-                    ? url("/preview/{$theme->slug}")
-                    : null,
+                    ? url("/i/demo?theme={$theme->slug}")
+                    : url('/i/demo'),
                 'colors' => [
                     'primary'    => $theme->primary_color,
                     'secondary'  => $theme->secondary_color,

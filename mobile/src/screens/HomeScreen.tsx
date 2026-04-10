@@ -8,21 +8,21 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
-  Modal,
   ScrollView,
-  Linking,
-  useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
 import { env } from '../config/env';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type ThemeItem = {
+export type ThemeItem = {
   id: number;
   name: string;
   slug: string;
@@ -37,46 +37,40 @@ type ThemeItem = {
   };
 };
 
-type ApiResponse = {
-  data: ThemeItem[];
-};
-
 const CATEGORIES = ['Semua', 'Gratis', 'Premium'] as const;
 type Category = typeof CATEGORIES[number];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────────────────────
 
 async function fetchThemes(): Promise<ThemeItem[]> {
   const res = await fetch(`${env.apiBaseUrl}/api/mobile/themes`, {
     headers: { Accept: 'application/json' },
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const json = (await res.json()) as ApiResponse;
+  const json = (await res.json()) as { data: ThemeItem[] };
   return json.data;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
+type NavProp = NativeStackNavigationProp<RootStackParamList>;
+
 export function HomeScreen() {
+  const navigation = useNavigation<NavProp>();
   const { theme } = useAppTheme();
-  const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const isCompact = width <= 390;
-  const s = makeStyles(theme, isCompact);
+  const s = makeStyles(theme);
 
   const [themes, setThemes] = useState<ThemeItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category>('Semua');
-  const [selected, setSelected] = useState<ThemeItem | null>(null);
 
   const load = useCallback(async () => {
     try {
       setIsLoading(true);
       setHasError(false);
-      const data = await fetchThemes();
-      setThemes(data);
+      setThemes(await fetchThemes());
     } catch {
       setHasError(true);
     } finally {
@@ -86,7 +80,6 @@ export function HomeScreen() {
 
   useEffect(() => { void load(); }, [load]);
 
-  // Filter
   const filtered = themes.filter((t) => {
     const matchSearch = t.name.toLowerCase().includes(search.toLowerCase());
     const matchCat =
@@ -96,11 +89,21 @@ export function HomeScreen() {
     return matchSearch && matchCat;
   });
 
+  const openPreview = (item: ThemeItem) => {
+    navigation.navigate('ThemePreview', {
+      id: item.id,
+      name: item.name,
+      previewUrl: item.preview_url ?? `${env.apiBaseUrl}/i/demo`,
+      isPremium: item.is_premium,
+    });
+  };
+
   const renderCard = ({ item }: { item: ThemeItem }) => (
     <Pressable
-      style={({ pressed }) => [s.card, pressed && s.cardPressed]}
-      onPress={() => setSelected(item)}
+      style={({ pressed }) => [s.card, pressed && s.pressed]}
+      onPress={() => openPreview(item)}
     >
+      {/* Thumbnail */}
       <View style={s.imageWrap}>
         {item.thumbnail_url ? (
           <Image source={{ uri: item.thumbnail_url }} style={s.image} resizeMode="cover" />
@@ -115,15 +118,25 @@ export function HomeScreen() {
             {item.is_premium ? 'PREMIUM' : 'GRATIS'}
           </Text>
         </View>
+
+        {/* Tap overlay hint */}
+        <View style={s.tapOverlay}>
+          <Ionicons name="eye-outline" size={16} color="#FFFFFF" />
+          <Text style={s.tapOverlayText}>Lihat Demo</Text>
+        </View>
       </View>
+
+      {/* Name */}
       <Text style={s.cardTitle} numberOfLines={1}>{item.name}</Text>
+
+      {/* Color swatches */}
       {item.colors.primary ? (
-        <View style={s.colorRow}>
+        <View style={s.swatchRow}>
           {[item.colors.primary, item.colors.secondary, item.colors.accent]
             .filter(Boolean)
             .slice(0, 3)
             .map((c, i) => (
-              <View key={i} style={[s.colorDot, { backgroundColor: c as string }]} />
+              <View key={i} style={[s.swatch, { backgroundColor: c as string }]} />
             ))}
         </View>
       ) : null}
@@ -132,19 +145,22 @@ export function HomeScreen() {
 
   return (
     <SafeAreaView style={s.safeArea} edges={['top']}>
-      {/* Header */}
-      <View style={s.headerRow}>
+      {/* ── Header ─────────────────────────────────────── */}
+      <View style={s.header}>
         <View>
           <Text style={s.headerEyebrow}>Katalog Tema</Text>
           <Text style={s.headerTitle}>Pilih Tema Undangan</Text>
         </View>
-        <Pressable style={s.refreshBtn} onPress={() => void load()}>
+        <Pressable
+          style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
+          onPress={() => void load()}
+        >
           <Ionicons name="refresh-outline" size={20} color={theme.onSurface} />
         </Pressable>
       </View>
 
-      {/* Search */}
-      <View style={s.searchBox}>
+      {/* ── Search ─────────────────────────────────────── */}
+      <View style={s.searchWrap}>
         <Ionicons name="search" size={18} color={theme.outline} />
         <TextInput
           style={s.searchInput}
@@ -153,6 +169,7 @@ export function HomeScreen() {
           value={search}
           onChangeText={setSearch}
           autoCorrect={false}
+          returnKeyType="search"
         />
         {search.length > 0 && (
           <Pressable onPress={() => setSearch('')} hitSlop={8}>
@@ -161,11 +178,11 @@ export function HomeScreen() {
         )}
       </View>
 
-      {/* Category chips */}
+      {/* ── Category chips ─────────────────────────────── */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={s.chipRow}
+        contentContainerStyle={s.chipList}
       >
         {CATEGORIES.map((cat) => (
           <Pressable
@@ -178,19 +195,22 @@ export function HomeScreen() {
         ))}
       </ScrollView>
 
-      {/* Content */}
+      {/* ── Content ────────────────────────────────────── */}
       {isLoading ? (
         <View style={s.stateBox}>
           <ActivityIndicator size="large" color={theme.primary} />
-          <Text style={s.stateText}>Memuat tema...</Text>
+          <Text style={s.stateSub}>Memuat tema...</Text>
         </View>
       ) : hasError ? (
         <View style={s.stateBox}>
-          <MaterialCommunityIcons name="wifi-off" size={48} color={theme.outline} />
+          <MaterialCommunityIcons name="wifi-off" size={52} color={theme.outline} />
           <Text style={s.stateTitle}>Gagal Memuat</Text>
-          <Text style={s.stateText}>Periksa koneksi internet Anda.</Text>
-          <Pressable onPress={() => void load()} style={({ pressed }) => [s.retryBtn, pressed && s.pressed]}>
-            <Text style={s.retryBtnText}>Coba Lagi</Text>
+          <Text style={s.stateSub}>Periksa koneksi internet Anda.</Text>
+          <Pressable
+            onPress={() => void load()}
+            style={({ pressed }) => [s.retryBtn, pressed && s.pressed]}
+          >
+            <Text style={s.retryText}>Coba Lagi</Text>
           </Pressable>
         </View>
       ) : (
@@ -198,137 +218,37 @@ export function HomeScreen() {
           data={filtered}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
-          contentContainerStyle={[s.grid, { paddingBottom: insets.bottom + 100 }]}
+          contentContainerStyle={s.grid}
           columnWrapperStyle={s.gridRow}
           showsVerticalScrollIndicator={false}
-          renderItem={renderCard}
           ListEmptyComponent={
             <View style={s.stateBox}>
               <MaterialCommunityIcons name="magnify-close" size={48} color={theme.outline} />
               <Text style={s.stateTitle}>Tidak Ditemukan</Text>
-              <Text style={s.stateText}>Coba kata kunci lain.</Text>
+              <Text style={s.stateSub}>Coba kata kunci lain.</Text>
             </View>
           }
+          renderItem={renderCard}
         />
       )}
-
-      {/* Theme Detail Bottom Sheet */}
-      {selected ? (
-        <ThemeBottomSheet
-          item={selected}
-          theme={theme}
-          onClose={() => setSelected(null)}
-        />
-      ) : null}
     </SafeAreaView>
-  );
-}
-
-// ── Bottom Sheet ──────────────────────────────────────────────────────────────
-
-type SheetProps = {
-  item: ThemeItem;
-  theme: ReturnType<typeof useAppTheme>['theme'];
-  onClose: () => void;
-};
-
-function ThemeBottomSheet({ item, theme, onClose }: SheetProps) {
-  const s = makeSheetStyles(theme);
-  const insets = useSafeAreaInsets();
-
-  const openPreview = async () => {
-    if (!item.preview_url) return;
-    const canOpen = await Linking.canOpenURL(item.preview_url);
-    if (canOpen) await Linking.openURL(item.preview_url);
-  };
-
-  return (
-    <Modal
-      visible
-      transparent
-      animationType="slide"
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
-      {/* Backdrop */}
-      <Pressable style={s.backdrop} onPress={onClose} />
-
-      {/* Sheet */}
-      <View style={[s.sheet, { paddingBottom: insets.bottom + 20 }]}>
-        {/* Handle */}
-        <View style={s.handle} />
-
-        {/* Thumbnail preview */}
-        <View style={s.previewWrap}>
-          {item.thumbnail_url ? (
-            <Image source={{ uri: item.thumbnail_url }} style={s.previewImage} resizeMode="cover" />
-          ) : (
-            <View style={s.previewPlaceholder}>
-              <MaterialCommunityIcons name="image-outline" size={48} color={theme.outline} />
-            </View>
-          )}
-          <View style={[s.previewBadge, item.is_premium ? s.badgePremium : s.badgeFree]}>
-            <Text style={[s.previewBadgeText, item.is_premium ? s.badgeTextPremium : s.badgeTextFree]}>
-              {item.is_premium ? 'PREMIUM' : 'GRATIS'}
-            </Text>
-          </View>
-        </View>
-
-        {/* Info */}
-        <View style={s.info}>
-          <Text style={s.themeName}>{item.name}</Text>
-          {item.colors.primary ? (
-            <View style={s.palette}>
-              {[item.colors.primary, item.colors.secondary, item.colors.accent, item.colors.background]
-                .filter(Boolean)
-                .map((c, i) => (
-                  <View key={i} style={[s.paletteDot, { backgroundColor: c as string }]} />
-                ))}
-            </View>
-          ) : null}
-        </View>
-
-        {/* Actions */}
-        <View style={s.actions}>
-          <Pressable
-            style={({ pressed }) => [s.btnOutline, pressed && s.pressed]}
-            onPress={openPreview}
-            disabled={!item.preview_url}
-          >
-            <Ionicons name="eye-outline" size={18} color={theme.primary} />
-            <Text style={s.btnOutlineText}>Lihat Demo</Text>
-          </Pressable>
-
-          <Pressable
-            style={({ pressed }) => [s.btnPrimary, pressed && s.pressed]}
-            onPress={() => {
-              // TODO: wire to apply theme flow
-              onClose();
-            }}
-          >
-            <MaterialCommunityIcons name="check-circle-outline" size={18} color="#FFFFFF" />
-            <Text style={s.btnPrimaryText}>Gunakan Tema</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
   );
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boolean) {
+function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
   return StyleSheet.create({
     safeArea: { flex: 1, backgroundColor: t.background },
 
     // Header
-    headerRow: {
+    header: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: 18,
-      paddingTop: 12,
-      paddingBottom: 8,
+      paddingTop: 10,
+      paddingBottom: 6,
     },
     headerEyebrow: {
       fontFamily: F.label,
@@ -339,11 +259,11 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
     },
     headerTitle: {
       fontFamily: F.display,
-      fontSize: isCompact ? 20 : 22,
+      fontSize: 21,
       color: t.onSurface,
       marginTop: 2,
     },
-    refreshBtn: {
+    iconBtn: {
       width: 38,
       height: 38,
       borderRadius: 12,
@@ -355,7 +275,7 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
     },
 
     // Search
-    searchBox: {
+    searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 10,
@@ -364,25 +284,26 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       marginHorizontal: 18,
       paddingHorizontal: 14,
       height: 46,
-      marginBottom: 12,
+      marginBottom: 10,
     },
     searchInput: {
       flex: 1,
       fontFamily: F.body,
       fontSize: 14,
       color: t.onSurface,
+      paddingVertical: 0,
     },
 
     // Chips
-    chipRow: {
+    chipList: {
       paddingHorizontal: 18,
       gap: 8,
-      paddingBottom: 12,
+      paddingBottom: 10,
     },
     chip: {
-      height: 36,
+      height: 34,
       paddingHorizontal: 16,
-      borderRadius: 18,
+      borderRadius: 17,
       backgroundColor: t.chipBg,
       alignItems: 'center',
       justifyContent: 'center',
@@ -391,24 +312,25 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
     chipText: { fontFamily: F.label, fontSize: 13, color: t.chipText },
     chipTextActive: { color: '#FFFFFF' },
 
-    // Grid
-    grid: { paddingHorizontal: 18, paddingTop: 4 },
+    // Grid — bottom padding accounts for floating tab bar (68px height + 16px offset + 16px gap)
+    grid: {
+      paddingHorizontal: 18,
+      paddingBottom: 120,
+      paddingTop: 2,
+    },
     gridRow: { gap: 14, marginBottom: 14 },
 
     // Card
     card: { flex: 1 },
-    cardPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
     imageWrap: {
       borderRadius: 18,
       overflow: 'hidden',
       backgroundColor: t.imagePlaceholder,
       aspectRatio: 0.62,
-      position: 'relative',
     },
     image: { width: '100%', height: '100%' },
     imagePlaceholder: {
-      width: '100%',
-      height: '100%',
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -421,18 +343,35 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       borderRadius: 8,
     },
     badgePremium: { backgroundColor: '#D93723' },
-    badgeFree: { backgroundColor: t.isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.9)' },
+    badgeFree: { backgroundColor: t.isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.9)' },
     badgeText: { fontFamily: F.labelBold, fontSize: 8, letterSpacing: 0.6 },
     badgeTextPremium: { color: '#FFFFFF' },
     badgeTextFree: { color: t.primary },
+    tapOverlay: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      backgroundColor: 'rgba(0,0,0,0.38)',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+    },
+    tapOverlayText: {
+      fontFamily: F.label,
+      fontSize: 11,
+      color: '#FFFFFF',
+    },
     cardTitle: {
       fontFamily: F.heading,
       fontSize: 13,
       color: t.cardTitle,
       marginTop: 8,
     },
-    colorRow: { flexDirection: 'row', gap: 4, marginTop: 4 },
-    colorDot: { width: 12, height: 12, borderRadius: 6 },
+    swatchRow: { flexDirection: 'row', gap: 4, marginTop: 4 },
+    swatch: { width: 12, height: 12, borderRadius: 6 },
 
     // State screens
     stateBox: {
@@ -441,12 +380,12 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       justifyContent: 'center',
       paddingHorizontal: 32,
       gap: 10,
-      paddingTop: 60,
+      marginTop: 48,
     },
     stateTitle: { fontFamily: F.display, fontSize: 18, color: t.onSurface },
-    stateText: { fontFamily: F.body, fontSize: 14, color: t.onSurfaceVariant, textAlign: 'center' },
+    stateSub: { fontFamily: F.body, fontSize: 14, color: t.onSurfaceVariant, textAlign: 'center' },
     retryBtn: {
-      marginTop: 8,
+      marginTop: 6,
       height: 46,
       paddingHorizontal: 28,
       borderRadius: 999,
@@ -454,106 +393,7 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       alignItems: 'center',
       justifyContent: 'center',
     },
-    retryBtnText: { fontFamily: F.labelBold, fontSize: 14, color: '#FFFFFF' },
-
-    pressed: { opacity: 0.84, transform: [{ scale: 0.97 }] },
-  });
-}
-
-function makeSheetStyles(t: ReturnType<typeof useAppTheme>['theme']) {
-  return StyleSheet.create({
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0,0,0,0.55)',
-    },
-    sheet: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: t.surface,
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      paddingHorizontal: 20,
-      paddingTop: 12,
-      gap: 16,
-      shadowColor: '#000',
-      shadowOpacity: 0.4,
-      shadowRadius: 24,
-      shadowOffset: { width: 0, height: -8 },
-      elevation: 20,
-    },
-    handle: {
-      alignSelf: 'center',
-      width: 40,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: t.outlineVariant,
-      marginBottom: 4,
-    },
-
-    previewWrap: {
-      width: '100%',
-      aspectRatio: 16 / 9,
-      borderRadius: 18,
-      overflow: 'hidden',
-      backgroundColor: t.imagePlaceholder,
-      position: 'relative',
-    },
-    previewImage: { width: '100%', height: '100%' },
-    previewPlaceholder: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    previewBadge: {
-      position: 'absolute',
-      top: 10,
-      right: 10,
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderRadius: 8,
-    },
-    previewBadgeText: { fontFamily: F.labelBold, fontSize: 9, letterSpacing: 0.6 },
-    badgePremium: { backgroundColor: '#D93723' },
-    badgeFree: { backgroundColor: t.isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.9)' },
-    badgeTextPremium: { color: '#FFFFFF' },
-    badgeTextFree: { color: t.primary },
-
-    info: { gap: 8 },
-    themeName: { fontFamily: F.display, fontSize: 22, color: t.onSurface },
-    palette: { flexDirection: 'row', gap: 6 },
-    paletteDot: { width: 20, height: 20, borderRadius: 10 },
-
-    actions: { flexDirection: 'row', gap: 12 },
-    btnOutline: {
-      flex: 1,
-      height: 52,
-      borderRadius: 999,
-      borderWidth: 1.5,
-      borderColor: t.primary,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 8,
-    },
-    btnOutlineText: { fontFamily: F.labelBold, fontSize: 14, color: t.primary },
-    btnPrimary: {
-      flex: 1,
-      height: 52,
-      borderRadius: 999,
-      backgroundColor: t.primary,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 8,
-      shadowColor: t.primary,
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      shadowOffset: { width: 0, height: 5 },
-      elevation: 5,
-    },
-    btnPrimaryText: { fontFamily: F.labelBold, fontSize: 14, color: '#FFFFFF' },
+    retryText: { fontFamily: F.labelBold, fontSize: 14, color: '#FFFFFF' },
 
     pressed: { opacity: 0.84, transform: [{ scale: 0.97 }] },
   });

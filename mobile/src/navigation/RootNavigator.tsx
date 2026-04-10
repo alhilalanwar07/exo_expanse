@@ -15,6 +15,7 @@ import { UndanganScreen } from '../screens/UndanganScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { RegisterScreen } from '../features/auth/RegisterScreen';
+import { ThemePreviewScreen } from '../screens/ThemePreviewScreen';
 
 // -- Types
 export type MainTabParamList = {
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   Main: undefined;
   Login: undefined;
   Register: undefined;
+  ThemePreview: { id: number; name: string; previewUrl: string; isPremium: boolean };
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -140,6 +142,11 @@ export function RootNavigator() {
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="ThemePreview"
+          component={ThemePreviewScreen}
+          options={{ presentation: 'modal' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
