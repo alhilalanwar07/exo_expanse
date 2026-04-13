@@ -1,23 +1,42 @@
-export type GuestStackParamList = {
-  Welcome: undefined;
+export type ThemePreviewRouteParams = {
+  id: number;
+  name: string;
+  previewUrl: string;
+  isPremium: boolean;
+};
+
+export type InvitationContentEditorRouteParams = {
+  invitationId?: string;
+  invitationTitle?: string;
+  initialHtml?: string;
+};
+
+export type MainTabParamList = {
   Home: undefined;
-  ThemeCatalog: undefined;
-  ThemePreview: { id: number; name: string; previewUrl: string; isPremium: boolean };
+  Undangan: undefined;
+  Profil: undefined;
+};
+
+export type RootStackParamList = {
+  Welcome: undefined;
+  Main: undefined;
   AuthChoice:
     | {
         intent?: 'theme' | 'manage';
       }
     | undefined;
+  ConnectDevice: undefined;
   Login: undefined;
   Register: undefined;
-  ConnectDevice: undefined;
-  Profile: undefined;
+  ThemePreview: ThemePreviewRouteParams;
+  InvitationContentEditor: InvitationContentEditorRouteParams | undefined;
 };
 
-export type AppStackParamList = {
-  Home: undefined;
-  InvitationHub: undefined;
-  ConnectDevice: undefined;
-  Profile: undefined;
-  ThemePreview: { id: number; name: string; previewUrl: string; isPremium: boolean };
-};
+export type AuthFlowParamList = Pick<
+  RootStackParamList,
+  'AuthChoice' | 'ConnectDevice' | 'Login' | 'Register'
+>;
+
+// Backward-compatible aliases for existing imports.
+export type GuestStackParamList = AuthFlowParamList;
+export type AppStackParamList = MainTabParamList;

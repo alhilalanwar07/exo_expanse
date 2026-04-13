@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import './src/global.css';
 
 import { MobileApp } from './src/core/App';
 

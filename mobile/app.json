@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
-    "scheme": "exoexpanse",
+    "name": "ExoInvite",
+    "slug": "exoinvite",
+    "scheme": "exoinvite",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -8,10 +8,15 @@
  *   fontFamily: F.display    → Plus Jakarta Sans ExtraBold (headlines)
  *   fontFamily: F.heading    → Plus Jakarta Sans Bold (section titles)
  *   fontFamily: F.subheading → Plus Jakarta Sans SemiBold
+ *   fontFamily: F.uiMedium    → Plus Jakarta Sans Medium (short UI headings)
  *   fontFamily: F.body       → Manrope Regular
  *   fontFamily: F.bodyMedium → Manrope Medium
  *   fontFamily: F.label      → Manrope SemiBold (chips, badges, uppercase labels)
- *   fontFamily: F.labelBold  → Manrope Bold (button text, strong labels)
+ *   fontFamily: F.labelBold  → Manrope Bold (button text, links, strong labels)
+ *
+ * Harmony rule:
+ * - Plus Jakarta Sans for screen titles and section headings.
+ * - Manrope for body copy and interactive UI text (labels/buttons/links).
  */
 export const F = {
   // Plus Jakarta Sans — display/headline

@@ -11,18 +11,21 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, type CompositeNavigationProp } from '@react-navigation/native';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { readAuthSession } from '../features/auth/auth.storage';
+import { HttpClientError, httpRequest } from '../services/httpClient';
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
 import { env } from '../config/env';
+import type { MainTabParamList, RootStackParamList } from '../navigation/types';
 
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-};
+type UndanganNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabParamList, 'Undangan'>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 
 type InvitationItem = {
   id: string | number;
@@ -42,20 +45,65 @@ type StatsData = {
 };
 
 const STAT_ITEMS = [
-  { key: 'total', icon: 'mail' as const, label: 'Total Undangan' },
-  { key: 'guests', icon: 'people' as const, label: 'Total Tamu' },
-  { key: 'rsvp', icon: 'checkmark-circle' as const, label: 'Tamu Hadir' },
-  { key: 'wishes', icon: 'chatbubbles' as const, label: 'Total Ucapan' },
+  { key: 'guests', icon: 'people-outline' as const, label: 'Tamu' },
+  { key: 'rsvp', icon: 'checkmark-circle-outline' as const, label: 'Hadir' },
+  { key: 'wishes', icon: 'chatbubbles-outline' as const, label: 'Ucapan' },
 ] as const;
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function toInvitationInitialContent(title: string): string {
+  const safeTitle = escapeHtml(title.trim() || 'Undangan Kami');
+
+  return [
+    `<h2>${safeTitle}</h2>`,
+    '<p>Assalamu\'alaikum Wr. Wb.</p>',
+    '<p>Dengan hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada rangkaian acara kami.</p>',
+    '<p><strong>Lokasi:</strong> Isi lokasi acara di sini</p>',
+    '<p><strong>Waktu:</strong> Isi jadwal acara di sini</p>',
+    '<p>Merupakan kebahagiaan bagi kami jika Anda berkenan hadir dan memberikan doa restu.</p>',
+    '<p>Wassalamu\'alaikum Wr. Wb.</p>',
+  ].join('');
+}
+
+function formatCompactNumber(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, '')}jt`;
+  }
+
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(1).replace(/\.0$/, '')}rb`;
+  }
+
+  return String(value);
+}
+
+function toAttendanceRate(stats: StatsData): number {
+  if (stats.guests <= 0) {
+    return 0;
+  }
+
+  return Math.round((stats.rsvp / stats.guests) * 100);
+}
+
 export function UndanganScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<UndanganNavigationProp>();
   const { theme } = useAppTheme();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [invitations, setInvitations] = useState<InvitationItem[]>([]);
   const [stats, setStats] = useState<StatsData>({ total: 0, guests: 0, rsvp: 0, wishes: 0 });
+
+  const attendanceRate = toAttendanceRate(stats);
+  const latestInvitation = invitations[0] ?? null;
 
   const s = makeStyles(theme);
 
@@ -75,16 +123,7 @@ export function UndanganScreen() {
 
           if (isActive) setIsLoggedIn(true);
 
-          const response = await fetch(`${env.apiBaseUrl}/api/mobile/access/invitations`, {
-            headers: {
-              Authorization: `Bearer ${session.accessToken}`,
-              Accept: 'application/json',
-            },
-          });
-
-          if (!response.ok) throw new Error(`API returned status ${response.status}`);
-
-          const responseData = await response.json() as {
+          const responseData = await httpRequest<{
             data?: Array<{
               id: string | number;
               title?: string;
@@ -102,7 +141,11 @@ export function UndanganScreen() {
               tamu_hadir?: number;
               total_ucapan?: number;
             };
-          };
+          }>('/api/mobile/access/invitations', {
+            authMode: 'required',
+            retry: 2,
+            timeoutMs: 12000,
+          });
 
           if (isActive) {
             console.log(`✅ API Connected: ${responseData.data?.length ?? 0} undangan dimuat.`);
@@ -130,6 +173,16 @@ export function UndanganScreen() {
           }
         } catch (error) {
           console.error('Error fetching invitations:', error);
+
+          if (error instanceof HttpClientError && error.status === 401) {
+            if (isActive) {
+              setIsLoggedIn(false);
+              setInvitations([]);
+            }
+
+            return;
+          }
+
           if (isActive) {
             Alert.alert('Gagal Memuat', 'Terjadi kesalahan saat mengambil data undangan.');
             setInvitations([]);
@@ -145,16 +198,84 @@ export function UndanganScreen() {
   );
 
   const renderListHeader = () => (
-    <View style={s.statsGrid}>
-      {STAT_ITEMS.map(({ key, icon, label }) => (
-        <View key={key} style={s.statCard}>
-          <View style={s.statIconWrap}>
-            <Ionicons name={icon} size={20} color={theme.primary} />
+    <View style={s.listHeaderWrap}>
+      <View style={s.heroCard}>
+        <Text style={s.heroEyebrow}>Dashboard Undangan</Text>
+
+        <View style={s.heroTopRow}>
+          <View style={s.heroTitleWrap}>
+            <Text style={s.heroTitle}>Ringkasan Cepat</Text>
+            <Text style={s.heroSubtitle}>
+              {formatCompactNumber(stats.total)} undangan • {formatCompactNumber(stats.guests)} tamu
+            </Text>
           </View>
-          <Text style={s.statNumber}>{stats[key]}</Text>
-          <Text style={s.statLabel}>{label}</Text>
+
+          <Pressable
+            onPress={() => navigation.navigate('Home')}
+            style={({ pressed }) => [s.heroAddBtn, pressed && s.pressed]}
+          >
+            <Ionicons name="add" size={20} color="#FFFFFF" />
+          </Pressable>
         </View>
-      ))}
+
+        <View style={s.heroMetricsRow}>
+          <View style={[s.heroMetricCard, s.heroMetricPrimary]}>
+            <Text style={s.heroMetricValue}>{formatCompactNumber(stats.total)}</Text>
+            <Text style={s.heroMetricLabel}>Total Undangan</Text>
+          </View>
+
+          <View style={s.heroMetricCard}>
+            <Text style={s.heroMetricValue}>{attendanceRate}%</Text>
+            <Text style={s.heroMetricLabel}>Tingkat Hadir</Text>
+          </View>
+        </View>
+
+        <View style={s.heroQuickStatsRow}>
+          {STAT_ITEMS.map(({ key, icon, label }) => (
+            <View key={key} style={s.quickStatItem}>
+              <Ionicons name={icon} size={15} color={theme.primary} />
+              <Text style={s.quickStatValue}>{formatCompactNumber(stats[key])}</Text>
+              <Text style={s.quickStatLabel}>{label}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {latestInvitation ? (
+        <View style={s.latestCard}>
+          <View style={s.latestTopRow}>
+            <Text style={s.latestEyebrow}>Undangan Terbaru</Text>
+            <View style={[s.statusBadge, latestInvitation.status === 'Aktif' ? s.statusActive : s.statusDraft]}>
+              <Text style={[s.statusText, latestInvitation.status === 'Aktif' ? s.statusTextActive : s.statusTextDraft]}>
+                {latestInvitation.status}
+              </Text>
+            </View>
+          </View>
+
+          <Text style={s.latestTitle} numberOfLines={1}>{latestInvitation.title}</Text>
+          <Text style={s.latestMeta} numberOfLines={1}>
+            {latestInvitation.theme_name} • {latestInvitation.date}
+          </Text>
+
+          <Pressable
+            onPress={() =>
+              navigation.navigate('InvitationContentEditor', {
+                invitationId: String(latestInvitation.id),
+                invitationTitle: latestInvitation.title,
+                initialHtml: toInvitationInitialContent(latestInvitation.title),
+              })
+            }
+            style={({ pressed }) => [s.latestEditButton, pressed && s.pressed]}
+          >
+            <Ionicons name="create-outline" size={14} color={theme.primary} />
+            <Text style={s.latestEditButtonText}>Edit Konten</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      {invitations.length > 0 ? (
+        <Text style={s.sectionHeading}>Daftar Undangan</Text>
+      ) : null}
     </View>
   );
 
@@ -195,20 +316,36 @@ export function UndanganScreen() {
             {item.status}
           </Text>
         </View>
-        <Pressable style={s.menuBtn} hitSlop={8}>
-          <Ionicons name="ellipsis-vertical" size={18} color={theme.outline} />
-        </Pressable>
       </View>
 
-      <Text style={s.cardUrl} numberOfLines={1}>{item.url}</Text>
+      <View style={s.cardLinkRow}>
+        <Ionicons name="link-outline" size={14} color={theme.outline} />
+        <Text style={s.cardUrl} numberOfLines={1}>{item.url}</Text>
+      </View>
 
-      <Pressable
-        style={({ pressed }) => [s.sebarButton, pressed && s.pressed]}
-        onPress={() => console.log('Sebar', item.url)}
-      >
-        <Ionicons name="share-social-outline" size={16} color="#FFFFFF" />
-        <Text style={s.sebarButtonText}>Sebar Undangan</Text>
-      </Pressable>
+      <View style={s.cardActionsRow}>
+        <Pressable
+          style={({ pressed }) => [s.editButton, pressed && s.pressed]}
+          onPress={() =>
+            navigation.navigate('InvitationContentEditor', {
+              invitationId: String(item.id),
+              invitationTitle: item.title,
+              initialHtml: toInvitationInitialContent(item.title),
+            })
+          }
+        >
+          <Ionicons name="create-outline" size={16} color={theme.primary} />
+          <Text style={s.editButtonText}>Edit Konten</Text>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [s.sebarButton, pressed && s.pressed]}
+          onPress={() => console.log('Sebar', item.url)}
+        >
+          <Ionicons name="share-social-outline" size={16} color="#FFFFFF" />
+          <Text style={s.sebarButtonText}>Sebar Undangan</Text>
+        </Pressable>
+      </View>
     </View>
   );
 
@@ -249,20 +386,13 @@ export function UndanganScreen() {
       <FlatList
         data={invitations}
         keyExtractor={(item) => item.id.toString()}
-        ListHeaderComponent={invitations.length > 0 ? renderListHeader : null}
+        ListHeaderComponent={renderListHeader}
         ListEmptyComponent={renderEmptyState}
         renderItem={renderCard}
         contentContainerStyle={s.listContent}
+        contentInsetAdjustmentBehavior="automatic"
         showsVerticalScrollIndicator={false}
       />
-
-      {/* FAB */}
-      <Pressable
-        style={({ pressed }) => [s.fab, pressed && s.pressed]}
-        onPress={() => navigation.navigate('Home')}
-      >
-        <Ionicons name="add" size={26} color="#FFFFFF" />
-      </Pressable>
     </SafeAreaView>
   );
 }
@@ -272,7 +402,178 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
     safeArea: { flex: 1, backgroundColor: t.background },
     listContent: {
       paddingHorizontal: 18,
-      paddingBottom: 120,
+      paddingBottom: 96,
+    },
+
+    listHeaderWrap: {
+      gap: 12,
+      marginTop: 10,
+      marginBottom: 12,
+    },
+    heroCard: {
+      backgroundColor: t.surfaceContainerLow,
+      borderRadius: 18,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      padding: 14,
+      gap: 12,
+    },
+    heroEyebrow: {
+      fontFamily: F.label,
+      fontSize: 10,
+      letterSpacing: 1,
+      textTransform: 'uppercase',
+      color: t.primary,
+    },
+    heroTopRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 10,
+    },
+    heroTitleWrap: {
+      flex: 1,
+      gap: 2,
+    },
+    heroTitle: {
+      fontFamily: F.heading,
+      color: t.onSurface,
+      fontSize: 21,
+      letterSpacing: -0.2,
+    },
+    heroSubtitle: {
+      fontFamily: F.body,
+      color: t.onSurfaceVariant,
+      fontSize: 13,
+    },
+    heroAddBtn: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: t.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: t.primary,
+      shadowOpacity: 0.28,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 3 },
+      elevation: 3,
+    },
+    heroMetricsRow: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    heroMetricCard: {
+      flex: 1,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      backgroundColor: t.surface,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      gap: 2,
+    },
+    heroMetricPrimary: {
+      backgroundColor: t.surfaceContainerHighest,
+    },
+    heroMetricValue: {
+      fontFamily: F.display,
+      color: t.onSurface,
+      fontSize: 24,
+      lineHeight: 30,
+    },
+    heroMetricLabel: {
+      fontFamily: F.body,
+      color: t.onSurfaceVariant,
+      fontSize: 12,
+    },
+    heroQuickStatsRow: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    quickStatItem: {
+      flex: 1,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      backgroundColor: t.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 2,
+      paddingVertical: 8,
+      paddingHorizontal: 4,
+    },
+    quickStatValue: {
+      fontFamily: F.labelBold,
+      color: t.onSurface,
+      fontSize: 14,
+    },
+    quickStatLabel: {
+      fontFamily: F.body,
+      color: t.onSurfaceVariant,
+      fontSize: 11,
+    },
+
+    latestCard: {
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      backgroundColor: t.surface,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      gap: 4,
+    },
+    latestTopRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 8,
+    },
+    latestEyebrow: {
+      fontFamily: F.label,
+      color: t.onSurfaceVariant,
+      fontSize: 11,
+      letterSpacing: 0.8,
+      textTransform: 'uppercase',
+    },
+    latestTitle: {
+      fontFamily: F.heading,
+      color: t.onSurface,
+      fontSize: 15,
+    },
+    latestMeta: {
+      fontFamily: F.body,
+      color: t.onSurfaceVariant,
+      fontSize: 12,
+    },
+    latestEditButton: {
+      marginTop: 6,
+      height: 34,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      backgroundColor: t.surfaceContainerLow,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      gap: 6,
+      alignSelf: 'flex-start',
+      paddingHorizontal: 11,
+    },
+    latestEditButtonText: {
+      fontFamily: F.label,
+      color: t.primary,
+      fontSize: 12,
+    },
+    sectionHeading: {
+      fontFamily: F.label,
+      color: t.onSurfaceVariant,
+      fontSize: 11,
+      letterSpacing: 0.9,
+      textTransform: 'uppercase',
+      marginLeft: 2,
+      marginTop: 2,
+      marginBottom: 2,
     },
 
     // State screens (loading / guest / empty)
@@ -327,53 +628,15 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       fontSize: 15,
     },
 
-    // Stats grid
-    statsGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
-      marginTop: 20,
-      marginBottom: 8,
-      gap: 12,
-    },
-    statCard: {
-      width: '47%',
-      backgroundColor: t.surfaceContainerLow,
-      borderRadius: 16,
-      padding: 16,
-      borderWidth: 1,
-      borderColor: t.outlineVariant,
-      gap: 6,
-    },
-    statIconWrap: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
-      backgroundColor: t.surfaceContainerHighest,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    statNumber: {
-      fontFamily: F.display,
-      color: t.onSurface,
-      fontSize: 26,
-      marginTop: 4,
-    },
-    statLabel: {
-      fontFamily: F.body,
-      color: t.onSurfaceVariant,
-      fontSize: 12,
-    },
-
     // Invitation card
     card: {
       backgroundColor: t.surfaceContainerLow,
       borderRadius: 18,
-      padding: 16,
+      padding: 14,
       marginBottom: 14,
       borderWidth: 1,
       borderColor: t.outlineVariant,
-      gap: 10,
+      gap: 9,
     },
     cardHeader: {
       flexDirection: 'row',
@@ -414,16 +677,44 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
     statusText: { fontSize: 11, fontFamily: F.labelBold },
     statusTextActive: { color: t.successIcon },
     statusTextDraft: { color: t.onSurfaceVariant },
-    menuBtn: { paddingHorizontal: 4, paddingVertical: 6 },
 
+    cardLinkRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
     cardUrl: {
+      flex: 1,
       fontFamily: F.body,
       color: t.isDark ? '#60A5FA' : '#3B82F6',
       fontSize: 12,
     },
+    cardActionsRow: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    editButton: {
+      flex: 1,
+      minHeight: 44,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      backgroundColor: t.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      gap: 8,
+      paddingHorizontal: 10,
+    },
+    editButtonText: {
+      fontFamily: F.label,
+      color: t.primary,
+      fontSize: 13,
+    },
     sebarButton: {
+      flex: 1,
+      minHeight: 44,
       backgroundColor: t.primary,
-      paddingVertical: 12,
       borderRadius: 12,
       alignItems: 'center',
       justifyContent: 'center',
@@ -439,24 +730,6 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       fontFamily: F.labelBold,
       color: '#FFFFFF',
       fontSize: 14,
-    },
-
-    // FAB
-    fab: {
-      position: 'absolute',
-      bottom: 90,
-      right: 20,
-      width: 56,
-      height: 56,
-      borderRadius: 28,
-      backgroundColor: t.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: t.primary,
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.35,
-      shadowRadius: 10,
-      elevation: 8,
     },
 
     pressed: { opacity: 0.84, transform: [{ scale: 0.97 }] },

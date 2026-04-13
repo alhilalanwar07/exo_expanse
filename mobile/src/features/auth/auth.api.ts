@@ -1,4 +1,11 @@
 import { httpRequest } from '../../services/httpClient';
+import {
+  ApiEndpointError,
+  type ApiEndpointErrorCode,
+  type ApiFieldErrors,
+  type BackendErrorPayload,
+  toApiEndpointError,
+} from '../../services/apiResponse';
 
 export interface MobileApiSession {
   workspace_id: string;
@@ -24,40 +31,120 @@ interface RegisterEnvelope {
   };
 }
 
-function getReadableErrorMessage(error: unknown, fallbackMessage: string): string {
-  if (!(error instanceof Error)) {
-    return fallbackMessage;
+type AuthOperation = 'exchange' | 'login' | 'register' | 'refresh' | 'revoke';
+type ValidationErrors = ApiFieldErrors;
+
+export type AuthApiErrorCode = ApiEndpointErrorCode;
+
+export class AuthApiError extends ApiEndpointError {
+  readonly requiresEmailVerification: boolean;
+
+  constructor(params: {
+    message: string;
+    status: number;
+    code: AuthApiErrorCode;
+    fieldErrors?: ValidationErrors;
+    payload?: BackendErrorPayload | null;
+    requiresEmailVerification?: boolean;
+    cause?: unknown;
+  }) {
+    super({
+      message: params.message,
+      status: params.status,
+      code: params.code,
+      fieldErrors: params.fieldErrors,
+      payload: params.payload,
+      cause: params.cause,
+    });
+
+    this.name = 'AuthApiError';
+    this.requiresEmailVerification = params.requiresEmailVerification ?? false;
+  }
+}
+
+export function isAuthApiError(error: unknown): error is AuthApiError {
+  return error instanceof AuthApiError;
+}
+
+const DEFAULT_ERROR_MESSAGES: Record<AuthOperation, string> = {
+  exchange: 'Gagal menukar kode akses.',
+  login: 'Login gagal. Silakan coba lagi.',
+  register: 'Registrasi gagal. Silakan coba lagi.',
+  refresh: 'Sesi berakhir. Silakan login ulang.',
+  revoke: 'Gagal memutus sesi perangkat.',
+};
+
+const NETWORK_ERROR_MESSAGES: Record<AuthOperation, string> = {
+  exchange: 'Tidak dapat menghubungi server. Periksa koneksi internet Anda.',
+  login: 'Tidak dapat login karena koneksi bermasalah. Periksa internet Anda.',
+  register: 'Tidak dapat registrasi karena koneksi bermasalah. Periksa internet Anda.',
+  refresh: 'Koneksi terputus saat memperbarui sesi. Silakan coba lagi.',
+  revoke: 'Tidak dapat memutus sesi karena koneksi bermasalah.',
+};
+
+const TIMEOUT_ERROR_MESSAGES: Record<AuthOperation, string> = {
+  exchange: 'Waktu koneksi habis saat menukar kode akses. Silakan coba lagi.',
+  login: 'Waktu koneksi habis saat login. Silakan coba lagi.',
+  register: 'Waktu koneksi habis saat registrasi. Silakan coba lagi.',
+  refresh: 'Waktu koneksi habis saat memperbarui sesi. Silakan login ulang jika perlu.',
+  revoke: 'Waktu koneksi habis saat memutus sesi perangkat.',
+};
+
+function toAuthApiError(baseError: ApiEndpointError): AuthApiError {
+  const requiresEmailVerification = baseError.payload?.requires_email_verification === true;
+
+  return new AuthApiError({
+    message: baseError.message,
+    status: baseError.status,
+    code: baseError.code,
+    fieldErrors: baseError.fieldErrors,
+    payload: baseError.payload,
+    requiresEmailVerification,
+    cause: baseError.cause,
+  });
+}
+
+function mapAuthError(error: unknown, operation: AuthOperation): AuthApiError {
+  if (isAuthApiError(error)) {
+    return error;
   }
 
-  const rawMessage = error.message;
-  const jsonStartIndex = rawMessage.indexOf('{');
+  const baseError = toApiEndpointError(error, {
+    defaultMessage: DEFAULT_ERROR_MESSAGES[operation],
+    networkMessage: NETWORK_ERROR_MESSAGES[operation],
+    timeoutMessage: TIMEOUT_ERROR_MESSAGES[operation],
+    abortedMessage: 'Permintaan dibatalkan.',
+    serverErrorMessage: 'Server sedang bermasalah. Silakan coba beberapa saat lagi.',
+    mapHttpError: (httpError, context) => {
+      const requiresEmailVerification = context.payload?.requires_email_verification === true;
 
-  if (jsonStartIndex >= 0) {
-    const jsonPart = rawMessage.slice(jsonStartIndex);
-
-    try {
-      const parsed = JSON.parse(jsonPart) as {
-        message?: string;
-        errors?: Record<string, string[]>;
-      };
-
-      if (parsed.message) {
-        return parsed.message;
+      if (operation === 'refresh' && [401, 403, 422].includes(httpError.status)) {
+        return new ApiEndpointError({
+          message: 'Sesi berakhir. Silakan login ulang.',
+          status: httpError.status,
+          code: httpError.code,
+          fieldErrors: context.fieldErrors,
+          payload: context.payload,
+          cause: httpError,
+        });
       }
 
-      if (parsed.errors) {
-        const firstFieldErrors = Object.values(parsed.errors)[0];
-
-        if (Array.isArray(firstFieldErrors) && firstFieldErrors.length > 0) {
-          return firstFieldErrors[0] ?? fallbackMessage;
-        }
+      if (operation === 'login' && httpError.status === 403 && requiresEmailVerification) {
+        return new ApiEndpointError({
+          message: context.backendMessage ?? 'Akun belum aktif. Silakan cek email Anda untuk aktivasi.',
+          status: httpError.status,
+          code: httpError.code,
+          fieldErrors: context.fieldErrors,
+          payload: context.payload,
+          cause: httpError,
+        });
       }
-    } catch {
-      // Keep fallback from raw message when response body is not JSON.
-    }
-  }
 
-  return rawMessage;
+      return null;
+    },
+  });
+
+  return toAuthApiError(baseError);
 }
 
 export async function exchangeAccessCode(payload: {
@@ -77,14 +164,18 @@ export async function exchangeAccessCode(payload: {
 
     return response.session;
   } catch (error) {
-    throw new Error(getReadableErrorMessage(error, 'Gagal menukar kode akses.'));
+    throw mapAuthError(error, 'exchange');
   }
 }
 
-export async function refreshMobileSession(refreshToken: string) {
+export async function refreshMobileSession(
+  refreshToken: string,
+  options?: { signal?: AbortSignal }
+) {
   try {
     const response = await httpRequest<MobileSessionEnvelope>('/api/mobile/access/refresh', {
       method: 'POST',
+      signal: options?.signal,
       body: {
         refresh_token: refreshToken,
       },
@@ -92,27 +183,33 @@ export async function refreshMobileSession(refreshToken: string) {
 
     return response.session;
   } catch (error) {
-    throw new Error(getReadableErrorMessage(error, 'Session berakhir. Silakan login ulang.'));
+    throw mapAuthError(error, 'refresh');
   }
 }
 
-export function revokeMobileSession(accessToken: string) {
-  return httpRequest<{ success: boolean }>('/api/mobile/access/revoke', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+export async function revokeMobileSession(accessToken: string) {
+  try {
+    return await httpRequest<{ success: boolean }>('/api/mobile/access/revoke', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  } catch (error) {
+    throw mapAuthError(error, 'revoke');
+  }
 }
 
 export async function registerMobileAccount(payload: {
   name: string;
   email: string;
   password: string;
+  signal?: AbortSignal;
 }) {
   try {
     const response = await httpRequest<RegisterEnvelope>('/api/mobile/auth/register', {
       method: 'POST',
+      signal: payload.signal,
       body: {
         name: payload.name,
         email: payload.email,
@@ -125,7 +222,7 @@ export async function registerMobileAccount(payload: {
       requires_email_verification: response.data.requires_email_verification,
     };
   } catch (error) {
-    throw new Error(getReadableErrorMessage(error, 'Registrasi gagal.'));
+    throw mapAuthError(error, 'register');
   }
 }
 
@@ -134,10 +231,12 @@ export async function loginWithEmailPassword(payload: {
   password: string;
   deviceAlias?: string;
   platform?: 'ios' | 'android' | 'web';
+  signal?: AbortSignal;
 }) {
   try {
     const response = await httpRequest<MobileSessionEnvelope>('/api/mobile/auth/login', {
       method: 'POST',
+      signal: payload.signal,
       body: {
         email: payload.email,
         password: payload.password,
@@ -148,6 +247,6 @@ export async function loginWithEmailPassword(payload: {
 
     return response.session;
   } catch (error) {
-    throw new Error(getReadableErrorMessage(error, 'Login gagal.'));
+    throw mapAuthError(error, 'login');
   }
 }

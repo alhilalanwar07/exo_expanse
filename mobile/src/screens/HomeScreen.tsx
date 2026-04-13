@@ -18,7 +18,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
 import { env } from '../config/env';
-import type { RootStackParamList } from '../navigation/RootNavigator';
+import type { RootStackParamList } from '../navigation/types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -258,7 +258,7 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       color: t.primary,
     },
     headerTitle: {
-      fontFamily: F.display,
+      fontFamily: F.heading,
       fontSize: 21,
       color: t.onSurface,
       marginTop: 2,
@@ -360,12 +360,12 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       gap: 5,
     },
     tapOverlayText: {
-      fontFamily: F.label,
+      fontFamily: F.labelBold,
       fontSize: 11,
       color: '#FFFFFF',
     },
     cardTitle: {
-      fontFamily: F.heading,
+      fontFamily: F.subheading,
       fontSize: 13,
       color: t.cardTitle,
       marginTop: 8,
@@ -382,7 +382,7 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       gap: 10,
       marginTop: 48,
     },
-    stateTitle: { fontFamily: F.display, fontSize: 18, color: t.onSurface },
+    stateTitle: { fontFamily: F.heading, fontSize: 18, color: t.onSurface },
     stateSub: { fontFamily: F.body, fontSize: 14, color: t.onSurfaceVariant, textAlign: 'center' },
     retryBtn: {
       marginTop: 6,

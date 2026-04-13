@@ -18,12 +18,14 @@ export interface RegisterAccountPayload {
   name: string;
   email: string;
   password: string;
+  signal?: AbortSignal;
 }
 
 export interface LoginWithPasswordPayload {
   email: string;
   password: string;
   deviceAlias?: string;
+  signal?: AbortSignal;
 }
 
 export interface RegisterAccountResult {

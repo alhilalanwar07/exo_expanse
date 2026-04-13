@@ -7,7 +7,7 @@
  * (handled by InAppBrowser.tsx / InAppBrowser.web.tsx via Metro platform resolution)
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -23,8 +23,8 @@ import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
-import { InAppBrowser } from '../shared/components/InAppBrowser';
-import type { RootStackParamList } from '../navigation/RootNavigator';
+import InvitationPreviewDom from '../shared/components/invitation-preview-dom';
+import type { RootStackParamList } from '../navigation/types';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'ThemePreview'>;
 type RoutePropType = RouteProp<RootStackParamList, 'ThemePreview'>;
@@ -41,78 +41,156 @@ export function ThemePreviewScreen() {
   const [hasError, setHasError] = useState(false);
   // Key to force-remount the browser on refresh
   const [reloadKey, setReloadKey] = useState(0);
+  const [isChromeVisible, setIsChromeVisible] = useState(true);
 
   const s = makeStyles(theme);
+
+  useEffect(() => {
+    if (loading || hasError) {
+      setIsChromeVisible(true);
+      return;
+    }
+
+    const timerId = setTimeout(() => {
+      setIsChromeVisible(false);
+    }, 2200);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [loading, hasError, reloadKey]);
 
   const handleRefresh = () => {
     setHasError(false);
     setLoading(true);
+    setIsChromeVisible(true);
     setReloadKey((k) => k + 1);
   };
 
+  const handleApplyTheme = () => {
+    // TODO: navigate to invitation picker / apply-theme flow
+    navigation.goBack();
+  };
+
+  const canApplyTheme = !loading && !hasError;
+
   return (
-    <View style={[s.root, { paddingBottom: insets.bottom }]}>
-      {/* ── Top bar ─────────────────────────────────────── */}
-      <SafeAreaView style={s.topBar} edges={['top']}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
-          hitSlop={10}
-        >
-          <Ionicons name="arrow-back" size={22} color={theme.onSurface} />
-        </Pressable>
-
-        <View style={s.titleWrap}>
-          <Text style={s.topBarTitle} numberOfLines={1}>{name}</Text>
-          {isPremium && (
-            <View style={s.premiumPill}>
-              <Text style={s.premiumPillText}>PREMIUM</Text>
-            </View>
-          )}
-        </View>
-
-        <Pressable
-          onPress={handleRefresh}
-          style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
-          hitSlop={10}
-        >
-          <Ionicons name="refresh-outline" size={20} color={theme.onSurfaceVariant} />
-        </Pressable>
-      </SafeAreaView>
-
-      {/* ── Browser ─────────────────────────────────────── */}
+    <View style={s.root}>
       <View style={s.browserWrap}>
-        <InAppBrowser
+        <InvitationPreviewDom
           key={reloadKey}
           uri={previewUrl}
-          loading={loading}
-          hasError={hasError}
-          onLoadStart={() => setLoading(true)}
-          onLoadEnd={() => setLoading(false)}
-          onError={() => { setLoading(false); setHasError(true); }}
+          title={name}
+          isPremium={isPremium}
+          reloadKey={reloadKey}
+          onPreviewLoadStart={() => {
+            setLoading(true);
+            setHasError(false);
+          }}
+          onPreviewLoadEnd={() => {
+            setLoading(false);
+          }}
+          onPreviewLoadError={() => {
+            setLoading(false);
+            setHasError(true);
+          }}
+          dom={{
+            scrollEnabled: false,
+            contentInsetAdjustmentBehavior: 'never',
+            style: { flex: 1 },
+          }}
         />
       </View>
 
-      {/* ── Bottom bar ──────────────────────────────────── */}
-      <View style={[s.bottomBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={({ pressed }) => [s.btnGhost, pressed && s.pressed]}
-        >
-          <Text style={s.btnGhostText}>Kembali</Text>
-        </Pressable>
+      {isChromeVisible ? (
+        <>
+          <SafeAreaView style={s.topChrome} edges={['top']}>
+            <View style={s.topChromeInner}>
+              <Pressable
+                onPress={() => navigation.goBack()}
+                style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
+                hitSlop={10}
+              >
+                <Ionicons name="arrow-back" size={22} color={theme.onSurface} />
+              </Pressable>
 
-        <Pressable
-          onPress={() => {
-            // TODO: navigate to invitation picker / apply-theme flow
-            navigation.goBack();
-          }}
-          style={({ pressed }) => [s.btnPrimary, pressed && s.pressed]}
-        >
-          <MaterialCommunityIcons name="check-circle-outline" size={18} color="#FFFFFF" />
-          <Text style={s.btnPrimaryText}>Gunakan Tema</Text>
-        </Pressable>
-      </View>
+              <View style={s.titleBadge}>
+                <Text style={s.topBarTitle} numberOfLines={1}>{name}</Text>
+                {isPremium ? (
+                  <View style={s.premiumPill}>
+                    <Text style={s.premiumPillText}>PREMIUM</Text>
+                  </View>
+                ) : null}
+              </View>
+
+              <View style={s.topActions}>
+                <Pressable
+                  onPress={handleRefresh}
+                  style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
+                  hitSlop={10}
+                >
+                  <Ionicons name="refresh-outline" size={20} color={theme.onSurfaceVariant} />
+                </Pressable>
+
+                <Pressable
+                  onPress={() => setIsChromeVisible(false)}
+                  style={({ pressed }) => [s.iconBtn, pressed && s.pressed]}
+                  hitSlop={10}
+                >
+                  <Ionicons name="eye-off-outline" size={19} color={theme.onSurfaceVariant} />
+                </Pressable>
+              </View>
+            </View>
+          </SafeAreaView>
+
+          <View style={[s.bottomChrome, { paddingBottom: Math.max(insets.bottom, 16) }]}> 
+            <Text style={s.bottomHint}>
+              {hasError
+                ? 'Preview gagal dimuat. Coba muat ulang terlebih dahulu.'
+                : 'Sudah cocok? Terapkan tema ini ke undangan Anda.'}
+            </Text>
+
+            <View style={s.bottomActions}>
+              <Pressable
+                onPress={hasError ? handleRefresh : () => navigation.goBack()}
+                style={({ pressed }) => [s.btnGhost, pressed && s.pressed]}
+              >
+                <Ionicons
+                  name={hasError ? 'refresh-outline' : 'arrow-back-outline'}
+                  size={18}
+                  color={theme.onSurfaceVariant}
+                />
+                <Text style={s.btnGhostText}>{hasError ? 'Muat Ulang' : 'Kembali'}</Text>
+              </Pressable>
+
+              <Pressable
+                onPress={handleApplyTheme}
+                disabled={!canApplyTheme}
+                style={({ pressed }) => [
+                  s.btnPrimary,
+                  pressed && canApplyTheme && s.pressed,
+                  !canApplyTheme && s.btnPrimaryDisabled,
+                ]}
+              >
+                <MaterialCommunityIcons name="check-circle-outline" size={18} color="#FFFFFF" />
+                <Text style={s.btnPrimaryText}>
+                  {loading ? 'Memuat Preview...' : 'Gunakan Tema'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </>
+      ) : (
+        <SafeAreaView style={s.revealChromeWrap} edges={['top']}>
+          <Pressable
+            onPress={() => setIsChromeVisible(true)}
+            style={({ pressed }) => [s.revealChromeBtn, pressed && s.pressed]}
+          >
+            <Ionicons name="options-outline" size={16} color={theme.onSurfaceVariant} />
+            <Text style={s.revealChromeText}>Kontrol</Text>
+          </Pressable>
+        </SafeAreaView>
+      )}
     </View>
   );
 }
@@ -124,71 +202,113 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       backgroundColor: t.background,
     },
 
-    topBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 14,
-      paddingBottom: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: t.outlineVariant,
-      backgroundColor: t.surface,
-      gap: 10,
-    },
-    iconBtn: {
-      width: 38,
-      height: 38,
-      borderRadius: 12,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: t.surfaceContainerLow,
-    },
-    titleWrap: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-    },
-    topBarTitle: {
-      fontFamily: F.heading,
-      fontSize: 16,
-      color: t.onSurface,
-      flexShrink: 1,
-    },
-    premiumPill: {
-      backgroundColor: '#D93723',
-      borderRadius: 6,
-      paddingHorizontal: 7,
-      paddingVertical: 3,
-    },
-    premiumPillText: {
-      fontFamily: F.labelBold,
-      fontSize: 8,
-      letterSpacing: 0.5,
-      color: '#FFFFFF',
-    },
-
     browserWrap: {
       flex: 1,
       overflow: 'hidden',
     },
 
-    bottomBar: {
+    topChrome: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: 14,
+      zIndex: 20,
+    },
+    topChromeInner: {
       flexDirection: 'row',
-      gap: 12,
-      paddingHorizontal: 20,
-      paddingTop: 14,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 16,
+      backgroundColor: t.surface,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      shadowColor: '#000000',
+      shadowOpacity: 0.12,
+      shadowRadius: 18,
+      shadowOffset: { width: 0, height: 8 },
+      elevation: Platform.OS === 'android' ? 6 : 0,
+      gap: 10,
+    },
+    iconBtn: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: t.surfaceContainerLow,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+    },
+    titleBadge: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      paddingHorizontal: 6,
+    },
+    topActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    topBarTitle: {
+      fontFamily: F.labelBold,
+      fontSize: 13,
+      color: t.onSurface,
+      flexShrink: 1,
+    },
+    premiumPill: {
+      backgroundColor: '#D93723',
+      borderRadius: 999,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    premiumPillText: {
+      fontFamily: F.labelBold,
+      fontSize: 8,
+      letterSpacing: 0.6,
+      color: '#FFFFFF',
+    },
+
+    bottomChrome: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      paddingHorizontal: 14,
+      paddingTop: 12,
+      gap: 10,
+      backgroundColor: t.surface,
       borderTopWidth: 1,
       borderTopColor: t.outlineVariant,
-      backgroundColor: t.surface,
+      zIndex: 20,
+    },
+    bottomHint: {
+      fontFamily: F.body,
+      fontSize: 12,
+      color: t.onSurfaceVariant,
+      textAlign: 'center',
+      paddingHorizontal: 4,
+    },
+    bottomActions: {
+      flexDirection: 'row',
+      gap: 10,
     },
     btnGhost: {
       flex: 1,
-      height: 52,
+      height: 50,
       borderRadius: 999,
       borderWidth: 1.5,
       borderColor: t.outlineVariant,
       alignItems: 'center',
       justifyContent: 'center',
+      flexDirection: 'row',
+      gap: 6,
+      backgroundColor: t.surface,
     },
     btnGhostText: {
       fontFamily: F.labelBold,
@@ -196,8 +316,8 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       color: t.onSurfaceVariant,
     },
     btnPrimary: {
-      flex: 2,
-      height: 52,
+      flex: 1.7,
+      height: 50,
       borderRadius: 999,
       backgroundColor: t.primary,
       flexDirection: 'row',
@@ -210,10 +330,43 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       shadowOffset: { width: 0, height: 5 },
       elevation: Platform.OS === 'android' ? 6 : 0,
     },
+    btnPrimaryDisabled: {
+      opacity: 0.55,
+    },
     btnPrimaryText: {
       fontFamily: F.labelBold,
-      fontSize: 15,
+      fontSize: 14,
       color: '#FFFFFF',
+    },
+
+    revealChromeWrap: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      paddingHorizontal: 14,
+      zIndex: 20,
+      alignItems: 'flex-end',
+    },
+    revealChromeBtn: {
+      height: 34,
+      borderRadius: 999,
+      paddingHorizontal: 12,
+      backgroundColor: t.surface,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      shadowColor: '#000000',
+      shadowOpacity: 0.1,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 4 },
+      elevation: Platform.OS === 'android' ? 4 : 0,
+    },
+    revealChromeText: {
+      fontFamily: F.label,
+      fontSize: 12,
+      color: t.onSurfaceVariant,
     },
 
     pressed: { opacity: 0.82, transform: [{ scale: 0.97 }] },

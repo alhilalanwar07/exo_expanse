@@ -1,46 +1,112 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  type StyleProp,
   StyleSheet,
+  useWindowDimensions,
+  type ViewStyle,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from '../theme/colors';
 
+export const SCREEN_CONTAINER_LAYOUT = {
+  compactBreakpoint: 390,
+  horizontalPadding: { compact: 18, regular: 24 },
+  topPadding: { compact: 16, regular: 22 },
+  bottomPadding: { compact: 18, regular: 24 },
+  defaultContentGap: 16,
+  defaultMaxContentWidth: 420,
+} as const;
+
 type ScreenContainerProps = PropsWithChildren<{
   scrollable?: boolean;
+  keyboardVerticalOffset?: number;
+  contentGap?: number;
+  maxContentWidth?: number;
+  keyboardBehavior?: 'height' | 'position' | 'padding';
+  header?: ReactNode;
+  backgroundColor?: string;
+  showBackgroundEffects?: boolean;
+  contentStyle?: StyleProp<ViewStyle>;
+  scrollContentStyle?: StyleProp<ViewStyle>;
 }>;
 
 export function ScreenContainer({
   children,
   scrollable = true,
+  keyboardVerticalOffset = 0,
+  contentGap = SCREEN_CONTAINER_LAYOUT.defaultContentGap,
+  maxContentWidth = SCREEN_CONTAINER_LAYOUT.defaultMaxContentWidth,
+  keyboardBehavior,
+  header,
+  backgroundColor = colors.background,
+  showBackgroundEffects = true,
+  contentStyle,
+  scrollContentStyle,
 }: ScreenContainerProps) {
-  const content = <View style={styles.content}>{children}</View>;
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width <= SCREEN_CONTAINER_LAYOUT.compactBreakpoint;
+
+  const horizontalPadding = isCompact
+    ? SCREEN_CONTAINER_LAYOUT.horizontalPadding.compact
+    : SCREEN_CONTAINER_LAYOUT.horizontalPadding.regular;
+  const topPadding = isCompact
+    ? SCREEN_CONTAINER_LAYOUT.topPadding.compact
+    : SCREEN_CONTAINER_LAYOUT.topPadding.regular;
+  const baseBottomPadding = isCompact
+    ? SCREEN_CONTAINER_LAYOUT.bottomPadding.compact
+    : SCREEN_CONTAINER_LAYOUT.bottomPadding.regular;
+  const bottomPadding = Math.max(baseBottomPadding, insets.bottom + 12);
+
+  const contentPaddingStyle = {
+    paddingHorizontal: horizontalPadding,
+    paddingTop: topPadding,
+    paddingBottom: bottomPadding,
+  };
+
+  const contentInnerStyle = {
+    maxWidth: maxContentWidth,
+    gap: contentGap,
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <View pointerEvents="none" style={styles.backgroundTopGlow} />
-      <View pointerEvents="none" style={styles.backgroundMiddleGlow} />
-      <View pointerEvents="none" style={styles.backgroundBottomGlow} />
-      <View pointerEvents="none" style={styles.backgroundGrid} />
+    <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top', 'left', 'right']}>
+      {showBackgroundEffects ? (
+        <>
+          <View pointerEvents="none" style={styles.backgroundTopGlow} />
+          <View pointerEvents="none" style={styles.backgroundMiddleGlow} />
+          <View pointerEvents="none" style={styles.backgroundBottomGlow} />
+          <View pointerEvents="none" style={styles.backgroundGrid} />
+        </>
+      ) : null}
+
+      {header}
 
       <KeyboardAvoidingView
         style={styles.keyboardWrapper}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={keyboardBehavior ?? (Platform.OS === 'ios' ? 'padding' : undefined)}
+        keyboardVerticalOffset={keyboardVerticalOffset}
       >
         {scrollable ? (
           <ScrollView
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={[styles.scrollContent, contentPaddingStyle, scrollContentStyle]}
+            contentInsetAdjustmentBehavior="automatic"
+            automaticallyAdjustKeyboardInsets
+            keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            {content}
+            <View style={[styles.contentInner, contentInnerStyle, contentStyle]}>{children}</View>
           </ScrollView>
         ) : (
-          content
+          <View style={[styles.content, contentPaddingStyle]}>
+            <View style={[styles.contentInner, styles.contentInnerFill, contentInnerStyle, contentStyle]}>{children}</View>
+          </View>
         )}
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -54,16 +120,19 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 24,
   },
   keyboardWrapper: {
     flex: 1,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 24,
+  },
+  contentInner: {
+    width: '100%',
+    alignSelf: 'center',
+  },
+  contentInnerFill: {
+    flex: 1,
   },
   backgroundTopGlow: {
     position: 'absolute',

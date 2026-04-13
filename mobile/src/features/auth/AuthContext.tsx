@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
@@ -11,6 +12,7 @@ import { Platform } from 'react-native';
 
 import {
   exchangeAccessCode,
+  isAuthApiError,
   loginWithEmailPassword,
   registerMobileAccount,
   refreshMobileSession,
@@ -19,6 +21,7 @@ import {
 } from './auth.api';
 
 import { clearAuthSession, readAuthSession, writeAuthSession } from './auth.storage';
+import { configureHttpClientAuth } from '../../services/httpClient';
 import type {
   AuthContextValue,
   AuthSession,
@@ -30,6 +33,16 @@ import type {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+type AuthState = {
+  session: AuthSession | null;
+  isHydrating: boolean;
+};
+
+const INITIAL_AUTH_STATE: AuthState = {
+  session: null,
+  isHydrating: true,
+};
+
 function mapApiSessionToAuthSession(apiSession: MobileApiSession): AuthSession {
   return {
     workspaceId: apiSession.workspace_id,
@@ -40,6 +53,14 @@ function mapApiSessionToAuthSession(apiSession: MobileApiSession): AuthSession {
     refreshToken: apiSession.refresh_token,
     connectedAt: new Date().toISOString(),
     expiresAt: apiSession.expires_at,
+  };
+}
+
+function mapAuthSessionToHttpClientSession(session: AuthSession) {
+  return {
+    accessToken: session.accessToken,
+    refreshToken: session.refreshToken,
+    expiresAt: session.expiresAt,
   };
 }
 
@@ -60,36 +81,123 @@ function detectPlatform(): 'ios' | 'android' | 'web' {
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [session, setSession] = useState<AuthSession | null>(null);
-  const [isHydrating, setIsHydrating] = useState(true);
+  const [authState, setAuthState] = useState<AuthState>(INITIAL_AUTH_STATE);
+  const bootstrapRunIdRef = useRef(0);
+
+  const setSession = useCallback((nextSession: AuthSession | null) => {
+    setAuthState((prev) => ({
+      ...prev,
+      session: nextSession,
+    }));
+  }, []);
+
+  const finishHydration = useCallback((nextSession: AuthSession | null) => {
+    setAuthState({
+      session: nextSession,
+      isHydrating: false,
+    });
+  }, []);
 
   useEffect(() => {
-    let isMounted = true;
+    configureHttpClientAuth({
+      getSession: async () => {
+        const session = await readAuthSession();
+        return session ? mapAuthSessionToHttpClientSession(session) : null;
+      },
+      refreshSession: async (session) => {
+        const latestSession = await readAuthSession();
 
-    (async () => {
-      let nextSession = await readAuthSession();
-
-      if (nextSession && isExpired(nextSession.expiresAt)) {
-        try {
-          const refreshedSession = await refreshMobileSession(nextSession.refreshToken);
-          nextSession = mapApiSessionToAuthSession(refreshedSession);
-          await writeAuthSession(nextSession);
-        } catch {
-          await clearAuthSession();
-          nextSession = null;
+        if (!latestSession || latestSession.refreshToken !== session.refreshToken) {
+          return null;
         }
+
+        try {
+          const refreshedSession = await refreshMobileSession(latestSession.refreshToken);
+          const nextSession = mapApiSessionToAuthSession(refreshedSession);
+
+          await writeAuthSession(nextSession);
+          setSession(nextSession);
+
+          return mapAuthSessionToHttpClientSession(nextSession);
+        } catch (error) {
+          if (
+            isAuthApiError(error)
+            && (error.code === 'NETWORK_ERROR' || error.code === 'TIMEOUT')
+          ) {
+            throw error;
+          }
+
+          return null;
+        }
+      },
+      clearSession: async () => {
+        await clearAuthSession();
+        setSession(null);
+      },
+    });
+
+    return () => {
+      configureHttpClientAuth(null);
+    };
+  }, [setSession]);
+
+  useEffect(() => {
+    let isActive = true;
+    const bootstrapRunId = ++bootstrapRunIdRef.current;
+    const refreshAbortController = new AbortController();
+
+    const safelyFinishHydration = (nextSession: AuthSession | null) => {
+      if (!isActive || bootstrapRunId !== bootstrapRunIdRef.current) {
+        return;
       }
 
-      if (isMounted) {
-        setSession(nextSession);
-        setIsHydrating(false);
+      finishHydration(nextSession);
+    };
+
+    (async () => {
+      let nextSession: AuthSession | null = null;
+
+      try {
+        nextSession = await readAuthSession();
+
+        if (nextSession && isExpired(nextSession.expiresAt)) {
+          try {
+            const refreshedSession = await refreshMobileSession(nextSession.refreshToken, {
+              signal: refreshAbortController.signal,
+            });
+            nextSession = mapApiSessionToAuthSession(refreshedSession);
+            await writeAuthSession(nextSession);
+          } catch (refreshError) {
+            if (refreshAbortController.signal.aborted) {
+              return;
+            }
+
+            // Keep cached session on transient network issues to avoid startup auth flicker.
+            if (
+              isAuthApiError(refreshError)
+              && (refreshError.code === 'NETWORK_ERROR' || refreshError.code === 'TIMEOUT')
+            ) {
+              safelyFinishHydration(nextSession);
+              return;
+            }
+
+            await clearAuthSession();
+            nextSession = null;
+          }
+        }
+
+        safelyFinishHydration(nextSession);
+      } catch {
+        await clearAuthSession();
+        safelyFinishHydration(null);
       }
     })();
 
     return () => {
-      isMounted = false;
+      isActive = false;
+      refreshAbortController.abort();
     };
-  }, []);
+  }, [finishHydration]);
 
   const connectDevice = useCallback(async (payload: ConnectDevicePayload) => {
     const normalizedAccessCode = payload.accessCode.trim().toUpperCase();
@@ -128,6 +236,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       name: normalizedName,
       email: normalizedEmail,
       password: normalizedPassword,
+      signal: payload.signal,
     });
 
     return {
@@ -150,6 +259,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       password: normalizedPassword,
       deviceAlias: normalizedDeviceAlias,
       platform: detectPlatform(),
+      signal: payload.signal,
     });
 
     const nextSession = mapApiSessionToAuthSession(apiSession);
@@ -159,9 +269,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const disconnectDevice = useCallback(async () => {
-    if (session?.accessToken) {
+    if (authState.session?.accessToken) {
       try {
-        await revokeMobileSession(session.accessToken);
+        await revokeMobileSession(authState.session.accessToken);
       } catch {
         // Ignore network error on logout and continue cleaning local session.
       }
@@ -169,18 +279,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     await clearAuthSession();
     setSession(null);
-  }, [session]);
+  }, [authState.session, setSession]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      session,
-      isHydrating,
+      session: authState.session,
+      isHydrating: authState.isHydrating,
       connectDevice,
       registerAccount,
       loginWithPassword,
       disconnectDevice,
     }),
-    [session, isHydrating, connectDevice, registerAccount, loginWithPassword, disconnectDevice]
+    [authState, connectDevice, registerAccount, loginWithPassword, disconnectDevice]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

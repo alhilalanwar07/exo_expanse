@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../features/auth/AuthContext';
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
+import { AuthChoiceScreen } from '../features/auth/AuthChoiceScreen';
+import { ConnectDeviceScreen } from '../features/auth/ConnectDeviceScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { UndanganScreen } from '../screens/UndanganScreen';
@@ -16,21 +18,8 @@ import { ProfileScreen } from '../screens/ProfileScreen';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { RegisterScreen } from '../features/auth/RegisterScreen';
 import { ThemePreviewScreen } from '../screens/ThemePreviewScreen';
-
-// -- Types
-export type MainTabParamList = {
-  Home: undefined;
-  Undangan: undefined;
-  Profil: undefined;
-};
-
-export type RootStackParamList = {
-  Welcome: undefined;
-  Main: undefined;
-  Login: undefined;
-  Register: undefined;
-  ThemePreview: { id: number; name: string; previewUrl: string; isPremium: boolean };
-};
+import { InvitationContentEditorScreen } from '../screens/InvitationContentEditorScreen';
+import type { MainTabParamList, RootStackParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -126,26 +115,86 @@ export function RootNavigator() {
     );
   }
 
-  const getInitialRoute = (): keyof RootStackParamList => {
-    if (session) return 'Main';
-    if (!hasLaunched) return 'Welcome';
-    return 'Login';
-  };
+  const flowNavigatorKey = session ? 'authenticated-flow' : 'guest-flow';
+
+  let initialRouteName: keyof RootStackParamList = 'Login';
+
+  if (session) {
+    initialRouteName = 'Main';
+  } else if (!hasLaunched) {
+    initialRouteName = 'Welcome';
+  }
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={getInitialRoute()}
-        screenOptions={{ headerShown: false }}
+        key={flowNavigatorKey}
+        initialRouteName={initialRouteName}
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: theme.background },
+          animation: 'fade',
+        }}
       >
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Main" component={MainTabs} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{
+            animation: 'fade_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="Main"
+          component={MainTabs}
+          options={{
+            gestureEnabled: false,
+            animation: 'fade',
+          }}
+        />
+        <Stack.Screen
+          name="AuthChoice"
+          component={AuthChoiceScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationTypeForReplace: 'push',
+          }}
+        />
+        <Stack.Screen
+          name="ConnectDevice"
+          component={ConnectDeviceScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationTypeForReplace: 'push',
+          }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationTypeForReplace: 'push',
+          }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationTypeForReplace: 'push',
+          }}
+        />
         <Stack.Screen
           name="ThemePreview"
           component={ThemePreviewScreen}
           options={{ presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="InvitationContentEditor"
+          component={InvitationContentEditorScreen}
+          options={{
+            presentation: 'fullScreenModal',
+            animation: 'slide_from_bottom',
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
