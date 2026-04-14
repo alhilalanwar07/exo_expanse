@@ -224,7 +224,7 @@ export function UndanganScreen() {
           </View>
 
           <Pressable
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('InvitationForm', undefined)}
             style={({ pressed }) => [s.heroAddBtn, pressed && s.pressed]}
           >
             <Ionicons name="add" size={20} color="#FFFFFF" />
@@ -272,16 +272,14 @@ export function UndanganScreen() {
 
           <Pressable
             onPress={() =>
-              navigation.navigate('InvitationContentEditor', {
-                invitationId: String(latestInvitation.id),
-                invitationTitle: latestInvitation.title,
-                initialHtml: toInvitationInitialContent(latestInvitation.title),
+              navigation.navigate('InvitationForm', {
+                invitationId: Number(latestInvitation.id),
               })
             }
             style={({ pressed }) => [s.latestEditButton, pressed && s.pressed]}
           >
             <Ionicons name="create-outline" size={14} color={theme.primary} />
-            <Text style={s.latestEditButtonText}>Edit Konten</Text>
+            <Text style={s.latestEditButtonText}>Edit Undangan</Text>
           </Pressable>
         </View>
       ) : null}
@@ -300,7 +298,7 @@ export function UndanganScreen() {
       <Text style={s.emptyTitle}>Belum Ada Undangan</Text>
       <Text style={s.emptySubtitle}>Buat undangan digital pertama Anda sekarang.</Text>
       <Pressable
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('InvitationForm', undefined)}
         style={({ pressed }) => [s.primaryButton, pressed && s.pressed]}
       >
         <Text style={s.primaryButtonText}>Buat Undangan Baru</Text>
@@ -340,15 +338,13 @@ export function UndanganScreen() {
         <Pressable
           style={({ pressed }) => [s.editButton, pressed && s.pressed]}
           onPress={() =>
-            navigation.navigate('InvitationContentEditor', {
-              invitationId: String(item.id),
-              invitationTitle: item.title,
-              initialHtml: toInvitationInitialContent(item.title),
+            navigation.navigate('InvitationForm', {
+              invitationId: Number(item.id),
             })
           }
         >
           <Ionicons name="create-outline" size={16} color={theme.primary} />
-          <Text style={s.editButtonText}>Edit Konten</Text>
+          <Text style={s.editButtonText}>Edit</Text>
         </Pressable>
 
         <Pressable

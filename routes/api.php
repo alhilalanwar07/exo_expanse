@@ -27,7 +27,20 @@ Route::prefix('mobile/access')->group(function () {
         Route::post('/revoke', [MobileAccessController::class, 'revoke']);
         Route::get('/devices', [MobileAccessController::class, 'devices']);
         Route::get('/invitations', [\App\Http\Controllers\Api\MobileInvitationController::class, 'index']);
+        Route::post('/invitations', [\App\Http\Controllers\Api\MobileInvitationController::class, 'store']);
         Route::get('/invitations/{id}', [\App\Http\Controllers\Api\MobileInvitationController::class, 'show']);
+        Route::patch('/invitations/{id}', [\App\Http\Controllers\Api\MobileInvitationController::class, 'update']);
+        Route::post('/invitations/{id}/publish', [\App\Http\Controllers\Api\MobileInvitationController::class, 'publish']);
+        // Photos
+        Route::post('/invitations/{id}/cover-photo', [\App\Http\Controllers\Api\MobileInvitationController::class, 'uploadCoverPhoto']);
+        Route::post('/invitations/{id}/groom-photo', [\App\Http\Controllers\Api\MobileInvitationController::class, 'uploadGroomPhoto']);
+        Route::post('/invitations/{id}/bride-photo', [\App\Http\Controllers\Api\MobileInvitationController::class, 'uploadBridePhoto']);
+        Route::post('/invitations/{id}/photos', [\App\Http\Controllers\Api\MobileInvitationController::class, 'uploadGalleryPhoto']);
+        Route::delete('/invitations/{id}/photos/{photoId}', [\App\Http\Controllers\Api\MobileInvitationController::class, 'deleteGalleryPhoto']);
+        // Guests
+        Route::get('/invitations/{id}/guests', [\App\Http\Controllers\Api\MobileInvitationController::class, 'getGuests']);
+        Route::post('/invitations/{id}/guests', [\App\Http\Controllers\Api\MobileInvitationController::class, 'storeGuests']);
+        Route::delete('/invitations/{id}/guests/{guestId}', [\App\Http\Controllers\Api\MobileInvitationController::class, 'deleteGuest']);
     });
 });
 

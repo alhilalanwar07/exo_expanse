@@ -23,6 +23,10 @@ export type ApplyThemeRouteParams = {
   isPremium: boolean;
 };
 
+export type InvitationFormRouteParams = {
+  invitationId?: number;
+};
+
 export type RootStackParamList = {
   Welcome: undefined;
   Main: undefined;
@@ -36,6 +40,7 @@ export type RootStackParamList = {
   Register: undefined;
   ThemePreview: ThemePreviewRouteParams;
   InvitationContentEditor: InvitationContentEditorRouteParams | undefined;
+  InvitationForm: InvitationFormRouteParams | undefined;
   ApplyTheme: ApplyThemeRouteParams;
   EditProfile: undefined;
   Help: undefined;

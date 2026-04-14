@@ -22,6 +22,7 @@ import { InvitationContentEditorScreen } from '../screens/InvitationContentEdito
 import { ApplyThemeScreen } from '../screens/ApplyThemeScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
 import { HelpScreen } from '../screens/HelpScreen';
+import { InvitationFormScreen } from '../screens/InvitationFormScreen';
 import type { MainTabParamList, RootStackParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -219,6 +220,14 @@ export function RootNavigator() {
           component={HelpScreen}
           options={{
             animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="InvitationForm"
+          component={InvitationFormScreen}
+          options={{
+            presentation: 'fullScreenModal',
+            animation: 'slide_from_bottom',
           }}
         />
       </Stack.Navigator>
