@@ -25,13 +25,13 @@ type NavigationProp = CompositeNavigationProp<
 >;
 
 type ProfileMenuIcon = keyof typeof MaterialCommunityIcons.glyphMap;
-type ProfileMenuRoute = 'Undangan' | 'ConnectDevice';
+type ProfileMenuRoute = 'Undangan' | 'ConnectDevice' | 'EditProfile' | 'Help';
 
 const MENU_ITEMS = [
-  { label: 'Edit Profil', icon: 'account-edit-outline', route: null },
+  { label: 'Edit Profil', icon: 'account-edit-outline', route: 'EditProfile' },
   { label: 'Undangan Saya', icon: 'card-text-outline', route: 'Undangan' },
   { label: 'Perangkat Terhubung', icon: 'devices', route: 'ConnectDevice' },
-  { label: 'Bantuan', icon: 'help-circle-outline', route: null },
+  { label: 'Bantuan', icon: 'help-circle-outline', route: 'Help' },
 ] as const satisfies ReadonlyArray<{
   label: string;
   icon: ProfileMenuIcon;

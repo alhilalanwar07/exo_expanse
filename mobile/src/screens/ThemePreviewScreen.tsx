@@ -68,8 +68,11 @@ export function ThemePreviewScreen() {
   };
 
   const handleApplyTheme = () => {
-    // TODO: navigate to invitation picker / apply-theme flow
-    navigation.goBack();
+    navigation.navigate('ApplyTheme', {
+      themeId: route.params.id,
+      themeName: name,
+      isPremium,
+    });
   };
 
   const canApplyTheme = !loading && !hasError;

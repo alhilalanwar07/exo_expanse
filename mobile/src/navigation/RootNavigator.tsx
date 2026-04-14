@@ -19,6 +19,9 @@ import { LoginScreen } from '../features/auth/LoginScreen';
 import { RegisterScreen } from '../features/auth/RegisterScreen';
 import { ThemePreviewScreen } from '../screens/ThemePreviewScreen';
 import { InvitationContentEditorScreen } from '../screens/InvitationContentEditorScreen';
+import { ApplyThemeScreen } from '../screens/ApplyThemeScreen';
+import { EditProfileScreen } from '../screens/EditProfileScreen';
+import { HelpScreen } from '../screens/HelpScreen';
 import type { MainTabParamList, RootStackParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -194,6 +197,28 @@ export function RootNavigator() {
           options={{
             presentation: 'fullScreenModal',
             animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="ApplyTheme"
+          component={ApplyThemeScreen}
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfileScreen}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="Help"
+          component={HelpScreen}
+          options={{
+            animation: 'slide_from_right',
           }}
         />
       </Stack.Navigator>

@@ -13,7 +13,8 @@ type InvitationPreviewDomProps = {
   dom: import('expo/dom').DOMProps;
 };
 
-const LOAD_TIMEOUT_MS = 12000;
+const LOAD_TIMEOUT_MS = 15000;  // hard error timeout
+const OVERLAY_MAX_VISIBLE_MS = 3500; // overlay dismissed even if onLoad never fires (cross-origin iframes)
 
 function toHostLabel(rawUri: string): string {
   try {
@@ -34,52 +35,84 @@ export default function InvitationPreviewDom({
   onPreviewLoadError,
 }: InvitationPreviewDomProps) {
   const [internalLoading, setInternalLoading] = useState(true);
+  const [fadingOut, setFadingOut] = useState(false);
   const [internalError, setInternalError] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const overlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dismissedRef = useRef(false);
+
+  // Always-fresh callback refs — updating these never re-triggers effects
+  const onLoadStartRef = useRef(onPreviewLoadStart);
+  const onLoadEndRef = useRef(onPreviewLoadEnd);
+  const onLoadErrorRef = useRef(onPreviewLoadError);
+  onLoadStartRef.current = onPreviewLoadStart;
+  onLoadEndRef.current = onPreviewLoadEnd;
+  onLoadErrorRef.current = onPreviewLoadError;
 
   const hostLabel = useMemo(() => toHostLabel(uri), [uri]);
 
+  /** Trigger a smooth fade-out then remove the overlay from DOM */
+  const dismissOverlay = (callback?: () => void) => {
+    if (dismissedRef.current) return; // prevent double-dismiss → infinite loop
+    dismissedRef.current = true;
+    // Cancel both timers to stop any pending re-triggers
+    if (overlayTimerRef.current) { clearTimeout(overlayTimerRef.current); overlayTimerRef.current = null; }
+    if (timeoutRef.current) { clearTimeout(timeoutRef.current); timeoutRef.current = null; }
+    setFadingOut(true);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+    fadeTimerRef.current = setTimeout(() => {
+      setInternalLoading(false);
+      setFadingOut(false);
+      callback?.();
+    }, 420);
+  };
+
+  // Only re-run when url/reloadKey changes — callbacks accessed via refs (never in deps)
   useEffect(() => {
     setInternalLoading(true);
+    setFadingOut(false);
     setInternalError(null);
-    void onPreviewLoadStart?.();
+    dismissedRef.current = false; // reset guard for new load
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    void onLoadStartRef.current?.();
 
+    // Clear any previous timers
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+
+    // Guaranteed overlay dismiss — cross-origin iframes may never fire onLoad
+    overlayTimerRef.current = setTimeout(() => {
+      dismissOverlay(() => void onLoadEndRef.current?.());
+    }, OVERLAY_MAX_VISIBLE_MS);
+
+    // Hard error timeout if iframe stays blank too long
     timeoutRef.current = setTimeout(() => {
+      if (dismissedRef.current) return;
+      dismissedRef.current = true;
       setInternalLoading(false);
       setInternalError('Preview membutuhkan waktu terlalu lama untuk dimuat.');
-      void onPreviewLoadError?.('timeout');
+      void onLoadErrorRef.current?.('timeout');
     }, LOAD_TIMEOUT_MS);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
     };
-  }, [uri, reloadKey, onPreviewLoadStart, onPreviewLoadError]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uri, reloadKey]); // callbacks via refs — intentionally excluded
 
   const handleLoad = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    setInternalLoading(false);
     setInternalError(null);
-    void onPreviewLoadEnd?.();
+    dismissOverlay(() => void onLoadEndRef.current?.());
   };
 
   const handleError = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
     const message = 'Tidak dapat memuat preview undangan.';
-    setInternalLoading(false);
     setInternalError(message);
-    void onPreviewLoadError?.(message);
+    dismissOverlay(() => void onLoadErrorRef.current?.(message));
   };
 
   return (
@@ -88,6 +121,10 @@ export default function InvitationPreviewDom({
         @keyframes invitation-preview-spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        @keyframes overlay-fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `}</style>
 
@@ -112,7 +149,12 @@ export default function InvitationPreviewDom({
       </div>
 
       {internalLoading ? (
-        <div style={styles.overlay}>
+        <div style={{
+          ...styles.overlay,
+          opacity: fadingOut ? 0 : 1,
+          transition: fadingOut ? 'opacity 0.4s ease' : 'none',
+          animation: fadingOut ? 'none' : 'overlay-fade-in 0.2s ease',
+        }}>
           <div style={styles.spinner} />
           <p style={styles.overlayText}>Memuat preview undangan...</p>
         </div>

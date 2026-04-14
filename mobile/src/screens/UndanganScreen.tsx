@@ -8,6 +8,7 @@ import {
   Pressable,
   Image,
   Alert,
+  Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -197,6 +198,18 @@ export function UndanganScreen() {
     }, [])
   );
 
+  const handleShare = async (item: InvitationItem) => {
+    try {
+      await Share.share({
+        title: item.title,
+        message: `🎊 ${item.title}\n\nAnda diundang! Buka link undangan digital kami:\n${item.url}`,
+        url: item.url, // iOS only
+      });
+    } catch {
+      Alert.alert('Gagal', 'Tidak dapat membagikan undangan.');
+    }
+  };
+
   const renderListHeader = () => (
     <View style={s.listHeaderWrap}>
       <View style={s.heroCard}>
@@ -340,7 +353,7 @@ export function UndanganScreen() {
 
         <Pressable
           style={({ pressed }) => [s.sebarButton, pressed && s.pressed]}
-          onPress={() => console.log('Sebar', item.url)}
+          onPress={() => void handleShare(item)}
         >
           <Ionicons name="share-social-outline" size={16} color="#FFFFFF" />
           <Text style={s.sebarButtonText}>Sebar Undangan</Text>

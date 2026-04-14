@@ -17,6 +17,12 @@ export type MainTabParamList = {
   Profil: undefined;
 };
 
+export type ApplyThemeRouteParams = {
+  themeId: number;
+  themeName: string;
+  isPremium: boolean;
+};
+
 export type RootStackParamList = {
   Welcome: undefined;
   Main: undefined;
@@ -30,6 +36,9 @@ export type RootStackParamList = {
   Register: undefined;
   ThemePreview: ThemePreviewRouteParams;
   InvitationContentEditor: InvitationContentEditorRouteParams | undefined;
+  ApplyTheme: ApplyThemeRouteParams;
+  EditProfile: undefined;
+  Help: undefined;
 };
 
 export type AuthFlowParamList = Pick<

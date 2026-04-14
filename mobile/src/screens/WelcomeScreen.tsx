@@ -101,13 +101,13 @@ export function WelcomeScreen() {
 
           <View style={s.socialRow}>
             <Pressable
-              onPress={() => console.log('Google')}
+              onPress={() => navigation.navigate('Login')}
               style={({ pressed }) => [s.socialButton, s.googleButton, pressed && s.buttonPressed]}
             >
               <Text style={[s.socialButtonText, s.googleButtonText]}>G  Google</Text>
             </Pressable>
             <Pressable
-              onPress={() => console.log('Apple')}
+              onPress={() => navigation.navigate('Register')}
               style={({ pressed }) => [s.socialButton, s.appleButton, pressed && s.buttonPressed]}
             >
               <Text style={[s.socialButtonText, s.appleButtonText]}>  Apple</Text>

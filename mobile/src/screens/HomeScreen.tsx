@@ -55,6 +55,70 @@ async function fetchThemes(): Promise<ThemeItem[]> {
 
 type NavProp = NativeStackNavigationProp<RootStackParamList>;
 
+// ── ThemeCard subcomponent (needs useState → must be a proper component) ─────
+
+type ThemeCardProps = {
+  item: ThemeItem;
+  onPress: (item: ThemeItem) => void;
+  theme: ReturnType<typeof useAppTheme>['theme'];
+  s: ReturnType<typeof makeStyles>;
+};
+
+function ThemeCard({ item, onPress, theme, s }: ThemeCardProps) {
+  const [imgError, setImgError] = useState(false);
+  const showPlaceholder = !item.thumbnail_url || imgError;
+
+  return (
+    <Pressable
+      style={({ pressed }) => [s.card, pressed && s.pressed]}
+      onPress={() => onPress(item)}
+    >
+      {/* Thumbnail */}
+      <View style={s.imageWrap}>
+        {!showPlaceholder ? (
+          <Image
+            source={{ uri: item.thumbnail_url ?? undefined }}
+            style={s.image}
+            resizeMode="cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <View style={s.imagePlaceholder}>
+            <MaterialCommunityIcons name="image-outline" size={32} color={theme.outline} />
+          </View>
+        )}
+        {/* Badge */}
+        <View style={[s.badge, item.is_premium ? s.badgePremium : s.badgeFree]}>
+          <Text style={[s.badgeText, item.is_premium ? s.badgeTextPremium : s.badgeTextFree]}>
+            {item.is_premium ? 'PREMIUM' : 'GRATIS'}
+          </Text>
+        </View>
+
+        {/* Tap overlay hint */}
+        <View style={s.tapOverlay}>
+          <Ionicons name="eye-outline" size={16} color="#FFFFFF" />
+          <Text style={s.tapOverlayText}>Lihat Demo</Text>
+        </View>
+      </View>
+
+      {/* Name */}
+      <Text style={s.cardTitle} numberOfLines={1}>{item.name}</Text>
+
+      {/* Color swatches */}
+      {item.colors.primary ? (
+        <View style={s.swatchRow}>
+          {[item.colors.primary, item.colors.secondary, item.colors.accent]
+            .filter(Boolean)
+            .slice(0, 3)
+            .map((c, i) => (
+              <View key={i} style={[s.swatch, { backgroundColor: c as string }]} />
+            ))}
+        </View>
+      ) : null}
+    </Pressable>
+  );
+}
+
 export function HomeScreen() {
   const navigation = useNavigation<NavProp>();
   const { theme } = useAppTheme();
@@ -99,48 +163,7 @@ export function HomeScreen() {
   };
 
   const renderCard = ({ item }: { item: ThemeItem }) => (
-    <Pressable
-      style={({ pressed }) => [s.card, pressed && s.pressed]}
-      onPress={() => openPreview(item)}
-    >
-      {/* Thumbnail */}
-      <View style={s.imageWrap}>
-        {item.thumbnail_url ? (
-          <Image source={{ uri: item.thumbnail_url }} style={s.image} resizeMode="cover" />
-        ) : (
-          <View style={s.imagePlaceholder}>
-            <MaterialCommunityIcons name="image-outline" size={32} color={theme.outline} />
-          </View>
-        )}
-        {/* Badge */}
-        <View style={[s.badge, item.is_premium ? s.badgePremium : s.badgeFree]}>
-          <Text style={[s.badgeText, item.is_premium ? s.badgeTextPremium : s.badgeTextFree]}>
-            {item.is_premium ? 'PREMIUM' : 'GRATIS'}
-          </Text>
-        </View>
-
-        {/* Tap overlay hint */}
-        <View style={s.tapOverlay}>
-          <Ionicons name="eye-outline" size={16} color="#FFFFFF" />
-          <Text style={s.tapOverlayText}>Lihat Demo</Text>
-        </View>
-      </View>
-
-      {/* Name */}
-      <Text style={s.cardTitle} numberOfLines={1}>{item.name}</Text>
-
-      {/* Color swatches */}
-      {item.colors.primary ? (
-        <View style={s.swatchRow}>
-          {[item.colors.primary, item.colors.secondary, item.colors.accent]
-            .filter(Boolean)
-            .slice(0, 3)
-            .map((c, i) => (
-              <View key={i} style={[s.swatch, { backgroundColor: c as string }]} />
-            ))}
-        </View>
-      ) : null}
-    </Pressable>
+    <ThemeCard item={item} onPress={openPreview} theme={theme} s={s} />
   );
 
   return (
