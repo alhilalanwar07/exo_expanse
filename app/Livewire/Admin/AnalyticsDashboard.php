@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin;
 
 use App\Services\GoogleAnalyticsService;
+use Carbon\Carbon;
 use Livewire\Component;
-use Spatie\LaravelAnalytics\Period;
 
 class AnalyticsDashboard extends Component
 {
@@ -16,24 +16,24 @@ class AnalyticsDashboard extends Component
 
     public string $osFilter = 'all';
 
-    public array $dateRangeOptions = [
-        '7days' => 'Last 7 Days',
-        '30days' => 'Last 30 Days',
-        '90days' => 'Last 90 Days',
-    ];
-
     public function updatingDateRange()
     {
         // Reset pagination or any state if needed
     }
 
-    public function getPeriod(): Period
+    public function getDateRange(): array
     {
-        return match ($this->dateRange) {
-            '30days' => Period::days(30),
-            '90days' => Period::days(90),
-            default => Period::days(7),
+        $endDate = Carbon::now();
+        $startDate = match ($this->dateRange) {
+            '30days' => $endDate->clone()->subDays(30),
+            '90days' => $endDate->clone()->subDays(90),
+            default => $endDate->clone()->subDays(7),
         };
+
+        return [
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ];
     }
 
     public function getVisitorsData(): array
