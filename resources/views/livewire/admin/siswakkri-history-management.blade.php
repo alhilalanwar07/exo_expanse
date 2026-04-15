@@ -57,6 +57,7 @@
                         <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Waktu</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">IP</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
@@ -79,10 +80,19 @@
                             </td>
                             <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">{{ $row->submitted_at?->format('d M Y H:i:s') ?? '-' }}</td>
                             <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">{{ $row->submitted_from_ip ?? '-' }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button
+                                    wire:click="deleteHistory({{ $row->id }})"
+                                    wire:confirm="Yakin ingin menghapus riwayat ini?"
+                                    class="inline-flex items-center px-3 py-1.5 border border-rose-200 dark:border-rose-800/60 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-900/50 transition-all"
+                                >
+                                    Hapus
+                                </button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400">Belum ada riwayat input.</td>
+                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">Belum ada riwayat input.</td>
                         </tr>
                     @endforelse
                 </tbody>

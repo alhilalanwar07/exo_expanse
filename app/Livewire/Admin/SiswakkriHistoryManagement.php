@@ -59,6 +59,13 @@ class SiswakkriHistoryManagement extends Component
         return $this->downloadAsCsv($rows);
     }
 
+    public function deleteHistory(int $id): void
+    {
+        SiswakkriHistory::query()->findOrFail($id)->delete();
+
+        $this->dispatch('toast', message: 'Riwayat berhasil dihapus.', type: 'success');
+    }
+
     public function render()
     {
         $historyRows = $this->getBaseQuery()
