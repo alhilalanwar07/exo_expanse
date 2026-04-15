@@ -71,7 +71,7 @@ class GoogleAnalyticsService
     }
 
     /**
-     * Get page views data
+     * Get page views data (with URL and Title)
      */
     public static function getPageViews(?Carbon $startDate = null, ?Carbon $endDate = null): array
     {
@@ -84,11 +84,13 @@ class GoogleAnalyticsService
             $endDate = $endDate ?? Carbon::now();
             $period = Period::create($startDate, $endDate);
 
-            $data = Analytics::fetchMostVisitedPages($period, 10);
+            // Fetch both page path (URL) and title
+            $data = Analytics::get($period, ['screenPageViews'], ['pagePath', 'pageTitle'], 10);
 
             return $data->map(function ($item) {
                 return [
-                    'url' => $item['pageTitle'] ?? 'N/A', // Spatie uses pageTitle
+                    'url' => $item['pagePath'] ?? 'N/A',
+                    'title' => $item['pageTitle'] ?? 'N/A',
                     'pageViews' => $item['screenPageViews'] ?? 0,
                 ];
             })->toArray();
@@ -257,6 +259,116 @@ class GoogleAnalyticsService
             Log::error('GA4 Total Page Views Error: '.$e->getMessage());
 
             return 0; // Return 0 to prevent entire dashboard crashing on sum
+        }
+    }
+
+    /**
+     * Get Device Category
+     */
+    public static function getDeviceCategory(?Carbon $startDate = null, ?Carbon $endDate = null): array
+    {
+        if (! self::checkConfig()) {
+            return [];
+        }
+
+        try {
+            $startDate = $startDate ?? Carbon::now()->subDays(7);
+            $endDate = $endDate ?? Carbon::now();
+            $period = Period::create($startDate, $endDate);
+
+            $data = Analytics::get($period, ['activeUsers'], ['deviceCategory'], 5);
+
+            return $data->map(function ($item) {
+                return [
+                    'name' => $item['deviceCategory'] ?? 'Unknown',
+                    'users' => $item['activeUsers'] ?? 0,
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            Log::error('GA4 Device Category Error: '.$e->getMessage());
+            throw self::formatError($e);
+        }
+    }
+
+    /**
+     * Get Cities data
+     */
+    public static function getCitiesData(?Carbon $startDate = null, ?Carbon $endDate = null): array
+    {
+        if (! self::checkConfig()) {
+            return [];
+        }
+
+        try {
+            $startDate = $startDate ?? Carbon::now()->subDays(7);
+            $endDate = $endDate ?? Carbon::now();
+            $period = Period::create($startDate, $endDate);
+
+            $data = Analytics::get($period, ['activeUsers'], ['city'], 10);
+
+            return $data->map(function ($item) {
+                // Ignore (not set)
+                $city = $item['city'] ?? 'Unknown';
+                if ($city === '(not set)') $city = 'Lainnya';
+                return [
+                    'name' => $city,
+                    'users' => $item['activeUsers'] ?? 0,
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            Log::error('GA4 Cities Data Error: '.$e->getMessage());
+            throw self::formatError($e);
+        }
+    }
+
+    /**
+     * Get Average Session Duration (Engagement Time)
+     */
+    public static function getAverageSessionDuration(?Carbon $startDate = null, ?Carbon $endDate = null): float
+    {
+        if (! self::checkConfig()) {
+            return 0;
+        }
+
+        try {
+            $startDate = $startDate ?? Carbon::now()->subDays(7);
+            $endDate = $endDate ?? Carbon::now();
+            $period = Period::create($startDate, $endDate);
+
+            $data = Analytics::get($period, ['averageSessionDuration']);
+
+            return (float) ($data->sum('averageSessionDuration') ?? 0);
+        } catch (\Exception $e) {
+            Log::error('GA4 Avg Session Duration Error: '.$e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Get custom custom Events (RSVP, Media Play, interactions)
+     */
+    public static function getTopEvents(?Carbon $startDate = null, ?Carbon $endDate = null): array
+    {
+        if (! self::checkConfig()) {
+            return [];
+        }
+
+        try {
+            $startDate = $startDate ?? Carbon::now()->subDays(7);
+            $endDate = $endDate ?? Carbon::now();
+            $period = Period::create($startDate, $endDate);
+
+            $data = Analytics::get($period, ['eventCount'], ['eventName'], 10);
+
+            return $data->map(function ($item) {
+                return [
+                    'name' => $item['eventName'] ?? 'Unknown',
+                    'count' => $item['eventCount'] ?? 0,
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            Log::error('GA4 Events Error: '.$e->getMessage());
+            throw self::formatError($e);
         }
     }
 

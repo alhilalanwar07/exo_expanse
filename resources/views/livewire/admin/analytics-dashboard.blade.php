@@ -293,9 +293,14 @@
                                         <span class="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 rounded">
                                             {{ $index + 1 }}
                                         </span>
-                                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate" title="{{ $page['url'] }}">
-                                            {{ \Illuminate\Support\Str::limit($page['url'], 40) }}
-                                        </span>
+                                        <div class="flex flex-col truncate">
+                                            <span class="text-xs text-slate-400 dark:text-slate-500 truncate" title="{{ $page['title'] }}">
+                                                {{ \Illuminate\Support\Str::limit($page['title'], 40) }}
+                                            </span>
+                                            <a href="{{ $page['url'] !== 'N/A' ? url($page['url']) : '#' }}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors inline-block" title="Buka tautan: {{ url($page['url'] !== 'N/A' ? $page['url'] : '') }}">
+                                                {{ \Illuminate\Support\Str::limit($page['url'], 40) }}
+                                            </a>
+                                        </div>
                                     </div>
                                     <span class="text-sm font-bold text-slate-900 dark:text-white ml-4">{{ number_format($page['views']) }}</span>
                                 </div>
@@ -399,13 +404,13 @@
         </div>
     </div>
 
+    <style>
+        .font-display { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+        /* Hide scrollbar for a cleaner look in cards */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
 </div>
 
-<style>
-    .font-display { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
-    /* Hide scrollbar for a cleaner look in cards */
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
-</style>

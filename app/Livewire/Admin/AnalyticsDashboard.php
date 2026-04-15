@@ -82,6 +82,7 @@ class AnalyticsDashboard extends Component
 
         return array_slice(array_map(fn ($item) => [
             'url' => $item['url'] ?? 'N/A',
+            'title' => $item['title'] ?? 'N/A',
             'views' => $item['pageViews'] ?? 0,
         ], $data), 0, 10);
     }
@@ -124,16 +125,49 @@ class AnalyticsDashboard extends Component
         return array_slice($data, 0, 8);
     }
 
+    public function getDeviceCategory(): array
+    {
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getDeviceCategory($dateRange['startDate'], $dateRange['endDate']);
+
+        return array_slice($data, 0, 5);
+    }
+
+    public function getCitiesData(): array
+    {
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getCitiesData($dateRange['startDate'], $dateRange['endDate']);
+
+        return array_slice($data, 0, 8);
+    }
+
+    public function getTopEvents(): array
+    {
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getTopEvents($dateRange['startDate'], $dateRange['endDate']);
+
+        // Filter out basic GA4 core events to focus on engagement, omit page_view or session_start if desired, 
+        // but let's just return all top 8 for now.
+        return array_slice($data, 0, 8);
+    }
+
     public function getTotalStats(): array
     {
         $dateRange = $this->getDateRange();
         $totalUsers = GoogleAnalyticsService::getTotalUsers($dateRange['startDate'], $dateRange['endDate']);
         $totalViews = GoogleAnalyticsService::getTotalPageViews($dateRange['startDate'], $dateRange['endDate']);
+        $avgSessionSeconds = GoogleAnalyticsService::getAverageSessionDuration($dateRange['startDate'], $dateRange['endDate']);
+        
+        // Format to mm:ss
+        $minutes = floor($avgSessionSeconds / 60);
+        $seconds = round($avgSessionSeconds % 60);
+        $formattedDuration = sprintf('%02d:%02d', $minutes, $seconds);
 
         return [
             'totalVisitors' => $totalUsers,
             'totalPageViews' => $totalViews,
             'avgPageViews' => round($totalViews / max($totalUsers, 1), 2),
+            'avgDuration' => $formattedDuration,
         ];
     }
 
@@ -147,6 +181,11 @@ class AnalyticsDashboard extends Component
             $operatingSystems = $this->getOSData();
             $countries = $this->getCountriesData();
             $trafficSources = $this->getTrafficSources();
+            
+            $cities = $this->getCitiesData();
+            $devices = $this->getDeviceCategory();
+            $events = $this->getTopEvents();
+            
             $stats = $this->getTotalStats();
             $visitorsData = $this->getVisitorsData();
         } catch (\Exception $e) {
@@ -156,7 +195,10 @@ class AnalyticsDashboard extends Component
             $operatingSystems = [];
             $countries = [];
             $trafficSources = [];
-            $stats = ['totalVisitors' => 0, 'totalPageViews' => 0, 'avgPageViews' => 0];
+            $cities = [];
+            $devices = [];
+            $events = [];
+            $stats = ['totalVisitors' => 0, 'totalPageViews' => 0, 'avgPageViews' => 0, 'avgDuration' => '00:00'];
             $visitorsData = ['labels' => [], 'visitors' => [], 'pageViews' => []];
         }
 
@@ -173,6 +215,12 @@ class AnalyticsDashboard extends Component
             'maxCountryUsers' => count($countries) > 0 ? max(array_column($countries, 'users')) : 1,
             'trafficSources' => $trafficSources,
             'maxTrafficUsers' => count($trafficSources) > 0 ? max(array_column($trafficSources, 'users')) : 1,
+            'cities' => $cities,
+            'maxCityUsers' => count($cities) > 0 ? max(array_column($cities, 'users')) : 1,
+            'devices' => $devices,
+            'maxDeviceUsers' => count($devices) > 0 ? max(array_column($devices, 'users')) : 1,
+            'events' => $events,
+            'maxEventCount' => count($events) > 0 ? max(array_column($events, 'count')) : 1,
             'dateRangeOptions' => [
                 '7days' => 'Last 7 Days',
                 '30days' => 'Last 30 Days',
