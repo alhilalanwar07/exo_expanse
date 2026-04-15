@@ -40,7 +40,7 @@ class SiswakkriHistoryManagement extends Component
             $format = 'csv';
         }
 
-        $rows = $this->getBaseQuery()
+        $rows = $this->getExportQuery()
             ->orderByDesc('submitted_at')
             ->get();
 
@@ -84,6 +84,12 @@ class SiswakkriHistoryManagement extends Component
             ->when($this->platformFilter, function (Builder $query): void {
                 $query->where('social_platform', $this->platformFilter);
             });
+    }
+
+    private function getExportQuery(): Builder
+    {
+        return $this->getBaseQuery()
+            ->where('replaced_previous', false);
     }
 
     private function downloadAsCsv(Collection $rows): StreamedResponse
