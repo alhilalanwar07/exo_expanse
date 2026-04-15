@@ -39,11 +39,11 @@ class AnalyticsDashboard extends Component
     public function getVisitorsData(): array
     {
         try {
-            $period = $this->getPeriod();
-            $data = GoogleAnalyticsService::getVisitors($period);
+            $dateRange = $this->getDateRange();
+            $data = GoogleAnalyticsService::getVisitors($dateRange['startDate'], $dateRange['endDate']);
 
             return [
-                'labels' => array_map(fn ($item) => $item['date']?->format('M d') ?? 'N/A', $data),
+                'labels' => array_map(fn ($item) => Carbon::parse($item['date'])->format('M d'), $data),
                 'visitors' => array_map(fn ($item) => $item['visitors'] ?? 0, $data),
                 'pageViews' => array_map(fn ($item) => $item['pageViews'] ?? 0, $data),
             ];
@@ -59,8 +59,8 @@ class AnalyticsDashboard extends Component
     public function getPageViewsData(): array
     {
         try {
-            $period = $this->getPeriod();
-            $data = GoogleAnalyticsService::getPageViews($period);
+            $dateRange = $this->getDateRange();
+            $data = GoogleAnalyticsService::getPageViews($dateRange['startDate'], $dateRange['endDate']);
 
             return array_slice(array_map(fn ($item) => [
                 'url' => $item['url'] ?? 'N/A',
@@ -74,11 +74,11 @@ class AnalyticsDashboard extends Component
     public function getBrowserData(): array
     {
         try {
-            $period = $this->getPeriod();
-            $data = GoogleAnalyticsService::getBrowserData($period);
+            $dateRange = $this->getDateRange();
+            $data = GoogleAnalyticsService::getBrowserData($dateRange['startDate'], $dateRange['endDate']);
 
             return array_slice(array_map(fn ($item) => [
-                'name' => $item['browser'] ?? 'Unknown',
+                'name' => $item['name'] ?? 'Unknown',
                 'users' => $item['users'] ?? 0,
             ], $data), 0, 8);
         } catch (\Exception $e) {
@@ -89,11 +89,11 @@ class AnalyticsDashboard extends Component
     public function getOSData(): array
     {
         try {
-            $period = $this->getPeriod();
-            $data = GoogleAnalyticsService::getOSData($period);
+            $dateRange = $this->getDateRange();
+            $data = GoogleAnalyticsService::getOSData($dateRange['startDate'], $dateRange['endDate']);
 
             return array_slice(array_map(fn ($item) => [
-                'name' => $item['operatingSystem'] ?? 'Unknown',
+                'name' => $item['name'] ?? 'Unknown',
                 'users' => $item['users'] ?? 0,
             ], $data), 0, 8);
         } catch (\Exception $e) {
@@ -104,14 +104,14 @@ class AnalyticsDashboard extends Component
     public function getTotalStats(): array
     {
         try {
-            $period = $this->getPeriod();
+            $dateRange = $this->getDateRange();
 
             return [
-                'totalVisitors' => GoogleAnalyticsService::getTotalUsers($period),
-                'totalPageViews' => GoogleAnalyticsService::getTotalPageViews($period),
+                'totalVisitors' => GoogleAnalyticsService::getTotalUsers($dateRange['startDate'], $dateRange['endDate']),
+                'totalPageViews' => GoogleAnalyticsService::getTotalPageViews($dateRange['startDate'], $dateRange['endDate']),
                 'avgPageViews' => round(
-                    GoogleAnalyticsService::getTotalPageViews($period) /
-                    max(GoogleAnalyticsService::getTotalUsers($period), 1),
+                    GoogleAnalyticsService::getTotalPageViews($dateRange['startDate'], $dateRange['endDate']) /
+                    max(GoogleAnalyticsService::getTotalUsers($dateRange['startDate'], $dateRange['endDate']), 1),
                     2
                 ),
             ];
@@ -132,7 +132,11 @@ class AnalyticsDashboard extends Component
             'pageViews' => $this->getPageViewsData(),
             'browsers' => $this->getBrowserData(),
             'operatingSystems' => $this->getOSData(),
-            'dateRangeOptions' => $this->dateRangeOptions,
+            'dateRangeOptions' => [
+                '7days' => 'Last 7 Days',
+                '30days' => 'Last 30 Days',
+                '90days' => 'Last 90 Days',
+            ],
         ]);
     }
 }
