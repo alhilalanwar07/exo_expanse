@@ -26,7 +26,7 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'EditProfile'>;
 
 export function EditProfileScreen() {
   const navigation = useNavigation<NavProp>();
-  const { session } = useAuth();
+  const { session, updateOwnerName } = useAuth();
   const { theme } = useAppTheme();
   const s = makeStyles(theme);
 
@@ -48,6 +48,9 @@ export function EditProfileScreen() {
         body: { name: trimmedName },
         timeoutMs: 10000,
       });
+
+      await updateOwnerName(trimmedName);
+
       Alert.alert('Berhasil', 'Profil Anda telah diperbarui.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);

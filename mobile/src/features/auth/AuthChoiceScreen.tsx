@@ -2,7 +2,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import type { AuthFlowParamList } from '../../navigation/types';
 import { ScreenContainer, SCREEN_CONTAINER_LAYOUT } from '../../shared/components/ScreenContainer';
@@ -21,6 +21,13 @@ export function AuthChoiceScreen() {
     route.params?.intent === 'theme'
       ? 'memilih tema terbaik untuk undangan Anda'
       : 'mengelola undangan Anda dengan akun owner';
+
+  const handleSocialAuthPress = (provider: 'Google' | 'Apple') => {
+    Alert.alert(
+      'Dalam Pengembangan',
+      `Masuk dengan ${provider} masih dalam pengembangan.`
+    );
+  };
 
   return (
     <ScreenContainer
@@ -116,7 +123,7 @@ export function AuthChoiceScreen() {
 
         <View style={s.socialRow}>
           <Pressable
-            onPress={() => console.log('Google')}
+            onPress={() => handleSocialAuthPress('Google')}
             style={({ pressed }) => [s.socialBtn, s.googleBtn, pressed && s.pressed]}
             accessibilityRole="button"
             accessibilityLabel="Masuk dengan Google"
@@ -125,7 +132,7 @@ export function AuthChoiceScreen() {
             <Text style={s.googleText}>Google</Text>
           </Pressable>
           <Pressable
-            onPress={() => console.log('Apple')}
+            onPress={() => handleSocialAuthPress('Apple')}
             style={({ pressed }) => [s.socialBtn, s.appleBtn, pressed && s.pressed]}
             accessibilityRole="button"
             accessibilityLabel="Masuk dengan Apple"

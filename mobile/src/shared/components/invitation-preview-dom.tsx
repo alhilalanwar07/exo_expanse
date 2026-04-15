@@ -101,7 +101,6 @@ export default function InvitationPreviewDom({
       if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
       if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uri, reloadKey]); // callbacks via refs — intentionally excluded
 
   const handleLoad = () => {

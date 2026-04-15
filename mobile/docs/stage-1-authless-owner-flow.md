@@ -20,7 +20,7 @@ This document locks the startup flow for mobile app so iOS release does not need
 
 ## Deep Link Format
 
-- Custom scheme: exoexpanse://connect?code=EXO-AB12CD34
+- Custom scheme: exoinvite://connect?code=EXO-AB12CD34
 - Universal link (future): https://domain-app/connect?code=EXO-AB12CD34
 
 ## Session Model

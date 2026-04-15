@@ -8,7 +8,7 @@
  *   backgroundColor: t.background
  */
 
-import { useContext, createContext, useState, useCallback } from 'react';
+import { useContext, createContext } from 'react';
 import { useColorScheme } from 'react-native';
 
 // ── Palette ──────────────────────────────────────────────────────────────────
@@ -136,7 +136,6 @@ export function useAppTheme(): ThemeContextValue {
   if (ctx) return ctx;
 
   const theme: AppTheme = scheme === 'dark' ? darkPalette : lightPalette;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   return { theme, isDark: theme.isDark, toggleTheme: () => {} };
 }
 

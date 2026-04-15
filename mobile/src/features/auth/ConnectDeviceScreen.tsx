@@ -8,7 +8,8 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import type { AuthFlowParamList } from '../../navigation/types';
@@ -21,13 +22,14 @@ import { useAuth } from './AuthContext';
 
 export function ConnectDeviceScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthFlowParamList>>();
+  const route = useRoute<RouteProp<AuthFlowParamList, 'ConnectDevice'>>();
   const { connectDevice } = useAuth();
   const { theme } = useAppTheme();
   const { width } = useWindowDimensions();
   const isCompact = width <= SCREEN_CONTAINER_LAYOUT.compactBreakpoint;
   const s = makeStyles(theme, isCompact);
 
-  const [accessCode, setAccessCode] = useState('');
+  const [accessCode, setAccessCode] = useState(route.params?.code?.trim().toUpperCase() ?? '');
   const [deviceAlias, setDeviceAlias] = useState('');
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfoSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +44,16 @@ export function ConnectDeviceScreen() {
       // The module fallback handles most cases; silently continue when unavailable.
     }
   }, []);
+
+  useEffect(() => {
+    const deepLinkCode = route.params?.code?.trim().toUpperCase();
+
+    if (!deepLinkCode) {
+      return;
+    }
+
+    setAccessCode((previousValue) => (previousValue.trim() ? previousValue : deepLinkCode));
+  }, [route.params?.code]);
 
   const handleConnect = async () => {
     if (isSubmitting) return;

@@ -24,6 +24,7 @@ import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
 import InvitationPreviewDom from '../shared/components/invitation-preview-dom';
+import { useAuth } from '../features/auth/AuthContext';
 import type { RootStackParamList } from '../navigation/types';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'ThemePreview'>;
@@ -33,6 +34,7 @@ export function ThemePreviewScreen() {
   const navigation = useNavigation<NavProp>();
   const route = useRoute<RoutePropType>();
   const { theme } = useAppTheme();
+  const { session } = useAuth();
   const insets = useSafeAreaInsets();
 
   const { name, previewUrl, isPremium } = route.params;
@@ -68,6 +70,14 @@ export function ThemePreviewScreen() {
   };
 
   const handleApplyTheme = () => {
+    if (!session) {
+      navigation.navigate('AuthChoice', {
+        intent: 'theme',
+      });
+
+      return;
+    }
+
     navigation.navigate('ApplyTheme', {
       themeId: route.params.id,
       themeName: name,

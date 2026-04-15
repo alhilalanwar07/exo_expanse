@@ -35,7 +35,11 @@ export type RootStackParamList = {
         intent?: 'theme' | 'manage';
       }
     | undefined;
-  ConnectDevice: undefined;
+  ConnectDevice:
+    | {
+        code?: string;
+      }
+    | undefined;
   Login: undefined;
   Register: undefined;
   ThemePreview: ThemePreviewRouteParams;

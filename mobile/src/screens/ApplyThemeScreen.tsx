@@ -48,14 +48,14 @@ export function ApplyThemeScreen() {
       const fetchInvitations = async () => {
         try {
           setIsLoading(true);
-          const res = await httpRequest<{ data?: Array<{
+          const res = await httpRequest<{ data?: {
             id: string | number;
             title?: string;
             theme?: string;
             theme_name?: string;
             date?: string;
             status?: string;
-          }> }>('/api/mobile/access/invitations', {
+          }[] }>('/api/mobile/access/invitations', {
             authMode: 'required',
             retry: 1,
             timeoutMs: 10000,
@@ -75,7 +75,7 @@ export function ApplyThemeScreen() {
           if (err instanceof HttpClientError && err.status === 401) {
             if (isActive) {
               Alert.alert('Sesi Berakhir', 'Masuk kembali untuk melanjutkan.', [
-                { text: 'OK', onPress: () => navigation.navigate('Login') },
+                { text: 'OK', onPress: () => navigation.navigate('AuthChoice', { intent: 'theme' }) },
               ]);
             }
           } else if (isActive) {

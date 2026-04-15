@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, type LinkingOptions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,6 +27,17 @@ import type { MainTabParamList, RootStackParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['exoinvite://', 'https://exoinvite.site'],
+  config: {
+    screens: {
+      ConnectDevice: {
+        path: 'connect',
+      },
+    },
+  },
+};
 
 // Tab icon map
 const TAB_ICONS: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {
@@ -121,16 +132,14 @@ export function RootNavigator() {
 
   const flowNavigatorKey = session ? 'authenticated-flow' : 'guest-flow';
 
-  let initialRouteName: keyof RootStackParamList = 'Login';
+  let initialRouteName: keyof RootStackParamList = 'Main';
 
-  if (session) {
-    initialRouteName = 'Main';
-  } else if (!hasLaunched) {
+  if (!session && !hasLaunched) {
     initialRouteName = 'Welcome';
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         key={flowNavigatorKey}
         initialRouteName={initialRouteName}

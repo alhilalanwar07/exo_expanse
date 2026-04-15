@@ -51,29 +51,6 @@ const STAT_ITEMS = [
   { key: 'wishes', icon: 'chatbubbles-outline' as const, label: 'Ucapan' },
 ] as const;
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function toInvitationInitialContent(title: string): string {
-  const safeTitle = escapeHtml(title.trim() || 'Undangan Kami');
-
-  return [
-    `<h2>${safeTitle}</h2>`,
-    '<p>Assalamu\'alaikum Wr. Wb.</p>',
-    '<p>Dengan hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada rangkaian acara kami.</p>',
-    '<p><strong>Lokasi:</strong> Isi lokasi acara di sini</p>',
-    '<p><strong>Waktu:</strong> Isi jadwal acara di sini</p>',
-    '<p>Merupakan kebahagiaan bagi kami jika Anda berkenan hadir dan memberikan doa restu.</p>',
-    '<p>Wassalamu\'alaikum Wr. Wb.</p>',
-  ].join('');
-}
-
 function formatCompactNumber(value: number): string {
   if (value >= 1_000_000) {
     return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, '')}jt`;
@@ -125,7 +102,7 @@ export function UndanganScreen() {
           if (isActive) setIsLoggedIn(true);
 
           const responseData = await httpRequest<{
-            data?: Array<{
+            data?: {
               id: string | number;
               title?: string;
               theme?: string;
@@ -135,7 +112,7 @@ export function UndanganScreen() {
               slug?: string;
               status?: string;
               thumbnail?: string | null;
-            }>;
+            }[];
             stats?: {
               total_undangan?: number;
               total_tamu?: number;
@@ -380,7 +357,7 @@ export function UndanganScreen() {
           <Text style={s.emptyTitle}>Akses Diperlukan</Text>
           <Text style={s.emptySubtitle}>Masuk untuk mengelola undangan Anda.</Text>
           <Pressable
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('AuthChoice', { intent: 'manage' })}
             style={({ pressed }) => [s.primaryButton, pressed && s.pressed]}
           >
             <Text style={s.primaryButtonText}>Masuk Sekarang</Text>

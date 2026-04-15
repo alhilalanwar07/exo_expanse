@@ -14,6 +14,7 @@ import {
   exchangeAccessCode,
   isAuthApiError,
   loginWithEmailPassword,
+  requestPasswordReset,
   registerMobileAccount,
   refreshMobileSession,
   revokeMobileSession,
@@ -26,6 +27,8 @@ import type {
   AuthContextValue,
   AuthSession,
   ConnectDevicePayload,
+  ForgotPasswordPayload,
+  ForgotPasswordResult,
   LoginWithPasswordPayload,
   RegisterAccountPayload,
   RegisterAccountResult,
@@ -221,7 +224,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     await writeAuthSession(nextSession);
     setSession(nextSession);
-  }, []);
+  }, [setSession]);
 
   const registerAccount = useCallback(async (payload: RegisterAccountPayload): Promise<RegisterAccountResult> => {
     const normalizedName = payload.name.trim();
@@ -242,6 +245,27 @@ export function AuthProvider({ children }: PropsWithChildren) {
     return {
       message: response.message,
       requiresEmailVerification: response.requires_email_verification,
+    };
+  }, []);
+
+  const requestPasswordResetAction = useCallback(async (payload: ForgotPasswordPayload): Promise<ForgotPasswordResult> => {
+    const normalizedEmail = payload.email.trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      throw new Error('Email wajib diisi.');
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      throw new Error('Format email tidak valid.');
+    }
+
+    const response = await requestPasswordReset({
+      email: normalizedEmail,
+      signal: payload.signal,
+    });
+
+    return {
+      message: response.message,
     };
   }, []);
 
@@ -266,6 +290,32 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     await writeAuthSession(nextSession);
     setSession(nextSession);
+  }, [setSession]);
+
+  const updateOwnerName = useCallback(async (ownerName: string) => {
+    const normalizedOwnerName = ownerName.trim();
+
+    if (!normalizedOwnerName) {
+      return;
+    }
+
+    setAuthState((previousState) => {
+      if (!previousState.session) {
+        return previousState;
+      }
+
+      const nextSession = {
+        ...previousState.session,
+        ownerName: normalizedOwnerName,
+      };
+
+      void writeAuthSession(nextSession);
+
+      return {
+        ...previousState,
+        session: nextSession,
+      };
+    });
   }, []);
 
   const disconnectDevice = useCallback(async () => {
@@ -287,10 +337,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
       isHydrating: authState.isHydrating,
       connectDevice,
       registerAccount,
+      requestPasswordReset: requestPasswordResetAction,
       loginWithPassword,
+      updateOwnerName,
       disconnectDevice,
     }),
-    [authState, connectDevice, registerAccount, loginWithPassword, disconnectDevice]
+    [authState, connectDevice, registerAccount, requestPasswordResetAction, loginWithPassword, updateOwnerName, disconnectDevice]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

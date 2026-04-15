@@ -3,6 +3,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Pressable as RNPressable,
   StyleSheet,
   useWindowDimensions,
@@ -23,7 +24,7 @@ import type { RootStackParamList } from '../../navigation/types';
 
 export function LoginScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { loginWithPassword } = useAuth();
+  const { loginWithPassword, requestPasswordReset } = useAuth();
   const { theme } = useAppTheme();
   const { width } = useWindowDimensions();
   const isCompact = width <= SCREEN_CONTAINER_LAYOUT.compactBreakpoint;
@@ -34,7 +35,9 @@ export function LoginScreen() {
   const [notice, setNotice] = useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
   const loginRequestAbortRef = useRef<AbortController | null>(null);
+  const forgotRequestAbortRef = useRef<AbortController | null>(null);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -42,6 +45,8 @@ export function LoginScreen() {
       isMountedRef.current = false;
       loginRequestAbortRef.current?.abort();
       loginRequestAbortRef.current = null;
+      forgotRequestAbortRef.current?.abort();
+      forgotRequestAbortRef.current = null;
     };
   }, []);
 
@@ -82,6 +87,61 @@ export function LoginScreen() {
         }
       }
     }
+  };
+
+  const handleForgotPassword = async () => {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      setNotice('Isi email terlebih dahulu untuk reset password.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setNotice('Format email tidak valid.');
+      return;
+    }
+
+    const controller = new AbortController();
+    forgotRequestAbortRef.current?.abort();
+    forgotRequestAbortRef.current = controller;
+
+    try {
+      setIsSendingReset(true);
+      setNotice(null);
+
+      const result = await requestPasswordReset({
+        email: normalizedEmail,
+        signal: controller.signal,
+      });
+
+      if (forgotRequestAbortRef.current !== controller || controller.signal.aborted) {
+        return;
+      }
+
+      Alert.alert('Reset Password', result.message);
+    } catch (error) {
+      if (controller.signal.aborted || forgotRequestAbortRef.current !== controller) {
+        return;
+      }
+
+      setNotice(error instanceof Error ? error.message : 'Gagal mengirim reset password.');
+    } finally {
+      if (forgotRequestAbortRef.current === controller) {
+        forgotRequestAbortRef.current = null;
+
+        if (isMountedRef.current) {
+          setIsSendingReset(false);
+        }
+      }
+    }
+  };
+
+  const handleSocialAuthPress = (provider: 'Google' | 'Apple') => {
+    Alert.alert(
+      'Dalam Pengembangan',
+      `Masuk dengan ${provider} masih dalam pengembangan.`
+    );
   };
 
   return (
@@ -153,13 +213,15 @@ export function LoginScreen() {
             </TwPressable>
           </View>
           <TwPressable
-            onPress={() => console.log('Forgot')}
+            onPress={handleForgotPassword}
+            disabled={isSendingReset}
             className="self-end"
             style={s.forgotWrap}
             hitSlop={8}
             accessibilityRole="button"
+            accessibilityState={{ disabled: isSendingReset }}
           >
-            <Text style={s.forgotText}>Lupa Password?</Text>
+            <Text style={s.forgotText}>{isSendingReset ? 'Mengirim...' : 'Lupa Password?'}</Text>
           </TwPressable>
         </View>
 
@@ -189,7 +251,7 @@ export function LoginScreen() {
 
         <View style={s.socialRow} className="flex-row">
           <RNPressable
-            onPress={() => console.log('Google')}
+            onPress={() => handleSocialAuthPress('Google')}
             style={({ pressed }) => [s.socialBtn, s.googleBtn, pressed && s.pressed]}
             accessibilityRole="button"
             accessibilityLabel="Masuk dengan Google"
@@ -198,7 +260,7 @@ export function LoginScreen() {
             <Text style={s.googleText}>Google</Text>
           </RNPressable>
           <RNPressable
-            onPress={() => console.log('Apple')}
+            onPress={() => handleSocialAuthPress('Apple')}
             style={({ pressed }) => [s.socialBtn, s.appleBtn, pressed && s.pressed]}
             accessibilityRole="button"
             accessibilityLabel="Masuk dengan Apple"

@@ -32,11 +32,11 @@ const MENU_ITEMS = [
   { label: 'Undangan Saya', icon: 'card-text-outline', route: 'Undangan' },
   { label: 'Perangkat Terhubung', icon: 'devices', route: 'ConnectDevice' },
   { label: 'Bantuan', icon: 'help-circle-outline', route: 'Help' },
-] as const satisfies ReadonlyArray<{
+] as const satisfies readonly {
   label: string;
   icon: ProfileMenuIcon;
   route: ProfileMenuRoute | null;
-}>;
+}[];
 
 export function ProfileScreen() {
   const navigation = useNavigation<NavigationProp>();

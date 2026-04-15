@@ -31,7 +31,11 @@ interface RegisterEnvelope {
   };
 }
 
-type AuthOperation = 'exchange' | 'login' | 'register' | 'refresh' | 'revoke';
+interface ForgotPasswordEnvelope {
+  message: string;
+}
+
+type AuthOperation = 'exchange' | 'login' | 'register' | 'forgotPassword' | 'refresh' | 'revoke';
 type ValidationErrors = ApiFieldErrors;
 
 export type AuthApiErrorCode = ApiEndpointErrorCode;
@@ -70,6 +74,7 @@ const DEFAULT_ERROR_MESSAGES: Record<AuthOperation, string> = {
   exchange: 'Gagal menukar kode akses.',
   login: 'Login gagal. Silakan coba lagi.',
   register: 'Registrasi gagal. Silakan coba lagi.',
+  forgotPassword: 'Gagal mengirim permintaan reset password.',
   refresh: 'Sesi berakhir. Silakan login ulang.',
   revoke: 'Gagal memutus sesi perangkat.',
 };
@@ -78,6 +83,7 @@ const NETWORK_ERROR_MESSAGES: Record<AuthOperation, string> = {
   exchange: 'Tidak dapat menghubungi server. Periksa koneksi internet Anda.',
   login: 'Tidak dapat login karena koneksi bermasalah. Periksa internet Anda.',
   register: 'Tidak dapat registrasi karena koneksi bermasalah. Periksa internet Anda.',
+  forgotPassword: 'Tidak dapat mengirim reset password karena koneksi bermasalah. Periksa internet Anda.',
   refresh: 'Koneksi terputus saat memperbarui sesi. Silakan coba lagi.',
   revoke: 'Tidak dapat memutus sesi karena koneksi bermasalah.',
 };
@@ -86,6 +92,7 @@ const TIMEOUT_ERROR_MESSAGES: Record<AuthOperation, string> = {
   exchange: 'Waktu koneksi habis saat menukar kode akses. Silakan coba lagi.',
   login: 'Waktu koneksi habis saat login. Silakan coba lagi.',
   register: 'Waktu koneksi habis saat registrasi. Silakan coba lagi.',
+  forgotPassword: 'Waktu koneksi habis saat mengirim reset password. Silakan coba lagi.',
   refresh: 'Waktu koneksi habis saat memperbarui sesi. Silakan login ulang jika perlu.',
   revoke: 'Waktu koneksi habis saat memutus sesi perangkat.',
 };
@@ -223,6 +230,27 @@ export async function registerMobileAccount(payload: {
     };
   } catch (error) {
     throw mapAuthError(error, 'register');
+  }
+}
+
+export async function requestPasswordReset(payload: {
+  email: string;
+  signal?: AbortSignal;
+}) {
+  try {
+    const response = await httpRequest<ForgotPasswordEnvelope>('/api/mobile/auth/forgot-password', {
+      method: 'POST',
+      signal: payload.signal,
+      body: {
+        email: payload.email,
+      },
+    });
+
+    return {
+      message: response.message,
+    };
+  } catch (error) {
+    throw mapAuthError(error, 'forgotPassword');
   }
 }
 

@@ -3,6 +3,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -65,6 +66,13 @@ export function RegisterScreen() {
 
   const strength = useMemo(() => getPasswordStrength(password.trim()), [password]);
 
+  const handleSocialAuthPress = (provider: 'Google' | 'Apple') => {
+    Alert.alert(
+      'Dalam Pengembangan',
+      `Daftar dengan ${provider} masih dalam pengembangan.`
+    );
+  };
+
   const handleRegister = async () => {
     const n = name.trim();
     const e = email.trim().toLowerCase();
@@ -84,13 +92,25 @@ export function RegisterScreen() {
     try {
       setIsSubmitting(true);
       setNotice(null);
-      await registerAccount({ name: n, email: e, password: p, signal: controller.signal });
+      const result = await registerAccount({ name: n, email: e, password: p, signal: controller.signal });
 
       if (registerRequestAbortRef.current !== controller || controller.signal.aborted) {
         return;
       }
 
-      navigation.replace('Main');
+      const successMessage = result.message || 'Registrasi berhasil. Silakan login untuk melanjutkan.';
+
+      if (isMountedRef.current) {
+        setNotice(successMessage);
+        setNoticeVariant('success');
+      }
+
+      Alert.alert('Registrasi Berhasil', successMessage, [
+        {
+          text: 'Lanjut ke Login',
+          onPress: () => navigation.replace('Login'),
+        },
+      ]);
     } catch (err) {
       if (controller.signal.aborted || registerRequestAbortRef.current !== controller) {
         return;
@@ -280,7 +300,7 @@ export function RegisterScreen() {
 
       <View style={s.socialRow}>
         <Pressable
-          onPress={() => console.log('Google')}
+          onPress={() => handleSocialAuthPress('Google')}
           style={({ pressed }) => [s.socialBtn, s.googleBtn, pressed && s.pressed]}
           accessibilityRole="button"
           accessibilityLabel="Daftar dengan Google"
@@ -289,7 +309,7 @@ export function RegisterScreen() {
           <Text style={s.googleText}>Google</Text>
         </Pressable>
         <Pressable
-          onPress={() => console.log('Apple')}
+          onPress={() => handleSocialAuthPress('Apple')}
           style={({ pressed }) => [s.socialBtn, s.appleBtn, pressed && s.pressed]}
           accessibilityRole="button"
           accessibilityLabel="Daftar dengan Apple"
