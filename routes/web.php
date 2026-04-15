@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', Welcome::class)->name('home');
+Route::view('/form-sosmed', 'tools.social-account-form')->name('social-form');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/img/{token}', [ImageController::class, 'show'])->name('image.show');
 
@@ -53,7 +54,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Email Verification Notice (accessible without auth — needed after logout-on-unverified)
-Route::get('/email/verify', function (\Illuminate\Http\Request $request) {
+Route::get('/email/verify', function (Request $request) {
     return view('auth.verification-notice', [
         'email' => $request->user()?->email ?? session('verification.email'),
     ]);
