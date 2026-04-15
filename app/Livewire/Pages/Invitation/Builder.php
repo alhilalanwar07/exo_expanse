@@ -126,6 +126,9 @@ class Builder extends Component
     // Music
     public bool $music_enabled = false;
 
+    public ?int $music_id = null;
+    
+    // Kept $music_url for legacy backward compatibility logic
     public ?string $music_url = null;
 
     // Gift/Angpao
@@ -234,8 +237,9 @@ class Builder extends Component
         $this->theme_id = $invitation->theme_id;
 
         // Settings (Columns & Derived)
-        $this->music_enabled = ! empty($invitation->background_music);
+        $this->music_enabled = ! empty($invitation->background_music) || ! empty($invitation->music_id);
         $this->music_url = $invitation->background_music;
+        $this->music_id = $invitation->music_id;
 
         $this->bank_accounts = $invitation->bank_accounts ?? [];
         $this->gift_enabled = ! empty($this->bank_accounts);
@@ -334,6 +338,7 @@ class Builder extends Component
             // Media & Content
             'cover_image' => $this->cover_photo,
             'background_music' => $this->music_enabled ? $this->music_url : null,
+            'music_id' => $this->music_enabled ? $this->music_id : null,
             'love_story' => $this->love_story,
             'bank_accounts' => $this->gift_enabled ? $this->bank_accounts : null,
 
@@ -369,6 +374,12 @@ class Builder extends Component
     public function themes(): Collection
     {
         return Theme::orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function backgroundMusics(): Collection
+    {
+        return \App\Models\BackgroundMusic::where('is_active', true)->orderBy('title')->get();
     }
 
     #[Computed]

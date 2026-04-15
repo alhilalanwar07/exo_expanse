@@ -8,8 +8,9 @@ use App\Http\Controllers\Api\MobileThemeController;
 use App\Http\Controllers\Api\TelegramWebhookController;
 use Illuminate\Support\Facades\Route;
 
-// ── Public theme catalog (no auth) ──────────────────────────────────────────
+// ── Public catalogs (no auth) ──────────────────────────────────────────
 Route::get('mobile/themes', [MobileThemeController::class, 'index']);
+Route::get('music', [\App\Http\Controllers\Api\MusicController::class, 'index']);
 
 Route::prefix('invitations/{invitation}')->group(function () {
     Route::post('/rsvp', [InvitationController::class, 'submitRsvp']);

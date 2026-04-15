@@ -47,6 +47,7 @@ type InvitationFormData = {
   welcome_message: string; quran_verse: string;
   countdown_enabled: boolean; rsvp_enabled: boolean;
   wishes_enabled: boolean; gallery_enabled: boolean; music_enabled: boolean;
+  music_id: number | null; background_music: string;
 };
 
 type LoveStory = { date: string; title: string; description: string };
@@ -64,7 +65,7 @@ const INITIAL_FORM: InvitationFormData = {
   resepsi_date: '', resepsi_time: '11:00', resepsi_venue: '', resepsi_address: '', resepsi_maps_link: '',
   welcome_message: 'Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.',
   quran_verse: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya. (QS. Ar-Rum: 21)',
-  countdown_enabled: true, rsvp_enabled: true, wishes_enabled: true, gallery_enabled: true, music_enabled: false,
+  countdown_enabled: true, rsvp_enabled: true, wishes_enabled: true, gallery_enabled: true, music_enabled: false, music_id: null, background_music: '',
 };
 
 const TABS = [
@@ -268,6 +269,7 @@ export function InvitationFormScreen() {
   const [loveStory, setLoveStory] = useState<LoveStory[]>([]);
   const [guests, setGuests] = useState<Guest[]>([]);
   const [guestInput, setGuestInput] = useState('');
+  const [backgroundMusics, setBackgroundMusics] = useState<{id: number, title: string, artist: string, file_url: string}[]>([]);
 
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
@@ -337,7 +339,9 @@ export function InvitationFormScreen() {
         rsvp_enabled:   (d.enable_rsvp as boolean) ?? true,
         wishes_enabled: (d.enable_wishes as boolean) ?? true,
         gallery_enabled:(d.enable_gallery as boolean) ?? true,
-        music_enabled:  Boolean(d.background_music),
+        music_enabled:  Boolean(d.background_music) || Boolean(d.music_id),
+        music_id:       (d.music_id as number | null) ?? null,
+        background_music: (d.background_music as string) ?? '',
       });
     } catch (e) {
       Alert.alert('Error', e instanceof HttpClientError ? e.message : 'Gagal memuat data.');
@@ -357,7 +361,15 @@ export function InvitationFormScreen() {
     } catch { /* silent */ }
   }, []);
 
+  const loadMusics = useCallback(async () => {
+    try {
+      const res = await httpRequest<{ data: any[] }>('/api/music', { method: 'GET' });
+      setBackgroundMusics(res.data || []);
+    } catch { /* silent */ }
+  }, []);
+
   useEffect(() => { void loadInvitation(); }, [loadInvitation]);
+  useEffect(() => { void loadMusics(); }, [loadMusics]);
   useEffect(() => {
     if (activeTab === 'tamu' && savedId) void loadGuests(savedId);
   }, [activeTab, savedId, loadGuests]);
@@ -404,6 +416,7 @@ export function InvitationFormScreen() {
     resepsi_date: form.resepsi_date || null, resepsi_time: form.resepsi_time,
     resepsi_venue: form.resepsi_venue, resepsi_address: form.resepsi_address, resepsi_maps_link: form.resepsi_maps_link,
     enable_rsvp: form.rsvp_enabled, enable_wishes: form.wishes_enabled, enable_gallery: form.gallery_enabled,
+    background_music: form.background_music, music_id: form.music_id,
     love_story: loveStory,
     custom_styles: {
       event_type: form.event_type, name_order: form.name_order,
@@ -900,6 +913,38 @@ export function InvitationFormScreen() {
       <Toggle label="Ucapan & Doa" desc="Tamu dapat menulis ucapan" value={form.wishes_enabled} onToggle={set('wishes_enabled')} theme={theme} />
       <Toggle label="Gallery Foto" desc="Tampilkan galeri foto pernikahan" value={form.gallery_enabled} onToggle={set('gallery_enabled')} theme={theme} />
       <Toggle label="Musik Latar" desc="Musik background undangan digital" value={form.music_enabled} onToggle={set('music_enabled')} theme={theme} />
+      {form.music_enabled && (
+        <View style={{ backgroundColor: theme.surfaceContainerLow, borderRadius: 16, padding: 14, borderWidth: 1, borderColor: theme.outlineVariant, marginTop: -14, borderTopWidth: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
+          <Text style={{ fontFamily: F.labelBold, fontSize: 13, color: theme.onSurface, marginBottom: 8 }}>Pilih Musik Pustaka</Text>
+          {backgroundMusics.map(m => (
+            <Pressable key={m.id} onPress={() => { set('music_id')(m.id); set('background_music')(''); }}
+              style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.outlineVariant }}>
+              <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: form.music_id === m.id ? theme.primary : theme.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+                {form.music_id === m.id && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: theme.primary }} />}
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: F.labelBold, fontSize: 13, color: theme.onSurface }}>{m.title}</Text>
+                <Text style={{ fontFamily: F.body, fontSize: 11, color: theme.onSurfaceVariant }}>{m.artist || 'Unknown Artist'}</Text>
+              </View>
+            </Pressable>
+          ))}
+          <Pressable onPress={() => set('music_id')(null)}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+            <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: form.music_id === null ? theme.primary : theme.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+              {form.music_id === null && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: theme.primary }} />}
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: F.labelBold, fontSize: 13, color: theme.onSurface }}>Manual URL / Tanpa Musik</Text>
+            </View>
+          </Pressable>
+
+          {form.music_id === null && (
+            <View style={{ marginTop: 12 }}>
+              <Field label="URL Musik Spesifik (opsional)" value={form.background_music} onChangeText={set('background_music')} placeholder="https://..." theme={theme} keyboardType="url" autoCapitalize="none" />
+            </View>
+          )}
+        </View>
+      )}
       <View style={{ height: 32 }} />
     </ScrollView>
   );

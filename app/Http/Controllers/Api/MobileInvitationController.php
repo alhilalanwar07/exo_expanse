@@ -103,6 +103,7 @@ class MobileInvitationController extends Controller
                 'enable_wishes' => $invitation->enable_wishes ?? true,
                 'enable_gallery' => $invitation->enable_gallery ?? true,
                 'background_music' => $invitation->background_music,
+                'music_id' => $invitation->music_id,
                 'love_story' => $invitation->love_story ?? [],
                 'gallery_photos' => $invitation->photos->map(fn ($p) => [
                     'id' => $p->id,
@@ -423,6 +424,8 @@ class MobileInvitationController extends Controller
             'enable_rsvp' => $request->boolean('enable_rsvp', true),
             'enable_wishes' => $request->boolean('enable_wishes', true),
             'enable_gallery' => $request->boolean('enable_gallery', true),
+            'background_music' => $request->input('background_music') ?: null,
+            'music_id' => $request->input('music_id') ?: null,
             'love_story' => $request->input('love_story', []),
             'custom_styles' => $styles,
         ];

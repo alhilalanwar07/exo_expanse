@@ -107,6 +107,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', AdminUserManagement::class)->name('users');
         Route::get('/invitations', AdminInvitationManagement::class)->name('invitations');
         Route::get('/themes', AdminThemeManagement::class)->name('themes');
+        Route::get('/music', \App\Livewire\Admin\MusicManager::class)->name('music');
         Route::get('/settings', AdminSettings::class)->name('settings');
         Route::get('/articles', AdminArticleManagement::class)->name('articles');
         Route::get('/articles/create', AdminArticleForm::class)->name('articles.create');

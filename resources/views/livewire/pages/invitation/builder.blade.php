@@ -826,9 +826,34 @@
                                 </label>
 
                                 @if($this->music_enabled)
-                                    <div class="ml-12">
-                                        <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">URL Musik (MP3)</label>
-                                        <input wire:model.blur="music_url" type="url" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="https://example.com/music.mp3">
+                                    <div class="ml-12 border border-slate-200 dark:border-slate-700 p-4 rounded-xl">
+                                        <label class="block text-sm text-slate-600 dark:text-slate-400 mb-3 font-medium">Pilihan Latar Belakang Musik</label>
+                                        <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                                            @foreach($this->backgroundMusics as $music)
+                                            <div class="flex gap-3 p-3 border {{ $this->music_id == $music->id ? 'border-rose-500 bg-rose-50 dark:bg-rose-900/20' : 'border-slate-200 dark:border-slate-600' }} rounded-lg cursor-pointer hover:border-rose-400 transition-colors">
+                                                <input type="radio" wire:model.live="music_id" value="{{ $music->id }}" id="music-{{ $music->id }}" class="w-4 h-4 text-rose-500 focus:ring-rose-500 mt-1">
+                                                <label for="music-{{ $music->id }}" class="flex-1 cursor-pointer">
+                                                    <div class="font-medium text-slate-800 dark:text-white">{{ $music->title }}</div>
+                                                    <div class="text-xs text-slate-500 mb-2">{{ $music->artist ?: 'Unknown Artist' }}</div>
+                                                    <audio controls src="{{ asset($music->file_path) }}" class="h-8 w-full max-w-[200px]" preload="none"></audio>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                            <div class="flex gap-3 p-3 border {{ empty($this->music_id) ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20' : 'border-slate-200 dark:border-slate-600' }} rounded-lg cursor-pointer hover:border-amber-400 transition-colors">
+                                                <input type="radio" wire:model.live="music_id" value="" id="music-none" class="w-4 h-4 text-amber-500 focus:ring-amber-500 mt-1">
+                                                <label for="music-none" class="flex-1 cursor-pointer">
+                                                    <div class="font-medium text-slate-800 dark:text-white">Gunakan Musik Lama / Manual URL</div>
+                                                    <div class="text-xs text-slate-500">Pilih ini jika menggunakan URL audio eksternal.</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        @if(empty($this->music_id))
+                                            <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                                                <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">URL Musik (opsional)</label>
+                                                <input wire:model.blur="music_url" type="url" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="https://example.com/music.mp3">
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
 
