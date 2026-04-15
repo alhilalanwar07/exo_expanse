@@ -335,6 +335,32 @@ class MobileInvitationController extends Controller
         return response()->json(['message' => 'Tamu berhasil dihapus.']);
     }
 
+    // ── Delete Invitation ────────────────────────────────────────────────────
+
+    public function destroy(Request $request, $id): JsonResponse
+    {
+        $invitation = $this->findOwned($request, $id);
+
+        // Clean up photos from storage
+        if ($invitation->cover_image) {
+            Storage::disk('public')->delete($invitation->cover_image);
+        }
+        if ($invitation->groom_photo) {
+            Storage::disk('public')->delete($invitation->groom_photo);
+        }
+        if ($invitation->bride_photo) {
+            Storage::disk('public')->delete($invitation->bride_photo);
+        }
+
+        foreach ($invitation->photos as $photo) {
+            Storage::disk('public')->delete($photo->path);
+        }
+
+        $invitation->delete();
+
+        return response()->json(['message' => 'Undangan berhasil dihapus.']);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private function findOwned(Request $request, $id): Invitation

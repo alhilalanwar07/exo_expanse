@@ -2,9 +2,12 @@
  * ThemePreviewScreen
  *
  * Full-screen in-app demo viewer. Uses:
- *  - react-native-webview  on iOS/Android
- *  - <iframe>              on Expo Web
- * (handled by InAppBrowser.tsx / InAppBrowser.web.tsx via Metro platform resolution)
+ *  - react-native-webview  on iOS/Android  (InAppBrowser — native WebView)
+ *  - "use dom" <iframe>    on Expo Web      (InvitationPreviewDom)
+ *
+ * On Android the "use dom" approach nests an <iframe> inside a WebView which
+ * fails to render cross-origin content — so native platforms use the direct
+ * react-native-webview component instead.
  */
 
 import { useEffect, useState } from 'react';
@@ -23,9 +26,15 @@ import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 import { useAppTheme } from '../shared/theme/index';
 import { F } from '../shared/theme/fonts';
-import InvitationPreviewDom from '../shared/components/invitation-preview-dom';
+import { InAppBrowser } from '../shared/components/InAppBrowser';
 import { useAuth } from '../features/auth/AuthContext';
 import type { RootStackParamList } from '../navigation/types';
+
+// Only import the DOM component on web — on native it would be unused
+const InvitationPreviewDom =
+  Platform.OS === 'web'
+    ? require('../shared/components/invitation-preview-dom').default
+    : null;
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'ThemePreview'>;
 type RoutePropType = RouteProp<RootStackParamList, 'ThemePreview'>;
@@ -87,32 +96,58 @@ export function ThemePreviewScreen() {
 
   const canApplyTheme = !loading && !hasError;
 
+  const isNative = Platform.OS !== 'web';
+
   return (
     <View style={s.root}>
       <View style={s.browserWrap}>
-        <InvitationPreviewDom
-          key={reloadKey}
-          uri={previewUrl}
-          title={name}
-          isPremium={isPremium}
-          reloadKey={reloadKey}
-          onPreviewLoadStart={() => {
-            setLoading(true);
-            setHasError(false);
-          }}
-          onPreviewLoadEnd={() => {
-            setLoading(false);
-          }}
-          onPreviewLoadError={() => {
-            setLoading(false);
-            setHasError(true);
-          }}
-          dom={{
-            scrollEnabled: false,
-            contentInsetAdjustmentBehavior: 'never',
-            style: { flex: 1 },
-          }}
-        />
+        {isNative ? (
+          /* Native (Android/iOS): use react-native-webview directly */
+          <InAppBrowser
+            key={reloadKey}
+            uri={previewUrl}
+            loading={loading}
+            hasError={hasError}
+            onLoadStart={() => {
+              setLoading(true);
+              setHasError(false);
+            }}
+            onLoadEnd={() => {
+              setLoading(false);
+            }}
+            onError={() => {
+              setLoading(false);
+              setHasError(true);
+            }}
+          />
+        ) : (
+          /* Web: use "use dom" iframe component */
+          InvitationPreviewDom && (
+            <InvitationPreviewDom
+              key={reloadKey}
+              uri={previewUrl}
+              title={name}
+              isPremium={isPremium}
+              reloadKey={reloadKey}
+              onPreviewLoadStart={() => {
+                setLoading(true);
+                setHasError(false);
+              }}
+              onPreviewLoadEnd={() => {
+                setLoading(false);
+              }}
+              onPreviewLoadError={() => {
+                setLoading(false);
+                setHasError(true);
+              }}
+              dom={{
+                scrollEnabled: false,
+                contentInsetAdjustmentBehavior: 'never',
+                style: { flex: 1 },
+              }}
+            />
+          )
+        )}
       </View>
 
       {isChromeVisible ? (

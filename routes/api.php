@@ -44,6 +44,7 @@ Route::prefix('mobile/access')->group(function () {
         Route::get('/invitations/{id}/guests', [MobileInvitationController::class, 'getGuests']);
         Route::post('/invitations/{id}/guests', [MobileInvitationController::class, 'storeGuests']);
         Route::delete('/invitations/{id}/guests/{guestId}', [MobileInvitationController::class, 'deleteGuest']);
+        Route::delete('/invitations/{id}', [MobileInvitationController::class, 'destroy']);
     });
 });
 

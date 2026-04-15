@@ -9,9 +9,11 @@ import {
   Image,
   Alert,
   Share,
+  Linking,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect, type CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -34,6 +36,7 @@ type InvitationItem = {
   theme_name: string;
   date: string;
   url: string;
+  slug: string;
   status: string;
   thumbnail: string | null;
 };
@@ -80,100 +83,116 @@ export function UndanganScreen() {
   const [invitations, setInvitations] = useState<InvitationItem[]>([]);
   const [stats, setStats] = useState<StatsData>({ total: 0, guests: 0, rsvp: 0, wishes: 0 });
 
+  // Delete modal state
+  const [deleteTarget, setDeleteTarget] = useState<InvitationItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const attendanceRate = toAttendanceRate(stats);
   const latestInvitation = invitations[0] ?? null;
 
   const s = makeStyles(theme);
 
+  const fetchData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const session = await readAuthSession();
+
+      if (!session?.accessToken) {
+        setIsLoggedIn(false);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoggedIn(true);
+
+      const responseData = await httpRequest<{
+        data?: {
+          id: string | number;
+          title?: string;
+          theme?: string;
+          theme_name?: string;
+          date?: string;
+          url?: string;
+          slug?: string;
+          status?: string;
+          thumbnail?: string | null;
+        }[];
+        stats?: {
+          total_undangan?: number;
+          total_tamu?: number;
+          tamu_hadir?: number;
+          total_ucapan?: number;
+        };
+      }>('/api/mobile/access/invitations', {
+        authMode: 'required',
+        retry: 2,
+        timeoutMs: 12000,
+      });
+
+      console.log(`✅ API Connected: ${responseData.data?.length ?? 0} undangan dimuat.`);
+
+      const list: InvitationItem[] = (responseData.data ?? []).map((item) => ({
+        id: item.id,
+        title: item.title ?? 'Undangan',
+        theme_name: item.theme ?? item.theme_name ?? 'Tema',
+        date: item.date ?? 'TBA',
+        url: item.url ?? `${env.apiBaseUrl}/i/${item.slug ?? ''}`,
+        slug: item.slug ?? '',
+        status: item.status ?? 'Draf',
+        thumbnail: item.thumbnail ?? null,
+      }));
+
+      setInvitations(list);
+
+      if (responseData.stats) {
+        setStats({
+          total: responseData.stats.total_undangan ?? 0,
+          guests: responseData.stats.total_tamu ?? 0,
+          rsvp: responseData.stats.tamu_hadir ?? 0,
+          wishes: responseData.stats.total_ucapan ?? 0,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching invitations:', error);
+
+      if (error instanceof HttpClientError && error.status === 401) {
+        setIsLoggedIn(false);
+        setInvitations([]);
+        return;
+      }
+
+      Alert.alert('Gagal Memuat', 'Terjadi kesalahan saat mengambil data undangan.');
+      setInvitations([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
 
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-          const session = await readAuthSession();
-
-          if (!session?.accessToken) {
-            if (isActive) { setIsLoggedIn(false); setIsLoading(false); }
-            return;
-          }
-
-          if (isActive) setIsLoggedIn(true);
-
-          const responseData = await httpRequest<{
-            data?: {
-              id: string | number;
-              title?: string;
-              theme?: string;
-              theme_name?: string;
-              date?: string;
-              url?: string;
-              slug?: string;
-              status?: string;
-              thumbnail?: string | null;
-            }[];
-            stats?: {
-              total_undangan?: number;
-              total_tamu?: number;
-              tamu_hadir?: number;
-              total_ucapan?: number;
-            };
-          }>('/api/mobile/access/invitations', {
-            authMode: 'required',
-            retry: 2,
-            timeoutMs: 12000,
-          });
-
-          if (isActive) {
-            console.log(`✅ API Connected: ${responseData.data?.length ?? 0} undangan dimuat.`);
-
-            const list: InvitationItem[] = (responseData.data ?? []).map((item) => ({
-              id: item.id,
-              title: item.title ?? 'Undangan',
-              theme_name: item.theme ?? item.theme_name ?? 'Tema',
-              date: item.date ?? 'TBA',
-              url: item.url ?? `${env.apiBaseUrl}/i/${item.slug ?? ''}`,
-              status: item.status ?? 'Draf',
-              thumbnail: item.thumbnail ?? null,
-            }));
-
-            setInvitations(list);
-
-            if (responseData.stats) {
-              setStats({
-                total: responseData.stats.total_undangan ?? 0,
-                guests: responseData.stats.total_tamu ?? 0,
-                rsvp: responseData.stats.tamu_hadir ?? 0,
-                wishes: responseData.stats.total_ucapan ?? 0,
-              });
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching invitations:', error);
-
-          if (error instanceof HttpClientError && error.status === 401) {
-            if (isActive) {
-              setIsLoggedIn(false);
-              setInvitations([]);
-            }
-
-            return;
-          }
-
-          if (isActive) {
-            Alert.alert('Gagal Memuat', 'Terjadi kesalahan saat mengambil data undangan.');
-            setInvitations([]);
-          }
-        } finally {
-          if (isActive) setIsLoading(false);
-        }
-      };
-
       void fetchData();
+
       return () => { isActive = false; };
-    }, [])
+    }, [fetchData])
   );
+
+  // ── Action Handlers ────────────────────────────────────────────────────────
+
+  const handlePreview = (item: InvitationItem) => {
+    navigation.navigate('ThemePreview', {
+      id: Number(item.id),
+      name: item.title,
+      previewUrl: item.url,
+      isPremium: false,
+    });
+  };
+
+  const handleSebar = (item: InvitationItem) => {
+    // Open the sebar (distribution) page in the browser
+    void Linking.openURL(`${env.apiBaseUrl}/invitations/${item.id}/sebar`);
+  };
 
   const handleShare = async (item: InvitationItem) => {
     try {
@@ -186,6 +205,58 @@ export function UndanganScreen() {
       Alert.alert('Gagal', 'Tidak dapat membagikan undangan.');
     }
   };
+
+  const handleChangeTheme = (item: InvitationItem) => {
+    // Navigate to Home (theme catalog) where they can pick a theme
+    // and apply it to this invitation
+    navigation.navigate('Main');
+  };
+
+  const handleEdit = (item: InvitationItem) => {
+    navigation.navigate('InvitationForm', {
+      invitationId: Number(item.id),
+    });
+  };
+
+  const handleDeleteConfirm = (item: InvitationItem) => {
+    setDeleteTarget(item);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteTarget(null);
+    setIsDeleting(false);
+  };
+
+  const handleDeleteExecute = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      setIsDeleting(true);
+      await httpRequest(`/api/mobile/access/invitations/${deleteTarget.id}`, {
+        method: 'DELETE',
+        authMode: 'required',
+        timeoutMs: 10000,
+      });
+
+      // Remove from list and update stats
+      setInvitations((prev) => prev.filter((inv) => inv.id !== deleteTarget.id));
+      setStats((prev) => ({
+        ...prev,
+        total: Math.max(0, prev.total - 1),
+      }));
+
+      setDeleteTarget(null);
+      Alert.alert('Berhasil', 'Undangan berhasil dihapus.');
+    } catch (error) {
+      const message =
+        error instanceof HttpClientError ? error.message : 'Gagal menghapus undangan.';
+      Alert.alert('Gagal Hapus', message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // ── Sub-Components ─────────────────────────────────────────────────────────
 
   const renderListHeader = () => (
     <View style={s.listHeaderWrap}>
@@ -285,12 +356,13 @@ export function UndanganScreen() {
 
   const renderCard = ({ item }: { item: InvitationItem }) => (
     <View style={s.card}>
+      {/* Header: Avatar + Info + Status */}
       <View style={s.cardHeader}>
         {item.thumbnail ? (
           <Image source={{ uri: item.thumbnail }} style={s.avatar} />
         ) : (
           <View style={s.avatarFallback}>
-            <Ionicons name="images-outline" size={18} color={theme.primary} />
+            <Text style={s.avatarEmoji}>💍</Text>
           </View>
         )}
         <View style={s.cardContent}>
@@ -306,34 +378,130 @@ export function UndanganScreen() {
         </View>
       </View>
 
-      <View style={s.cardLinkRow}>
+      {/* Link Row */}
+      <Pressable
+        style={s.cardLinkRow}
+        onPress={() => void Linking.openURL(item.url)}
+      >
         <Ionicons name="link-outline" size={14} color={theme.outline} />
         <Text style={s.cardUrl} numberOfLines={1}>{item.url}</Text>
-      </View>
+      </Pressable>
 
+      {/* Action Buttons Row — matching web dashboard layout */}
       <View style={s.cardActionsRow}>
+        {/* Preview */}
         <Pressable
-          style={({ pressed }) => [s.editButton, pressed && s.pressed]}
-          onPress={() =>
-            navigation.navigate('InvitationForm', {
-              invitationId: Number(item.id),
-            })
-          }
+          style={({ pressed }) => [s.iconActionBtn, pressed && s.pressed]}
+          onPress={() => handlePreview(item)}
+          hitSlop={4}
         >
-          <Ionicons name="create-outline" size={16} color={theme.primary} />
-          <Text style={s.editButtonText}>Edit</Text>
+          <Ionicons name="eye-outline" size={18} color={theme.onSurfaceVariant} />
         </Pressable>
 
+        {/* Sebar (primary action, colored) */}
         <Pressable
           style={({ pressed }) => [s.sebarButton, pressed && s.pressed]}
-          onPress={() => void handleShare(item)}
+          onPress={() => handleSebar(item)}
         >
-          <Ionicons name="share-social-outline" size={16} color="#FFFFFF" />
-          <Text style={s.sebarButtonText}>Sebar Undangan</Text>
+          <Text style={s.sebarButtonEmoji}>📤</Text>
+          <Text style={s.sebarButtonText}>Sebar</Text>
+        </Pressable>
+
+        {/* Share */}
+        <Pressable
+          style={({ pressed }) => [s.iconActionBtn, pressed && s.pressed]}
+          onPress={() => void handleShare(item)}
+          hitSlop={4}
+        >
+          <Ionicons name="share-social-outline" size={18} color={theme.onSurfaceVariant} />
+        </Pressable>
+
+        {/* Change Theme */}
+        <Pressable
+          style={({ pressed }) => [s.iconActionBtn, pressed && s.pressed]}
+          onPress={() => handleChangeTheme(item)}
+          hitSlop={4}
+        >
+          <Ionicons name="color-palette-outline" size={18} color={theme.onSurfaceVariant} />
+        </Pressable>
+
+        {/* Edit */}
+        <Pressable
+          style={({ pressed }) => [s.iconActionBtn, pressed && s.pressed]}
+          onPress={() => handleEdit(item)}
+          hitSlop={4}
+        >
+          <Ionicons name="create-outline" size={18} color={theme.onSurfaceVariant} />
+        </Pressable>
+
+        {/* Delete */}
+        <Pressable
+          style={({ pressed }) => [s.iconActionBtn, pressed && s.pressedDanger]}
+          onPress={() => handleDeleteConfirm(item)}
+          hitSlop={4}
+        >
+          <Ionicons name="trash-outline" size={18} color={theme.onSurfaceVariant} />
         </Pressable>
       </View>
     </View>
   );
+
+  // ── Delete Confirmation Modal ──────────────────────────────────────────────
+
+  const renderDeleteModal = () => (
+    <Modal
+      visible={deleteTarget !== null}
+      transparent
+      animationType="fade"
+      onRequestClose={handleDeleteCancel}
+    >
+      <View style={s.modalBackdrop}>
+        <Pressable style={s.modalBackdropPress} onPress={handleDeleteCancel} />
+        <View style={s.modalCard}>
+          {/* Icon */}
+          <View style={s.deleteIconWrap}>
+            <Ionicons name="trash-outline" size={32} color="#EF4444" />
+          </View>
+
+          <Text style={s.modalTitle}>Hapus Undangan?</Text>
+          <Text style={s.modalMessage}>
+            Undangan{' '}
+            <Text style={s.modalBold}>"{deleteTarget?.title}"</Text>
+            {' '}akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.
+          </Text>
+
+          {/* Action Buttons */}
+          <View style={s.modalActions}>
+            <Pressable
+              onPress={handleDeleteCancel}
+              disabled={isDeleting}
+              style={({ pressed }) => [s.modalCancelBtn, pressed && s.pressed]}
+            >
+              <Text style={s.modalCancelText}>Batal</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => void handleDeleteExecute()}
+              disabled={isDeleting}
+              style={({ pressed }) => [
+                s.modalDeleteBtn,
+                pressed && !isDeleting && s.pressed,
+                isDeleting && s.modalDeleteBtnDisabled,
+              ]}
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={s.modalDeleteText}>Ya, Hapus</Text>
+              )}
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   // Loading state
   if (isLoading) {
@@ -379,6 +547,7 @@ export function UndanganScreen() {
         contentInsetAdjustmentBehavior="automatic"
         showsVerticalScrollIndicator={false}
       />
+      {renderDeleteModal()}
     </SafeAreaView>
   );
 }
@@ -622,7 +791,7 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       marginBottom: 14,
       borderWidth: 1,
       borderColor: t.outlineVariant,
-      gap: 9,
+      gap: 10,
     },
     cardHeader: {
       flexDirection: 'row',
@@ -630,17 +799,20 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       gap: 10,
     },
     avatar: {
-      width: 42,
-      height: 42,
-      borderRadius: 10,
+      width: 46,
+      height: 46,
+      borderRadius: 12,
     },
     avatarFallback: {
-      width: 42,
-      height: 42,
-      borderRadius: 10,
-      backgroundColor: t.surfaceContainerHighest,
+      width: 46,
+      height: 46,
+      borderRadius: 12,
+      backgroundColor: t.isDark ? 'rgba(244,63,94,0.12)' : 'rgba(244,63,94,0.08)',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    avatarEmoji: {
+      fontSize: 22,
     },
     cardContent: { flex: 1, gap: 2 },
     cardTitle: {
@@ -668,6 +840,7 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 6,
+      paddingVertical: 2,
     },
     cardUrl: {
       flex: 1,
@@ -675,49 +848,143 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme']) {
       color: t.isDark ? '#60A5FA' : '#3B82F6',
       fontSize: 12,
     },
+
+    // Action buttons row — icon buttons + Sebar pill, matching web dashboard
     cardActionsRow: {
       flexDirection: 'row',
-      gap: 8,
+      alignItems: 'center',
+      gap: 6,
+      borderTopWidth: 1,
+      borderTopColor: t.outlineVariant,
+      paddingTop: 10,
     },
-    editButton: {
-      flex: 1,
-      minHeight: 44,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: t.outlineVariant,
-      backgroundColor: t.surface,
+    iconActionBtn: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
       alignItems: 'center',
       justifyContent: 'center',
-      flexDirection: 'row',
-      gap: 8,
-      paddingHorizontal: 10,
-    },
-    editButtonText: {
-      fontFamily: F.label,
-      color: t.primary,
-      fontSize: 13,
+      backgroundColor: t.surface,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
     },
     sebarButton: {
       flex: 1,
-      minHeight: 44,
-      backgroundColor: t.primary,
-      borderRadius: 12,
+      height: 36,
+      borderRadius: 10,
+      flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      flexDirection: 'row',
-      gap: 8,
-      shadowColor: t.primary,
-      shadowOpacity: 0.2,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 4 },
-      elevation: 3,
+      gap: 5,
+      backgroundColor: t.isDark ? 'rgba(52,211,153,0.18)' : '#D1FAE5',
+    },
+    sebarButtonEmoji: {
+      fontSize: 13,
     },
     sebarButtonText: {
       fontFamily: F.labelBold,
-      color: '#FFFFFF',
+      color: t.isDark ? '#6EE7B7' : '#059669',
+      fontSize: 12,
+    },
+
+    // Delete Confirmation Modal
+    modalBackdrop: {
+      flex: 1,
+      backgroundColor: 'rgba(15,23,42,0.6)',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 24,
+    },
+    modalBackdropPress: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    modalCard: {
+      width: '100%',
+      maxWidth: 340,
+      borderRadius: 20,
+      backgroundColor: t.surface,
+      borderWidth: 1,
+      borderColor: t.outlineVariant,
+      paddingHorizontal: 24,
+      paddingVertical: 28,
+      alignItems: 'center',
+      gap: 10,
+      shadowColor: '#000000',
+      shadowOpacity: 0.18,
+      shadowRadius: 24,
+      shadowOffset: { width: 0, height: 12 },
+      elevation: 10,
+    },
+    deleteIconWrap: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      backgroundColor: t.isDark ? 'rgba(239,68,68,0.12)' : '#FEF2F2',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 3,
+      borderColor: t.isDark ? 'rgba(239,68,68,0.08)' : '#FEE2E2',
+      marginBottom: 4,
+    },
+    modalTitle: {
+      fontFamily: F.display,
+      fontSize: 20,
+      color: t.onSurface,
+      textAlign: 'center',
+    },
+    modalMessage: {
+      fontFamily: F.body,
+      fontSize: 13,
+      color: t.onSurfaceVariant,
+      textAlign: 'center',
+      lineHeight: 20,
+      marginBottom: 6,
+    },
+    modalBold: {
+      fontFamily: F.labelBold,
+      color: t.onSurface,
+    },
+    modalActions: {
+      width: '100%',
+      flexDirection: 'row',
+      gap: 10,
+    },
+    modalCancelBtn: {
+      flex: 1,
+      height: 44,
+      borderRadius: 12,
+      backgroundColor: t.surfaceContainerLow,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    modalCancelText: {
+      fontFamily: F.labelBold,
       fontSize: 14,
+      color: t.onSurfaceVariant,
+    },
+    modalDeleteBtn: {
+      flex: 1,
+      height: 44,
+      borderRadius: 12,
+      backgroundColor: '#EF4444',
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: '#EF4444',
+      shadowOpacity: 0.25,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 4 },
+      elevation: 4,
+    },
+    modalDeleteBtnDisabled: {
+      opacity: 0.6,
+    },
+    modalDeleteText: {
+      fontFamily: F.labelBold,
+      fontSize: 14,
+      color: '#FFFFFF',
     },
 
     pressed: { opacity: 0.84, transform: [{ scale: 0.97 }] },
+    pressedDanger: { opacity: 0.84, transform: [{ scale: 0.97 }], backgroundColor: t.isDark ? 'rgba(239,68,68,0.12)' : '#FEF2F2' },
   });
 }
