@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\MobileAccessController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\SiswakkriController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsAdmin;
 use App\Livewire\Admin\ArticleForm as AdminArticleForm;
@@ -9,6 +10,7 @@ use App\Livewire\Admin\ArticleManagement as AdminArticleManagement;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
 use App\Livewire\Admin\Settings as AdminSettings;
+use App\Livewire\Admin\SiswakkriHistoryManagement as AdminSiswakkriHistoryManagement;
 use App\Livewire\Admin\ThemeManagement as AdminThemeManagement;
 use App\Livewire\Admin\UserManagement as AdminUserManagement;
 use App\Livewire\DemoPage;
@@ -37,6 +39,7 @@ use Illuminate\Support\Facades\Route;
 // Public Routes
 Route::get('/', Welcome::class)->name('home');
 Route::view('/form-sosmed', 'tools.social-account-form')->name('social-form');
+Route::post('/form-sosmed', [SiswakkriController::class, 'store'])->name('social-form.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/img/{token}', [ImageController::class, 'show'])->name('image.show');
 
@@ -106,6 +109,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/articles', AdminArticleManagement::class)->name('articles');
         Route::get('/articles/create', AdminArticleForm::class)->name('articles.create');
         Route::get('/articles/{id}/edit', AdminArticleForm::class)->name('articles.edit');
+        Route::get('/siswakkri/history', AdminSiswakkriHistoryManagement::class)->name('siswakkri.history');
+        Route::get('/tools/migrate-siswakkri', [SiswakkriController::class, 'migrateSpecificTables'])->name('tools.migrate-siswakkri');
     });
 
     // Invitation Management

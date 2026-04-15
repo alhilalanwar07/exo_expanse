@@ -436,7 +436,7 @@
     <main class="page">
         <section class="hero">
             <h1>Form Data Nama, Medsos, dan Usia</h1>
-            <p>Pilih nama dengan pencarian seperti Select2, lalu pilih platform medsos dulu sebelum isi akun.</p>
+            <p>Pilih nama dengan pencarian, lalu isi data anda dengan benar.</p>
         </section>
 
         <section class="card">
@@ -493,7 +493,7 @@
                 </div>
 
                 <div class="actions">
-                    <button type="submit" class="btn-primary">Simpan Data</button>
+                    <button type="submit" class="btn-primary" id="submitButton">Simpan Data</button>
                     <button type="reset" class="btn-muted" id="resetButton">Reset</button>
                 </div>
             </form>
@@ -537,7 +537,10 @@
         const resultText = document.getElementById('resultText');
         const copyButton = document.getElementById('copyButton');
         const resetButton = document.getElementById('resetButton');
+        const submitButton = document.getElementById('submitButton');
         const toast = document.getElementById('toast');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const submitUrl = @json(route('social-form.store'));
 
         function showToast(message, type = 'success') {
             toast.textContent = message;
@@ -588,6 +591,32 @@
             }
         }
 
+        async function submitToServer(payload) {
+            const response = await fetch(submitUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const responseData = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                if (responseData.errors) {
+                    const firstError = Object.values(responseData.errors)[0]?.[0];
+                    throw new Error(firstError ?? 'Validasi gagal.');
+                }
+
+                throw new Error(responseData.message ?? 'Gagal menyimpan data.');
+            }
+
+            return responseData;
+        }
+
         $(function () {
             $('#name').select2({
                 placeholder: 'Cari dan pilih nama',
@@ -600,7 +629,7 @@
 
         socialPlatform.addEventListener('change', syncSocialAccountState);
 
-        form.addEventListener('submit', (event) => {
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             if (!form.checkValidity()) {
@@ -616,17 +645,37 @@
             const selectedPlatformLabel = socialPlatform.options[socialPlatform.selectedIndex].text;
             const normalizedAccount = socialAccount.value.trim();
 
-            const lines = [
-                `Nama: ${nameSelect.value}`,
-                `Platform Medsos: ${selectedPlatformLabel}`,
-                `Akun Medsos: ${normalizedAccount}`,
-                `Usia: ${ageInput.value}`,
-            ];
+            submitButton.disabled = true;
+            submitButton.textContent = 'Menyimpan...';
 
-            resultText.textContent = lines.join('\n');
-            resultPanel.classList.add('visible');
-            resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            showToast('Data berhasil dibuat.');
+            try {
+                const payload = {
+                    name: nameSelect.value,
+                    social_platform: socialPlatform.value,
+                    social_account: normalizedAccount,
+                    age: Number(ageInput.value),
+                };
+
+                const responseData = await submitToServer(payload);
+
+                const lines = [
+                    `Nama: ${nameSelect.value}`,
+                    `Platform Medsos: ${selectedPlatformLabel}`,
+                    `Akun Medsos: ${normalizedAccount}`,
+                    `Usia: ${ageInput.value}`,
+                    `Status Simpan: ${responseData.replaced_previous ? 'Data lama dihapus, data baru disimpan' : 'Data baru disimpan'}`,
+                ];
+
+                resultText.textContent = lines.join('\n');
+                resultPanel.classList.add('visible');
+                resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                showToast(responseData.message ?? 'Data berhasil disimpan.');
+            } catch (error) {
+                showToast(error.message ?? 'Terjadi kesalahan saat menyimpan data.', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Simpan Data';
+            }
         });
 
         copyButton.addEventListener('click', async () => {
@@ -650,6 +699,8 @@
                 $('#name').val(null).trigger('change');
                 resultPanel.classList.remove('visible');
                 resultText.textContent = '';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Simpan Data';
                 syncSocialAccountState();
             }, 0);
         });
