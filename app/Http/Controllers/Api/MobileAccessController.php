@@ -114,4 +114,32 @@ class MobileAccessController extends Controller
             'data' => $mobileAccessService->listDevices($user, $currentSession->id),
         ]);
     }
+
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $user = $request->attributes->get('mobileUser');
+
+        if (! $user instanceof User) {
+            return response()->json([
+                'message' => 'Unauthorized.',
+            ], 401);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil berhasil diperbarui.',
+            'data' => [
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
+    }
 }
