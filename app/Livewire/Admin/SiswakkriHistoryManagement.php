@@ -22,12 +22,20 @@ class SiswakkriHistoryManagement extends Component
     #[Url(history: true)]
     public string $platformFilter = '';
 
+    #[Url(history: true)]
+    public string $statusFilter = '';
+
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
     public function updatingPlatformFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter(): void
     {
         $this->resetPage();
     }
@@ -70,7 +78,7 @@ class SiswakkriHistoryManagement extends Component
         ]);
     }
 
-    private function getBaseQuery(): Builder
+    private function getBaseQuery(bool $withStatusFilter = true): Builder
     {
         return SiswakkriHistory::query()
             ->when($this->search, function (Builder $query): void {
@@ -83,12 +91,15 @@ class SiswakkriHistoryManagement extends Component
             })
             ->when($this->platformFilter, function (Builder $query): void {
                 $query->where('social_platform', $this->platformFilter);
+            })
+            ->when($withStatusFilter && $this->statusFilter !== '', function (Builder $query): void {
+                $query->where('replaced_previous', $this->statusFilter === 'old');
             });
     }
 
     private function getExportQuery(): Builder
     {
-        return $this->getBaseQuery()
+        return $this->getBaseQuery(withStatusFilter: false)
             ->where('replaced_previous', false);
     }
 

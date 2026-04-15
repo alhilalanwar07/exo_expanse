@@ -31,12 +31,20 @@
                 <input wire:model.live.debounce.300ms="search" type="text" class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 sm:text-sm transition-colors text-slate-800 dark:text-slate-200" placeholder="Cari nama, akun, atau IP...">
             </div>
 
-            <select wire:model.live="platformFilter" class="border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
-                <option value="">Semua Platform</option>
-                @foreach($platforms as $platform)
-                    <option value="{{ $platform }}">{{ strtoupper($platform) }}</option>
-                @endforeach
-            </select>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                <select wire:model.live="platformFilter" class="border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+                    <option value="">Semua Platform</option>
+                    @foreach($platforms as $platform)
+                        <option value="{{ $platform }}">{{ strtoupper($platform) }}</option>
+                    @endforeach
+                </select>
+
+                <select wire:model.live="statusFilter" class="border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+                    <option value="">Semua Status</option>
+                    <option value="new">Data baru</option>
+                    <option value="old">Data lama</option>
+                </select>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
