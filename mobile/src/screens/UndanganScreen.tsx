@@ -190,8 +190,11 @@ export function UndanganScreen() {
   };
 
   const handleSebar = (item: InvitationItem) => {
-    // Open the sebar (distribution) page in the browser
-    void Linking.openURL(`${env.apiBaseUrl}/invitations/${item.id}/sebar`);
+    navigation.navigate('SebarUndangan', {
+      invitationId: Number(item.id),
+      invitationTitle: item.title,
+      invitationUrl: item.url,
+    });
   };
 
   const handleShare = async (item: InvitationItem) => {

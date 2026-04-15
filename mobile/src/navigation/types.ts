@@ -53,6 +53,11 @@ export type RootStackParamList = {
   ApplyTheme: ApplyThemeRouteParams;
   EditProfile: undefined;
   Help: undefined;
+  SebarUndangan: {
+    invitationId: number;
+    invitationTitle: string;
+    invitationUrl: string;
+  };
 };
 
 export type AuthFlowParamList = Pick<

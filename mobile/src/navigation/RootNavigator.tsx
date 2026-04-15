@@ -24,6 +24,7 @@ import { ApplyThemeScreen } from '../screens/ApplyThemeScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { InvitationFormScreen } from '../screens/InvitationFormScreen';
+import { SebarUndanganScreen } from '../screens/SebarUndanganScreen';
 import type { MainTabParamList, RootStackParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -246,6 +247,13 @@ export function RootNavigator() {
           options={{
             presentation: 'fullScreenModal',
             animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="SebarUndangan"
+          component={SebarUndanganScreen}
+          options={{
+            animation: 'slide_from_right',
           }}
         />
       </Stack.Navigator>
