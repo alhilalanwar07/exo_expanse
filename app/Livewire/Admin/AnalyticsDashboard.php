@@ -126,12 +126,19 @@ class AnalyticsDashboard extends Component
 
     public function render()
     {
+        $pageViews = $this->getPageViewsData();
+        $browsers = $this->getBrowserData();
+        $operatingSystems = $this->getOSData();
+
         return view('livewire.admin.analytics-dashboard', [
             'stats' => $this->getTotalStats(),
             'visitorsData' => $this->getVisitorsData(),
-            'pageViews' => $this->getPageViewsData(),
-            'browsers' => $this->getBrowserData(),
-            'operatingSystems' => $this->getOSData(),
+            'pageViews' => $pageViews,
+            'maxPageViews' => count($pageViews) > 0 ? max(array_column($pageViews, 'views')) : 1,
+            'browsers' => $browsers,
+            'maxBrowserUsers' => count($browsers) > 0 ? max(array_column($browsers, 'users')) : 1,
+            'operatingSystems' => $operatingSystems,
+            'maxOSUsers' => count($operatingSystems) > 0 ? max(array_column($operatingSystems, 'users')) : 1,
             'dateRangeOptions' => [
                 '7days' => 'Last 7 Days',
                 '30days' => 'Last 30 Days',

@@ -160,7 +160,7 @@
                                     <div class="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                         <div 
                                             class="bg-blue-600 h-2 rounded-full"
-                                            style="width: {{ max(($page['views'] / max(array_column($pageViews, 'views'), 1)) * 100, 10) }}%"
+                                            style="width: {{ max(($page['views'] / $maxPageViews) * 100, 10) }}%"
                                         ></div>
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
                                     <div class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                                         <div 
                                             class="h-2 bg-blue-500 rounded-full"
-                                            style="width: {{ max(($browser['users'] / max(array_column($browsers, 'users'), 1)) * 100, 5) }}%"
+                                            style="width: {{ max(($browser['users'] / $maxBrowserUsers) * 100, 5) }}%"
                                         ></div>
                                     </div>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white w-12 text-right">{{ number_format($browser['users']) }}</span>
@@ -217,7 +217,7 @@
                                     <div class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                                         <div 
                                             class="h-2 bg-green-500 rounded-full"
-                                            style="width: {{ max(($os['users'] / max(array_column($operatingSystems, 'users'), 1)) * 100, 5) }}%"
+                                            style="width: {{ max(($os['users'] / $maxOSUsers) * 100, 5) }}%"
                                         ></div>
                                     </div>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white w-12 text-right">{{ number_format($os['users']) }}</span>
