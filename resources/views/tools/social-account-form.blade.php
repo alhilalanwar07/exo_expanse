@@ -102,6 +102,28 @@
         'MUH IBNU AFDAL' => ['age' => 16],
         'SHELA ZHULFAEIDHA' => ['platform' => 'instagram', 'account' => 'shela', 'age' => 16],
     ];
+
+    $submittedEntries = [];
+
+    if (\Illuminate\Support\Facades\Schema::hasTable('siswakkris')) {
+        $submittedEntries = \App\Models\Siswakkri::query()
+            ->select(['id', 'name', 'social_platform', 'age', 'last_submitted_at'])
+            ->orderByDesc('last_submitted_at')
+            ->orderByDesc('id')
+            ->get()
+            ->map(static function ($row) use ($socialPlatforms): array {
+                $platformKey = strtolower((string) $row->social_platform);
+
+                return [
+                    'name' => (string) $row->name,
+                    'social_platform' => $platformKey,
+                    'social_platform_label' => $socialPlatforms[$platformKey] ?? ucfirst($platformKey),
+                    'age' => (int) $row->age,
+                ];
+            })
+            ->values()
+            ->all();
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -306,6 +328,86 @@
             word-break: break-word;
         }
 
+        .submitted-section {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px dashed #cfdceb;
+            display: grid;
+            gap: 10px;
+        }
+
+        .submitted-header {
+            display: grid;
+            gap: 4px;
+        }
+
+        .submitted-header h2 {
+            margin: 0;
+            font-size: 1rem;
+            color: #0b253c;
+        }
+
+        .submitted-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .submitted-tools input {
+            min-height: 44px;
+            flex: 1 1 280px;
+        }
+
+        .submitted-count {
+            color: #556780;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .submitted-table-wrapper {
+            border: 1px solid #d6e0eb;
+            border-radius: 12px;
+            overflow: auto;
+            max-height: 520px;
+            background: #fff;
+        }
+
+        .submitted-table {
+            width: 100%;
+            min-width: 520px;
+            border-collapse: collapse;
+        }
+
+        .submitted-table th,
+        .submitted-table td {
+            text-align: left;
+            padding: 11px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+        }
+
+        .submitted-table th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .submitted-table tbody tr:nth-child(odd) {
+            background: #fcfdff;
+        }
+
+        .submitted-empty {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+        }
+
         .toast {
             position: fixed;
             right: 16px;
@@ -500,6 +602,31 @@
                     <button type="button" class="btn-primary" id="copyButton">Salin Hasil</button>
                 </div>
             </div>
+
+            <div class="submitted-section">
+                <div class="submitted-header">
+                    <h2>Data Terbaru Yang Sudah Input</h2>
+                    <p class="hint">Hanya data terbaru per nama. Tampilan setara 10 data, sisanya bisa dilihat dengan scroll.</p>
+                </div>
+
+                <div class="submitted-tools">
+                    <input id="submittedSearch" type="text" placeholder="Cari nama, medsos, atau usia..." autocomplete="off">
+                    <span class="submitted-count" id="submittedCount">0 data</span>
+                </div>
+
+                <div class="submitted-table-wrapper" aria-live="polite">
+                    <table class="submitted-table">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Medsos</th>
+                                <th>Usia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submittedTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -510,6 +637,8 @@
 
     <script>
         const prefillByName = @json($prefillByName, JSON_UNESCAPED_SLASHES);
+        const socialPlatformLabels = @json($socialPlatforms, JSON_UNESCAPED_SLASHES);
+        const submittedEntries = @json($submittedEntries, JSON_UNESCAPED_SLASHES);
 
         const platformHints = {
             instagram: 'Contoh: @username_ig',
@@ -534,6 +663,9 @@
         const resetButton = document.getElementById('resetButton');
         const submitButton = document.getElementById('submitButton');
         const toast = document.getElementById('toast');
+        const submittedSearchInput = document.getElementById('submittedSearch');
+        const submittedCount = document.getElementById('submittedCount');
+        const submittedTableBody = document.getElementById('submittedTableBody');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const submitUrl = @json(route('social-form.store'));
 
@@ -561,6 +693,84 @@
             socialAccount.disabled = false;
             socialAccount.placeholder = platformHints[selectedPlatform] ?? 'Isi akun medsos';
             accountHint.textContent = socialAccount.placeholder;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getFilteredSubmittedEntries() {
+            const keyword = submittedSearchInput.value.trim().toLowerCase();
+
+            if (!keyword) {
+                return submittedEntries;
+            }
+
+            return submittedEntries.filter((entry) => {
+                const combined = [
+                    entry.name,
+                    entry.social_platform_label,
+                    entry.age,
+                ].join(' ').toLowerCase();
+
+                return combined.includes(keyword);
+            });
+        }
+
+        function renderSubmittedEntries() {
+            const filteredEntries = getFilteredSubmittedEntries();
+            submittedCount.textContent = `${filteredEntries.length} data`;
+
+            if (filteredEntries.length === 0) {
+                submittedTableBody.innerHTML = '<tr><td class="submitted-empty" colspan="3">Data tidak ditemukan.</td></tr>';
+                return;
+            }
+
+            submittedTableBody.innerHTML = filteredEntries
+                .map((entry) => `
+                    <tr>
+                        <td>${escapeHtml(entry.name)}</td>
+                        <td>${escapeHtml(entry.social_platform_label)}</td>
+                        <td>${escapeHtml(entry.age)}</td>
+                    </tr>
+                `)
+                .join('');
+        }
+
+        function upsertSubmittedEntry(responseData) {
+            if (!responseData || !responseData.data) {
+                return;
+            }
+
+            const record = responseData.data;
+            const normalizedName = String(record.name ?? '').trim();
+
+            if (!normalizedName) {
+                return;
+            }
+
+            const platformKey = String(record.social_platform ?? '').toLowerCase();
+            const entry = {
+                name: normalizedName,
+                social_platform: platformKey,
+                social_platform_label: socialPlatformLabels[platformKey] ?? platformKey,
+                age: Number(record.age ?? 0),
+            };
+
+            const existingIndex = submittedEntries.findIndex((item) =>
+                String(item.name).toUpperCase() === normalizedName.toUpperCase()
+            );
+
+            if (existingIndex !== -1) {
+                submittedEntries.splice(existingIndex, 1);
+            }
+
+            submittedEntries.unshift(entry);
         }
 
         function applyNamePrefill() {
@@ -664,6 +874,8 @@
                 resultText.textContent = lines.join('\n');
                 resultPanel.classList.add('visible');
                 resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                upsertSubmittedEntry(responseData);
+                renderSubmittedEntries();
                 showToast(responseData.message ?? 'Data berhasil disimpan.');
             } catch (error) {
                 showToast(error.message ?? 'Terjadi kesalahan saat menyimpan data.', 'error');
@@ -700,7 +912,10 @@
             }, 0);
         });
 
+        submittedSearchInput.addEventListener('input', renderSubmittedEntries);
+
         syncSocialAccountState();
+        renderSubmittedEntries();
     </script>
 </body>
 </html>
