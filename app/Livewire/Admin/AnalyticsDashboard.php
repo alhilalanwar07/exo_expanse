@@ -4,8 +4,10 @@ namespace App\Livewire\Admin;
 
 use App\Services\GoogleAnalyticsService;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('components.layouts.admin')]
 class AnalyticsDashboard extends Component
 {
     public string $dateRange = '7days';
