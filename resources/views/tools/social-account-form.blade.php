@@ -95,11 +95,6 @@
         'instagram' => 'Instagram',
         'tiktok' => 'TikTok',
         'facebook' => 'Facebook',
-        'x' => 'X / Twitter',
-        'youtube' => 'YouTube',
-        'whatsapp' => 'WhatsApp',
-        'telegram' => 'Telegram',
-        'other' => 'Lainnya',
     ];
 
     $prefillByName = [
