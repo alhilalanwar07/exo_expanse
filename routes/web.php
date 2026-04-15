@@ -5,6 +5,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SiswakkriController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsAdmin;
+use App\Livewire\Admin\AnalyticsDashboard as AdminAnalyticsDashboard;
 use App\Livewire\Admin\ArticleForm as AdminArticleForm;
 use App\Livewire\Admin\ArticleManagement as AdminArticleManagement;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
@@ -102,6 +103,7 @@ Route::middleware('auth')->group(function () {
     // Admin Routes
     Route::middleware(IsAdmin::class)->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+        Route::get('/analytics', AdminAnalyticsDashboard::class)->name('analytics');
         Route::get('/users', AdminUserManagement::class)->name('users');
         Route::get('/invitations', AdminInvitationManagement::class)->name('invitations');
         Route::get('/themes', AdminThemeManagement::class)->name('themes');

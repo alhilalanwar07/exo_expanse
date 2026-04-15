@@ -47,4 +47,9 @@ return [
         'model' => env('NVIDIA_MODEL', 'meta/llama-3.3-70b-instruct'),
     ],
 
+    'google' => [
+        'analytics_credentials_base64' => env('GOOGLE_ANALYTICS_CREDENTIALS_BASE64'),
+        'analytics_measurement_id' => env('GOOGLE_ANALYTICS_MEASUREMENT_ID'),
+    ],
+
 ];
