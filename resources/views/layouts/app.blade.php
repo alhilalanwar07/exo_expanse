@@ -27,6 +27,15 @@
             document.documentElement.classList.remove('dark')
         }
     </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-28Z85B43HF"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-28Z85B43HF');
+    </script>
 </head>
 <body class="font-outfit antialiased bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
     <div class="min-h-screen">
