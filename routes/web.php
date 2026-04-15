@@ -140,28 +140,3 @@ Route::middleware('auth')->group(function () {
 // allow.iframe removes X-Frame-Options so the demo can be embedded in the mobile app's in-app browser.
 Route::get('/i/demo', DemoPage::class)->name('invitation.demo')->middleware('allow.iframe');
 Route::get('/i/{slug}', ThemePage::class)->name('invitation.show');
-
-// Route for specific migrations (requested by user)
-Route::get('/dev/migrate-music', function () {
-    try {
-        $output1 = \Illuminate\Support\Facades\Artisan::call('migrate', [
-            '--path' => '/database/migrations/2026_04_15_184934_create_background_music_table.php',
-            '--force' => true
-        ]);
-        $output2 = \Illuminate\Support\Facades\Artisan::call('migrate', [
-            '--path' => '/database/migrations/2026_04_15_184949_add_music_id_to_invitations_table.php',
-            '--force' => true
-        ]);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Migration applied successfully!',
-            'create_table_output' => \Illuminate\Support\Facades\Artisan::output(),
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ], 500);
-    }
-});
