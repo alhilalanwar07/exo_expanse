@@ -108,6 +108,22 @@ class AnalyticsDashboard extends Component
         ], $data), 0, 8);
     }
 
+    public function getCountriesData(): array
+    {
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getCountriesData($dateRange['startDate'], $dateRange['endDate']);
+
+        return array_slice($data, 0, 8);
+    }
+
+    public function getTrafficSources(): array
+    {
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getTrafficSources($dateRange['startDate'], $dateRange['endDate']);
+
+        return array_slice($data, 0, 8);
+    }
+
     public function getTotalStats(): array
     {
         $dateRange = $this->getDateRange();
@@ -129,6 +145,8 @@ class AnalyticsDashboard extends Component
             $pageViews = $this->getPageViewsData();
             $browsers = $this->getBrowserData();
             $operatingSystems = $this->getOSData();
+            $countries = $this->getCountriesData();
+            $trafficSources = $this->getTrafficSources();
             $stats = $this->getTotalStats();
             $visitorsData = $this->getVisitorsData();
         } catch (\Exception $e) {
@@ -136,6 +154,8 @@ class AnalyticsDashboard extends Component
             $pageViews = [];
             $browsers = [];
             $operatingSystems = [];
+            $countries = [];
+            $trafficSources = [];
             $stats = ['totalVisitors' => 0, 'totalPageViews' => 0, 'avgPageViews' => 0];
             $visitorsData = ['labels' => [], 'visitors' => [], 'pageViews' => []];
         }
@@ -149,10 +169,16 @@ class AnalyticsDashboard extends Component
             'maxBrowserUsers' => count($browsers) > 0 ? max(array_column($browsers, 'users')) : 1,
             'operatingSystems' => $operatingSystems,
             'maxOSUsers' => count($operatingSystems) > 0 ? max(array_column($operatingSystems, 'users')) : 1,
+            'countries' => $countries,
+            'maxCountryUsers' => count($countries) > 0 ? max(array_column($countries, 'users')) : 1,
+            'trafficSources' => $trafficSources,
+            'maxTrafficUsers' => count($trafficSources) > 0 ? max(array_column($trafficSources, 'users')) : 1,
             'dateRangeOptions' => [
                 '7days' => 'Last 7 Days',
                 '30days' => 'Last 30 Days',
                 '90days' => 'Last 90 Days',
+                '180days' => 'Last 6 Months',
+                '365days' => 'Last 1 Year',
             ],
         ]);
     }

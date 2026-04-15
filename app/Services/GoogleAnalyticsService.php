@@ -157,6 +157,62 @@ class GoogleAnalyticsService
     }
 
     /**
+     * Get Countries data
+     */
+    public static function getCountriesData(?Carbon $startDate = null, ?Carbon $endDate = null): array
+    {
+        if (! self::checkConfig()) {
+            return [];
+        }
+
+        try {
+            $startDate = $startDate ?? Carbon::now()->subDays(7);
+            $endDate = $endDate ?? Carbon::now();
+            $period = Period::create($startDate, $endDate);
+
+            $data = Analytics::get($period, ['activeUsers'], ['country'], 10);
+
+            return $data->map(function ($item) {
+                return [
+                    'name' => $item['country'] ?? 'Unknown',
+                    'users' => $item['activeUsers'] ?? 0,
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            Log::error('GA4 Countries Data Error: '.$e->getMessage());
+            throw self::formatError($e);
+        }
+    }
+
+    /**
+     * Get Traffic Sources (Referrers)
+     */
+    public static function getTrafficSources(?Carbon $startDate = null, ?Carbon $endDate = null): array
+    {
+        if (! self::checkConfig()) {
+            return [];
+        }
+
+        try {
+            $startDate = $startDate ?? Carbon::now()->subDays(7);
+            $endDate = $endDate ?? Carbon::now();
+            $period = Period::create($startDate, $endDate);
+
+            $data = Analytics::get($period, ['activeUsers'], ['sessionSourceMedium'], 10);
+
+            return $data->map(function ($item) {
+                return [
+                    'name' => $item['sessionSourceMedium'] ?? 'Direct',
+                    'users' => $item['activeUsers'] ?? 0,
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            Log::error('GA4 Traffic Sources Error: '.$e->getMessage());
+            throw self::formatError($e);
+        }
+    }
+
+    /**
      * Get total users
      */
     public static function getTotalUsers(?Carbon $startDate = null, ?Carbon $endDate = null): int
