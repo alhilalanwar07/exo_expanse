@@ -24,6 +24,7 @@ class GoogleAnalyticsService
 
             if (! $base64Credentials) {
                 Log::warning('GA4 credentials not found in .env');
+
                 return [];
             }
 
@@ -31,6 +32,7 @@ class GoogleAnalyticsService
 
             if (! $jsonCredentials) {
                 Log::warning('Failed to decode base64 credentials');
+
                 return [];
             }
 
@@ -38,6 +40,7 @@ class GoogleAnalyticsService
 
             if (! $credentials) {
                 Log::warning('Invalid JSON in decoded credentials');
+
                 return [];
             }
 
@@ -86,6 +89,7 @@ class GoogleAnalyticsService
 
             if (empty($credentials)) {
                 Log::warning('GA4 credentials not available');
+
                 return false;
             }
 
@@ -93,6 +97,7 @@ class GoogleAnalyticsService
             $tempFile = storage_path('app/ga4-credentials-temp.json');
             if (! file_put_contents($tempFile, json_encode($credentials))) {
                 Log::warning('Failed to write credentials temp file');
+
                 return false;
             }
 
@@ -115,8 +120,8 @@ class GoogleAnalyticsService
     private static function executeQuery(
         array $dimensions = [],
         array $metrics = [],
-        Carbon $startDate = null,
-        Carbon $endDate = null,
+        ?Carbon $startDate = null,
+        ?Carbon $endDate = null,
         ?int $limit = null
     ): array {
         try {
@@ -127,6 +132,7 @@ class GoogleAnalyticsService
             $propertyId = static::getPropertyId();
             if (! $propertyId) {
                 Log::warning('GA4 property ID not configured');
+
                 return [];
             }
 
@@ -174,141 +180,116 @@ class GoogleAnalyticsService
         } catch (\Exception $e) {
             Log::error('GA4 Query Error: '.$e->getMessage());
 
-            return [];
+            // Extract the readable message from Google API JSON error
+            $errorJson = json_decode($e->getMessage(), true);
+            $message = is_array($errorJson) && isset($errorJson['message'])
+                ? $errorJson['message']
+                : $e->getMessage();
+
+            throw new \Exception($message);
         }
     }
 
     /**
      * Get visitors data for date range
      */
-    public static function getVisitors(Carbon $startDate = null, Carbon $endDate = null): array
+    public static function getVisitors(?Carbon $startDate = null, ?Carbon $endDate = null): array
     {
-        try {
-            $data = static::executeQuery(
-                ['date'],
-                ['activeUsers', 'screenPageViews'],
-                $startDate,
-                $endDate,
-                365
-            );
+        $data = static::executeQuery(
+            ['date'],
+            ['activeUsers', 'screenPageViews'],
+            $startDate,
+            $endDate,
+            365
+        );
 
-            return array_map(fn ($item) => [
-                'date' => $item['date'] ?? null,
-                'visitors' => $item['activeUsers'] ?? 0,
-                'pageViews' => $item['screenPageViews'] ?? 0,
-            ], $data);
-        } catch (\Exception $e) {
-            Log::error('GA4 Visitors Fetch Error: '.$e->getMessage());
+        // Sort by date
+        usort($data, function ($a, $b) {
+            return strcmp($a['date'] ?? '', $b['date'] ?? '');
+        });
 
-            return [];
-        }
+        return array_map(fn ($item) => [
+            'date' => $item['date'] ?? null,
+            'visitors' => $item['activeUsers'] ?? 0,
+            'pageViews' => $item['screenPageViews'] ?? 0,
+        ], $data);
     }
 
     /**
      * Get page views data
      */
-    public static function getPageViews(Carbon $startDate = null, Carbon $endDate = null): array
+    public static function getPageViews(?Carbon $startDate = null, ?Carbon $endDate = null): array
     {
-        try {
-            $data = static::executeQuery(
-                ['pagePath'],
-                ['screenPageViews'],
-                $startDate,
-                $endDate,
-                10
-            );
+        $data = static::executeQuery(
+            ['pagePath'],
+            ['screenPageViews'],
+            $startDate,
+            $endDate,
+            10
+        );
 
-            return array_map(fn ($item) => [
-                'url' => $item['pagePath'] ?? 'N/A',
-                'pageViews' => $item['screenPageViews'] ?? 0,
-            ], $data);
-        } catch (\Exception $e) {
-            Log::error('GA4 Page Views Fetch Error: '.$e->getMessage());
-
-            return [];
-        }
+        return array_map(fn ($item) => [
+            'url' => $item['pagePath'] ?? 'N/A',
+            'pageViews' => $item['screenPageViews'] ?? 0,
+        ], $data);
     }
 
     /**
      * Get browser data
      */
-    public static function getBrowserData(Carbon $startDate = null, Carbon $endDate = null): array
+    public static function getBrowserData(?Carbon $startDate = null, ?Carbon $endDate = null): array
     {
-        try {
-            $data = static::executeQuery(
-                ['browserName'],
-                ['activeUsers'],
-                $startDate,
-                $endDate,
-                10
-            );
+        $data = static::executeQuery(
+            ['browserName'],
+            ['activeUsers'],
+            $startDate,
+            $endDate,
+            10
+        );
 
-            return array_map(fn ($item) => [
-                'name' => $item['browserName'] ?? 'Unknown',
-                'users' => $item['activeUsers'] ?? 0,
-            ], $data);
-        } catch (\Exception $e) {
-            Log::error('GA4 Browser Data Error: '.$e->getMessage());
-
-            return [];
-        }
+        return array_map(fn ($item) => [
+            'name' => $item['browserName'] ?? 'Unknown',
+            'users' => $item['activeUsers'] ?? 0,
+        ], $data);
     }
 
     /**
      * Get operating system data
      */
-    public static function getOSData(Carbon $startDate = null, Carbon $endDate = null): array
+    public static function getOSData(?Carbon $startDate = null, ?Carbon $endDate = null): array
     {
-        try {
-            $data = static::executeQuery(
-                ['operatingSystem'],
-                ['activeUsers'],
-                $startDate,
-                $endDate,
-                10
-            );
+        $data = static::executeQuery(
+            ['operatingSystem'],
+            ['activeUsers'],
+            $startDate,
+            $endDate,
+            10
+        );
 
-            return array_map(fn ($item) => [
-                'name' => $item['operatingSystem'] ?? 'Unknown',
-                'users' => $item['activeUsers'] ?? 0,
-            ], $data);
-        } catch (\Exception $e) {
-            Log::error('GA4 OS Data Error: '.$e->getMessage());
-
-            return [];
-        }
+        return array_map(fn ($item) => [
+            'name' => $item['operatingSystem'] ?? 'Unknown',
+            'users' => $item['activeUsers'] ?? 0,
+        ], $data);
     }
 
     /**
      * Get total users
      */
-    public static function getTotalUsers(Carbon $startDate = null, Carbon $endDate = null): int
+    public static function getTotalUsers(?Carbon $startDate = null, ?Carbon $endDate = null): int
     {
-        try {
-            $data = static::executeQuery([], ['activeUsers'], $startDate, $endDate);
+        $data = static::executeQuery([], ['activeUsers'], $startDate, $endDate);
 
-            return array_sum(array_column($data, 'activeUsers'));
-        } catch (\Exception $e) {
-            Log::error('GA4 Total Users Error: '.$e->getMessage());
-
-            return 0;
-        }
+        return array_sum(array_column($data, 'activeUsers'));
     }
 
     /**
      * Get total page views
      */
-    public static function getTotalPageViews(Carbon $startDate = null, Carbon $endDate = null): int
+    public static function getTotalPageViews(?Carbon $startDate = null, ?Carbon $endDate = null): int
     {
-        try {
-            $data = static::executeQuery([], ['screenPageViews'], $startDate, $endDate);
+        $data = static::executeQuery([], ['screenPageViews'], $startDate, $endDate);
 
-            return array_sum(array_column($data, 'screenPageViews'));
-        } catch (\Exception $e) {
-            Log::error('GA4 Total Page Views Error: '.$e->getMessage());
-
-            return 0;
-        }
+        return array_sum(array_column($data, 'screenPageViews'));
     }
 
     /**
@@ -322,4 +303,3 @@ class GoogleAnalyticsService
         }
     }
 }
-

@@ -12,6 +12,8 @@ class AnalyticsDashboard extends Component
 {
     public string $dateRange = '7days';
 
+    public ?string $errorMessage = null;
+
     public string $deviceFilter = 'all';
 
     public string $browserFilter = 'all';
@@ -40,101 +42,107 @@ class AnalyticsDashboard extends Component
 
     public function getVisitorsData(): array
     {
-        try {
-            $dateRange = $this->getDateRange();
-            $data = GoogleAnalyticsService::getVisitors($dateRange['startDate'], $dateRange['endDate']);
+        $dateRange = $this->getDateRange();
+        $startDate = $dateRange['startDate'];
+        $endDate = $dateRange['endDate'];
 
-            return [
-                'labels' => array_map(fn ($item) => Carbon::parse($item['date'])->format('M d'), $data),
-                'visitors' => array_map(fn ($item) => $item['visitors'] ?? 0, $data),
-                'pageViews' => array_map(fn ($item) => $item['pageViews'] ?? 0, $data),
-            ];
-        } catch (\Exception $e) {
-            return [
-                'labels' => [],
-                'visitors' => [],
-                'pageViews' => [],
-            ];
+        // Build an array of keys for all days in the range to ensure continuous chart
+        $labels = [];
+        $visitors = [];
+        $pageViews = [];
+
+        for ($date = clone $startDate; $date->lte($endDate); $date->addDay()) {
+            $key = $date->format('Ymd');
+            $labels[$key] = $date->format('M d');
+            $visitors[$key] = 0;
+            $pageViews[$key] = 0;
         }
+
+        $data = GoogleAnalyticsService::getVisitors($startDate, $endDate);
+
+        foreach ($data as $item) {
+            $key = $item['date'];
+            if (isset($visitors[$key])) {
+                $visitors[$key] = $item['visitors'] ?? 0;
+                $pageViews[$key] = $item['pageViews'] ?? 0;
+            }
+        }
+
+        return [
+            'labels' => array_values($labels),
+            'visitors' => array_values($visitors),
+            'pageViews' => array_values($pageViews),
+        ];
     }
 
     public function getPageViewsData(): array
     {
-        try {
-            $dateRange = $this->getDateRange();
-            $data = GoogleAnalyticsService::getPageViews($dateRange['startDate'], $dateRange['endDate']);
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getPageViews($dateRange['startDate'], $dateRange['endDate']);
 
-            return array_slice(array_map(fn ($item) => [
-                'url' => $item['url'] ?? 'N/A',
-                'views' => $item['pageViews'] ?? 0,
-            ], $data), 0, 10);
-        } catch (\Exception $e) {
-            return [];
-        }
+        return array_slice(array_map(fn ($item) => [
+            'url' => $item['url'] ?? 'N/A',
+            'views' => $item['pageViews'] ?? 0,
+        ], $data), 0, 10);
     }
 
     public function getBrowserData(): array
     {
-        try {
-            $dateRange = $this->getDateRange();
-            $data = GoogleAnalyticsService::getBrowserData($dateRange['startDate'], $dateRange['endDate']);
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getBrowserData($dateRange['startDate'], $dateRange['endDate']);
 
-            return array_slice(array_map(fn ($item) => [
-                'name' => $item['name'] ?? 'Unknown',
-                'users' => $item['users'] ?? 0,
-            ], $data), 0, 8);
-        } catch (\Exception $e) {
-            return [];
-        }
+        return array_slice(array_map(fn ($item) => [
+            'name' => $item['name'] ?? 'Unknown',
+            'users' => $item['users'] ?? 0,
+        ], $data), 0, 8);
     }
 
     public function getOSData(): array
     {
-        try {
-            $dateRange = $this->getDateRange();
-            $data = GoogleAnalyticsService::getOSData($dateRange['startDate'], $dateRange['endDate']);
+        $dateRange = $this->getDateRange();
+        $data = GoogleAnalyticsService::getOSData($dateRange['startDate'], $dateRange['endDate']);
 
-            return array_slice(array_map(fn ($item) => [
-                'name' => $item['name'] ?? 'Unknown',
-                'users' => $item['users'] ?? 0,
-            ], $data), 0, 8);
-        } catch (\Exception $e) {
-            return [];
-        }
+        return array_slice(array_map(fn ($item) => [
+            'name' => $item['name'] ?? 'Unknown',
+            'users' => $item['users'] ?? 0,
+        ], $data), 0, 8);
     }
 
     public function getTotalStats(): array
     {
-        try {
-            $dateRange = $this->getDateRange();
+        $dateRange = $this->getDateRange();
+        $totalUsers = GoogleAnalyticsService::getTotalUsers($dateRange['startDate'], $dateRange['endDate']);
+        $totalViews = GoogleAnalyticsService::getTotalPageViews($dateRange['startDate'], $dateRange['endDate']);
 
-            return [
-                'totalVisitors' => GoogleAnalyticsService::getTotalUsers($dateRange['startDate'], $dateRange['endDate']),
-                'totalPageViews' => GoogleAnalyticsService::getTotalPageViews($dateRange['startDate'], $dateRange['endDate']),
-                'avgPageViews' => round(
-                    GoogleAnalyticsService::getTotalPageViews($dateRange['startDate'], $dateRange['endDate']) /
-                    max(GoogleAnalyticsService::getTotalUsers($dateRange['startDate'], $dateRange['endDate']), 1),
-                    2
-                ),
-            ];
-        } catch (\Exception $e) {
-            return [
-                'totalVisitors' => 0,
-                'totalPageViews' => 0,
-                'avgPageViews' => 0,
-            ];
-        }
+        return [
+            'totalVisitors' => $totalUsers,
+            'totalPageViews' => $totalViews,
+            'avgPageViews' => round($totalViews / max($totalUsers, 1), 2),
+        ];
     }
 
     public function render()
     {
-        $pageViews = $this->getPageViewsData();
-        $browsers = $this->getBrowserData();
-        $operatingSystems = $this->getOSData();
+        $this->errorMessage = null;
+
+        try {
+            $pageViews = $this->getPageViewsData();
+            $browsers = $this->getBrowserData();
+            $operatingSystems = $this->getOSData();
+            $stats = $this->getTotalStats();
+            $visitorsData = $this->getVisitorsData();
+        } catch (\Exception $e) {
+            $this->errorMessage = $e->getMessage();
+            $pageViews = [];
+            $browsers = [];
+            $operatingSystems = [];
+            $stats = ['totalVisitors' => 0, 'totalPageViews' => 0, 'avgPageViews' => 0];
+            $visitorsData = ['labels' => [], 'visitors' => [], 'pageViews' => []];
+        }
 
         return view('livewire.admin.analytics-dashboard', [
-            'stats' => $this->getTotalStats(),
-            'visitorsData' => $this->getVisitorsData(),
+            'stats' => $stats,
+            'visitorsData' => $visitorsData,
             'pageViews' => $pageViews,
             'maxPageViews' => count($pageViews) > 0 ? max(array_column($pageViews, 'views')) : 1,
             'browsers' => $browsers,
