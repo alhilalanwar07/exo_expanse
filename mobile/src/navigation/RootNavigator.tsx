@@ -16,6 +16,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { UndanganScreen } from '../screens/UndanganScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { LoginScreen } from '../features/auth/LoginScreen';
+import { ForgotPasswordScreen } from '../features/auth/ForgotPasswordScreen';
 import { RegisterScreen } from '../features/auth/RegisterScreen';
 import { ThemePreviewScreen } from '../screens/ThemePreviewScreen';
 import { InvitationContentEditorScreen } from '../screens/InvitationContentEditorScreen';
@@ -183,6 +184,14 @@ export function RootNavigator() {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationTypeForReplace: 'push',
+          }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordScreen}
           options={{
             animation: 'slide_from_right',
             animationTypeForReplace: 'push',

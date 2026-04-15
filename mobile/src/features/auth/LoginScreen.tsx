@@ -24,7 +24,7 @@ import type { RootStackParamList } from '../../navigation/types';
 
 export function LoginScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { loginWithPassword, requestPasswordReset } = useAuth();
+  const { loginWithPassword } = useAuth();
   const { theme } = useAppTheme();
   const { width } = useWindowDimensions();
   const isCompact = width <= SCREEN_CONTAINER_LAYOUT.compactBreakpoint;
@@ -33,11 +33,10 @@ export function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [notice, setNotice] = useState<string | null>(null);
+  const [socialNotice, setSocialNotice] = useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSendingReset, setIsSendingReset] = useState(false);
   const loginRequestAbortRef = useRef<AbortController | null>(null);
-  const forgotRequestAbortRef = useRef<AbortController | null>(null);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -45,8 +44,6 @@ export function LoginScreen() {
       isMountedRef.current = false;
       loginRequestAbortRef.current?.abort();
       loginRequestAbortRef.current = null;
-      forgotRequestAbortRef.current?.abort();
-      forgotRequestAbortRef.current = null;
     };
   }, []);
 
@@ -89,58 +86,14 @@ export function LoginScreen() {
     }
   };
 
-  const handleForgotPassword = async () => {
-    const normalizedEmail = email.trim().toLowerCase();
-
-    if (!normalizedEmail) {
-      setNotice('Isi email terlebih dahulu untuk reset password.');
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      setNotice('Format email tidak valid.');
-      return;
-    }
-
-    const controller = new AbortController();
-    forgotRequestAbortRef.current?.abort();
-    forgotRequestAbortRef.current = controller;
-
-    try {
-      setIsSendingReset(true);
-      setNotice(null);
-
-      const result = await requestPasswordReset({
-        email: normalizedEmail,
-        signal: controller.signal,
-      });
-
-      if (forgotRequestAbortRef.current !== controller || controller.signal.aborted) {
-        return;
-      }
-
-      Alert.alert('Reset Password', result.message);
-    } catch (error) {
-      if (controller.signal.aborted || forgotRequestAbortRef.current !== controller) {
-        return;
-      }
-
-      setNotice(error instanceof Error ? error.message : 'Gagal mengirim reset password.');
-    } finally {
-      if (forgotRequestAbortRef.current === controller) {
-        forgotRequestAbortRef.current = null;
-
-        if (isMountedRef.current) {
-          setIsSendingReset(false);
-        }
-      }
-    }
-  };
-
   const handleSocialAuthPress = (provider: 'Google' | 'Apple') => {
+    const message = `Masuk dengan ${provider} masih dalam pengembangan.`;
+
+    setSocialNotice(message);
+
     Alert.alert(
       'Dalam Pengembangan',
-      `Masuk dengan ${provider} masih dalam pengembangan.`
+      message
     );
   };
 
@@ -213,15 +166,15 @@ export function LoginScreen() {
             </TwPressable>
           </View>
           <TwPressable
-            onPress={handleForgotPassword}
-            disabled={isSendingReset}
+            onPress={() => navigation.navigate('ForgotPassword', {
+              email: email.trim() ? email.trim().toLowerCase() : undefined,
+            })}
             className="self-end"
             style={s.forgotWrap}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityState={{ disabled: isSendingReset }}
           >
-            <Text style={s.forgotText}>{isSendingReset ? 'Mengirim...' : 'Lupa Password?'}</Text>
+            <Text style={s.forgotText}>Lupa Password?</Text>
           </TwPressable>
         </View>
 
@@ -269,6 +222,13 @@ export function LoginScreen() {
             <Text style={s.appleText}>Apple</Text>
           </RNPressable>
         </View>
+
+        {socialNotice ? (
+          <View style={s.infoBox} className="flex-row">
+            <MaterialCommunityIcons name="information-outline" size={16} color={theme.onSurfaceVariant} />
+            <Text style={s.infoText}>{socialNotice}</Text>
+          </View>
+        ) : null}
       </View>
 
       <View style={s.footer} className="mt-auto flex-row items-center justify-center">
@@ -344,6 +304,18 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       marginTop: -3,
     },
     errorText: { flex: 1, color: t.error, fontSize: 13, lineHeight: 19, fontFamily: F.body, marginTop: -1 },
+
+    infoBox: {
+      alignItems: 'flex-start',
+      gap: 8,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: t.infoBorder,
+      backgroundColor: t.infoBg,
+      padding: 12,
+      marginTop: 2,
+    },
+    infoText: { flex: 1, color: t.onSurfaceVariant, fontSize: 13, lineHeight: 19, fontFamily: F.body, marginTop: -1 },
 
     primaryBtn: {
       height: 56,

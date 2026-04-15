@@ -49,7 +49,7 @@ export function RegisterScreen() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const [noticeVariant, setNoticeVariant] = useState<'error' | 'success'>('error');
+  const [noticeVariant, setNoticeVariant] = useState<'error' | 'success' | 'info'>('error');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isPasswordConfirmVisible, setIsPasswordConfirmVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,9 +67,14 @@ export function RegisterScreen() {
   const strength = useMemo(() => getPasswordStrength(password.trim()), [password]);
 
   const handleSocialAuthPress = (provider: 'Google' | 'Apple') => {
+    const message = `Daftar dengan ${provider} masih dalam pengembangan.`;
+
+    setNotice(message);
+    setNoticeVariant('info');
+
     Alert.alert(
       'Dalam Pengembangan',
-      `Daftar dengan ${provider} masih dalam pengembangan.`
+      message
     );
   };
 
@@ -270,13 +275,13 @@ export function RegisterScreen() {
         </Pressable>
 
         {notice ? (
-          <View style={[s.noticeBox, noticeVariant === 'success' && s.successBox]}>
+          <View style={[s.noticeBox, noticeVariant === 'success' && s.successBox, noticeVariant === 'info' && s.infoBox]}>
             <MaterialCommunityIcons
-              name={noticeVariant === 'success' ? 'check-circle-outline' : 'alert-circle-outline'}
+              name={noticeVariant === 'success' ? 'check-circle-outline' : noticeVariant === 'info' ? 'information-outline' : 'alert-circle-outline'}
               size={16}
-              color={noticeVariant === 'success' ? theme.successIcon : theme.error}
+              color={noticeVariant === 'success' ? theme.successIcon : noticeVariant === 'info' ? theme.onSurfaceVariant : theme.error}
             />
-            <Text style={[s.noticeText, noticeVariant === 'success' && s.successText]}>{notice}</Text>
+            <Text style={[s.noticeText, noticeVariant === 'success' && s.successText, noticeVariant === 'info' && s.infoText]}>{notice}</Text>
           </View>
         ) : null}
 
@@ -425,8 +430,10 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       marginTop: -2,
     },
     successBox: { borderColor: t.successBg, backgroundColor: t.successBg },
+    infoBox: { borderColor: t.infoBorder, backgroundColor: t.infoBg },
     noticeText: { flex: 1, color: t.error, fontSize: 13, lineHeight: 19, fontFamily: F.body },
     successText: { color: t.successText },
+    infoText: { color: t.onSurfaceVariant },
 
     primaryBtn: {
       height: 56,

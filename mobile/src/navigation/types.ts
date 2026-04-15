@@ -41,6 +41,11 @@ export type RootStackParamList = {
       }
     | undefined;
   Login: undefined;
+  ForgotPassword:
+    | {
+        email?: string;
+      }
+    | undefined;
   Register: undefined;
   ThemePreview: ThemePreviewRouteParams;
   InvitationContentEditor: InvitationContentEditorRouteParams | undefined;
@@ -52,7 +57,7 @@ export type RootStackParamList = {
 
 export type AuthFlowParamList = Pick<
   RootStackParamList,
-  'AuthChoice' | 'ConnectDevice' | 'Login' | 'Register'
+  'AuthChoice' | 'ConnectDevice' | 'Login' | 'ForgotPassword' | 'Register'
 >;
 
 // Backward-compatible aliases for existing imports.

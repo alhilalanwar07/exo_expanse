@@ -2,6 +2,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import type { AuthFlowParamList } from '../../navigation/types';
@@ -16,6 +17,7 @@ export function AuthChoiceScreen() {
   const { width } = useWindowDimensions();
   const isCompact = width <= SCREEN_CONTAINER_LAYOUT.compactBreakpoint;
   const s = makeStyles(theme, isCompact);
+  const [socialNotice, setSocialNotice] = useState<string | null>(null);
 
   const intentLabel =
     route.params?.intent === 'theme'
@@ -23,9 +25,13 @@ export function AuthChoiceScreen() {
       : 'mengelola undangan Anda dengan akun owner';
 
   const handleSocialAuthPress = (provider: 'Google' | 'Apple') => {
+    const message = `Masuk dengan ${provider} masih dalam pengembangan.`;
+
+    setSocialNotice(message);
+
     Alert.alert(
       'Dalam Pengembangan',
-      `Masuk dengan ${provider} masih dalam pengembangan.`
+      message
     );
   };
 
@@ -141,6 +147,13 @@ export function AuthChoiceScreen() {
             <Text style={s.appleText}>Apple</Text>
           </Pressable>
         </View>
+
+        {socialNotice ? (
+          <View style={s.infoCard}>
+            <MaterialCommunityIcons name="information-outline" size={16} color={theme.onSurfaceVariant} />
+            <Text style={s.infoText}>{socialNotice}</Text>
+          </View>
+        ) : null}
       </View>
 
       <Text style={s.footnote}>
@@ -424,6 +437,26 @@ function makeStyles(t: ReturnType<typeof useAppTheme>['theme'], isCompact: boole
       color: '#FFFFFF',
       fontSize: 14,
       fontFamily: F.labelBold,
+    },
+
+    infoCard: {
+      marginTop: 8,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: t.infoBorder,
+      backgroundColor: t.infoBg,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 8,
+    },
+    infoText: {
+      flex: 1,
+      color: t.onSurfaceVariant,
+      fontSize: 12,
+      lineHeight: 18,
+      fontFamily: F.body,
     },
 
     footnote: {
