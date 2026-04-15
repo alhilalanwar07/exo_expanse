@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,6 +21,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
+import { Audio } from 'expo-av';
 
 import { httpRequest, HttpClientError } from '../services/httpClient';
 import { useAppTheme } from '../shared/theme/index';
@@ -270,6 +272,9 @@ export function InvitationFormScreen() {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [guestInput, setGuestInput] = useState('');
   const [backgroundMusics, setBackgroundMusics] = useState<{id: number, title: string, artist: string, file_url: string}[]>([]);
+  const [showMusicModal, setShowMusicModal] = useState(false);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [playingId, setPlayingId] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
@@ -373,6 +378,51 @@ export function InvitationFormScreen() {
   useEffect(() => {
     if (activeTab === 'tamu' && savedId) void loadGuests(savedId);
   }, [activeTab, savedId, loadGuests]);
+
+  useEffect(() => {
+    return sound ? () => { void sound.unloadAsync(); } : undefined;
+  }, [sound]);
+
+  async function playSound(music: { id: number, file_url: string }) {
+    if (playingId === music.id) {
+      if (sound) {
+        await sound.pauseAsync();
+        setPlayingId(null);
+      }
+      return;
+    }
+    
+    // Stop previous sound
+    if (sound) {
+      await sound.unloadAsync();
+      setSound(null);
+    }
+
+    try {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri: music.file_url }
+      );
+      setSound(newSound);
+      setPlayingId(music.id);
+      await newSound.playAsync();
+      
+      newSound.setOnPlaybackStatusUpdate((status) => {
+        if ('didJustFinish' in status && status.didJustFinish) {
+          setPlayingId(null);
+        }
+      });
+    } catch (e) {
+      console.log('Error playing sound', e);
+    }
+  }
+
+  const handleCloseModal = () => {
+    if (sound) {
+      void sound.pauseAsync();
+      setPlayingId(null);
+    }
+    setShowMusicModal(false);
+  };
 
   // ── Form helpers ───────────────────────────────────────────────────────────
 
@@ -915,27 +965,27 @@ export function InvitationFormScreen() {
       <Toggle label="Musik Latar" desc="Musik background undangan digital" value={form.music_enabled} onToggle={set('music_enabled')} theme={theme} />
       {form.music_enabled && (
         <View style={{ backgroundColor: theme.surfaceContainerLow, borderRadius: 16, padding: 14, borderWidth: 1, borderColor: theme.outlineVariant, marginTop: -14, borderTopWidth: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
-          <Text style={{ fontFamily: F.labelBold, fontSize: 13, color: theme.onSurface, marginBottom: 8 }}>Pilih Musik Pustaka</Text>
-          {backgroundMusics.map(m => (
-            <Pressable key={m.id} onPress={() => { set('music_id')(m.id); set('background_music')(''); }}
-              style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.outlineVariant }}>
-              <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: form.music_id === m.id ? theme.primary : theme.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                {form.music_id === m.id && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: theme.primary }} />}
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: F.labelBold, fontSize: 13, color: theme.onSurface }}>{m.title}</Text>
-                <Text style={{ fontFamily: F.body, fontSize: 11, color: theme.onSurfaceVariant }}>{m.artist || 'Unknown Artist'}</Text>
-              </View>
-            </Pressable>
-          ))}
-          <Pressable onPress={() => set('music_id')(null)}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
-            <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: form.music_id === null ? theme.primary : theme.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-              {form.music_id === null && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: theme.primary }} />}
-            </View>
+          <Text style={{ fontFamily: F.label, fontSize: 12, color: theme.onSurfaceVariant, marginBottom: 8 }}>Musik yang Dipilih</Text>
+          
+          <Pressable onPress={() => setShowMusicModal(true)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: theme.background, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: theme.outlineVariant }}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: F.labelBold, fontSize: 13, color: theme.onSurface }}>Manual URL / Tanpa Musik</Text>
+              {form.music_id !== null ? (
+                (() => {
+                  const m = backgroundMusics.find(x => x.id === form.music_id);
+                  return m ? (
+                    <>
+                      <Text style={{ fontFamily: F.labelBold, fontSize: 14, color: theme.onSurface }}>{m.title}</Text>
+                      <Text style={{ fontFamily: F.body, fontSize: 12, color: theme.onSurfaceVariant }}>{m.artist || 'Unknown Artist'}</Text>
+                    </>
+                  ) : (
+                    <Text style={{ fontFamily: F.body, fontSize: 14, color: theme.onSurface }}>Memuat...</Text>
+                  );
+                })()
+              ) : (
+                <Text style={{ fontFamily: F.labelBold, fontSize: 14, color: theme.onSurface }}>Manual URL / Tanpa Musik</Text>
+              )}
             </View>
+            <Ionicons name="chevron-down" size={20} color={theme.onSurfaceVariant} />
           </Pressable>
 
           {form.music_id === null && (
@@ -1014,6 +1064,54 @@ export function InvitationFormScreen() {
         {activeTab === 'foto'     && renderFoto()}
         {activeTab === 'tamu'     && renderTamu()}
         {activeTab === 'fitur'    && renderFitur()}
+
+        {/* Music Picker Modal */}
+        <Modal visible={showMusicModal} animationType="slide" transparent onRequestClose={handleCloseModal}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}>
+            <View style={{ backgroundColor: theme.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 40, maxHeight: '80%' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <Text style={{ fontFamily: F.heading, fontSize: 18, color: theme.onSurface }}>Pilih Musik Latar</Text>
+                <Pressable onPress={handleCloseModal} style={{ padding: 4 }}>
+                  <Ionicons name="close" size={24} color={theme.onSurfaceVariant} />
+                </Pressable>
+              </View>
+              
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {backgroundMusics.map(m => (
+                  <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.outlineVariant }}>
+                    
+                    <Pressable onPress={() => { set('music_id')(m.id); set('background_music')(''); handleCloseModal(); }}
+                      style={{ flexDirection: 'row', flex: 1, alignItems: 'center' }}>
+                      <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: form.music_id === m.id ? theme.primary : theme.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                        {form.music_id === m.id && <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: theme.primary }} />}
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontFamily: F.labelBold, fontSize: 15, color: theme.onSurface }}>{m.title}</Text>
+                        <Text style={{ fontFamily: F.body, fontSize: 13, color: theme.onSurfaceVariant, marginTop: 2 }}>{m.artist || 'Unknown Artist'}</Text>
+                      </View>
+                    </Pressable>
+
+                    <Pressable onPress={() => void playSound(m)} style={{ padding: 10, backgroundColor: playingId === m.id ? theme.primary : theme.surfaceContainerLow, borderRadius: 20 }}>
+                      <Ionicons name={playingId === m.id ? "pause" : "play"} size={18} color={playingId === m.id ? '#fff' : theme.onSurfaceVariant} />
+                    </Pressable>
+                  </View>
+                ))}
+                
+                <Pressable onPress={() => { set('music_id')(null); handleCloseModal(); }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14 }}>
+                  <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: form.music_id === null ? theme.primary : theme.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                    {form.music_id === null && <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: theme.primary }} />}
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontFamily: F.labelBold, fontSize: 15, color: theme.onSurface }}>Manual URL / Tanpa Musik</Text>
+                    <Text style={{ fontFamily: F.body, fontSize: 13, color: theme.onSurfaceVariant, marginTop: 2 }}>Gunakan URL yang diisi manual</Text>
+                  </View>
+                </Pressable>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
