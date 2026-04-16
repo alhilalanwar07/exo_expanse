@@ -90,8 +90,11 @@ class Invitation extends Model
         // If it has a related music_id from the new centralized library, 
         // return the complete asset URL. This will make all existing themes 
         // treat it as an external HTTP link automatically.
-        if ($this->music_id && $this->backgroundMusic) {
-            return asset($this->backgroundMusic->file_path);
+        if ($this->music_id) {
+            $music = $this->getRelationValue('backgroundMusic');
+            if ($music) {
+                return asset($music->file_path);
+            }
         }
         
         return $value;
