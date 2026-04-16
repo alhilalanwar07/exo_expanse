@@ -681,7 +681,7 @@
                             </div>
 
                             <!-- Theme Selection -->
-                            <div>
+                            <div x-data="{ showAll: !@js(old('theme_id', $this->theme_id)) }">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
                                     <div>
                                         <label class="block text-base font-bold text-slate-800 dark:text-slate-200">Katalog Tema *</label>
@@ -692,23 +692,22 @@
                                     </span>
                                 </div>
                                 
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-                                    @foreach($this->themes as $theme)
-                                        <label class="relative cursor-pointer group select-none">
-                                            <input type="radio" wire:model.live="theme_id" value="{{ $theme->id }}" class="sr-only peer">
-                                            
-                                            <!-- Card Container -->
-                                            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-rose-500/10 hover:ring-rose-300 peer-checked:ring-4 peer-checked:ring-rose-500 peer-checked:shadow-xl peer-checked:shadow-rose-500/20">
+                                <!-- Selected Theme View -->
+                                @if($this->theme_id)
+                                    @php $selectedTheme = $this->themes->firstWhere('id', $this->theme_id); @endphp
+                                    @if($selectedTheme)
+                                        <div x-show="!showAll" x-collapse>
+                                            <div class="flex flex-col sm:flex-row gap-6 bg-white dark:bg-slate-800 p-5 rounded-2xl border-2 border-rose-500 shadow-xl shadow-rose-500/10 mb-6 relative overflow-hidden">
+                                                <div class="absolute inset-0 bg-gradient-to-br from-rose-50 to-transparent dark:from-rose-900/20 dark:to-transparent pointer-events-none"></div>
                                                 
-                                                <!-- Image Container -->
-                                                <div class="aspect-[4/5] relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
-                                                    @if($theme->protected_thumbnail)
-                                                        <img src="{{ $theme->protected_thumbnail }}" alt="{{ $theme->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                                <div class="w-32 sm:w-40 shrink-0 aspect-[4/5] rounded-xl overflow-hidden relative shadow-md ring-1 ring-slate-200 dark:ring-slate-700 z-10">
+                                                    @if($selectedTheme->protected_thumbnail)
+                                                        <img src="{{ $selectedTheme->protected_thumbnail }}" class="w-full h-full object-cover">
                                                     @else
                                                         <div class="absolute inset-0 opacity-80 mix-blend-multiply bg-gradient-to-br from-white to-black"></div>
-                                                        <div class="w-full h-full transition-transform duration-700 group-hover:scale-110 flex items-center justify-center" style="background: linear-gradient(135deg, {{ $theme->background_color ?? '#f8fafc' }} 0%, {{ $theme->secondary_color ?? '#e2e8f0' }} 100%);">
-                                                            <span class="text-6xl drop-shadow-lg opacity-80">
-                                                                @switch(strpos($theme->slug, 'gold') !== false ? 'gold' : (strpos($theme->slug, 'floral') !== false ? 'floral' : 'other'))
+                                                        <div class="w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, {{ $selectedTheme->background_color ?? '#f8fafc' }} 0%, {{ $selectedTheme->secondary_color ?? '#e2e8f0' }} 100%);">
+                                                            <span class="text-5xl opacity-80 drop-shadow-lg">
+                                                                @switch(strpos($selectedTheme->slug, 'gold') !== false ? 'gold' : (strpos($selectedTheme->slug, 'floral') !== false ? 'floral' : 'other'))
                                                                     @case('gold') 👑 @break
                                                                     @case('floral') 🌸 @break
                                                                     @default 💍
@@ -716,43 +715,100 @@
                                                             </span>
                                                         </div>
                                                     @endif
-
-                                                    <!-- Gradient Overlay for Contrast -->
-                                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80"></div>
-
-                                                    <!-- Premium Badge -->
-                                                    @if($theme->is_premium)
-                                                        <div class="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-amber-400 to-amber-600 text-white text-[10px] font-bold tracking-wider uppercase rounded-full shadow-lg backdrop-blur-md flex items-center gap-1 border border-amber-300/30">
-                                                            <span>👑</span> Pro
-                                                        </div>
-                                                    @endif
-
-                                                    <!-- Selected Checkmark Top Right -->
-                                                    <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-lg transform scale-0 peer-checked:scale-100 transition-transform duration-300 ease-out z-10 ring-4 ring-white/20">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                </div>
+                                                
+                                                <div class="flex-1 flex flex-col justify-center z-10">
+                                                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 rounded-lg text-xs font-bold w-fit mb-3">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                        Tema Aktif Saat Ini
                                                     </div>
-
-                                                    <!-- Color Info overlay bottom -->
-                                                    <div class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                                        <h4 class="font-bold text-white text-base truncate drop-shadow-md">{{ $theme->name }}</h4>
-                                                        
-                                                        <div class="flex items-center gap-2 mt-2 opacity-100 group-hover:opacity-100 transition-opacity">
-                                                            <div class="flex -space-x-1">
-                                                                <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-30" style="background-color: {{ $theme->primary_color ?? '#d97706' }}"></div>
-                                                                <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-20" style="background-color: {{ $theme->accent_color ?? '#f59e0b' }}"></div>
-                                                                <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-10" style="background-color: {{ $theme->background_color ?? '#ffffff' }}"></div>
-                                                            </div>
-                                                            <span class="text-[10px] text-slate-300 font-medium truncate flex-1 uppercase tracking-wider">{{ $theme->heading_font ?? 'Modern' }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Overlay on Checked -->
-                                                    <div class="absolute inset-0 bg-rose-500/10 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></div>
+                                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ $selectedTheme->name }}</h3>
+                                                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-6 max-w-sm relative">
+                                                        Tema ini akan diterapkan pada undangan Anda. Semua layout dan pengaturan visual telah disesuaikan dengan template otomatis.
+                                                    </p>
+                                                    
+                                                    <button @click="showAll = true" type="button" class="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl transition-colors border border-slate-200 dark:border-slate-600 flex items-center justify-center gap-2">
+                                                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                                        Ganti Tema
+                                                    </button>
                                                 </div>
                                             </div>
-                                        </label>
-                                    @endforeach
+                                        </div>
+                                    @endif
+                                @endif
+
+                                <div x-show="showAll" x-collapse>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+                                        @foreach($this->themes as $theme)
+                                            <label class="relative cursor-pointer group select-none">
+                                                <input type="radio" wire:model.live="theme_id" value="{{ $theme->id }}" @click="setTimeout(() => showAll = false, 400)" class="sr-only peer">
+                                                
+                                                <!-- Card Container -->
+                                                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-rose-500/10 hover:ring-rose-300 peer-checked:ring-4 peer-checked:ring-rose-500 peer-checked:shadow-xl peer-checked:shadow-rose-500/20">
+                                                    
+                                                    <!-- Image Container -->
+                                                    <div class="aspect-[4/5] relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
+                                                        @if($theme->protected_thumbnail)
+                                                            <img src="{{ $theme->protected_thumbnail }}" alt="{{ $theme->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                                        @else
+                                                            <div class="absolute inset-0 opacity-80 mix-blend-multiply bg-gradient-to-br from-white to-black"></div>
+                                                            <div class="w-full h-full transition-transform duration-700 group-hover:scale-110 flex items-center justify-center" style="background: linear-gradient(135deg, {{ $theme->background_color ?? '#f8fafc' }} 0%, {{ $theme->secondary_color ?? '#e2e8f0' }} 100%);">
+                                                                <span class="text-6xl drop-shadow-lg opacity-80">
+                                                                    @switch(strpos($theme->slug, 'gold') !== false ? 'gold' : (strpos($theme->slug, 'floral') !== false ? 'floral' : 'other'))
+                                                                        @case('gold') 👑 @break
+                                                                        @case('floral') 🌸 @break
+                                                                        @default 💍
+                                                                    @endswitch
+                                                                </span>
+                                                            </div>
+                                                        @endif
+    
+                                                        <!-- Gradient Overlay for Contrast -->
+                                                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80"></div>
+    
+                                                        <!-- Premium Badge -->
+                                                        @if($theme->is_premium)
+                                                            <div class="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-amber-400 to-amber-600 text-white text-[10px] font-bold tracking-wider uppercase rounded-full shadow-lg backdrop-blur-md flex items-center gap-1 border border-amber-300/30">
+                                                                <span>👑</span> Pro
+                                                            </div>
+                                                        @endif
+    
+                                                        <!-- Selected Checkmark Top Right -->
+                                                        <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-lg transform scale-0 peer-checked:scale-100 transition-transform duration-300 ease-out z-10 ring-4 ring-white/20">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                        </div>
+    
+                                                        <!-- Color Info overlay bottom -->
+                                                        <div class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                                            <h4 class="font-bold text-white text-base truncate drop-shadow-md">{{ $theme->name }}</h4>
+                                                            
+                                                            <div class="flex items-center gap-2 mt-2 opacity-100 group-hover:opacity-100 transition-opacity">
+                                                                <div class="flex -space-x-1">
+                                                                    <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-30" style="background-color: {{ $theme->primary_color ?? '#d97706' }}"></div>
+                                                                    <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-20" style="background-color: {{ $theme->accent_color ?? '#f59e0b' }}"></div>
+                                                                    <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-10" style="background-color: {{ $theme->background_color ?? '#ffffff' }}"></div>
+                                                                </div>
+                                                                <span class="text-[10px] text-slate-300 font-medium truncate flex-1 uppercase tracking-wider">{{ $theme->heading_font ?? 'Modern' }}</span>
+                                                            </div>
+                                                        </div>
+    
+                                                        <!-- Overlay on Checked -->
+                                                        <div class="absolute inset-0 bg-rose-500/10 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    
+                                    @if($this->theme_id)
+                                        <div class="mt-4 flex justify-end">
+                                            <button @click="showAll = false" type="button" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+                                                Batal, tetap pakai {{ $this->themes->firstWhere('id', $this->theme_id)?->name }}
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
+                                
                                 @error('theme_id') 
                                     <div class="mt-3 flex items-center gap-2 text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-3 py-2 rounded-lg text-sm border border-rose-200 dark:border-rose-800">
                                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
