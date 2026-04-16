@@ -682,74 +682,83 @@
 
                             <!-- Theme Selection -->
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Pilih Tema *</label>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                                    <div>
+                                        <label class="block text-base font-bold text-slate-800 dark:text-slate-200">Katalog Tema *</label>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Pilih desain dari puluhan template eksklusif</p>
+                                    </div>
+                                    <span class="inline-flex items-center justify-center px-3 py-1 bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300 text-xs font-bold rounded-full border border-rose-200 dark:border-rose-800 shrink-0 self-start sm:self-auto w-fit">
+                                        {{ count($this->themes) }} Kombinasi Tersedia
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
                                     @foreach($this->themes as $theme)
-                                        <label class="relative cursor-pointer group">
+                                        <label class="relative cursor-pointer group select-none">
                                             <input type="radio" wire:model.live="theme_id" value="{{ $theme->id }}" class="sr-only peer">
-                                            <div class="rounded-xl overflow-hidden border-2 transition-all peer-checked:border-rose-500 peer-checked:ring-2 peer-checked:ring-rose-500/30 border-slate-200 dark:border-slate-700 hover:border-rose-300">
-                                                {{-- Theme Preview with Colors --}}
-                                                <div 
-                                                    class="aspect-video relative flex items-center justify-center"
-                                                    style="background: linear-gradient(135deg, {{ $theme->background_color ?? '#f8fafc' }} 0%, {{ $theme->secondary_color ?? '#e2e8f0' }} 100%);"
-                                                >
-                                                    {{-- Color Swatches --}}
-                                                    <div class="absolute bottom-2 left-2 flex gap-1">
-                                                        <div class="w-4 h-4 rounded-full border border-white/50 shadow-sm" style="background: {{ $theme->primary_color ?? '#d97706' }}" title="Primary"></div>
-                                                        <div class="w-4 h-4 rounded-full border border-white/50 shadow-sm" style="background: {{ $theme->accent_color ?? '#f59e0b' }}" title="Accent"></div>
-                                                        <div class="w-4 h-4 rounded-full border border-white/50 shadow-sm" style="background: {{ $theme->heading_color ?? '#1f2937' }}" title="Heading"></div>
-                                                    </div>
-                                                    
-                                                    {{-- Premium Badge --}}
-                                                    @if($theme->is_premium)
-                                                        <div class="absolute top-2 left-2 px-2 py-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-xs font-bold rounded-full shadow">
-                                                            ⭐ Premium
+                                            
+                                            <!-- Card Container -->
+                                            <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-rose-500/10 hover:ring-rose-300 peer-checked:ring-4 peer-checked:ring-rose-500 peer-checked:shadow-xl peer-checked:shadow-rose-500/20">
+                                                
+                                                <!-- Image Container -->
+                                                <div class="aspect-[4/5] relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
+                                                    @if($theme->protected_thumbnail)
+                                                        <img src="{{ $theme->protected_thumbnail }}" alt="{{ $theme->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                                    @else
+                                                        <div class="absolute inset-0 opacity-80 mix-blend-multiply bg-gradient-to-br from-white to-black"></div>
+                                                        <div class="w-full h-full transition-transform duration-700 group-hover:scale-110 flex items-center justify-center" style="background: linear-gradient(135deg, {{ $theme->background_color ?? '#f8fafc' }} 0%, {{ $theme->secondary_color ?? '#e2e8f0' }} 100%);">
+                                                            <span class="text-6xl drop-shadow-lg opacity-80">
+                                                                @switch(strpos($theme->slug, 'gold') !== false ? 'gold' : (strpos($theme->slug, 'floral') !== false ? 'floral' : 'other'))
+                                                                    @case('gold') 👑 @break
+                                                                    @case('floral') 🌸 @break
+                                                                    @default 💍
+                                                                @endswitch
+                                                            </span>
                                                         </div>
                                                     @endif
-                                                    
-                                                    {{-- Theme Icon/Preview --}}
-                                                    <div class="text-center">
-                                                        <span class="text-4xl drop-shadow-lg">
-                                                            @switch($theme->slug)
-                                                                @case('royal-gold')
-                                                                    👑
-                                                                    @break
-                                                                @case('floral-romance')
-                                                                    🌸
-                                                                    @break
-                                                                @case('modern-elegance')
-                                                                    ✨
-                                                                    @break
-                                                                @case('sage-garden')
-                                                                    🌿
-                                                                    @break
-                                                                @case('midnight-dark')
-                                                                    🌙
-                                                                    @break
-                                                                @default
-                                                                    💍
-                                                            @endswitch
-                                                        </span>
+
+                                                    <!-- Gradient Overlay for Contrast -->
+                                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80"></div>
+
+                                                    <!-- Premium Badge -->
+                                                    @if($theme->is_premium)
+                                                        <div class="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-amber-400 to-amber-600 text-white text-[10px] font-bold tracking-wider uppercase rounded-full shadow-lg backdrop-blur-md flex items-center gap-1 border border-amber-300/30">
+                                                            <span>👑</span> Pro
+                                                        </div>
+                                                    @endif
+
+                                                    <!-- Selected Checkmark Top Right -->
+                                                    <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-lg transform scale-0 peer-checked:scale-100 transition-transform duration-300 ease-out z-10 ring-4 ring-white/20">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                                     </div>
+
+                                                    <!-- Color Info overlay bottom -->
+                                                    <div class="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                                        <h4 class="font-bold text-white text-base truncate drop-shadow-md">{{ $theme->name }}</h4>
+                                                        
+                                                        <div class="flex items-center gap-2 mt-2 opacity-100 group-hover:opacity-100 transition-opacity">
+                                                            <div class="flex -space-x-1">
+                                                                <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-30" style="background-color: {{ $theme->primary_color ?? '#d97706' }}"></div>
+                                                                <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-20" style="background-color: {{ $theme->accent_color ?? '#f59e0b' }}"></div>
+                                                                <div class="w-5 h-5 rounded-full border-2 border-slate-900 shadow-sm relative z-10" style="background-color: {{ $theme->background_color ?? '#ffffff' }}"></div>
+                                                            </div>
+                                                            <span class="text-[10px] text-slate-300 font-medium truncate flex-1 uppercase tracking-wider">{{ $theme->heading_font ?? 'Modern' }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Overlay on Checked -->
+                                                    <div class="absolute inset-0 bg-rose-500/10 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></div>
                                                 </div>
-                                                
-                                                {{-- Theme Info --}}
-                                                <div class="p-3 bg-white dark:bg-slate-800">
-                                                    <h4 class="font-medium text-slate-800 dark:text-white text-sm">{{ $theme->name }}</h4>
-                                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                                        {{ $theme->heading_font ?? 'Default' }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            
-                                            {{-- Selected Checkmark --}}
-                                            <div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             </div>
                                         </label>
                                     @endforeach
                                 </div>
-                                @error('theme_id') <span class="text-rose-500 text-sm mt-2 block">{{ $message }}</span> @enderror
+                                @error('theme_id') 
+                                    <div class="mt-3 flex items-center gap-2 text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-3 py-2 rounded-lg text-sm border border-rose-200 dark:border-rose-800">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ $message }}
+                                    </div> 
+                                @enderror
                             </div>
 
                             <!-- Personalization -->
