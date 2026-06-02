@@ -1,18 +1,25 @@
 <div x-data="{ toast: { show: false, message: '', type: 'success' } }"
-     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)">
+     x-on:toast.window="toast.message = $event.detail.message; toast.type = $event.detail.type; toast.show = true; setTimeout(() => toast.show = false, 3000)"
+     x-on:download-json.window="
+        const blob = new Blob([$event.detail.content], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = $event.detail.filename; a.click();
+        URL.revokeObjectURL(url);
+     ">
 
     <x-toast-notification />
 
     <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Kelola Tema</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Aktifkan, nonaktifkan, dan atur ketersediaan (Premium/Gratis) koleksi tema Anda.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Buat, edit, dan atur ketersediaan koleksi tema undangan Anda.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button wire:click="$set('showImportModal', true)" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm focus:ring-4 focus:ring-indigo-500/20">
+            <a href="{{ route('admin.themes.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm focus:ring-4 focus:ring-indigo-500/20">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Buat Tema Baru
-            </button>
+            </a>
         </div>
     </div>
 
@@ -24,7 +31,6 @@
 
     <!-- Hidden File Input for Thumbnail Upload -->
     <input type="file" id="thumbnail-upload" class="hidden" wire:model="newThumbnail" accept="image/*">
-
 
     <!-- Papan Utama Tabel (Pencarian) -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col mb-8">
@@ -64,7 +70,22 @@
         <div wire:loading.class="absolute inset-0 z-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-[1px] rounded-xl" class="hidden"></div>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
             @forelse($themes as $theme)
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                <div wire:key="theme-{{ $theme->id }}" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col relative">
+                    {{-- Delete Confirmation Overlay --}}
+                    @if($confirmDeleteId === $theme->id)
+                        <div class="absolute inset-0 z-20 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 rounded-2xl">
+                            <svg class="w-8 h-8 text-rose-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                            <p class="text-white text-xs text-center mb-3 font-medium">Hapus tema<br>"{{ $theme->name }}"?</p>
+                            @if($theme->invitations_count > 0)
+                                <p class="text-amber-400 text-[10px] text-center mb-3">⚠️ {{ $theme->invitations_count }} undangan menggunakan tema ini</p>
+                            @endif
+                            <div class="flex gap-2">
+                                <button wire:click="deleteTheme({{ $theme->id }})" class="px-3 py-1.5 text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors">Hapus</button>
+                                <button wire:click="cancelDelete" class="px-3 py-1.5 text-xs font-semibold bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors">Batal</button>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Thumbnail area -->
                     <div class="aspect-[9/16] bg-slate-100 dark:bg-slate-900 relative overflow-hidden group">
                         @if($theme->thumbnail_url)
@@ -93,10 +114,11 @@
                             @endif
                         </div>
 
-                        <!-- Update Thumbnail Overlay -->
-                        <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <label for="thumbnail-upload" wire:click="triggerUpload({{ $theme->id }})" class="cursor-pointer text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 py-1.5 px-3 rounded-lg shadow-sm flex items-center gap-1.5 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        <!-- Action Overlay -->
+                        <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {{-- Update Thumbnail --}}
+                            <label for="thumbnail-upload" wire:click="triggerUpload({{ $theme->id }})" class="cursor-pointer text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 py-1.5 px-3 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                 <span wire:loading.remove wire:target="newThumbnail">Ganti Thumbnail</span>
                                 <span wire:loading wire:target="newThumbnail">Mengunggah...</span>
                             </label>
@@ -110,6 +132,9 @@
                                 {{ $theme->name }}
                             </h3>
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{{ $theme->slug }}</p>
+                            @if($theme->invitations_count > 0)
+                                <p class="text-[10px] text-indigo-500 dark:text-indigo-400 font-medium mt-0.5">{{ $theme->invitations_count }} undangan</p>
+                            @endif
                         </div>
                         
                         <div class="mt-auto space-y-2.5">
@@ -134,10 +159,31 @@
                                 </button>
                             </div>
 
-                            <a href="{{ route('invitation.demo', ['theme' => $theme->slug]) }}" target="_blank" class="flex items-center justify-center gap-1.5 w-full py-1.5 text-[11px] font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800/50">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                Lihat Demo
-                            </a>
+                            {{-- Action Buttons --}}
+                            <div class="grid grid-cols-2 gap-1.5 pt-1">
+                                <a href="{{ route('admin.themes.edit', $theme->id) }}" class="flex items-center justify-center gap-1 py-1.5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800/50">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    Edit
+                                </a>
+                                <a href="{{ route('invitation.demo', ['theme' => $theme->slug]) }}" target="_blank" class="flex items-center justify-center gap-1 py-1.5 text-[10px] font-semibold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors border border-slate-200 dark:border-slate-600">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    Demo
+                                </a>
+                                <button wire:click="duplicateTheme({{ $theme->id }})" class="flex items-center justify-center gap-1 py-1.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded-lg transition-colors border border-emerald-100 dark:border-emerald-800/50">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    Duplikat
+                                </button>
+                                <button wire:click="exportTheme({{ $theme->id }})" class="flex items-center justify-center gap-1 py-1.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/50 rounded-lg transition-colors border border-amber-100 dark:border-amber-800/50">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    Export
+                                </button>
+                            </div>
+
+                            {{-- Delete Button --}}
+                            <button wire:click="confirmDelete({{ $theme->id }})" class="flex items-center justify-center gap-1 w-full py-1.5 text-[10px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-colors border border-transparent hover:border-rose-100 dark:hover:border-rose-800/50">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Hapus
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -158,68 +204,5 @@
             {{ $themes->links() }}
         </div>
     @endif
-
-    <!-- Modal Form Import Tema -->
-    <div x-data="{ show: $wire.entangle('showImportModal') }" x-cloak>
-        <template x-teleport="body">
-            <div x-show="show" class="fixed inset-0 z-[100] overflow-y-auto w-screen h-screen flex items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                
-                <!-- Background overlay -->
-                <div x-show="show" x-transition.opacity class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm transition-opacity" aria-hidden="true" @click="show = false"></div>
-
-                <!-- Modal panel -->
-                <div x-show="show" 
-                     x-transition:enter="ease-out duration-300" 
-                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
-                     x-transition:leave="ease-in duration-200" 
-                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
-                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="relative bg-white dark:bg-slate-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all w-full max-w-3xl border border-slate-200 dark:border-slate-700">
-                    <form wire:submit.prevent="importTheme">
-                        <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                            <div class="sm:flex sm:items-start">
-                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/50 sm:mx-0 sm:h-10 sm:w-10">
-                                    <svg class="h-6 w-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </div>
-                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                    <h3 class="text-xl leading-6 font-bold text-slate-900 dark:text-white" id="modal-title">
-                                        Impor Tema Baru
-                                    </h3>
-                                    <div class="mt-2">
-                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                                            Masukkan kode array asosiatif PHP untuk konfigurasi tema baru.
-                                        </p>
-                                        
-                                        <div class="mb-4">
-                                            <label for="themeCode" class="sr-only">Kode Tema PHP</label>
-                                            <textarea wire:model="themeCode" id="themeCode" rows="15" 
-                                                class="w-full font-mono text-sm p-4 border border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-indigo-500 focus:border-indigo-500" 
-                                                placeholder="[&#10;  'name' => 'Nama Tema',&#10;  'slug' => 'slug-tema',&#10;  ...&#10;]"></textarea>
-                                            @error('themeCode') <span class="text-rose-500 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-slate-50 dark:bg-slate-700/50 px-4 py-4 sm:px-6 flex flex-col sm:flex-row-reverse gap-2 rounded-b-2xl">
-                            <button type="submit" class="w-full inline-flex justify-center items-center rounded-xl border border-transparent shadow-sm px-6 py-2.5 bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto transition-colors disabled:opacity-50">
-                                <span wire:loading.remove wire:target="importTheme">Simpan Tema</span>
-                                <span wire:loading wire:target="importTheme" class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 animate-spin -ml-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                    Menyimpan...
-                                </span>
-                            </button>
-                            <button type="button" @click="show = false" class="w-full inline-flex justify-center rounded-xl border border-slate-300 dark:border-slate-600 shadow-sm px-6 py-2.5 bg-white dark:bg-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto transition-colors">
-                                Batal
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </template>
-    </div>
 
 </div>

@@ -20,18 +20,16 @@ class ThemeManagement extends Component
 
     public $uploadThemeId;
 
-    public $showImportModal = false;
-
-    public $themeCode = '';
-
     #[Url(history: true)]
     public $search = '';
 
     public $perPage = 12;
 
+    public $confirmDeleteId = null;
+
     public function updatingSearch()
     {
-        $this->resetPage(); // Reset offset paginasi jika lagi ngetik pencarian
+        $this->resetPage();
     }
 
     public function updatingPerPage()
@@ -80,44 +78,76 @@ class ThemeManagement extends Component
         }
     }
 
-    public function importTheme()
+    /**
+     * Duplicate a theme.
+     */
+    public function duplicateTheme(int $id): void
     {
-        $this->validate([
-            'themeCode' => 'required|string',
-        ]);
+        $theme = Theme::findOrFail($id);
+        $newTheme = $theme->duplicate();
+        $this->dispatch('toast', message: "Tema '{$newTheme->name}' berhasil dibuat sebagai duplikat.", type: 'success');
+    }
 
-        try {
-            $code = trim($this->themeCode);
-            $code = rtrim($code, ',;'); // Remove trailing comma/semicolon for safety
+    /**
+     * Confirm delete (show confirmation).
+     */
+    public function confirmDelete(int $id): void
+    {
+        $this->confirmDeleteId = $id;
+    }
 
-            // Evaluasi string PHP menjadi array
-            $themeData = eval("return $code;");
+    /**
+     * Cancel delete confirmation.
+     */
+    public function cancelDelete(): void
+    {
+        $this->confirmDeleteId = null;
+    }
 
-            if (! is_array($themeData)) {
-                throw new \Exception('Format tidak valid. Pastikan Anda menyalin array PHP yang benar.');
-            }
+    /**
+     * Delete a theme (only if not used by any invitation).
+     */
+    public function deleteTheme(int $id): void
+    {
+        $theme = Theme::withCount('invitations')->findOrFail($id);
 
-            // Validasi data minimal (opsional)
-            if (! isset($themeData['slug']) || ! isset($themeData['name'])) {
-                throw new \Exception("Array harus memiliki key 'name' dan 'slug'.");
-            }
-
-            Theme::create($themeData);
-
-            $this->reset(['themeCode', 'showImportModal']);
-            $this->dispatch('toast', message: 'Tema baru berhasil ditambahkan.', type: 'success');
-
-        } catch (\ParseError $e) {
-            $this->addError('themeCode', 'Gagal mem-parsing array PHP: Cek syntax array Anda (contoh: kurang kurung, koma, dsb).');
-        } catch (\Exception $e) {
-            $this->addError('themeCode', 'Error: '.$e->getMessage());
+        if ($theme->invitations_count > 0) {
+            $this->dispatch('toast', message: "Gagal menghapus: Tema '{$theme->name}' digunakan oleh {$theme->invitations_count} undangan.", type: 'error');
+            $this->confirmDeleteId = null;
+            return;
         }
+
+        // Delete thumbnail if from storage
+        if ($theme->thumbnail_url && str_starts_with($theme->thumbnail_url, '/storage/')) {
+            $oldPath = str_replace('/storage/', '', $theme->thumbnail_url);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        $themeName = $theme->name;
+        $theme->delete();
+
+        $this->confirmDeleteId = null;
+        $this->dispatch('toast', message: "Tema '{$themeName}' berhasil dihapus.", type: 'success');
+    }
+
+    /**
+     * Export theme as JSON (dispatch browser download).
+     */
+    public function exportTheme(int $id): void
+    {
+        $theme = Theme::findOrFail($id);
+        $json = json_encode($theme->toExportArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+        $this->dispatch('download-json', filename: $theme->slug . '.json', content: $json);
     }
 
     public function render()
     {
-        $themes = Theme::where('name', 'like', '%'.$this->search.'%')
-            ->orWhere('slug', 'like', '%'.$this->search.'%')
+        $themes = Theme::withCount('invitations')
+            ->where(function ($query) {
+                $query->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('slug', 'like', '%'.$this->search.'%');
+            })
             ->latest()
             ->paginate($this->perPage);
 
@@ -126,3 +156,4 @@ class ThemeManagement extends Component
         ]);
     }
 }
+

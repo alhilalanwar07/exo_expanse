@@ -12,6 +12,7 @@ use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\InvitationManagement as AdminInvitationManagement;
 use App\Livewire\Admin\Settings as AdminSettings;
 use App\Livewire\Admin\SiswakkriHistoryManagement as AdminSiswakkriHistoryManagement;
+use App\Livewire\Admin\ThemeBuilder as AdminThemeBuilder;
 use App\Livewire\Admin\ThemeManagement as AdminThemeManagement;
 use App\Livewire\Admin\UserManagement as AdminUserManagement;
 use App\Livewire\DemoPage;
@@ -107,6 +108,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', AdminUserManagement::class)->name('users');
         Route::get('/invitations', AdminInvitationManagement::class)->name('invitations');
         Route::get('/themes', AdminThemeManagement::class)->name('themes');
+        Route::get('/themes/create', AdminThemeBuilder::class)->name('themes.create');
+        Route::get('/themes/{id}/edit', AdminThemeBuilder::class)->name('themes.edit');
         Route::get('/music', \App\Livewire\Admin\MusicManager::class)->name('music');
         Route::get('/settings', AdminSettings::class)->name('settings');
         Route::get('/articles', AdminArticleManagement::class)->name('articles');

@@ -13,6 +13,8 @@ class Theme extends Model
     protected $fillable = [
         'name',
         'slug',
+        'description',
+        'category',
         'view_file',
         'thumbnail_url',
         'is_active',
@@ -34,11 +36,26 @@ class Theme extends Model
         'overlay_gradient',
         'overlay_opacity',
         'button_style',
+        'custom_css',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'is_premium' => 'boolean',
+    ];
+
+    /**
+     * Available theme categories.
+     */
+    public const CATEGORIES = [
+        'Modern' => 'Modern',
+        'Islamic' => 'Islamic',
+        'Adat' => 'Adat / Tradisional',
+        'Nature' => 'Nature / Botanical',
+        'Minimalist' => 'Minimalist',
+        'Luxury' => 'Luxury / Premium',
+        'Romantic' => 'Romantic / Floral',
+        'Dark' => 'Dark Mode',
     ];
 
     public function invitations(): HasMany
@@ -102,6 +119,50 @@ class Theme extends Model
                 'heading_size' => $this->heading_size,
             ],
         ];
+    }
+
+    /**
+     * Duplicate this theme with a new name/slug.
+     */
+    public function duplicate(): self
+    {
+        $newTheme = $this->replicate();
+        $newTheme->name = $this->name . ' (Copy)';
+        $newTheme->slug = $this->slug . '-copy-' . time();
+        $newTheme->thumbnail_url = $this->thumbnail_url;
+        $newTheme->save();
+
+        return $newTheme;
+    }
+
+    /**
+     * Export theme data as a JSON-safe array.
+     */
+    public function toExportArray(): array
+    {
+        return collect($this->toArray())
+            ->except(['id', 'created_at', 'updated_at'])
+            ->toArray();
+    }
+
+    /**
+     * Create a theme from an imported array.
+     */
+    public static function fromImportArray(array $data): self
+    {
+        // Remove fields that should not be imported
+        unset($data['id'], $data['created_at'], $data['updated_at']);
+
+        // Ensure unique slug
+        $originalSlug = $data['slug'] ?? 'imported-theme';
+        $slug = $originalSlug;
+        $counter = 1;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter++;
+        }
+        $data['slug'] = $slug;
+
+        return static::create($data);
     }
 
     /**
