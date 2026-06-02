@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Theme;
 use App\Services\ImageService;
 use App\Services\ThemeBuilderService;
+use App\Services\ThemeGeneratorService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -55,8 +56,14 @@ class ThemeBuilder extends Component
     // Advanced
     public string $custom_css = '';
 
-    // File upload
+    // File uploads
     public $thumbnail;
+    public $frameUpload_tl;
+    public $frameUpload_tr;
+    public $frameUpload_bl;
+    public $frameUpload_br;
+    public $frameUpload_left;
+    public $frameUpload_right;
 
     // UI state
     #[Url(history: true)]
@@ -65,6 +72,11 @@ class ThemeBuilder extends Component
     // Import JSON
     public string $importJson = '';
     public bool $showImportModal = false;
+
+    // Sections config
+    public array $sectionsConfig = [];
+    public array $frameConfig = [];
+    public array $navConfig = [];
 
     /**
      * Mount component: create mode or edit mode.
@@ -75,6 +87,8 @@ class ThemeBuilder extends Component
             $theme = Theme::findOrFail($id);
             $this->themeId = $theme->id;
             $this->fillFromTheme($theme);
+        } else {
+            $this->initDefaultSections();
         }
     }
 
@@ -110,6 +124,23 @@ class ThemeBuilder extends Component
         $this->button_style = $theme->button_style ?? 'rounded';
 
         $this->custom_css = $theme->custom_css ?? '';
+
+        // Load sections config
+        $config = $theme->sections_config ?? Theme::defaultSectionsConfig();
+        $this->sectionsConfig = $config['sections'] ?? [];
+        $this->frameConfig = $config['frame'] ?? Theme::defaultSectionsConfig()['frame'];
+        $this->navConfig = $config['nav'] ?? Theme::defaultSectionsConfig()['nav'];
+    }
+
+    /**
+     * Initialize default sections config for new themes.
+     */
+    protected function initDefaultSections(): void
+    {
+        $defaults = Theme::defaultSectionsConfig();
+        $this->sectionsConfig = $defaults['sections'];
+        $this->frameConfig = $defaults['frame'];
+        $this->navConfig = $defaults['nav'];
     }
 
     /**
@@ -230,6 +261,52 @@ class ThemeBuilder extends Component
     }
 
     /**
+     * Handle frame image upload — store immediately and update frameConfig.
+     */
+    public function updatedFrameUploadTl(): void { $this->processFrameUpload('tl'); }
+    public function updatedFrameUploadTr(): void { $this->processFrameUpload('tr'); }
+    public function updatedFrameUploadBl(): void { $this->processFrameUpload('bl'); }
+    public function updatedFrameUploadBr(): void { $this->processFrameUpload('br'); }
+    public function updatedFrameUploadLeft(): void { $this->processFrameUpload('left'); }
+    public function updatedFrameUploadRight(): void { $this->processFrameUpload('right'); }
+
+    protected function processFrameUpload(string $position): void
+    {
+        $property = 'frameUpload_' . $position;
+
+        $this->validate([
+            $property => 'image|max:2048',
+        ]);
+
+        if ($this->$property) {
+            $imageService = app(ImageService::class);
+            $path = $imageService->storeAsWebp($this->$property, 'themes/frames');
+
+            if ($path) {
+                $this->frameConfig[$position] = '/storage/' . $path;
+                $this->$property = null;
+                $this->dispatch('toast', message: 'Frame ' . strtoupper($position) . ' berhasil diupload.', type: 'success');
+            }
+        }
+    }
+
+    /**
+     * Remove a frame image.
+     */
+    public function removeFrame(string $position): void
+    {
+        // Delete file if it's in storage
+        $current = $this->frameConfig[$position] ?? '';
+        if (str_starts_with($current, '/storage/')) {
+            $oldPath = str_replace('/storage/', '', $current);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        $this->frameConfig[$position] = '';
+        $this->dispatch('toast', message: 'Frame ' . strtoupper($position) . ' dihapus.', type: 'info');
+    }
+
+    /**
      * Save theme (create or update).
      */
     public function save(bool $redirect = false): void
@@ -285,6 +362,13 @@ class ThemeBuilder extends Component
 
         $data = collect($validated)->except(['thumbnail'])->toArray();
 
+        // Build sections_config JSON
+        $data['sections_config'] = [
+            'sections' => $this->sectionsConfig,
+            'frame' => $this->frameConfig,
+            'nav' => $this->navConfig,
+        ];
+
         if ($thumbnailUrl) {
             $data['thumbnail_url'] = $thumbnailUrl;
         }
@@ -298,6 +382,14 @@ class ThemeBuilder extends Component
             $this->themeId = $theme->id;
             $message = 'Tema baru berhasil dibuat.';
         }
+
+        // Generate Livewire component class + Blade view
+        $generator = new ThemeGeneratorService();
+        $generator->generate($theme);
+
+        // Refresh view_file from the generated theme
+        $theme->refresh();
+        $this->view_file = $theme->view_file;
 
         $this->thumbnail = null;
         $this->dispatch('toast', message: $message, type: 'success');
@@ -468,6 +560,115 @@ class ThemeBuilder extends Component
             ->implode('&family=');
 
         return "https://fonts.googleapis.com/css2?family={$fonts}&display=swap";
+    }
+
+    /**
+     * Store current config into session for the preview iframe, then signal reload.
+     */
+    public function refreshPreview(): void
+    {
+        session()->put('theme_builder_preview', [
+            'background_color' => $this->background_color,
+            'text_color' => $this->text_color,
+            'accent_color' => $this->accent_color,
+            'primary_color' => $this->primary_color,
+            'secondary_color' => $this->secondary_color,
+            'heading_color' => $this->heading_color,
+            'heading_font' => $this->heading_font,
+            'body_font' => $this->body_font,
+            'accent_font' => $this->accent_font,
+            'heading_size' => $this->heading_size,
+            'border_radius' => $this->border_radius,
+            'overlay_gradient' => $this->overlay_gradient,
+            'overlay_opacity' => $this->overlay_opacity,
+            'button_style' => $this->button_style,
+            'custom_css' => $this->custom_css,
+            'sections_config' => [
+                'sections' => $this->sectionsConfig,
+                'frame' => $this->frameConfig,
+                'nav' => $this->navConfig,
+            ],
+        ]);
+
+        $this->dispatch('preview-updated');
+    }
+
+    /**
+     * Toggle a section on/off.
+     */
+    public function toggleSection(string $sectionId): void
+    {
+        foreach ($this->sectionsConfig as &$section) {
+            if ($section['id'] === $sectionId) {
+                $section['enabled'] = !$section['enabled'];
+                break;
+            }
+        }
+    }
+
+    /**
+     * Move a section up or down.
+     */
+    public function moveSection(string $sectionId, string $direction): void
+    {
+        $sections = collect($this->sectionsConfig)->sortBy('order')->values()->toArray();
+        $currentIndex = null;
+
+        foreach ($sections as $i => $section) {
+            if ($section['id'] === $sectionId) {
+                $currentIndex = $i;
+                break;
+            }
+        }
+
+        if ($currentIndex === null) return;
+
+        $targetIndex = $direction === 'up' ? $currentIndex - 1 : $currentIndex + 1;
+        if ($targetIndex < 0 || $targetIndex >= count($sections)) return;
+
+        // Swap orders
+        $sections[$currentIndex]['order'] = $targetIndex;
+        $sections[$targetIndex]['order'] = $currentIndex;
+
+        $this->sectionsConfig = collect($sections)->sortBy('order')->values()->toArray();
+    }
+
+    /**
+     * Update a section's config value.
+     */
+    public function updateSectionConfig(string $sectionId, string $key, $value): void
+    {
+        foreach ($this->sectionsConfig as &$section) {
+            if ($section['id'] === $sectionId) {
+                $section['config'][$key] = $value;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Update frame config.
+     */
+    public function updateFrame(string $position, string $value): void
+    {
+        $this->frameConfig[$position] = $value;
+    }
+
+    /**
+     * Update nav config.
+     */
+    public function updateNavConfig(string $key, string $value): void
+    {
+        $this->navConfig[$key] = $value;
+    }
+
+    /**
+     * Get section definitions for UI.
+     */
+    #[Computed]
+    public function sectionDefinitions(): array
+    {
+        return ThemeGeneratorService::getSectionDefinitions();
     }
 
     public function render()

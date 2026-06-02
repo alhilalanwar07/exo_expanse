@@ -50,6 +50,7 @@
                             'colors' => ['label' => 'Warna', 'icon' => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01'],
                             'fonts' => ['label' => 'Tipografi', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
                             'layout' => ['label' => 'Layout', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
+                            'sections' => ['label' => 'Sections', 'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'],
                             'advanced' => ['label' => 'Advanced', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
                         ];
                     @endphp
@@ -349,6 +350,157 @@
                         </div>
                     </div>
 
+                    {{-- ═══════════════════════ TAB: SECTIONS ═══════════════════════ --}}
+                    <div x-show="activeTab === 'sections'" x-cloak>
+                        <div class="space-y-6">
+                            {{-- Section List --}}
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300">Bagian Undangan</h3>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Toggle on/off dan atur urutan bagian undangan</p>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    @foreach(collect($sectionsConfig)->sortBy('order') as $idx => $section)
+                                        @php
+                                            $def = $this->sectionDefinitions[$section['id']] ?? null;
+                                            if (!$def) continue;
+                                        @endphp
+                                        <div wire:key="section-{{ $section['id'] }}" class="group p-4 rounded-xl border transition-all {{ $section['enabled'] ? 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 opacity-60' }}">
+                                            <div class="flex items-center gap-3">
+                                                {{-- Icon --}}
+                                                <span class="text-xl flex-shrink-0">{{ $def['icon'] }}</span>
+
+                                                {{-- Info --}}
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ $def['label'] }}</div>
+                                                    <div class="text-[11px] text-slate-400 truncate">{{ $def['description'] }}</div>
+                                                </div>
+
+                                                {{-- Reorder --}}
+                                                <div class="flex gap-1">
+                                                    <button wire:click="moveSection('{{ $section['id'] }}', 'up')" class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors" title="Pindah ke atas">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                                                    </button>
+                                                    <button wire:click="moveSection('{{ $section['id'] }}', 'down')" class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors" title="Pindah ke bawah">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                                    </button>
+                                                </div>
+
+                                                {{-- Toggle --}}
+                                                <label class="relative cursor-pointer flex-shrink-0">
+                                                    <input type="checkbox" wire:click="toggleSection('{{ $section['id'] }}')" {{ $section['enabled'] ? 'checked' : '' }} class="sr-only peer">
+                                                    <div class="w-10 h-5 bg-slate-200 dark:bg-slate-700 rounded-full peer-checked:bg-indigo-600 peer-focus:ring-4 peer-focus:ring-indigo-500/20 transition-colors"></div>
+                                                    <div class="absolute left-[2px] top-[2px] w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+                                                </label>
+                                            </div>
+
+                                            {{-- Section-specific config (expandable) --}}
+                                            @if($section['enabled'] && in_array($section['id'], ['cover', 'quote', 'opening']))
+                                            <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/50" x-data="{expanded: false}">
+                                                <button @click="expanded = !expanded" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1 hover:underline">
+                                                    <svg class="w-3 h-3 transition-transform" :class="expanded && 'rotate-90'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                                    Konfigurasi
+                                                </button>
+                                                <div x-show="expanded" x-collapse class="mt-3 space-y-3">
+                                                    @if($section['id'] === 'cover')
+                                                        <div>
+                                                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Teks Judul</label>
+                                                            <input type="text" value="{{ $section['config']['title_text'] ?? 'The Wedding Of' }}" wire:change="updateSectionConfig('cover', 'title_text', $event.target.value)" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Teks Tombol</label>
+                                                            <input type="text" value="{{ $section['config']['button_text'] ?? 'Buka Undangan' }}" wire:change="updateSectionConfig('cover', 'button_text', $event.target.value)" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                                                        </div>
+                                                    @elseif($section['id'] === 'quote')
+                                                        <div>
+                                                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Judul Kutipan</label>
+                                                            <input type="text" value="{{ $section['config']['quote_title'] ?? 'QS. Ar-Rum 21' }}" wire:change="updateSectionConfig('quote', 'quote_title', $event.target.value)" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Isi Kutipan</label>
+                                                            <textarea wire:change="updateSectionConfig('quote', 'quote_text', $event.target.value)" rows="4" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300">{{ $section['config']['quote_text'] ?? '' }}</textarea>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div class="h-px bg-slate-200 dark:bg-slate-700"></div>
+
+                            {{-- Frame Ornaments --}}
+                            <div>
+                                <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Frame / Ornamen</h3>
+                                <p class="text-[11px] text-slate-400 mb-4">Upload gambar ornamen bingkai di setiap slide. Max 2MB per gambar.</p>
+
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    @foreach(['tl' => 'Kiri Atas', 'tr' => 'Kanan Atas', 'bl' => 'Kiri Bawah', 'br' => 'Kanan Bawah', 'left' => 'Sisi Kiri', 'right' => 'Sisi Kanan'] as $pos => $label)
+                                        <div wire:key="frame-{{ $pos }}" class="text-center">
+                                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">{{ $label }}</label>
+
+                                            {{-- Preview --}}
+                                            <div class="relative w-full aspect-square rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center overflow-hidden mb-2 group">
+                                                @if(!empty($frameConfig[$pos]))
+                                                    @php
+                                                        $frameSrc = str_starts_with($frameConfig[$pos], '/storage/')
+                                                            ? $frameConfig[$pos]
+                                                            : asset($frameConfig[$pos]);
+                                                    @endphp
+                                                    <img src="{{ $frameSrc }}" alt="Frame {{ $pos }}" class="w-full h-full object-contain p-2">
+                                                    {{-- Remove button --}}
+                                                    <button wire:click="removeFrame('{{ $pos }}')" class="absolute top-1 right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" title="Hapus">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                    </button>
+                                                @else
+                                                    <div class="text-center">
+                                                        <svg class="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                        <span class="text-[10px] text-slate-400">Kosong</span>
+                                                    </div>
+                                                @endif
+
+                                                {{-- Loading overlay --}}
+                                                <div wire:loading wire:target="frameUpload_{{ $pos }}" class="absolute inset-0 bg-white/80 dark:bg-slate-900/80 flex items-center justify-center rounded-xl">
+                                                    <svg class="w-6 h-6 animate-spin text-indigo-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                                </div>
+                                            </div>
+
+                                            {{-- Upload button --}}
+                                            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800/50 cursor-pointer">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                                Upload
+                                                <input type="file" wire:model="frameUpload_{{ $pos }}" accept="image/*" class="sr-only">
+                                            </label>
+                                            @error('frameUpload_' . $pos) <span class="text-rose-500 text-[10px] mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div class="h-px bg-slate-200 dark:bg-slate-700"></div>
+
+                            {{-- Nav Config --}}
+                            <div>
+                                <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Navigasi Bawah</h3>
+                                <p class="text-[11px] text-slate-400 mb-4">Warna menu navigasi bawah pada undangan</p>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    @foreach(['bg_color' => 'Background', 'active_color' => 'Warna Aktif', 'inactive_color' => 'Warna Inaktif'] as $key => $label)
+                                        <div wire:key="nav-{{ $key }}">
+                                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ $label }}</label>
+                                            <input type="text" value="{{ $navConfig[$key] ?? '' }}" wire:change="updateNavConfig('{{ $key }}', $event.target.value)" class="w-full px-3 py-2 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-mono" placeholder="#000000 / rgba(...)">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- ═══════════════════════ TAB: ADVANCED ═══════════════════════ --}}
                     <div x-show="activeTab === 'advanced'" x-cloak>
                         <div class="space-y-6">
@@ -400,65 +552,40 @@
                             <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             Live Preview
                         </h3>
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-md">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Real-time
-                        </span>
+                        <button wire:click="refreshPreview"
+                            x-on:preview-updated.window="setTimeout(() => { document.getElementById('previewFrame').src = document.getElementById('previewFrame').src; }, 300)"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800/50">
+                            <svg wire:loading.remove wire:target="refreshPreview" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            <svg wire:loading wire:target="refreshPreview" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            Refresh
+                        </button>
                     </div>
 
-                    {{-- Preview Mockup --}}
-                    <div class="p-4">
-                        <link rel="stylesheet" href="{{ $this->previewFontsUrl }}">
-                        <div
-                            class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-inner"
-                            style="{{ $this->previewCss }}"
-                        >
-                            {{-- Cover Section --}}
-                            <div class="relative py-12 px-6 text-center overflow-hidden" style="background-color: var(--color-secondary);">
-                                <div class="absolute inset-0" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); opacity: 0.3;"></div>
-                                <div class="relative z-10">
-                                    <p class="text-xs tracking-[0.3em] uppercase mb-3 opacity-70" style="font-family: var(--font-body); color: var(--color-background);">Wedding Invitation</p>
-                                    <h2 class="mb-4" style="font-family: var(--font-accent); font-size: calc(var(--heading-size) * 0.6); color: var(--color-background);">The Wedding of</h2>
-                                    <h1 class="mb-6 leading-tight" style="font-family: var(--font-heading); font-size: calc(var(--heading-size) * 0.75); color: var(--color-background);">
-                                        Ahmad <span style="font-size: 0.6em">&</span> Siti
-                                    </h1>
-                                    <div class="inline-block px-5 py-2 text-xs font-semibold tracking-wider uppercase" style="background-color: var(--color-background); color: var(--color-secondary); border-radius: var(--border-radius);">
-                                        🕊️ Buka Undangan
-                                    </div>
-                                </div>
-                            </div>
+                    {{-- Real Theme Preview in iframe --}}
+                    <div class="relative" style="height: 680px;">
+                        <iframe
+                            id="previewFrame"
+                            src="{{ route('admin.themes.preview') }}"
+                            class="w-full h-full border-0"
+                            style="transform-origin: top center;"
+                            sandbox="allow-scripts allow-same-origin"
+                        ></iframe>
 
-                            {{-- Content Section --}}
-                            <div class="py-8 px-6 text-center" style="background-color: var(--color-background);">
-                                <p class="text-xs uppercase tracking-widest mb-3 opacity-60" style="font-family: var(--font-body); color: var(--color-text);">Pasangan Mempelai</p>
-                                <h3 class="mb-1" style="font-family: var(--font-heading); font-size: calc(var(--heading-size) * 0.5); color: var(--color-heading);">Ahmad Fauzan</h3>
-                                <p class="text-sm mb-4 opacity-60" style="font-family: var(--font-body); color: var(--color-text);">Putra dari Bpk. Hasan & Ibu Aminah</p>
-
-                                <div class="my-4 mx-auto w-8 h-px" style="background-color: var(--color-accent);"></div>
-
-                                <h3 class="mb-1" style="font-family: var(--font-heading); font-size: calc(var(--heading-size) * 0.5); color: var(--color-heading);">Siti Nurhaliza</h3>
-                                <p class="text-sm mb-6 opacity-60" style="font-family: var(--font-body); color: var(--color-text);">Putri dari Bpk. Abdullah & Ibu Fatimah</p>
-                            </div>
-
-                            {{-- Event Section --}}
-                            <div class="py-6 px-6 text-center" style="background-color: var(--color-primary); opacity: 0.95;">
-                                <h3 class="mb-3" style="font-family: var(--font-heading); font-size: calc(var(--heading-size) * 0.45); color: var(--color-background);">Akad Nikah</h3>
-                                <p class="text-xs uppercase tracking-widest mb-2 opacity-80" style="font-family: var(--font-body); color: var(--color-background);">Sabtu, 15 Juni 2026</p>
-                                <p class="text-xs opacity-70 mb-4" style="font-family: var(--font-body); color: var(--color-background);">Masjid Al-Ikhlas, Jakarta Selatan</p>
-                                <div class="inline-block px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider border" style="color: var(--color-background); border-color: var(--color-background); border-radius: var(--border-radius); opacity: 0.8;">
-                                    Lihat Lokasi
-                                </div>
-                            </div>
-
-                            {{-- Footer --}}
-                            <div class="py-6 px-6 text-center" style="background-color: var(--color-background);">
-                                <p class="mb-1" style="font-family: var(--font-accent); font-size: calc(var(--heading-size) * 0.5); color: var(--color-accent);">Thank You</p>
-                                <p class="text-[10px] uppercase tracking-[0.4em] opacity-40" style="font-family: var(--font-body); color: var(--color-text);">Ahmad & Siti</p>
+                        {{-- Overlay hint --}}
+                        <div x-data="{ showHint: true }" x-show="showHint" x-transition.opacity
+                            class="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer backdrop-blur-sm"
+                            @click="showHint = false; $wire.refreshPreview()">
+                            <div class="text-center text-white px-6">
+                                <svg class="w-12 h-12 mx-auto mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <p class="text-sm font-semibold mb-1">Klik untuk Memuat Preview</p>
+                                <p class="text-xs opacity-70">Preview akan menampilkan tema dengan data demo</p>
                             </div>
                         </div>
+                    </div>
 
-                        {{-- Color Swatch Summary --}}
-                        <div class="flex items-center gap-1.5 mt-4 px-1">
+                    {{-- Color Swatch Summary --}}
+                    <div class="px-4 pb-4">
+                        <div class="flex items-center gap-1.5 mt-2 px-1">
                             @foreach(['primary_color', 'secondary_color', 'accent_color', 'text_color', 'heading_color', 'background_color'] as $c)
                                 <div class="flex-1 h-6 rounded-md border border-white dark:border-slate-600 shadow-sm" style="background-color: {{ $this->$c }}" title="{{ $c }}"></div>
                             @endforeach

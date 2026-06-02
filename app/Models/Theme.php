@@ -37,11 +37,13 @@ class Theme extends Model
         'overlay_opacity',
         'button_style',
         'custom_css',
+        'sections_config',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'is_premium' => 'boolean',
+        'sections_config' => 'array',
     ];
 
     /**
@@ -117,6 +119,109 @@ class Theme extends Model
                 'container_max_width' => $this->container_max_width,
                 'border_radius' => $this->border_radius,
                 'heading_size' => $this->heading_size,
+            ],
+        ];
+    }
+
+    /**
+     * Get enabled sections sorted by order.
+     */
+    public function getEnabledSections(): array
+    {
+        $config = $this->sections_config ?? self::defaultSectionsConfig();
+        $sections = $config['sections'] ?? [];
+
+        return collect($sections)
+            ->where('enabled', true)
+            ->sortBy('order')
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Get config for a specific section.
+     */
+    public function getSectionConfig(string $sectionId): array
+    {
+        $config = $this->sections_config ?? self::defaultSectionsConfig();
+        $sections = $config['sections'] ?? [];
+
+        $section = collect($sections)->firstWhere('id', $sectionId);
+
+        return $section['config'] ?? [];
+    }
+
+    /**
+     * Get frame images configuration.
+     */
+    public function getFrameConfig(): array
+    {
+        $config = $this->sections_config ?? self::defaultSectionsConfig();
+
+        return $config['frame'] ?? [
+            'tl' => '/assets/themes/adat-bone/tl.webp',
+            'tr' => '/assets/themes/adat-bone/tr.webp',
+            'bl' => '/assets/themes/adat-bone/bl.webp',
+            'br' => '/assets/themes/adat-bone/br.webp',
+            'left' => '/assets/themes/adat-bone/left.webp',
+            'right' => '/assets/themes/adat-bone/right.webp',
+        ];
+    }
+
+    /**
+     * Get nav bar configuration.
+     */
+    public function getNavConfig(): array
+    {
+        $config = $this->sections_config ?? self::defaultSectionsConfig();
+
+        return $config['nav'] ?? [
+            'bg_color' => 'rgba(118, 19, 50, 0.95)',
+            'active_color' => '#d4b051',
+            'inactive_color' => '#ffffff',
+        ];
+    }
+
+    /**
+     * Default sections configuration (based on adat-bone).
+     */
+    public static function defaultSectionsConfig(): array
+    {
+        return [
+            'sections' => [
+                ['id' => 'cover', 'enabled' => true, 'order' => 0, 'config' => [
+                    'overlay_gradient' => 'linear-gradient(to bottom, rgba(93,7,31,0.75) 0%, rgba(93,7,31,0.45) 35%, rgba(93,7,31,0.35) 55%, rgba(93,7,31,0.92) 85%, rgba(93,7,31,0.98) 100%)',
+                    'title_text' => 'The Wedding Of',
+                    'button_text' => 'Buka Undangan',
+                ]],
+                ['id' => 'opening', 'enabled' => true, 'order' => 1, 'config' => [
+                    'overlay_gradient' => 'linear-gradient(to bottom, rgba(93,7,31,0.6), rgba(93,7,31,0.9))',
+                ]],
+                ['id' => 'couple', 'enabled' => true, 'order' => 2, 'config' => []],
+                ['id' => 'quote', 'enabled' => true, 'order' => 3, 'config' => [
+                    'quote_title' => 'QS. Ar-Rum 21',
+                    'quote_text' => 'Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.',
+                ]],
+                ['id' => 'lovestory', 'enabled' => true, 'order' => 4, 'config' => []],
+                ['id' => 'events', 'enabled' => true, 'order' => 5, 'config' => []],
+                ['id' => 'maps', 'enabled' => true, 'order' => 6, 'config' => []],
+                ['id' => 'gallery', 'enabled' => true, 'order' => 7, 'config' => []],
+                ['id' => 'gift', 'enabled' => true, 'order' => 8, 'config' => []],
+                ['id' => 'rsvp', 'enabled' => true, 'order' => 9, 'config' => []],
+                ['id' => 'closing', 'enabled' => true, 'order' => 10, 'config' => []],
+            ],
+            'frame' => [
+                'tl' => '/assets/themes/adat-bone/tl.webp',
+                'tr' => '/assets/themes/adat-bone/tr.webp',
+                'bl' => '/assets/themes/adat-bone/bl.webp',
+                'br' => '/assets/themes/adat-bone/br.webp',
+                'left' => '/assets/themes/adat-bone/left.webp',
+                'right' => '/assets/themes/adat-bone/right.webp',
+            ],
+            'nav' => [
+                'bg_color' => 'rgba(118, 19, 50, 0.95)',
+                'active_color' => '#d4b051',
+                'inactive_color' => '#ffffff',
             ],
         ];
     }

@@ -110,6 +110,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/themes', AdminThemeManagement::class)->name('themes');
         Route::get('/themes/create', AdminThemeBuilder::class)->name('themes.create');
         Route::get('/themes/{id}/edit', AdminThemeBuilder::class)->name('themes.edit');
+        Route::get('/themes/preview', \App\Livewire\Admin\ThemePreview::class)->name('themes.preview')->middleware('allow.iframe');
         Route::get('/music', \App\Livewire\Admin\MusicManager::class)->name('music');
         Route::get('/settings', AdminSettings::class)->name('settings');
         Route::get('/articles', AdminArticleManagement::class)->name('articles');
