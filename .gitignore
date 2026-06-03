@@ -40,6 +40,8 @@ Thumbs.db
 composer.lock
 package-lock.json
 
+/public/build
+
 # IDE / AI agent config
 /.agent
 /.gemini
