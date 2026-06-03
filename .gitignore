@@ -5,6 +5,11 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+.env.example
+.skill-lock.json
+.agents/skills/laravel-livewire
+.github
+test.php
 /.fleet
 /.idea
 /.nova
