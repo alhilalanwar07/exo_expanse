@@ -22,17 +22,18 @@ test.php
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
+/database/seeders
+# /vendor
 /mobile
 Homestead.json
 Homestead.yaml
 Thumbs.db
 
 # Published vendor assets (regenerated via artisan)
-/public/css/filament
-/public/js/filament
-/public/fonts/filament
-/public/vendor/livewire
+# /public/css/filament
+# /public/js/filament
+# /public/fonts/filament
+# /public/vendor/livewire
 
 # Lock files (optional — uncomment if team uses different OS/PHP versions)
 # composer.lock
