@@ -39,8 +39,6 @@ Thumbs.db
 # Node lock file (optional — uncomment if team uses different Node versions)
 package-lock.json
 
-/public/build
-
 # IDE / AI agent config
 /.agent
 /.gemini
