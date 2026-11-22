@@ -131,63 +131,31 @@ class GuestImportService
     }
 
     /**
-     * Generate WhatsApp URL for a single guest.
+     * Generate formatted invitation share message for a single guest.
      */
-    public function generateWhatsAppUrl(Invitation $invitation, string $invitationUrl, string $guestName, ?string $phone = null): string
+    public function generateShareMessage(Invitation $invitation, string $invitationUrl, string $guestName): string
     {
         $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
 
         $template = MessageTemplate::where('slug', 'universal')->first();
         $templateContent = $template ? $template->content : "Kepada Yth. {nama},\n\nKami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami:\n\n{judul}\n\n{detail_acara}\n\nSilakan buka klik link berikut untuk info selengkapnya:\n{link}\n\nKehadiran dan doa restu Anda adalah kebahagiaan bagi kami.\nTerima kasih.";
 
-        // Generate Title
-        $inv = $invitation;
-        $invitationTitle = $inv->title;
-        if ($inv->groom_name && $inv->bride_name) {
-            $styles = $inv->custom_styles ?? [];
-            $order = $styles['name_order'] ?? 'groom_first';
-            $first = $order === 'bride_first' ? $inv->bride_name : $inv->groom_name;
-            $second = $order === 'bride_first' ? $inv->groom_name : $inv->bride_name;
-            $invitationTitle = "The Wedding of {$first} dan {$second}";
-        }
+        $invitationTitle = $this->getInvitationTitle($invitation);
+        $eventDetails = $this->formatEventDetails($invitation);
 
-        // Generate Event Details
-        $details = [];
-        if ($inv->akad_date) {
-            $akadDate = Carbon::parse($inv->akad_date);
-            $akadTime = $inv->akad_time ? Carbon::parse($inv->akad_time)->format('H:i') : '';
-
-            $details[] = 'Pada: Akad Pernikahan';
-            $details[] = '🗓️ Tanggal: '.$akadDate->translatedFormat('d-m-Y');
-            if ($akadTime) {
-                $details[] = "🕛 Pukul: {$akadTime} - Selesai";
-            }
-            if ($inv->akad_address) {
-                $details[] = "📍 Lokasi: {$inv->akad_address}";
-            }
-            $details[] = '';
-        }
-        if ($inv->resepsi_date) {
-            $receptionDate = Carbon::parse($inv->resepsi_date);
-            $receptionTime = $inv->resepsi_time ? Carbon::parse($inv->resepsi_time)->format('H:i') : '';
-
-            $details[] = 'Pada: Resepsi Pernikahan';
-            $details[] = '🗓️ Tanggal: '.$receptionDate->translatedFormat('d-m-Y');
-            if ($receptionTime) {
-                $details[] = "🕛 Pukul: {$receptionTime} - Selesai";
-            }
-            if ($inv->resepsi_address) {
-                $details[] = "📍 Lokasi: {$inv->resepsi_address}";
-            }
-        }
-        $eventDetails = implode("\n", $details);
-
-        $message = str_replace(
+        return str_replace(
             ['{nama}', '{judul}', '{detail_acara}', '{link}'],
             [$guestName, $invitationTitle, $eventDetails, $personalUrl],
             $templateContent
         );
+    }
 
+    /**
+     * Generate WhatsApp URL for a single guest.
+     */
+    public function generateWhatsAppUrl(Invitation $invitation, string $invitationUrl, string $guestName, ?string $phone = null): string
+    {
+        $message = $this->generateShareMessage($invitation, $invitationUrl, $guestName);
         $encodedMessage = rawurlencode($message);
 
         if ($phone) {

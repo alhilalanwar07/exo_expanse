@@ -10,6 +10,7 @@
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
      class="fixed top-5 right-5 z-50 w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5 pointer-events-auto"
+     style="z-index: 1100;"
      :class="{
         'bg-white dark:bg-slate-800': true
      }">

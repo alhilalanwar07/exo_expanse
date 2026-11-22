@@ -88,6 +88,20 @@ class Dashboard extends Component
         return $baseUrl;
     }
 
+    public function getShareMessage(): string
+    {
+        $invitation = Invitation::where('slug', $this->shareInvitationSlug)->first();
+        if (! $invitation) {
+            return '';
+        }
+
+        $invitationUrl = route('invitation.show', $this->shareInvitationSlug);
+        $importService = app(GuestImportService::class);
+        $recipientName = empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName;
+
+        return $importService->generateShareMessage($invitation, $invitationUrl, $recipientName);
+    }
+
     public function getWhatsAppUrl(): string
     {
         $invitation = Invitation::where('slug', $this->shareInvitationSlug)->first();
