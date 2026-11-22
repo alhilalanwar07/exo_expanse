@@ -136,6 +136,7 @@
         /* Scroll Lock & Cover Slide Transition */
         .stop-scrolling {
             height: 100vh !important;
+            height: 100dvh !important;
             overflow: hidden !important;
         }
         .cover-hidden {
@@ -154,21 +155,147 @@
             transform: translateY(0px) !important;
         }
 
-        /* Portrait Aspect Ratios for User Uploaded Photos */
-        .elementor-346 .elementor-element.elementor-element-2ec0975a img,
-        .elementor-346 .elementor-element.elementor-element-4f01d582 img,
-        .elementor-346 .elementor-element.elementor-element-3ce2deed img {
-            aspect-ratio: 2 / 3;
-            object-fit: cover;
+        /* Cover Safe-Zone Framing & Typography (keeps text/button cleanly inside upper cream arch above Bugis house roof) */
+        .elementor-346 .elementor-element.elementor-element-f9feda1.cover {
+            display: flex !important;
+            align-items: stretch !important;
+            justify-content: center !important;
+            background-position: center center !important;
+            background-size: cover !important;
         }
-        .elementor-346 .elementor-element.elementor-element-4957ef64 img {
-            aspect-ratio: 2 / 3;
-            object-fit: cover;
+        .elementor-346 .elementor-element.elementor-element-132bad9a {
+            margin-top: 0 !important;
+            --margin-top: 0px !important;
+            min-height: 100vh !important;
+            min-height: 100dvh !important;
+            height: 100% !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: clamp(3px, 0.7dvh, 7px) !important;
+            --gap: clamp(3px, 0.7dvh, 7px) !important;
+            --widgets-spacing: 0px;
+            --widgets-spacing-row: 0px;
+            padding: clamp(46px, 9.5dvh, 84px) 28px clamp(150px, 28dvh, 250px) 28px !important;
+            box-sizing: border-box !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-2f225040 {
+            margin: 0 !important;
+            flex-shrink: 0;
+        }
+        .elementor-346 .elementor-element.elementor-element-2f225040 .elementor-heading-title {
+            font-size: clamp(13px, 2dvh, 16px) !important;
+            line-height: 1.3 !important;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .elementor-346 .elementor-element.elementor-element-423e4dc1 {
+            margin: 2px 0 clamp(6px, 1.1dvh, 12px) 0 !important;
+            flex-shrink: 0;
+        }
+        .elementor-346 .elementor-element.elementor-element-423e4dc1 .elementor-heading-title {
+            font-size: clamp(28px, 4.4dvh, 36px) !important;
+            line-height: 1.2 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-2ec0975a {
+            margin: 2px 0 clamp(6px, 1.1dvh, 10px) 0 !important;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .elementor-346 .elementor-element.elementor-element-325a7260 {
+            margin: 2px 0 0 0 !important;
+            flex-shrink: 0;
+        }
+        .elementor-346 .elementor-element.elementor-element-325a7260 .elementor-heading-title {
+            font-size: clamp(12px, 1.8dvh, 14px) !important;
+            line-height: 1.35 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-30ed7aeb {
+            padding: 0 12px clamp(4px, 0.8dvh, 8px) !important;
+            margin: 0 !important;
+            flex-shrink: 0;
+            max-width: 100%;
+        }
+        .elementor-346 .elementor-element.elementor-element-30ed7aeb .elementor-heading-title {
+            font-size: clamp(17px, 2.5dvh, 21px) !important;
+            line-height: 1.25 !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 6px rgba(255, 245, 238, 0.88);
+            word-break: break-word;
+        }
+        .elementor-346 .elementor-element.elementor-element-46720f30 {
+            margin-top: 2px !important;
+            flex-shrink: 0;
+        }
+        .elementor-346 .elementor-element.elementor-element-46720f30 .elementor-button {
+            padding: 10px 20px !important;
+            line-height: 1.2 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-46720f30 .elementor-button-content-wrapper {
+            gap: 7px;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Sidebar Title Line-Height Safety */
+        /* Safari-Safe Explicit Portrait Frame Wrappers (prevents WebKit flex intrinsic distortion on 1:1 uploaded photos) */
+        .bugis-cover-arch-frame {
+            width: clamp(114px, min(40vw, 20dvh), 160px);
+            height: clamp(148px, min(52vw, 26dvh), 208px);
+            border: 4px solid #BF996D;
+            border-radius: 500px 500px 0 0;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            background: rgba(255, 248, 240, 0.45);
+        }
+        .bugis-couple-frame {
+            width: min(64%, 240px);
+            aspect-ratio: 2 / 3;
+            border: 4px solid #BF996D;
+            border-radius: 500px;
+            overflow: hidden;
+            margin: 0 auto;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .bugis-quote-frame {
+            width: min(92%, 320px);
+            aspect-ratio: 2 / 3;
+            border-radius: 153px;
+            overflow: hidden;
+            margin: 0 auto;
+            box-shadow: 0 0 10px 17px rgba(0, 0, 0, 0.13);
+            flex-shrink: 0;
+        }
+        .bugis-cover-arch-frame img,
+        .bugis-couple-frame img,
+        .bugis-quote-frame img {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: center top !important;
+            display: block !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        /* Sidebar & Couple Heading Line-Height Safety */
         .elementor-346 .elementor-element.elementor-element-41dfae8f .elementor-heading-title {
-            line-height: 1.15;
+            line-height: 1.18 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-1ed755bd .elementor-heading-title,
+        .elementor-346 .elementor-element.elementor-element-74ac10ba .elementor-heading-title {
+            line-height: 1.15 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-5a868f7f .elementor-heading-title,
+        .elementor-346 .elementor-element.elementor-element-63ed8e8e .elementor-heading-title {
+            line-height: 1.3 !important;
         }
 
         /* Desktop 70% / 30% Split Layout Matching 3d-adat-bugis-02/index.html */
@@ -181,10 +308,16 @@
                 max-width: 70% !important;
                 height: 100vh !important;
                 z-index: 10;
+                padding: 0 28px !important;
+                gap: 14px !important;
+                box-sizing: border-box;
                 background-image: url('{{ asset('themes/3d-adat-bugis-02/assets/BACKGROUND-FIXED.jpg') }}') !important;
                 background-size: cover !important;
                 background-position: bottom center !important;
                 background-repeat: no-repeat !important;
+            }
+            .elementor-346 .elementor-element.elementor-element-41dfae8f {
+                margin: 18px 0 !important;
             }
             .elementor-346 .elementor-element.elementor-element-7a2531fd::before {
                 content: '';
@@ -220,10 +353,20 @@
                 width: 30% !important;
                 max-width: 30% !important;
                 height: 100vh !important;
+                height: 100dvh !important;
                 z-index: 9999 !important;
                 overflow: hidden;
                 margin: 0;
                 padding: 0;
+            }
+            .bugis-cover-arch-frame {
+                width: clamp(118px, min(14vw, 20vh), 170px);
+                height: clamp(154px, min(18.5vw, 26vh), 224px);
+            }
+            .elementor-346 .elementor-element.elementor-element-53c49100 .elementor-heading-title,
+            .elementor-346 .elementor-element.elementor-element-7689559c .elementor-heading-title {
+                font-size: clamp(44px, 4.2vw, 68px) !important;
+                line-height: 1.15 !important;
             }
         }
 
@@ -251,6 +394,7 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 height: 100vh !important;
+                height: 100dvh !important;
                 z-index: 9999 !important;
                 overflow: hidden;
                 margin: 0;
@@ -262,6 +406,7 @@
         .motionSection {
             position: relative;
             min-height: 100vh;
+            min-height: 100dvh;
             overflow: hidden;
         }
         .motionSection .elementor-background-video-container {
@@ -282,6 +427,12 @@
             z-index: 2;
             width: 100%;
             min-height: 100vh;
+            min-height: 100dvh;
+            margin-top: 0 !important;
+            --margin-top: 0px !important;
+            padding: 28px 20px !important;
+            gap: 4px !important;
+            box-sizing: border-box;
             opacity: 0;
             transform: translateY(12px);
             transition: opacity 1s ease, transform 1s ease;
@@ -289,6 +440,27 @@
         .motionSection .motionText.motionText--visible {
             opacity: 1;
             transform: translateY(0);
+        }
+        .elementor-346 .elementor-element.elementor-element-53c49100 .elementor-heading-title,
+        .elementor-346 .elementor-element.elementor-element-7689559c .elementor-heading-title {
+            font-size: clamp(44px, 11.5vw, 66px) !important;
+            line-height: 1.15 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-2117e8c7 .elementor-heading-title {
+            font-size: clamp(22px, 5.5vw, 32px) !important;
+            line-height: 1.1 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-2bc135a1 {
+            margin: 6px 0 2px 0 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-2bc135a1 .elementor-heading-title {
+            line-height: 1.35 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-477aca49 {
+            margin: 0 0 14px 0 !important;
+        }
+        .elementor-346 .elementor-element.elementor-element-477aca49 .elementor-heading-title {
+            line-height: 1.35 !important;
         }
 
         /* Lightbox Overlay */
@@ -1147,10 +1319,15 @@
     $welcomeMessage = !empty($styles['welcome_message'])
         ? $styles['welcome_message']
         : 'Dengan memohon rahmat dan ridho Allah Swt. kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan putra-putri kami:';
-    $quranVerse = !empty($styles['quran_verse'])
+    $quoteTitle = trim((string) ($styles['quote_title'] ?? '')) !== ''
+        ? $styles['quote_title']
+        : 'WE FOUND LOVE';
+    $quranVerse = trim((string) ($styles['quran_verse'] ?? '')) !== ''
         ? $styles['quran_verse']
         : '“Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.”';
-    $quranRef = !empty($styles['quran_ref']) ? $styles['quran_ref'] : 'Q.S Ar-Rum : 21';
+    $quranRef = array_key_exists('quran_ref', $styles)
+        ? trim((string) ($styles['quran_ref'] ?? ''))
+        : 'Q.S Ar-Rum : 21';
 
     // Gallery & Ken Burns Images
     $uploadedPhotos = $invitation->relationLoaded('photos') ? $invitation->photos : $invitation->photos()->get();
@@ -1164,9 +1341,10 @@
         ? $uploadedPhotos->map(fn ($p) => img_url($p->path))->values()->all()
         : $defaultGallery;
 
-    $quotePhotoUrl = $uploadedPhotos->count() > 0
-        ? img_url($uploadedPhotos->first()->path)
-        : asset($assetBase . 'DSCF7882-1.jpeg');
+    $quoteImageRaw = $styles['quote_image'] ?? null;
+    $quotePhotoUrl = !empty($quoteImageRaw)
+        ? img_url($quoteImageRaw)
+        : (!$invitation->exists ? asset($assetBase . 'DSCF7882-1.jpeg') : null);
 
     $kenBurns1Slides = $uploadedPhotos->count() >= 2
         ? [img_url($uploadedPhotos[0]->path), img_url($uploadedPhotos[1]->path)]
@@ -1277,7 +1455,9 @@
                             <h2 class="elementor-heading-title elementor-size-default">{{ $coupleTitle }}</h2>
                         </div>
                         <div class="elementor-element elementor-element-2ec0975a animated-slow elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"zoomIn","_animation_delay":200,"_animation_mobile":"zoomIn"}' data-widget_type="image.default">
-                            <img alt="{{ $coupleTitle }}" class="attachment-full size-full wp-image-862" height="1590" width="1060" src="{{ $coverPhotoUrl }}" />
+                            <div class="bugis-cover-arch-frame">
+                                <img alt="{{ $coupleTitle }}" class="attachment-full size-full wp-image-862" src="{{ $coverPhotoUrl }}" />
+                            </div>
                         </div>
                         <div class="elementor-element elementor-element-325a7260 animated-slow elementor-invisible elementor-widget elementor-widget-heading" data-settings='{"_animation":"zoomIn"}' data-widget_type="heading.default">
                             <h2 class="elementor-heading-title elementor-size-default">Kepada Yth: <br/>Bapak/Ibu/Saudara/i</h2>
@@ -1345,18 +1525,24 @@
                 <!-- 4. Quote Section (1b4036b1 / #sc) -->
                 <div id="sc" class="has_eae_slider elementor-element elementor-element-1b4036b1 e-con-full e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="1b4036b1">
                     <div class="has_eae_slider elementor-element elementor-element-6517fc08 e-con-full e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="6517fc08">
-                        <div class="elementor-element elementor-element-4957ef64 elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
-                            <img alt="{{ $coupleTitle }}" class="attachment-full size-full wp-image-863" height="1590" width="1060" src="{{ $quotePhotoUrl }}" />
-                        </div>
+                        @if($quotePhotoUrl)
+                            <div class="elementor-element elementor-element-4957ef64 elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
+                                <div class="bugis-quote-frame">
+                                    <img alt="{{ $coupleTitle }}" class="attachment-full size-full wp-image-863" src="{{ $quotePhotoUrl }}" />
+                                </div>
+                            </div>
+                        @endif
                         <div class="elementor-element elementor-element-29338a02 elementor-widget elementor-widget-heading" data-widget_type="heading.default">
-                            <p class="elementor-heading-title elementor-size-default">WE FOUND LOVE</p>
+                            <p class="elementor-heading-title elementor-size-default">{{ $quoteTitle }}</p>
                         </div>
                         <div class="elementor-element elementor-element-5cc07038 elementor-invisible elementor-widget elementor-widget-text-editor" data-settings='{"_animation":"fadeInUp","_animation_delay":250}' data-widget_type="text-editor.default">
-                            {{ $quranVerse }}
+                            {!! nl2br(e($quranVerse)) !!}
                         </div>
-                        <div class="elementor-element elementor-element-3c98760a elementor-invisible elementor-widget elementor-widget-text-editor" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="text-editor.default">
-                            {{ $quranRef }}
-                        </div>
+                        @if($quranRef !== '')
+                            <div class="elementor-element elementor-element-3c98760a elementor-invisible elementor-widget elementor-widget-text-editor" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="text-editor.default">
+                                {{ $quranRef }}
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -1369,7 +1555,9 @@
 
                         <!-- Mempelai Pertama -->
                         <div class="elementor-element elementor-element-4f01d582 animated-slow elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"fadeInLeft","_animation_delay":200,"_animation_mobile":"fadeInLeft"}' data-widget_type="image.default">
-                            <img alt="{{ $firstPerson['full'] }}" class="{{ $firstPerson['imgClass'] }}" height="1590" width="1060" src="{{ $firstPerson['photo'] }}" />
+                            <div class="bugis-couple-frame">
+                                <img alt="{{ $firstPerson['full'] }}" class="{{ $firstPerson['imgClass'] }}" src="{{ $firstPerson['photo'] }}" />
+                            </div>
                         </div>
                         <div class="elementor-element elementor-element-1ed755bd custom-font-nama-pendek elementor-widget elementor-widget-heading" data-widget_type="heading.default">
                             <p class="elementor-heading-title elementor-size-default">{{ $firstPerson['nick'] }}</p>
@@ -1400,7 +1588,9 @@
 
                         <!-- Mempelai Kedua -->
                         <div class="elementor-element elementor-element-3ce2deed animated-slow elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"fadeInRight","_animation_delay":200,"_animation_mobile":"fadeInRight"}' data-widget_type="image.default">
-                            <img alt="{{ $secondPerson['full'] }}" class="{{ $secondPerson['imgClass'] }}" height="1590" width="1060" src="{{ $secondPerson['photo'] }}" />
+                            <div class="bugis-couple-frame">
+                                <img alt="{{ $secondPerson['full'] }}" class="{{ $secondPerson['imgClass'] }}" src="{{ $secondPerson['photo'] }}" />
+                            </div>
                         </div>
                         <div class="elementor-element elementor-element-74ac10ba custom-font-nama-pendek elementor-widget elementor-widget-heading" data-widget_type="heading.default">
                             <p class="elementor-heading-title elementor-size-default">{{ $secondPerson['nick'] }}</p>

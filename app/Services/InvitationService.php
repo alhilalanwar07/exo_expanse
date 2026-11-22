@@ -60,6 +60,12 @@ class InvitationService
             Storage::disk('public')->delete($invitation->cover_image);
         }
 
+        // Delete optional quote image from storage
+        $quoteImage = $invitation->custom_styles['quote_image'] ?? null;
+        if (! empty($quoteImage)) {
+            Storage::disk('public')->delete($quoteImage);
+        }
+
         return $invitation->forceDelete();
     }
 

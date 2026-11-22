@@ -162,10 +162,16 @@ class Builder extends Component
         'font_body' => 'Serif',
     ];
 
-    // Messages
+    // Messages & Quote
     public string $welcome_message = 'Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.';
 
-    public string $quran_verse = 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya. (QS. Ar-Rum: 21)';
+    public string $quote_title = 'WE FOUND LOVE';
+
+    public string $quran_verse = 'Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.';
+
+    public string $quran_ref = 'Q.S Ar-Rum : 21';
+
+    public ?string $quote_photo = null;
 
     // Love Story
     public array $love_story = [];
@@ -179,6 +185,8 @@ class Builder extends Component
     public array $existingPhotos = [];
 
     public $coverPhotoUpload = null;
+
+    public $quotePhotoUpload = null;
 
     public $groomPhotoUpload = null;
 
@@ -263,8 +271,19 @@ class Builder extends Component
         $this->akad_maps_link = $invitation->akad_maps_link ?? '';
         $this->resepsi_maps_link = $invitation->resepsi_maps_link ?? '';
         $this->maps_embed = $styles['maps_embed'] ?? '';
-        $this->welcome_message = $styles['welcome_message'] ?? '';
-        $this->quran_verse = $styles['quran_verse'] ?? '';
+        $this->welcome_message = (isset($styles['welcome_message']) && trim((string) $styles['welcome_message']) !== '')
+            ? $styles['welcome_message']
+            : $this->welcome_message;
+        $this->quote_title = (isset($styles['quote_title']) && trim((string) $styles['quote_title']) !== '')
+            ? $styles['quote_title']
+            : 'WE FOUND LOVE';
+        $this->quran_verse = (isset($styles['quran_verse']) && trim((string) $styles['quran_verse']) !== '')
+            ? $styles['quran_verse']
+            : $this->quran_verse;
+        $this->quran_ref = array_key_exists('quran_ref', $styles)
+            ? (string) ($styles['quran_ref'] ?? '')
+            : 'Q.S Ar-Rum : 21';
+        $this->quote_photo = $styles['quote_image'] ?? null;
 
         // Colors/Fonts
         $this->settings['primary_color'] = $invitation->custom_colors['primary'] ?? '#d97706';
@@ -354,7 +373,7 @@ class Builder extends Component
             'custom_colors' => [
                 'primary' => $this->settings['primary_color'] ?? '#d97706',
             ],
-            'custom_styles' => [
+            'custom_styles' => array_merge($this->invitation?->custom_styles ?? [], [
                 'name_order' => $this->name_order,
                 'event_type' => $this->event_type,
                 'event_date' => $this->event_date,
@@ -362,9 +381,12 @@ class Builder extends Component
                 'cover_subtitle' => $this->cover_subtitle,
                 'maps_embed' => $this->maps_embed,
                 'welcome_message' => $this->welcome_message,
+                'quote_title' => $this->quote_title,
                 'quran_verse' => $this->quran_verse,
+                'quran_ref' => $this->quran_ref,
+                'quote_image' => $this->quote_photo,
                 'countdown_enabled' => $this->countdown_enabled,
-            ],
+            ]),
             'custom_fonts' => [
                 'heading' => $this->settings['font_heading'] ?? null,
                 'body' => $this->settings['font_body'] ?? null,
@@ -552,6 +574,39 @@ class Builder extends Component
             Storage::disk('public')->delete($this->bride_photo);
             $this->bride_photo = null;
         }
+    }
+
+    public function updatedQuotePhotoUpload(): void
+    {
+        $this->validate([
+            'quotePhotoUpload' => 'image|max:5120', // 5MB
+        ]);
+
+        if ($this->quotePhotoUpload) {
+            if ($this->quote_photo) {
+                Storage::disk('public')->delete($this->quote_photo);
+            }
+
+            $imageService = app(ImageService::class);
+            $path = $imageService->storeAsWebp($this->quotePhotoUpload, 'invitations/quotes');
+            $this->quote_photo = $path;
+            $this->quotePhotoUpload = null;
+        }
+    }
+
+    public function removeQuotePhoto(): void
+    {
+        if ($this->quote_photo) {
+            Storage::disk('public')->delete($this->quote_photo);
+            $this->quote_photo = null;
+        }
+    }
+
+    public function resetQuoteDefaults(): void
+    {
+        $this->quote_title = 'WE FOUND LOVE';
+        $this->quran_verse = 'Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.';
+        $this->quran_ref = 'Q.S Ar-Rum : 21';
     }
 
     // ==================

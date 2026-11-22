@@ -954,10 +954,58 @@
                                 @endif
                             </div>
 
-                            <!-- Quote -->
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Ayat / Kutipan</label>
-                                <textarea wire:model.blur="quran_verse" rows="3" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 resize-none" placeholder="QS. Ar-Rum: 21"></textarea>
+                            <!-- Bagian Kutipan / Ayat -->
+                            <div class="p-5 bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div>
+                                        <h3 class="text-base font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                                            📖 Bagian Kutipan / Ayat
+                                        </h3>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ubah judul, kutipan, sumber ayat, dan foto opsional pada bagian kutipan.</p>
+                                    </div>
+                                    <button wire:click="resetQuoteDefaults" type="button" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shrink-0">
+                                        Reset Default
+                                    </button>
+                                </div>
+
+                                <!-- Foto Kutipan (Opsional) -->
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Foto Kutipan (Opsional)</label>
+                                    @if($this->quote_photo)
+                                        <div class="relative inline-block">
+                                            <img src="{{ img_url($this->quote_photo) }}" alt="Foto Kutipan" class="w-40 h-40 object-cover rounded-xl border border-slate-200 dark:border-slate-600 shadow-sm">
+                                            <button wire:click="removeQuotePhoto" type="button" title="Hapus Foto Kutipan" class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600">
+                                                ✕
+                                            </button>
+                                        </div>
+                                    @else
+                                        <label class="block w-full border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:border-rose-400 transition-all bg-white/70 dark:bg-slate-800/50">
+                                            <input type="file" wire:model="quotePhotoUpload" accept="image/*" class="hidden">
+                                            <div class="text-3xl mb-1.5">📷</div>
+                                            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Klik untuk upload foto kutipan (opsional)</p>
+                                            <p class="text-xs text-slate-400 mt-1">Opsional — kosongkan jika tidak ingin menampilkan foto pada bagian kutipan. Max 5MB (JPG, PNG)</p>
+                                        </label>
+                                    @endif
+                                    <div wire:loading wire:target="quotePhotoUpload" class="mt-2 text-sm text-rose-500">Mengupload foto kutipan...</div>
+                                    @error('quotePhotoUpload') <span class="block text-rose-500 text-sm mt-1">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Judul Kutipan</label>
+                                        <input wire:model.blur="quote_title" type="text" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all" placeholder="WE FOUND LOVE">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Sumber / Referensi Ayat (Opsional)</label>
+                                        <input wire:model.blur="quran_ref" type="text" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all" placeholder="Q.S Ar-Rum : 21">
+                                        <p class="text-xs text-slate-400 mt-1">Kosongkan jika tidak ingin menampilkan baris sumber di bawah kutipan.</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Isi Ayat / Kutipan</label>
+                                    <textarea wire:model.blur="quran_verse" rows="3" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 resize-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all" placeholder="Dan di antara tanda-tanda (kebesaran)-Nya..."></textarea>
+                                </div>
                             </div>
                         </div>
                     @endif
