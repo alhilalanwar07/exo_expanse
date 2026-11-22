@@ -1366,7 +1366,7 @@
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform translate-x-10"
          x-transition:enter-end="opacity-100 transform translate-x-0"
-         style="position: fixed; right: 14px; bottom: 85px; z-index: 9999;">
+         style="position: fixed; right: 14px; bottom: 25px; z-index: 9999;">
         <button type="button" @click="menuCollapsed = false" title="Buka Menu Navigasi" style="display: flex; align-items: center; gap: 6px; padding: 10px 16px; background: rgba(18, 18, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid #d4af37; border-radius: 30px; color: #d4af37; font-weight: 600; font-size: 13px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer;">
             <i class="fas fa-compass"></i>
             <span>Menu</span>
@@ -1374,7 +1374,7 @@
     </div>
 
     <!-- Floating Auto Scroll Widget (Side Collapsible) -->
-    <div x-show="isOpened" style="position: fixed; right: 14px; bottom: 145px; z-index: 9999;">
+    <div x-show="isOpened" style="position: fixed; right: 14px; bottom: 75px; z-index: 9999;">
         <div x-show="!autoScrollCollapsed"
              style="display: flex; flex-direction: column; align-items: center; gap: 6px; background: rgba(18, 18, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 25px; padding: 8px 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.5);">
             
@@ -1404,7 +1404,7 @@
     </div>
 
     <!-- Floating Music Disc Button -->
-    <div x-show="isOpened" style="position: fixed; right: 14px; bottom: 215px; z-index: 9999;">
+    <div x-show="isOpened" style="position: fixed; right: 14px; bottom: 125px; z-index: 9999;">
         <button type="button" @click="toggleMusic()" :title="isPlaying ? 'Jeda Musik' : 'Putar Musik'"
                 style="width: 44px; height: 44px; border-radius: 50%; background: #121214; border: 2px solid #d4af37; color: #d4af37; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,0.6); cursor: pointer; position: relative;">
             <div :class="{ 'audioRotate': isPlaying }" style="width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -1452,11 +1452,12 @@ function bugisTheme(targetTimestamp) {
     return {
         isOpened: false,
         isPlaying: false,
-        menuCollapsed: false,
+        menuCollapsed: true,
         autoScrolling: false,
-        autoScrollCollapsed: false,
+        autoScrollCollapsed: true,
         scrollSpeed: 1,
         autoScrollInterval: null,
+        hasAutoScrolledOnce: false,
         lightboxOpen: false,
         lightboxImg: '',
         toastShow: false,
@@ -1504,6 +1505,16 @@ function bugisTheme(targetTimestamp) {
                 }
             }, 1200);
 
+            // Safety fallback: if video ended event is delayed, start auto-scroll after 20.5s
+            setTimeout(() => {
+                if (this.isOpened && !this.autoScrolling && !this.hasAutoScrolledOnce) {
+                    this.hasAutoScrolledOnce = true;
+                    this.autoScrolling = true;
+                    this.startScroll();
+                    this.showToast('Auto scroll aktif');
+                }
+            }, 20500);
+
             // Scroll into hero
             this.scrollTo('.motionSection');
         },
@@ -1534,14 +1545,34 @@ function bugisTheme(targetTimestamp) {
         },
 
         initVideoReplay() {
-            // Video replay logic:
-            // "animasi di awal jangan putar berulang ulang tapi nanti setelah pergi lalu kembali baru di play lagi"
+            // Video replay & auto-scroll upon animation completion:
+            // "auto otomatis jika animasi telah selesai di play dan menu secara default collapse disamping"
             const heroVideo = document.getElementById('heroVideo');
             const heroSection = document.querySelector('.motionSection');
             if (!heroVideo || !heroSection) return;
 
             // Ensure video does NOT loop endlessly in-place
             heroVideo.loop = false;
+
+            // Trigger auto-scroll automatically when hero video animation finishes
+            heroVideo.addEventListener('ended', () => {
+                console.log('Hero animation ended -> starting auto-scroll automatically');
+                this.autoScrolling = true;
+                this.startScroll();
+                this.showToast('Auto scroll aktif');
+            });
+
+            // Also support timeupdate check if browser doesn't dispatch ended event cleanly
+            heroVideo.addEventListener('timeupdate', () => {
+                if (heroVideo.duration && heroVideo.currentTime >= (heroVideo.duration - 0.4)) {
+                    if (!this.autoScrolling && this.isOpened && !this.hasAutoScrolledOnce) {
+                        this.hasAutoScrolledOnce = true;
+                        this.autoScrolling = true;
+                        this.startScroll();
+                        this.showToast('Auto scroll aktif');
+                    }
+                }
+            });
 
             let hasLeftHero = false;
 
@@ -1587,7 +1618,7 @@ function bugisTheme(targetTimestamp) {
                 if (!this.autoScrolling) return;
                 const distance = 1.2 * this.scrollSpeed;
                 window.scrollBy({ top: distance, behavior: 'instant' });
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
+                if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 10) {
                     this.autoScrolling = false;
                     return;
                 }
