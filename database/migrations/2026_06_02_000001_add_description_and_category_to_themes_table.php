@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('themes', function (Blueprint $table) {
-            $table->text('description')->nullable()->after('slug');
-            $table->string('category')->nullable()->after('description')->comment('e.g. Islamic, Adat, Modern, Nature, Minimalist');
-            $table->text('custom_css')->nullable()->after('button_style');
+            if (! Schema::hasColumn('themes', 'description')) {
+                $table->text('description')->nullable()->after('slug');
+            }
+            if (! Schema::hasColumn('themes', 'category')) {
+                $table->string('category')->nullable()->after('description')->comment('e.g. Islamic, Adat, Modern, Nature, Minimalist');
+            }
+            if (! Schema::hasColumn('themes', 'custom_css')) {
+                $table->text('custom_css')->nullable()->after('button_style');
+            }
         });
     }
 
@@ -23,8 +29,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('themes', function (Blueprint $table) {
-            $table->dropColumn(['description', 'category', 'custom_css']);
-        });
+        $cols = array_values(array_filter(
+            ['description', 'category', 'custom_css'],
+            fn (string $col) => Schema::hasColumn('themes', $col)
+        ));
+
+        if ($cols !== []) {
+            Schema::table('themes', function (Blueprint $table) use ($cols) {
+                $table->dropColumn($cols);
+            });
+        }
     }
 };

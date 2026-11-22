@@ -3,25 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\Theme;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class ThemeDeploymentController extends Controller
 {
     /**
-     * Add or update the 3D Adat Bugis 02 theme in database and clear caches on hosting.
+     * Ensure required columns exist on the `themes` table even if an earlier unrelated migration blocks global migrate.
      */
-    public function addAdatBugisTheme(Request $request)
+    private function syncThemesSchema(): string
     {
-        // 1. Jalankan migrasi jika ada yang belum berjalan di hosting
         $migrationStatus = 'Sudah up-to-date';
         try {
             Artisan::call('migrate', ['--force' => true]);
             $migrationStatus = trim(Artisan::output()) ?: 'Migrasi sukses / up-to-date';
         } catch (\Throwable $e) {
-            $migrationStatus = 'Error migrasi: ' . $e->getMessage();
+            $migrationStatus = 'Global migrate dilewati: ' . $e->getMessage();
         }
+
+        $requiredCols = ['description', 'category', 'custom_css', 'sections_config'];
+        $missing = fn () => array_filter($requiredCols, fn (string $col) => ! Schema::hasColumn('themes', $col));
+
+        if ($missing() !== []) {
+            foreach ([
+                'database/migrations/2026_06_02_000001_add_description_and_category_to_themes_table.php',
+                'database/migrations/2026_06_02_000002_add_sections_config_to_themes_table.php',
+            ] as $migPath) {
+                try {
+                    Artisan::call('migrate', ['--path' => $migPath, '--force' => true]);
+                } catch (\Throwable $e) {
+                    $migrationStatus .= ' | ' . basename($migPath) . ': ' . $e->getMessage();
+                }
+            }
+        }
+
+        if ($missing() !== []) {
+            try {
+                Schema::table('themes', function (Blueprint $table) {
+                    if (! Schema::hasColumn('themes', 'description')) {
+                        $table->text('description')->nullable()->after('slug');
+                    }
+                    if (! Schema::hasColumn('themes', 'category')) {
+                        $table->string('category')->nullable()->after('description')->comment('e.g. Islamic, Adat, Modern, Nature, Minimalist');
+                    }
+                    if (! Schema::hasColumn('themes', 'custom_css')) {
+                        $table->text('custom_css')->nullable()->after('button_style');
+                    }
+                    if (! Schema::hasColumn('themes', 'sections_config')) {
+                        $table->json('sections_config')->nullable()->after('custom_css');
+                    }
+                });
+                $migrationStatus .= ' | Kolom tabel themes disinkronkan via Schema';
+            } catch (\Throwable $e) {
+                $migrationStatus .= ' | Schema fallback error: ' . $e->getMessage();
+            }
+        }
+
+        return $migrationStatus;
+    }
+
+    /**
+     * Add or update the 3D Adat Bugis 02 theme in database and clear caches on hosting.
+     */
+    public function addAdatBugisTheme(Request $request)
+    {
+        // 1. Pastikan migrasi dan skema tabel `themes` lengkap di hosting
+        $migrationStatus = $this->syncThemesSchema();
 
         // 2. Data konfigurasi tema 3D Adat Bugis 02
         $themeData = [
@@ -85,10 +135,15 @@ class ThemeDeploymentController extends Controller
             ],
         ];
 
-        // 3. Simpan atau perbarui data di database
+        // 3. Simpan atau perbarui data di database (filter sesuai kolom aktual agar aman dari Unknown column)
+        $existingColumns = Schema::getColumnListing('themes');
+        $filteredThemeData = $existingColumns !== []
+            ? array_intersect_key($themeData, array_flip($existingColumns))
+            : $themeData;
+
         $theme = Theme::updateOrCreate(
             ['slug' => '3d-adat-bugis-02'],
-            $themeData
+            $filteredThemeData
         );
 
         // 4. Pastikan folder aset public tersedia
@@ -250,31 +305,35 @@ class ThemeDeploymentController extends Controller
                 <div class='details'>
                     <div class='details-row'>
                         <span class='details-label'>ID Tema:</span>
-                        <span class='details-val'>{$theme->id}</span>
+                        <span class='details-val'>" . e((string) $theme->id) . "</span>
                     </div>
                     <div class='details-row'>
                         <span class='details-label'>Nama Tema:</span>
-                        <span class='details-val'>{$theme->name}</span>
+                        <span class='details-val'>" . e((string) $theme->name) . "</span>
                     </div>
                     <div class='details-row'>
                         <span class='details-label'>Slug:</span>
-                        <span class='details-val'>{$theme->slug}</span>
+                        <span class='details-val'>" . e((string) $theme->slug) . "</span>
                     </div>
                     <div class='details-row'>
                         <span class='details-label'>View File:</span>
-                        <span class='details-val'>{$theme->view_file}</span>
+                        <span class='details-val'>" . e((string) $theme->view_file) . "</span>
                     </div>
                     <div class='details-row'>
                         <span class='details-label'>Kategori:</span>
-                        <span class='details-val'>{$theme->category}</span>
+                        <span class='details-val'>" . e((string) ($theme->category ?? 'Adat')) . "</span>
                     </div>
                     <div class='details-row'>
                         <span class='details-label'>Jumlah Berkas Aset:</span>
-                        <span class='details-val'>{$assetCount} files</span>
+                        <span class='details-val'>" . e((string) $assetCount) . " files</span>
+                    </div>
+                    <div class='details-row'>
+                        <span class='details-label'>Status Migrasi:</span>
+                        <span class='details-val' style='max-width:65%; text-align:right; word-break:break-word;'>" . e($migrationStatus) . "</span>
                     </div>
                     <div class='details-row'>
                         <span class='details-label'>Cache Status:</span>
-                        <span class='details-val' style='color:#4ade80;'>{$cacheStatus}</span>
+                        <span class='details-val' style='color:#4ade80;'>" . e($cacheStatus) . "</span>
                     </div>
                 </div>
 

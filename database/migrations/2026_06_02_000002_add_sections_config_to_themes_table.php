@@ -9,14 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('themes', function (Blueprint $table) {
-            $table->json('sections_config')->nullable()->after('custom_css');
+            if (! Schema::hasColumn('themes', 'sections_config')) {
+                $table->json('sections_config')->nullable()->after('custom_css');
+            }
         });
     }
 
     public function down(): void
     {
-        Schema::table('themes', function (Blueprint $table) {
-            $table->dropColumn('sections_config');
-        });
+        if (Schema::hasColumn('themes', 'sections_config')) {
+            Schema::table('themes', function (Blueprint $table) {
+                $table->dropColumn('sections_config');
+            });
+        }
     }
 };
