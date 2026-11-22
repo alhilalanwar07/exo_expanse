@@ -14,6 +14,8 @@ class Wish extends Model
         'invitation_id',
         'name',
         'message',
+        'attendance_status',
+        'pax',
     ];
 
     public function invitation(): BelongsTo

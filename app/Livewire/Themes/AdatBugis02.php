@@ -47,7 +47,7 @@ class AdatBugis02 extends Component
         $this->invitation->wishes()->create([
             'name' => $this->rsvpName,
             'attendance_status' => $this->rsvpStatus,
-            'pax' => $this->rsvpGuests,
+            'pax' => $this->rsvpStatus === 'confirmed' ? $this->rsvpGuests : 1,
             'message' => $this->rsvpMessage,
         ]);
 
@@ -57,10 +57,12 @@ class AdatBugis02 extends Component
 
     public function render()
     {
-        $wishes = $this->invitation->wishes()->latest()->take(20)->get();
+        $wishes = $this->invitation->wishes()->latest()->take(50)->get();
+        $totalWishesCount = $this->invitation->wishes()->count();
 
         return view('livewire.themes.3d-adat-bugis-02', [
             'wishes' => $wishes,
+            'totalWishesCount' => $totalWishesCount,
         ]);
     }
 }
