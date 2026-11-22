@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\MobileAccessController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SiswakkriController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\ThemeDeploymentController;
 use App\Http\Middleware\IsAdmin;
 use App\Livewire\Admin\AnalyticsDashboard as AdminAnalyticsDashboard;
 use App\Livewire\Admin\ArticleForm as AdminArticleForm;
@@ -144,3 +145,7 @@ Route::middleware('auth')->group(function () {
 // allow.iframe removes X-Frame-Options so the demo can be embedded in the mobile app's in-app browser.
 Route::get('/i/demo', DemoPage::class)->name('invitation.demo')->middleware('allow.iframe');
 Route::get('/i/{slug}', ThemePage::class)->name('invitation.show');
+
+// Deployment Tools (Sinkronisasi Tema 3D Adat Bugis 02 ke Database Hosting)
+Route::get('/deploy/add-theme-3d-adat-bugis-02', [ThemeDeploymentController::class, 'addAdatBugisTheme'])->name('deploy.theme-bugis');
+Route::get('/tools/add-theme-bugis', [ThemeDeploymentController::class, 'addAdatBugisTheme']);

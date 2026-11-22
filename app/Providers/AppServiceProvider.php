@@ -6,6 +6,7 @@ use App\Livewire\Themes\FloralRomance;
 use App\Livewire\Themes\Generic;
 use App\Livewire\Themes\ModernElegance;
 use App\Livewire\Themes\RoyalGold;
+use App\Livewire\Themes\AdatBugis02;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -71,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('themes.floral-romance', FloralRomance::class);
         Livewire::component('themes.modern-elegance', ModernElegance::class);
         Livewire::component('themes.generic', Generic::class);
+        Livewire::component('themes.3d-adat-bugis-02', AdatBugis02::class);
+        Livewire::component('themes.adat-bugis-02', AdatBugis02::class);
         Paginator::useTailwind();
     }
 }

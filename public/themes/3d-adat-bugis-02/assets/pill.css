@@ -1,0 +1,827 @@
+/* All selectors are namespaced; native engines and media elements are kept intact. */
+.zipill-source { display:block; height:0; min-height:0; margin:0; padding:0; }
+.zipill-panel, .zipill-panel *, .zipill-message, .zipill-editor-note { box-sizing:border-box; }
+.zipill-panel[hidden], .zipill-panel [hidden], .zipill-message[hidden], .zipill-editor-note[hidden] { display:none !important; }
+/* Native Photo Frame/Apeiron sheets intentionally use !important: win locally
+   without changing their inline styles, nodes, or global behavior. */
+.zipill-native-hidden,
+html body .tlwc-public button.tlwc-launcher.zipill-native-hidden.zipill-native-hidden,
+html body .apeiron-autoscroll-wrap.zipill-native-hidden.zipill-native-hidden,
+html body #wds_audio_play.zipill-native-hidden,
+html body #wds_audio_pause.zipill-native-hidden { display:none !important; }
+.zipill-panel {
+    position:fixed !important; top:var(--zipill-top,50%) !important;
+    right:var(--zipill-gap,0px) !important; bottom:auto !important; left:auto !important;
+    transform:translateY(-50%) translateZ(0) !important; z-index:var(--zipill-z,9000) !important;
+    display:flex; flex-direction:column; align-items:stretch; gap:0;
+    width:var(--zipill-width,46px); min-width:44px; max-width:100vw;
+    margin:0 !important; padding:var(--zipill-padding,6px) 4px;
+    border:1px solid rgb(255 255 255 / .15); border-right:0;
+    border-radius:var(--zipill-radius,25px) 0 0 var(--zipill-radius,25px);
+    background:var(--zipill-bg,#2E0606) !important; color:var(--zipill-fg,#FFFFFF) !important;
+    opacity:var(--zipill-opacity,.96); box-shadow:-4px 3px 20px rgb(0 0 0 / .14);
+    font-family:Arial,Helvetica,sans-serif; line-height:1; isolation:isolate;
+    -webkit-tap-highlight-color:transparent; will-change:transform,opacity;
+}
+.zipill-panel[data-side="left"] { right:auto !important; left:var(--zipill-gap,0px) !important; border-right:1px solid rgb(255 255 255 / .15); border-left:0; border-radius:0 var(--zipill-radius,25px) var(--zipill-radius,25px) 0; box-shadow:4px 3px 20px rgb(0 0 0 / .14); }
+.zipill-panel .zipill-button {
+    appearance:none; -webkit-appearance:none; position:relative; display:flex;
+    align-items:center; justify-content:center; flex:0 0 auto;
+    width:auto; height:var(--zipill-button-height,46px); min-height:44px;
+    margin:2px 0; padding:0; border:0; border-radius:14px; background:transparent !important;
+    color:var(--zipill-fg,#FFFFFF) !important; box-shadow:none; cursor:pointer; text-decoration:none;
+    font:inherit; outline-offset:-4px; touch-action:manipulation;
+    transition:background-color .22s ease, color .22s ease, box-shadow .22s ease, transform .18s ease, opacity .18s ease;
+    transform:translateZ(0);
+}
+.zipill-panel .zipill-button:first-of-type,
+.zipill-panel .zipill-button:last-of-type,
+.zipill-panel[data-side="left"] .zipill-button { border-radius:14px; }
+.zipill-panel .zipill-button:hover, .zipill-panel .zipill-button[aria-pressed="true"], .zipill-panel .zipill-button:focus-visible {
+    background:var(--zipill-active-bg,rgb(255 255 255 / .14)) !important; color:var(--zipill-active-fg,#FFFFFF) !important;
+    box-shadow:inset 0 0 0 1px rgb(255 255 255 / .08);
+}
+.zipill-panel .zipill-button:hover { transform:translateX(-1px); }
+.zipill-panel[data-side="left"] .zipill-button:hover { transform:translateX(1px); }
+.zipill-panel .zipill-button:focus-visible { outline:2px solid currentColor; }
+.zipill-panel .zipill-button + .zipill-button::before { content:""; position:absolute; top:-2px; left:30%; right:30%; height:1px; background:currentColor; opacity:.11; pointer-events:none; }
+.zipill-panel .zipill-icon { display:block; width:var(--zipill-icon-size,20px); height:var(--zipill-icon-size,20px); min-width:0; color:inherit; fill:none; pointer-events:none; }
+.zipill-panel [data-icon-idle], .zipill-panel [data-icon-active] { display:block; pointer-events:none; }
+.zipill-panel .zipill-progress { width:36px; height:36px; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); fill:none; stroke:currentColor; stroke-width:1.15; pointer-events:none; }
+.zipill-progress-track { opacity:.15; }
+.zipill-progress-value { stroke-dasharray:100; stroke-dashoffset:calc(100 - var(--zipill-progress,0)); opacity:.75; }
+.zipill-status-dot { position:absolute; right:8px; bottom:8px; width:4px; height:4px; border-radius:50%; background:currentColor; opacity:0; pointer-events:none; }
+.zipill-button[aria-pressed="true"] .zipill-status-dot { opacity:.8; }
+.zipill-message { position:fixed; bottom:max(24px,env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); z-index:2147480000; max-width:min(360px,calc(100vw - 32px)); width:max-content; padding:12px 16px; border-radius:12px; background:#242020; color:#fff; box-shadow:0 4px 20px rgb(0 0 0 / .16); font:13px/1.5 Arial,Helvetica,sans-serif; text-align:center; }
+/* Editor uses an in-flow preview: never move/edit the invitation's real controls. */
+.zipill-source.zipill-is-editor { height:auto; min-height:188px; display:flex; align-items:center; gap:24px; padding:16px; background:#f9f7f6; border:1px dashed #c7b0aa; border-radius:8px; }
+.zipill-editor-note { flex:1; color:#4c403c; font:12px/1.65 Arial,Helvetica,sans-serif; }
+.zipill-editor-note strong { display:block; margin-bottom:6px; font-size:14px; }
+.zipill-editor-note span { display:block; }
+.zipill-source.zipill-is-editor .zipill-panel { position:relative !important; top:auto !important; right:auto !important; left:auto !important; transform:none !important; flex-shrink:0; }
+@media (prefers-reduced-motion:reduce) { .zipill-panel .zipill-button { transition:none; } }
+@media print { .zipill-panel, .zipill-message { display:none !important; } }
+
+/* Keep the camera's own close button reachable above its permission/error overlay.
+   This class exists only while the pill is connected to that camera instance. */
+html body .tlwc-public.zipill-camera-linked .tlwc-camera-topbar { z-index:40 !important; }
+
+/* 1.0.1: Inline outline icons must not inherit unrelated theme SVG paint rules.
+   Every selector is scoped to this pill; no native widget icons are restyled. */
+html body .zipill-panel .zipill-icon:not([hidden]) {
+    display:block !important;
+    width:var(--zipill-icon-size,20px) !important;
+    height:var(--zipill-icon-size,20px) !important;
+    opacity:1 !important; visibility:visible !important;
+}
+html body .zipill-panel [data-icon-idle],
+html body .zipill-panel [data-icon-active],
+html body .zipill-panel .zipill-icon {
+    color:inherit !important;
+}
+html body .zipill-panel .zipill-icon,
+html body .zipill-panel .zipill-icon path,
+html body .zipill-panel .zipill-icon circle,
+html body .zipill-panel .zipill-icon ellipse {
+    color:inherit !important; fill:none !important; stroke:currentColor !important;
+    stroke-width:1.65 !important; stroke-linecap:round; stroke-linejoin:round;
+}
+html body .zipill-panel .zipill-progress,
+html body .zipill-panel .zipill-progress circle {
+    fill:none !important; stroke:currentColor !important;
+    stroke-width:1.15 !important;
+}
+
+/* 1.0.2: One real, described tooltip. It never changes the pill's dimensions. */
+html body .zipill-panel { overflow:visible !important; }
+html body .zipill-panel .zipill-button::after { content:none !important; }
+html body .zipill-panel .zipill-tooltip {
+    position:absolute; right:calc(100% + 10px); left:auto; top:50%; z-index:2;
+    display:block; width:max-content; max-width:min(240px,var(--zipill-label-room,calc(100vw - 80px)));
+    margin:0; padding:9px 12px; border:0; border-radius:10px;
+    background:var(--zipill-bg,#2E0606) !important; color:var(--zipill-fg,#FFFFFF) !important;
+    box-shadow:0 4px 18px rgb(0 0 0 / .13); font:500 12px/1.4 Arial,Helvetica,sans-serif;
+    white-space:normal; text-align:left; letter-spacing:normal; text-transform:none;
+    overflow-wrap:anywhere; opacity:0; visibility:hidden; pointer-events:none;
+    transform:translate(6px,-50%); transition:opacity .18s ease,transform .18s ease,visibility .18s;
+    will-change:opacity,transform;
+}
+html body .zipill-panel[data-side="left"] .zipill-tooltip { right:auto; left:calc(100% + 10px); transform:translate(-4px,-50%); }
+html body .zipill-panel .zipill-tooltip[data-visible="true"] {
+    opacity:1; visibility:visible; transform:translate(0,-50%); pointer-events:auto;
+}
+html body .zipill-panel .zipill-tooltip[data-mode="intro"] { pointer-events:none; }
+html body .zipill-panel .zipill-tooltip::before {
+    content:""; position:absolute; right:-3px; top:var(--zipill-label-arrow,50%);
+    width:7px; height:7px; background:var(--zipill-bg,#2E0606);
+    transform:translateY(-50%) rotate(45deg); pointer-events:none;
+}
+/* Invisible bridge lets a mouse move into the label without closing it. */
+html body .zipill-panel .zipill-tooltip::after {
+    content:""; position:absolute; right:-11px; top:0; width:11px; height:100%;
+}
+html body .zipill-panel[data-side="left"] .zipill-tooltip::before { right:auto; left:-3px; }
+html body .zipill-panel[data-side="left"] .zipill-tooltip::after { right:auto; left:-11px; }
+html body .zipill-panel .zipill-tooltip-title,
+html body .zipill-panel .zipill-tooltip-detail { display:block; color:inherit !important; font:inherit; }
+html body .zipill-panel .zipill-tooltip[data-mode="intro"] .zipill-tooltip-title { font-weight:600; }
+html body .zipill-panel .zipill-tooltip-detail { margin-top:2px; font-size:11px; }
+@media (prefers-reduced-motion:reduce) {
+    html body .zipill-panel .zipill-tooltip { transition:none; }
+}
+
+
+/* 1.0.4: Keep Photobooth understandable on first glance with a small always-on badge.
+   This is visual guidance only; the existing camera runtime remains untouched. */
+html body .zipill-panel .zipill-button[data-action="camera"][data-tooltip]::before {
+    content:attr(data-tooltip); position:absolute; right:calc(100% + 8px); left:auto; top:50%;
+    transform:translateY(-50%); display:block; max-width:min(160px,calc(100vw - 96px));
+    margin:0; padding:8px 12px; border:1px solid rgb(255 255 255 / .14); border-radius:999px;
+    background:var(--zipill-bg,#2E0606) !important; color:var(--zipill-fg,#FFFFFF) !important;
+    box-shadow:0 4px 16px rgb(0 0 0 / .14); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    font:600 11px/1 Arial,Helvetica,sans-serif; letter-spacing:.01em; opacity:.96; pointer-events:none;
+}
+html body .zipill-panel[data-side="left"] .zipill-button[data-action="camera"][data-tooltip]::before {
+    right:auto; left:calc(100% + 8px);
+}
+html body .zipill-panel .zipill-button[data-action="camera"]:hover::before,
+html body .zipill-panel .zipill-button[data-action="camera"]:focus-visible::before,
+html body .zipill-panel .zipill-button[data-action="camera"][aria-pressed="true"]::before {
+    background:color-mix(in srgb, var(--zipill-bg,#2E0606) 88%, white 12%) !important;
+}
+html body .zipill-source[data-zipill-config*="\"cameraBadge\":false"] .zipill-panel .zipill-button[data-action="camera"]::before {
+    content:none !important;
+}
+@media (max-width: 480px) {
+    html body .zipill-panel .zipill-button[data-action="camera"][data-tooltip]::before {
+        padding:7px 10px; font-size:10px; max-width:min(132px,calc(100vw - 90px));
+    }
+}
+
+
+/* 1.0.5 premium preset: calm luxury glass treatment for decorative invitation themes. */
+html body .zipill-panel.zipill-luxury {
+    /* Colors are inherited from Elementor/shortcode, never preset on the panel. */
+    width:44px;
+    border-color:rgba(255,248,239,.18);
+    background:linear-gradient(180deg,rgba(62,12,12,.88),rgba(35,5,5,.82)) !important;
+    box-shadow:-6px 7px 24px rgba(25,0,0,.18), inset 0 1px 0 rgba(255,255,255,.07);
+    -webkit-backdrop-filter:blur(10px) saturate(115%);
+    backdrop-filter:blur(10px) saturate(115%);
+    transition:opacity .28s ease,transform .28s cubic-bezier(.2,.7,.2,1),box-shadow .28s ease;
+}
+html body .zipill-panel.zipill-luxury .zipill-button {
+    border-radius:999px;
+    margin:3px 0;
+}
+html body .zipill-panel.zipill-luxury .zipill-button:hover,
+html body .zipill-panel.zipill-luxury .zipill-button:focus-visible,
+html body .zipill-panel.zipill-luxury .zipill-button[aria-pressed="true"] {
+    background:rgba(216,197,149,.16) !important;
+    color:#E7D39F !important;
+    box-shadow:inset 0 0 0 1px rgba(231,211,159,.18),0 3px 10px rgba(0,0,0,.08);
+}
+html body .zipill-panel.zipill-luxury .zipill-button[aria-pressed="false"]:not(:hover):not(:focus-visible) {
+    color:#FFF8EF !important;
+}
+html body .zipill-panel.zipill-luxury .zipill-progress-track { opacity:.12; }
+html body .zipill-panel.zipill-luxury .zipill-progress-value { color:#E7D39F !important; opacity:.92; }
+html body .zipill-panel.zipill-luxury .zipill-status-dot {
+    width:5px; height:5px; right:7px; bottom:7px; color:#E7D39F !important;
+    box-shadow:0 0 0 0 rgba(231,211,159,.36);
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="music"][aria-pressed="true"] .zipill-status-dot {
+    animation:zipill-luxury-pulse 2.2s ease-out infinite;
+}
+@keyframes zipill-luxury-pulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(231,211,159,.34); opacity:.9; }
+    55% { box-shadow:0 0 0 5px rgba(231,211,159,0); opacity:1; }
+}
+html body .zipill-panel.zipill-luxury .zipill-tooltip,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][data-tooltip]::before {
+    background:linear-gradient(135deg,rgba(62,12,12,.92),rgba(35,5,5,.88)) !important;
+    color:#FFF8EF !important;
+    border:1px solid rgba(231,211,159,.18);
+    box-shadow:0 7px 24px rgba(35,5,5,.16), inset 0 1px 0 rgba(255,255,255,.06);
+    -webkit-backdrop-filter:blur(10px) saturate(115%);
+    backdrop-filter:blur(10px) saturate(115%);
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][data-tooltip]::before {
+    color:#F5E8C8 !important; letter-spacing:.025em; text-transform:none;
+}
+html body .zipill-panel.zipill-luxury .zipill-tooltip::before { background:rgba(46,6,6,.94); }
+
+/* On touch devices the control politely tucks toward the screen edge when idle. */
+@media (hover:none), (pointer:coarse) {
+    html body .zipill-panel.zipill-live.zipill-luxury.zipill-idle[data-side="right"] {
+        transform:translateY(-50%) translateX(9px) translateZ(0) !important;
+        opacity:.74;
+        box-shadow:-3px 4px 16px rgba(25,0,0,.12);
+    }
+    html body .zipill-panel.zipill-live.zipill-luxury.zipill-idle[data-side="left"] {
+        transform:translateY(-50%) translateX(-9px) translateZ(0) !important;
+        opacity:.74;
+        box-shadow:3px 4px 16px rgba(25,0,0,.12);
+    }
+    html body .zipill-panel.zipill-luxury.zipill-idle .zipill-button[data-action="camera"]::before {
+        opacity:.82;
+    }
+}
+@media (prefers-reduced-motion:reduce) {
+    html body .zipill-panel.zipill-luxury { transition:none; }
+    html body .zipill-panel.zipill-luxury .zipill-button[data-action="music"][aria-pressed="true"] .zipill-status-dot { animation:none; }
+}
+
+
+/* 1.0.7: Camera button should blend with the luxury pill, not appear black. */
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] {
+    background:rgba(255,248,239,.08) !important;
+    color:#F5E8C8 !important;
+    box-shadow:inset 0 0 0 1px rgba(245,232,200,.14);
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon path,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon circle,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon ellipse {
+    color:#F5E8C8 !important;
+    stroke:#F5E8C8 !important;
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][aria-pressed="true"] {
+    background:rgba(216,197,149,.20) !important;
+    color:#E7D39F !important;
+    box-shadow:inset 0 0 0 1px rgba(231,211,159,.22), 0 3px 10px rgba(0,0,0,.08);
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover .zipill-icon,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible .zipill-icon,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][aria-pressed="true"] .zipill-icon,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover .zipill-icon path,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible .zipill-icon path,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][aria-pressed="true"] .zipill-icon path,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover .zipill-icon circle,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible .zipill-icon circle,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][aria-pressed="true"] .zipill-icon circle {
+    color:#E7D39F !important;
+    stroke:#E7D39F !important;
+}
+
+
+/* 1.0.8: Compact vertical Photobooth tab. Keeps invitation content unobstructed.
+   The tab lives inside the camera <button>, so tapping text or arrow opens the same photobooth. */
+html body .zipill-panel .zipill-button[data-action="camera"][data-tooltip]::before,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][data-tooltip]::before {
+    content:none !important;
+    display:none !important;
+}
+html body .zipill-panel .zipill-camera-tab {
+    position:absolute;
+    right:calc(100% + 5px);
+    left:auto;
+    top:50%;
+    width:27px;
+    height:92px;
+    transform:translateY(-50%) translateZ(0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(231,211,159,.18);
+    border-radius:15px 6px 6px 15px;
+    background:linear-gradient(180deg,rgba(62,12,12,.94),rgba(35,5,5,.90));
+    color:#F5E8C8 !important;
+    box-shadow:-4px 5px 16px rgba(35,5,5,.14), inset 0 1px 0 rgba(255,255,255,.05);
+    -webkit-backdrop-filter:blur(9px) saturate(112%);
+    backdrop-filter:blur(9px) saturate(112%);
+    pointer-events:none;
+    overflow:visible;
+    transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab {
+    right:auto;
+    left:calc(100% + 5px);
+    border-radius:6px 15px 15px 6px;
+    box-shadow:4px 5px 16px rgba(35,5,5,.14), inset 0 1px 0 rgba(255,255,255,.05);
+}
+html body .zipill-panel .zipill-camera-tab-text {
+    display:block;
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    transform:rotate(180deg);
+    white-space:nowrap;
+    color:inherit !important;
+    font:600 10px/1 Arial,Helvetica,sans-serif;
+    letter-spacing:.055em;
+    text-transform:none;
+    user-select:none;
+}
+html body .zipill-panel .zipill-camera-tab-arrow {
+    position:absolute;
+    right:-6px;
+    top:50%;
+    width:0;
+    height:0;
+    transform:translateY(-50%);
+    border-top:5px solid transparent;
+    border-bottom:5px solid transparent;
+    border-left:6px solid #D8C595;
+    filter:drop-shadow(1px 0 1px rgba(35,5,5,.18));
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-arrow {
+    right:auto;
+    left:-6px;
+    border-left:0;
+    border-right:6px solid #D8C595;
+}
+html body .zipill-panel .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab {
+    background:linear-gradient(180deg,rgba(78,21,21,.97),rgba(43,8,8,.93));
+    border-color:rgba(231,211,159,.28);
+    box-shadow:-5px 6px 18px rgba(35,5,5,.18), inset 0 1px 0 rgba(255,255,255,.07);
+}
+html body .zipill-panel[data-side="left"] .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel[data-side="left"] .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab {
+    box-shadow:5px 6px 18px rgba(35,5,5,.18), inset 0 1px 0 rgba(255,255,255,.07);
+}
+@media (max-width:480px) {
+    html body .zipill-panel .zipill-camera-tab {
+        width:25px;
+        height:88px;
+        right:calc(100% + 4px);
+        border-radius:14px 5px 5px 14px;
+    }
+    html body .zipill-panel[data-side="left"] .zipill-camera-tab {
+        right:auto;
+        left:calc(100% + 4px);
+        border-radius:5px 14px 14px 5px;
+    }
+    html body .zipill-panel .zipill-camera-tab-text { font-size:9.5px; letter-spacing:.045em; }
+}
+@media (hover:none), (pointer:coarse) {
+    html body .zipill-panel.zipill-luxury.zipill-idle .zipill-camera-tab { opacity:.88; }
+}
+@media (prefers-reduced-motion:reduce) {
+    html body .zipill-panel .zipill-camera-tab { transition:none; }
+}
+
+
+/* 1.0.9 FINAL TIDY: one slim vertical Photobooth tab only.
+   The old mobile introduction bubble is suppressed in JS while this persistent tab is enabled. */
+html body .zipill-panel .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+    right:calc(100% - 1px);
+    left:auto;
+    top:50%;
+    width:22px;
+    height:68px;
+    transform:translateY(-50%) translateZ(0);
+    border:1px solid rgba(231,211,159,.17);
+    border-right:0;
+    border-radius:12px 0 0 12px;
+    background:linear-gradient(180deg,rgba(62,12,12,.91),rgba(35,5,5,.88));
+    box-shadow:-3px 4px 12px rgba(35,5,5,.11), inset 0 1px 0 rgba(255,255,255,.045);
+    -webkit-backdrop-filter:blur(8px) saturate(108%);
+    backdrop-filter:blur(8px) saturate(108%);
+    opacity:.96;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab {
+    right:auto;
+    left:calc(100% - 1px);
+    border-right:1px solid rgba(231,211,159,.17);
+    border-left:0;
+    border-radius:0 12px 12px 0;
+    box-shadow:3px 4px 12px rgba(35,5,5,.11), inset 0 1px 0 rgba(255,255,255,.045);
+}
+html body .zipill-panel .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:max-content;
+    writing-mode:horizontal-tb;
+    text-orientation:mixed;
+    transform:translate(-50%,-50%) rotate(-90deg);
+    color:#F5E8C8 !important;
+    font:600 9px/1 Arial,Helvetica,sans-serif;
+    letter-spacing:.025em;
+    white-space:nowrap;
+}
+html body .zipill-panel .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-arrow {
+    right:-4px;
+    left:auto;
+    top:50%;
+    border-top:4px solid transparent;
+    border-bottom:4px solid transparent;
+    border-left:4px solid #D8C595;
+    filter:none;
+    opacity:.9;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab-arrow {
+    right:auto;
+    left:-4px;
+    border-left:0;
+    border-right:4px solid #D8C595;
+}
+html body .zipill-panel .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab {
+    background:linear-gradient(180deg,rgba(70,16,16,.95),rgba(40,7,7,.92));
+    border-color:rgba(231,211,159,.25);
+    box-shadow:-3px 5px 14px rgba(35,5,5,.14), inset 0 1px 0 rgba(255,255,255,.055);
+}
+html body .zipill-panel[data-side="left"] .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel[data-side="left"] .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab {
+    box-shadow:3px 5px 14px rgba(35,5,5,.14), inset 0 1px 0 rgba(255,255,255,.055);
+}
+@media (max-width:480px) {
+    html body .zipill-panel .zipill-camera-tab,
+    html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+        right:calc(100% - 1px);
+        width:20px;
+        height:64px;
+        border-radius:11px 0 0 11px;
+    }
+    html body .zipill-panel[data-side="left"] .zipill-camera-tab,
+    html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab {
+        right:auto;
+        left:calc(100% - 1px);
+        border-radius:0 11px 11px 0;
+    }
+    html body .zipill-panel .zipill-camera-tab-text,
+    html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+        font-size:8.5px;
+        letter-spacing:.015em;
+    }
+}
+@media (hover:none), (pointer:coarse) {
+    html body .zipill-panel.zipill-luxury.zipill-idle .zipill-camera-tab { opacity:.9; }
+}
+
+
+/* 1.0.10 UNIFIED WING: the Photobooth label is visually part of the camera row.
+   Same glass surface, one shared silhouette, no detached-card shadow. */
+html body .zipill-panel.zipill-luxury {
+    width:46px;
+    padding:5px 4px;
+    border-color:rgba(231,211,159,.20);
+    border-radius:27px 0 0 27px;
+    background:linear-gradient(180deg,rgba(69,23,20,.90),rgba(55,20,18,.88)) !important;
+    box-shadow:-5px 7px 22px rgba(35,5,5,.16), inset 0 1px 0 rgba(255,255,255,.055);
+}
+html body .zipill-panel.zipill-luxury[data-side="left"] {
+    border-radius:0 27px 27px 0;
+}
+html body .zipill-panel.zipill-luxury .zipill-button {
+    margin:2px 0;
+    border-radius:999px;
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] {
+    position:relative;
+    z-index:2;
+    background:rgba(245,232,200,.07) !important;
+    box-shadow:inset 0 0 0 1px rgba(245,232,200,.11);
+}
+
+/* Seamless connector under the label removes the visual gap between label and camera. */
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]::after {
+    content:"" !important;
+    position:absolute;
+    left:-9px;
+    top:7px;
+    bottom:7px;
+    width:13px;
+    border:0;
+    background:linear-gradient(180deg,rgba(69,23,20,.90),rgba(55,20,18,.88)) !important;
+    pointer-events:none;
+    z-index:-1;
+}
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-button[data-action="camera"]::after {
+    left:auto;
+    right:-9px;
+}
+
+html body .zipill-panel .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+    right:calc(100% - 7px);
+    left:auto;
+    top:50%;
+    width:24px;
+    height:64px;
+    transform:translateY(-50%) translateZ(0);
+    border:1px solid rgba(231,211,159,.20);
+    border-right:0;
+    border-radius:15px 0 0 15px;
+    background:linear-gradient(180deg,rgba(69,23,20,.90),rgba(55,20,18,.88)) !important;
+    box-shadow:none;
+    -webkit-backdrop-filter:blur(10px) saturate(112%);
+    backdrop-filter:blur(10px) saturate(112%);
+    opacity:1;
+    z-index:1;
+    overflow:hidden;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab {
+    right:auto;
+    left:calc(100% - 7px);
+    border-right:1px solid rgba(231,211,159,.20);
+    border-left:0;
+    border-radius:0 15px 15px 0;
+    box-shadow:none;
+}
+
+html body .zipill-panel .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:max-content;
+    writing-mode:horizontal-tb;
+    transform:translate(-54%,-50%) rotate(-90deg);
+    color:#F4E4BE !important;
+    font-family:"Poppins","Jost",Arial,Helvetica,sans-serif;
+    font-size:8.5px;
+    line-height:1;
+    font-weight:500;
+    letter-spacing:.055em;
+    white-space:nowrap;
+    text-shadow:0 1px 1px rgba(20,0,0,.18);
+}
+
+/* Small integrated chevron: cue toward camera without sticking outside the component. */
+html body .zipill-panel .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-arrow {
+    display:block;
+    position:absolute;
+    right:2px;
+    left:auto;
+    top:50%;
+    width:5px;
+    height:5px;
+    border:0;
+    border-top:1.5px solid #D8C595;
+    border-right:1.5px solid #D8C595;
+    transform:translateY(-50%) rotate(45deg);
+    filter:none;
+    opacity:.92;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab-arrow {
+    right:auto;
+    left:2px;
+    border-top:0;
+    border-right:0;
+    border-bottom:1.5px solid #D8C595;
+    border-left:1.5px solid #D8C595;
+    transform:translateY(-50%) rotate(45deg);
+}
+
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab {
+    background:linear-gradient(180deg,rgba(77,29,25,.94),rgba(61,23,20,.92)) !important;
+    border-color:rgba(231,211,159,.28);
+    box-shadow:none;
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover::after,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible::after {
+    background:linear-gradient(180deg,rgba(77,29,25,.94),rgba(61,23,20,.92)) !important;
+}
+
+/* Refine separators so the whole rail reads as one premium component. */
+html body .zipill-panel.zipill-luxury .zipill-button + .zipill-button::before {
+    left:32%; right:32%; opacity:.10;
+}
+
+@media (max-width:480px) {
+    html body .zipill-panel.zipill-luxury { width:45px; }
+    html body .zipill-panel .zipill-camera-tab,
+    html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+        right:calc(100% - 7px);
+        width:23px;
+        height:61px;
+        border-radius:14px 0 0 14px;
+    }
+    html body .zipill-panel[data-side="left"] .zipill-camera-tab,
+    html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab {
+        right:auto;
+        left:calc(100% - 7px);
+        border-radius:0 14px 14px 0;
+    }
+    html body .zipill-panel .zipill-camera-tab-text,
+    html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+        font-size:8.2px;
+        letter-spacing:.045em;
+    }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    html body .zipill-panel.zipill-luxury,
+    html body .zipill-panel .zipill-camera-tab { transition:none !important; }
+}
+
+
+/* 1.0.11: The same colors drive the whole component, including premium glass.
+   Never pin maroon/cream/gold over user-controlled Elementor color variables. */
+html body .zipill-panel.zipill-luxury {
+    background:var(--zipill-bg,#2E0606) !important;
+    color:var(--zipill-fg,#FFFFFF) !important;
+    width:var(--zipill-width,46px);
+    border-radius:var(--zipill-radius,25px) 0 0 var(--zipill-radius,25px);
+}
+html body .zipill-panel.zipill-luxury[data-side="left"] {
+    border-radius:0 var(--zipill-radius,25px) var(--zipill-radius,25px) 0;
+}
+/* Every button follows normal/active colors. Luxury only changes form/shadow. */
+html body .zipill-panel.zipill-luxury .zipill-button,
+html body .zipill-panel.zipill-luxury .zipill-button[aria-pressed="false"]:not(:hover):not(:focus-visible),
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] {
+    color:var(--zipill-fg,#FFFFFF) !important;
+}
+html body .zipill-panel.zipill-luxury .zipill-button:hover,
+html body .zipill-panel.zipill-luxury .zipill-button:focus-visible,
+html body .zipill-panel.zipill-luxury .zipill-button[aria-pressed="true"],
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][aria-pressed="true"] {
+    background:var(--zipill-active-bg,rgba(255,255,255,.14)) !important;
+    color:var(--zipill-active-fg,#FFFFFF) !important;
+}
+/* Preserve a subtle inset-camera treatment without applying an unrelated tint. */
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:not(:hover):not(:focus-visible):not([aria-pressed="true"]) {
+    background:transparent !important; /* Fallback for browsers without color-mix. */
+    background:color-mix(in srgb,var(--zipill-fg,#FFFFFF) 7%,transparent) !important;
+}
+/* SVG strokes must inherit the button color, including camera active/hover. */
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon path,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon circle,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"] .zipill-icon ellipse,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:is(:hover,:focus-visible,[aria-pressed="true"]) .zipill-icon,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:is(:hover,:focus-visible,[aria-pressed="true"]) .zipill-icon path,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:is(:hover,:focus-visible,[aria-pressed="true"]) .zipill-icon circle,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:is(:hover,:focus-visible,[aria-pressed="true"]) .zipill-icon ellipse {
+    color:inherit !important;
+    stroke:currentColor !important;
+}
+html body .zipill-panel.zipill-luxury .zipill-progress-value,
+html body .zipill-panel.zipill-luxury .zipill-status-dot {
+    color:var(--zipill-active-fg,#FFFFFF) !important;
+}
+/* Labels, camera wing and its connector use the SAME selected background. */
+html body .zipill-panel.zipill-luxury .zipill-tooltip,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"][data-tooltip]::before {
+    background:var(--zipill-bg,#2E0606) !important;
+    color:var(--zipill-fg,#FFFFFF) !important;
+}
+html body .zipill-panel.zipill-luxury .zipill-tooltip::before {
+    background:var(--zipill-bg,#2E0606) !important;
+}
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]::after,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover::after,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible::after {
+    background:var(--zipill-bg,#2E0606) !important;
+}
+html body .zipill-panel .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab,
+html body .zipill-panel .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:hover .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-button[data-action="camera"]:focus-visible .zipill-camera-tab {
+    background:var(--zipill-bg,#2E0606) !important;
+    color:var(--zipill-fg,#FFFFFF) !important;
+}
+html body .zipill-panel .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+    color:var(--zipill-fg,#FFFFFF) !important;
+    text-shadow:0 1px 1px rgba(0,0,0,.14);
+}
+html body .zipill-panel .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-arrow {
+    border-top-color:var(--zipill-fg,#FFFFFF);
+    border-right-color:var(--zipill-fg,#FFFFFF);
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab-arrow {
+    border-bottom-color:var(--zipill-fg,#FFFFFF);
+    border-left-color:var(--zipill-fg,#FFFFFF);
+}
+@media (max-width:480px) {
+    html body .zipill-panel.zipill-luxury { width:var(--zipill-width,46px); }
+}
+
+
+/* 1.0.14: Keep the ORIGINAL vertical Photobooth text and slim wing.
+   Nudge the label and chevron horizontally toward the camera, not up/down.
+   The parent wing and real camera button never move.  The subtle positioning
+   offsets keep animated content within the compact vertical tab on both sides. */
+html body .zipill-panel .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+    pointer-events:auto;
+    touch-action:manipulation;
+    user-select:none;
+    cursor:pointer;
+}
+/* Restore the original vertical word orientation, including existing Elementor widgets. */
+html body .zipill-panel .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+    left:calc(50% - 3px);
+    writing-mode:horizontal-tb;
+    transform:translate(-54%,-50%) rotate(-90deg);
+    pointer-events:none;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab-text {
+    left:calc(50% + 6px);
+}
+html body .zipill-panel .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-arrow {
+    right:5px;
+    left:auto;
+    pointer-events:none;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-arrow,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab-arrow {
+    right:auto;
+    left:4px;
+}
+@keyframes zipill-photobooth-tab-right {
+    0%, 100% { transform:translateY(-50%) translateX(-2.5px) translateZ(0); }
+    50% { transform:translateY(-50%) translateX(2.5px) translateZ(0); }
+}
+@keyframes zipill-photobooth-tab-left {
+    0%, 100% { transform:translateY(-50%) translateX(2.5px) translateZ(0); }
+    50% { transform:translateY(-50%) translateX(-2.5px) translateZ(0); }
+}
+html body .zipill-panel.zipill-camera-animated .zipill-camera-tab {
+    animation:zipill-photobooth-tab-right 1.65s ease-in-out infinite;
+    will-change:transform;
+}
+html body .zipill-panel.zipill-camera-animated[data-side="left"] .zipill-camera-tab {
+    animation-name:zipill-photobooth-tab-left;
+}
+html body .zipill-panel.zipill-camera-animated .zipill-camera-tab-text,
+html body .zipill-panel.zipill-camera-animated .zipill-camera-tab-arrow {
+    animation:none !important;
+    translate:none !important;
+    will-change:auto;
+    opacity:1;
+}
+@media (prefers-reduced-motion:reduce) {
+    html body .zipill-panel.zipill-camera-animated .zipill-camera-tab {
+        animation:none !important;
+        transform:translateY(-50%) translateZ(0) !important;
+        translate:none !important;
+        will-change:auto;
+    }
+}
+
+/* 1.0.16: Compact 5px outer corners and full-height vertical label.
+   Give the word generous room to remain legible at every animation frame.
+   The tab/background/text/arrow animate as ONE piece, with the camera still.
+   Only the outer tab corners are rounded; the joined edge stays seamless. */
+html body .zipill-panel .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+    width:25px;
+    height:80px;
+    border-radius:5px 0 0 5px;
+    overflow:hidden;
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab {
+    border-radius:0 5px 5px 0;
+}
+html body .zipill-panel .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+    left:calc(50% - 3px);
+    top:50%;
+    max-height:none;
+    max-width:none;
+    font-size:9px;
+    line-height:1;
+    letter-spacing:.035em;
+    white-space:nowrap;
+    transform:translate(-50%,-50%) rotate(-90deg);
+}
+html body .zipill-panel[data-side="left"] .zipill-camera-tab-text,
+html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab-text {
+    left:calc(50% + 4px);
+}
+@media (max-width:480px) {
+    html body .zipill-panel .zipill-camera-tab,
+    html body .zipill-panel.zipill-luxury .zipill-camera-tab {
+        width:25px;
+        height:80px;
+        border-radius:5px 0 0 5px;
+    }
+    html body .zipill-panel[data-side="left"] .zipill-camera-tab,
+    html body .zipill-panel.zipill-luxury[data-side="left"] .zipill-camera-tab {
+        border-radius:0 5px 5px 0;
+    }
+    html body .zipill-panel .zipill-camera-tab-text,
+    html body .zipill-panel.zipill-luxury .zipill-camera-tab-text {
+        font-size:9px;
+        letter-spacing:.035em;
+    }
+}
