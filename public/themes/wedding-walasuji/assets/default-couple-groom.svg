@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <linearGradient id="groomBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6E0E1A"/>
+      <stop offset="100%" stop-color="#36040A"/>
+    </linearGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#groomBg)"/>
+  <circle cx="250" cy="230" r="155" fill="#D4AF37" fill-opacity="0.12"/>
+  <!-- Songkok To Bone (traditional Bugis gold-rimmed headdress) silhouette -->
+  <path d="M198 158 C202 124 222 112 250 112 C278 112 298 124 302 158 L296 172 L204 172 Z" fill="#D4AF37"/>
+  <rect x="202" y="160" width="96" height="10" rx="3" fill="#5B0B14" stroke="#F1D68A" stroke-width="1.5"/>
+  <!-- Head & Jas Tutup shoulders silhouette -->
+  <ellipse cx="250" cy="212" rx="44" ry="50" fill="#F1D68A" fill-opacity="0.88"/>
+  <path d="M126 420 C130 330 185 288 250 288 C315 288 370 330 374 420 L374 500 L126 500 Z" fill="#8F1523" stroke="#D4AF37" stroke-width="3"/>
+  <path d="M225 292 L250 370 L275 292" fill="none" stroke="#F1D68A" stroke-width="3"/>
+</svg>

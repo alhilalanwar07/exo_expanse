@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" width="900" height="450" preserveAspectRatio="xMidYMax meet">
+  <defs>
+    <linearGradient id="crestFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A060C" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#4B0710" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#290308"/>
+    </linearGradient>
+    <linearGradient id="petalRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C92A37"/>
+      <stop offset="100%" stop-color="#5B0B14"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="180" width="900" height="270" fill="url(#crestFade)"/>
+  <!-- Symmetric pucuk rebung (bamboo shoot) gold triangles along base -->
+  <g fill="#5B0B14" stroke="#D4AF37" stroke-width="2">
+    <polygon points="30,450 90,320 150,450"/>
+    <polygon points="150,450 215,305 280,450"/>
+    <polygon points="620,450 685,305 750,450"/>
+    <polygon points="750,450 810,320 870,450"/>
+  </g>
+  <!-- Gold foliage & hibiscus/lotus blooms left & right -->
+  <g stroke="#F1D68A" stroke-width="1.5">
+    <path d="M40 430 Q140 270 250 380 Q150 430 40 430 Z" fill="#8F1523"/>
+    <path d="M860 430 Q760 270 650 380 Q750 430 860 430 Z" fill="#8F1523"/>
+    <!-- Blooms -->
+    <g transform="translate(175,355)">
+      <circle cx="0" cy="-26" r="24" fill="url(#petalRed)"/><circle cx="24" cy="-8" r="24" fill="url(#petalRed)"/>
+      <circle cx="15" cy="20" r="24" fill="url(#petalRed)"/><circle cx="-15" cy="20" r="24" fill="url(#petalRed)"/>
+      <circle cx="-24" cy="-8" r="24" fill="url(#petalRed)"/><circle cx="0" cy="0" r="14" fill="#D4AF37"/>
+    </g>
+    <g transform="translate(725,355)">
+      <circle cx="0" cy="-26" r="24" fill="url(#petalRed)"/><circle cx="24" cy="-8" r="24" fill="url(#petalRed)"/>
+      <circle cx="15" cy="20" r="24" fill="url(#petalRed)"/><circle cx="-15" cy="20" r="24" fill="url(#petalRed)"/>
+      <circle cx="-24" cy="-8" r="24" fill="url(#petalRed)"/><circle cx="0" cy="0" r="14" fill="#D4AF37"/>
+    </g>
+    <g transform="translate(450,375)">
+      <polygon points="0,-52 38,0 0,52 -38,0" fill="#6E0E1A" stroke="#D4AF37" stroke-width="3"/>
+      <polygon points="0,-32 24,0 0,32 -24,0" fill="#B9232E" stroke="#F1D68A" stroke-width="1.5"/>
+      <circle cx="0" cy="0" r="10" fill="#F1D68A"/>
+    </g>
+  </g>
+</svg>

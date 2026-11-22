@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <linearGradient id="brideBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8F1523"/>
+      <stop offset="100%" stop-color="#42060D"/>
+    </linearGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#brideBg)"/>
+  <circle cx="250" cy="230" r="155" fill="#F1D68A" fill-opacity="0.14"/>
+  <!-- Saloko / Bugis floral bridal crown silhouette -->
+  <path d="M188 164 L205 112 L228 144 L250 96 L272 144 L295 112 L312 164 Z" fill="#D4AF37"/>
+  <!-- Head & Baju Bodo silhouette -->
+  <ellipse cx="250" cy="212" rx="42" ry="48" fill="#F9E7B2" fill-opacity="0.9"/>
+  <path d="M120 425 C128 332 182 288 250 288 C318 288 372 332 380 425 L380 500 L120 500 Z" fill="#B9232E" stroke="#F1D68A" stroke-width="3"/>
+  <!-- Gold bridal necklace -->
+  <path d="M204 298 Q250 356 296 298" fill="none" stroke="#F1D68A" stroke-width="4"/>
+  <polygon points="250,324 262,336 250,348 238,336" fill="#D4AF37"/>
+</svg>

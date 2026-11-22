@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 840" width="140" height="840" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="bambooGold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8C621B"/>
+      <stop offset="45%" stop-color="#F1D68A"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#785112"/>
+    </linearGradient>
+    <linearGradient id="crimsonBand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8F1523"/>
+      <stop offset="100%" stop-color="#4A070F"/>
+    </linearGradient>
+  </defs>
+  <!-- Left backing pillar shadow -->
+  <rect x="0" y="0" width="96" height="840" fill="#2A0308" fill-opacity="0.88"/>
+  <!-- Outer vertical woven bamboo poles -->
+  <rect x="8" y="0" width="12" height="840" fill="url(#bambooGold)" rx="4"/>
+  <rect x="82" y="0" width="12" height="840" fill="url(#bambooGold)" rx="4"/>
+  <!-- Inner lattice cross bars -->
+  <g><polygon points="55,60 88,90 55,120 22,90" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,70 76,90 55,110 34,90" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="90" r="4.5" fill="#F1D68A"/><polygon points="55,120 88,150 55,180 22,150" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,130 76,150 55,170 34,150" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="150" r="4.5" fill="#F1D68A"/><polygon points="55,180 88,210 55,240 22,210" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,190 76,210 55,230 34,210" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="210" r="4.5" fill="#F1D68A"/><polygon points="55,240 88,270 55,300 22,270" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,250 76,270 55,290 34,270" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="270" r="4.5" fill="#F1D68A"/><polygon points="55,300 88,330 55,360 22,330" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,310 76,330 55,350 34,330" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="330" r="4.5" fill="#F1D68A"/><polygon points="55,360 88,390 55,420 22,390" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,370 76,390 55,410 34,390" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="390" r="4.5" fill="#F1D68A"/><polygon points="55,420 88,450 55,480 22,450" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,430 76,450 55,470 34,450" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="450" r="4.5" fill="#F1D68A"/><polygon points="55,480 88,510 55,540 22,510" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,490 76,510 55,530 34,510" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="510" r="4.5" fill="#F1D68A"/><polygon points="55,540 88,570 55,600 22,570" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,550 76,570 55,590 34,570" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="570" r="4.5" fill="#F1D68A"/><polygon points="55,600 88,630 55,660 22,630" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,610 76,630 55,650 34,630" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="630" r="4.5" fill="#F1D68A"/><polygon points="55,660 88,690 55,720 22,690" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,670 76,690 55,710 34,690" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="690" r="4.5" fill="#F1D68A"/><polygon points="55,720 88,750 55,780 22,750" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,730 76,750 55,770 34,750" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="750" r="4.5" fill="#F1D68A"/><polygon points="55,780 88,810 55,840 22,810" fill="#5B0B14" fill-opacity="0.65" stroke="url(#bambooGold)" stroke-width="4"/><polygon points="55,790 76,810 55,830 34,810" fill="none" stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2"/><circle cx="55" cy="810" r="4.5" fill="#F1D68A"/></g>
+  <!-- Ceremonial crimson fabric drape at upper corner -->
+  <path d="M0 0 L132 0 Q108 65 92 128 Q58 95 0 120 Z" fill="url(#crimsonBand)" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M6 8 Q72 24 114 4" fill="none" stroke="#F1D68A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <!-- Hanging ceremonial tassels -->
+  <g>
+    <line x1="94" y1="95" x2="94" y2="175" stroke="#D4AF37" stroke-width="2.5"/>
+    <circle cx="94" cy="112" r="5" fill="#F1D68A" stroke="#5B0B14" stroke-width="1"/>
+    <path d="M84 175 L104 175 L109 225 L79 225 Z" fill="#B9232E" stroke="#D4AF37" stroke-width="1.5"/>
+    <line x1="88" y1="184" x2="85" y2="223" stroke="#F1D68A" stroke-width="1"/>
+    <line x1="94" y1="184" x2="94" y2="223" stroke="#F1D68A" stroke-width="1"/>
+    <line x1="100" y1="184" x2="103" y2="223" stroke="#F1D68A" stroke-width="1"/>
+  </g>
+</svg>

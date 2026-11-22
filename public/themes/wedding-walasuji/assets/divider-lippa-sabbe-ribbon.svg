@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 60" width="600" height="60">
+  <defs>
+    <linearGradient id="ribbonFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8F1523" stop-opacity="0"/>
+      <stop offset="16%" stop-color="#8F1523"/>
+      <stop offset="50%" stop-color="#5B0B14"/>
+      <stop offset="84%" stop-color="#8F1523"/>
+      <stop offset="100%" stop-color="#8F1523" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="plaidStrip" width="24" height="20" patternUnits="userSpaceOnUse">
+      <line x1="12" y1="0" x2="12" y2="20" stroke="#F1D68A" stroke-opacity="0.35" stroke-width="1.5"/>
+      <line x1="0" y1="10" x2="24" y2="10" stroke="#F1D68A" stroke-opacity="0.35" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <!-- Hairline flanking rules -->
+  <line x1="20" y1="30" x2="580" y2="30" stroke="#D4AF37" stroke-opacity="0.45" stroke-width="1.2"/>
+  <!-- Woven ribbon body -->
+  <polygon points="88,22 512,22 496,30 512,38 88,38 104,30" fill="url(#ribbonFade)"/>
+  <polygon points="110,22 490,22 490,38 110,38" fill="url(#plaidStrip)"/>
+  <!-- Gold edge trim -->
+  <line x1="108" y1="22" x2="492" y2="22" stroke="#D4AF37" stroke-width="1.5"/>
+  <line x1="108" y1="38" x2="492" y2="38" stroke="#D4AF37" stroke-width="1.5"/>
+  <!-- Center diamond medallion -->
+  <polygon points="300,8 322,30 300,52 278,30" fill="#5B0B14" stroke="#D4AF37" stroke-width="2.5"/>
+  <polygon points="300,16 314,30 300,44 286,30" fill="#D4AF37"/>
+  <circle cx="300" cy="30" r="4.5" fill="#8F1523"/>
+</svg>

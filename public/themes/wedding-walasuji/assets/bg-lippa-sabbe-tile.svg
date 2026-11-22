@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <rect width="160" height="160" fill="#FBF6EE"/>
+  <!-- Horizontal & vertical silk warp/weft plaid bands -->
+  <rect x="0" y="34" width="160" height="12" fill="#8F1523" fill-opacity="0.035"/>
+  <rect x="0" y="114" width="160" height="8" fill="#D4AF37" fill-opacity="0.055"/>
+  <rect x="34" y="0" width="12" height="160" fill="#8F1523" fill-opacity="0.035"/>
+  <rect x="114" y="0" width="8" height="160" fill="#D4AF37" fill-opacity="0.055"/>
+  <!-- Hairlines -->
+  <path d="M0 40 H160 M0 118 H160 M40 0 V160 M118 0 V160" stroke="#D4AF37" stroke-opacity="0.14" stroke-width="0.8"/>
+  <!-- Tiny woven intersection diamonds -->
+  <g fill="#8F1523" fill-opacity="0.08">
+    <polygon points="40,36 44,40 40,44 36,40"/>
+    <polygon points="118,36 122,40 118,44 114,40"/>
+    <polygon points="40,114 44,118 40,122 36,118"/>
+    <polygon points="118,114 122,118 118,122 114,118"/>
+  </g>
+</svg>

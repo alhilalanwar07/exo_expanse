@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1800" width="900" height="1800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="mempelaiBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3E060D"/>
+      <stop offset="50%" stop-color="#5B0B14"/>
+      <stop offset="100%" stop-color="#36040A"/>
+    </linearGradient>
+    <pattern id="darkSongket" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M36 0 L72 36 L36 72 L0 36 Z" fill="none" stroke="#D4AF37" stroke-opacity="0.08" stroke-width="1"/>
+      <circle cx="36" cy="36" r="2" fill="#F1D68A" fill-opacity="0.09"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="1800" fill="url(#mempelaiBg)"/>
+  <rect width="900" height="1800" fill="url(#darkSongket)"/>
+  <!-- Soft translucent Phinisi sail silhouettes in background -->
+  <g fill="#F1D68A" fill-opacity="0.055" stroke="#D4AF37" stroke-opacity="0.14" stroke-width="1.5">
+    <path d="M450 260 L210 880 L440 910 Z"/>
+    <path d="M465 310 Q640 395 700 480 Q680 730 660 910 L465 910 Z"/>
+    <line x1="455" y1="200" x2="455" y2="1050" stroke-width="3"/>
+  </g>
+  <!-- Bottom muted wave crests -->
+  <path d="M0 1480 Q220 1420 450 1480 T900 1470 L900 1800 L0 1800 Z" fill="#2A0308" fill-opacity="0.72"/>
+  <path d="M0 1580 Q240 1530 480 1580 T900 1575 L900 1800 L0 1800 Z" fill="#200206" fill-opacity="0.88"/>
+</svg>

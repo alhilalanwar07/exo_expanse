@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <defs>
+    <linearGradient id="drapeRed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5B0B14"/>
+      <stop offset="100%" stop-color="#B9232E"/>
+    </linearGradient>
+  </defs>
+  <!-- Draped cloth fan in corner -->
+  <path d="M0 0 L132 0 Q106 34 64 56 Q34 88 0 132 Z" fill="url(#drapeRed)" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M0 0 Q55 32 95 0" fill="none" stroke="#F1D68A" stroke-width="1.4" stroke-opacity="0.8"/>
+  <path d="M0 0 Q32 55 0 95" fill="none" stroke="#F1D68A" stroke-width="1.4" stroke-opacity="0.8"/>
+  <!-- Corner ruby diamond jewel -->
+  <polygon points="28,12 44,28 28,44 12,28" fill="#D4AF37" stroke="#5B0B14" stroke-width="1.5"/>
+  <polygon points="28,18 38,28 28,38 18,28" fill="#8F1523"/>
+  <!-- Tiny hanging gold tassel -->
+  <line x1="68" y1="42" x2="68" y2="74" stroke="#D4AF37" stroke-width="1.6"/>
+  <path d="M62 74 L74 74 L77 96 L59 96 Z" fill="#8F1523" stroke="#D4AF37" stroke-width="1.2"/>
+</svg>

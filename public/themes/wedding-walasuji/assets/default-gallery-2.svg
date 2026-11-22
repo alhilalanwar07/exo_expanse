@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="galBg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5B0B14"/>
+      <stop offset="55%" stop-color="#8F1523"/>
+      <stop offset="100%" stop-color="#3A060C"/>
+    </linearGradient>
+    <pattern id="galMesh2" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M32 0 L64 32 L32 64 L0 32 Z" fill="none" stroke="#D4AF37" stroke-opacity="0.14" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#galBg2)"/>
+  <rect width="800" height="600" fill="url(#galMesh2)"/>
+  <polygon points="58,28 742,28 772,58 772,542 742,572 58,572 28,542 28,58" fill="none" stroke="#D4AF37" stroke-opacity="0.7" stroke-width="2.5"/>
+  <polygon points="400,150 470,220 400,290 330,220" fill="#5B0B14" stroke="#F1D68A" stroke-width="3"/>
+  <polygon points="400,174 446,220 400,266 354,220" fill="#D4AF37" fill-opacity="0.88"/>
+  <text x="400" y="365" text-anchor="middle" font-family="Georgia, serif" font-size="16" letter-spacing="5" fill="#F1D68A">SINERGI KASIH</text>
+  <text x="400" y="408" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="30" fill="#FFFFFF">Dua Keluarga Satu Ikatan</text>
+</svg>

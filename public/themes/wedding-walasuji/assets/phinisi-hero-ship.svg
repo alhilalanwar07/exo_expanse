@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="640" height="480">
+  <defs>
+    <linearGradient id="sailCream" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFDF8"/>
+      <stop offset="65%" stop-color="#F7E6C4"/>
+      <stop offset="100%" stop-color="#DFC07C"/>
+    </linearGradient>
+    <linearGradient id="hullCrimson" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8F1523"/>
+      <stop offset="100%" stop-color="#3A060C"/>
+    </linearGradient>
+  </defs>
+  <!-- Water reflection beneath hull -->
+  <ellipse cx="320" cy="410" rx="220" ry="18" fill="#D4AF37" fill-opacity="0.24"/>
+  <!-- Bow & Stern Bowsprit -->
+  <line x1="175" y1="335" x2="62" y2="275" stroke="#D4AF37" stroke-width="5" stroke-linecap="round"/>
+  <!-- Mainmast & Mizzenmast -->
+  <line x1="255" y1="78" x2="255" y2="345" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+  <line x1="405" y1="108" x2="405" y2="345" stroke="#D4AF37" stroke-width="5" stroke-linecap="round"/>
+  <!-- Crimson masthead pennants -->
+  <polygon points="255,78 292,88 255,98" fill="#B9232E" stroke="#F1D68A" stroke-width="1"/>
+  <polygon points="405,108 438,116 405,125" fill="#B9232E" stroke="#F1D68A" stroke-width="1"/>
+  <!-- Jib sails (front) -->
+  <path d="M250 118 Q155 210 92 276 Q175 292 246 310 Z" fill="url(#sailCream)" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M248 165 Q185 232 135 288 Q195 298 245 316 Z" fill="#FBF6EE" fill-opacity="0.72" stroke="#D4AF37" stroke-width="1.5"/>
+  <!-- Main gaff sail -->
+  <path d="M262 118 Q332 136 378 162 Q368 242 362 316 L262 316 Z" fill="url(#sailCream)" stroke="#D4AF37" stroke-width="2"/>
+  <polygon points="262,118 338,94 262,155" fill="#F1D68A" stroke="#D4AF37" stroke-width="1.5"/>
+  <!-- Aft sail -->
+  <path d="M412 142 Q475 162 512 188 Q498 258 492 318 L412 318 Z" fill="url(#sailCream)" stroke="#D4AF37" stroke-width="2"/>
+  <polygon points="412,142 478,120 412,172" fill="#F1D68A" stroke="#D4AF37" stroke-width="1.5"/>
+  <!-- Rigging lines -->
+  <g stroke="#F1D68A" stroke-opacity="0.6" stroke-width="1.2">
+    <line x1="255" y1="84" x2="405" y2="112"/>
+    <line x1="255" y1="84" x2="78" y2="280"/>
+    <line x1="405" y1="112" x2="532" y2="338"/>
+  </g>
+  <!-- Carved Phinisi wooden crimson hull -->
+  <path d="M135 322 L520 322 Q542 322 528 360 Q482 394 320 394 Q175 394 148 355 Q128 334 135 322 Z" fill="url(#hullCrimson)" stroke="#D4AF37" stroke-width="3"/>
+  <path d="M150 342 L518 342" stroke="#F1D68A" stroke-width="2.5"/>
+  <!-- Gold diamond crest on hull -->
+  <polygon points="325,350 340,364 325,378 310,364" fill="#D4AF37"/>
+</svg>

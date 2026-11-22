@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 410" width="900" height="410" preserveAspectRatio="xMidYMin meet">
+  <defs>
+    <linearGradient id="canopyRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A060C"/>
+      <stop offset="65%" stop-color="#6E0E1A"/>
+      <stop offset="100%" stop-color="#8F1523" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="goldWire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9A721E"/>
+      <stop offset="50%" stop-color="#F9E7B2"/>
+      <stop offset="100%" stop-color="#9A721E"/>
+    </linearGradient>
+  </defs>
+  <!-- Scalloped canopy silhouette -->
+  <path d="M0 0 L900 0 L900 185 Q760 120 630 140 Q520 75 450 115 Q380 75 270 140 Q140 120 0 185 Z" fill="url(#canopyRed)"/>
+  <!-- Hanging bead strands -->
+  <g><line x1="120" y1="60" x2="120" y2="150" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="120" cy="85" r="3" fill="#F1D68A"/><circle cx="120" cy="107" r="3" fill="#F1D68A"/><circle cx="120" cy="129" r="3" fill="#F1D68A"/><polygon points="120,150 126,159 120,168 114,159" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="210" y1="60" x2="210" y2="150" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="210" cy="85" r="3" fill="#F1D68A"/><circle cx="210" cy="107" r="3" fill="#F1D68A"/><circle cx="210" cy="129" r="3" fill="#F1D68A"/><polygon points="210,150 216,159 210,168 204,159" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="300" y1="60" x2="300" y2="165" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="300" cy="85" r="3" fill="#F1D68A"/><circle cx="300" cy="107" r="3" fill="#F1D68A"/><circle cx="300" cy="129" r="3" fill="#F1D68A"/><circle cx="300" cy="151" r="3" fill="#F1D68A"/><polygon points="300,165 306,174 300,183 294,174" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="390" y1="60" x2="390" y2="185" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="390" cy="85" r="3" fill="#F1D68A"/><circle cx="390" cy="107" r="3" fill="#F1D68A"/><circle cx="390" cy="129" r="3" fill="#F1D68A"/><circle cx="390" cy="151" r="3" fill="#F1D68A"/><circle cx="390" cy="173" r="3" fill="#F1D68A"/><polygon points="390,185 396,194 390,203 384,194" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="450" y1="60" x2="450" y2="215" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="450" cy="85" r="3" fill="#F1D68A"/><circle cx="450" cy="107" r="3" fill="#F1D68A"/><circle cx="450" cy="129" r="3" fill="#F1D68A"/><circle cx="450" cy="151" r="3" fill="#F1D68A"/><circle cx="450" cy="173" r="3" fill="#F1D68A"/><circle cx="450" cy="195" r="3" fill="#F1D68A"/><polygon points="450,215 456,224 450,233 444,224" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="510" y1="60" x2="510" y2="185" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="510" cy="85" r="3" fill="#F1D68A"/><circle cx="510" cy="107" r="3" fill="#F1D68A"/><circle cx="510" cy="129" r="3" fill="#F1D68A"/><circle cx="510" cy="151" r="3" fill="#F1D68A"/><circle cx="510" cy="173" r="3" fill="#F1D68A"/><polygon points="510,185 516,194 510,203 504,194" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="600" y1="60" x2="600" y2="165" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="600" cy="85" r="3" fill="#F1D68A"/><circle cx="600" cy="107" r="3" fill="#F1D68A"/><circle cx="600" cy="129" r="3" fill="#F1D68A"/><circle cx="600" cy="151" r="3" fill="#F1D68A"/><polygon points="600,165 606,174 600,183 594,174" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="690" y1="60" x2="690" y2="150" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="690" cy="85" r="3" fill="#F1D68A"/><circle cx="690" cy="107" r="3" fill="#F1D68A"/><circle cx="690" cy="129" r="3" fill="#F1D68A"/><polygon points="690,150 696,159 690,168 684,159" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/><line x1="780" y1="60" x2="780" y2="150" stroke="#D4AF37" stroke-width="1.4" stroke-opacity="0.8"/><circle cx="780" cy="85" r="3" fill="#F1D68A"/><circle cx="780" cy="107" r="3" fill="#F1D68A"/><circle cx="780" cy="129" r="3" fill="#F1D68A"/><polygon points="780,150 786,159 780,168 774,159" fill="#D4AF37" stroke="#5B0B14" stroke-width="1"/></g>
+  <!-- Outer and inner filigree arch ribs -->
+  <path d="M0 175 Q145 108 275 132 Q378 65 450 105 Q522 65 625 132 Q755 108 900 175" fill="none" stroke="url(#goldWire)" stroke-width="5"/>
+  <path d="M0 155 Q145 92 275 114 Q378 52 450 88 Q522 52 625 114 Q755 92 900 155" fill="none" stroke="#F1D68A" stroke-width="1.8" stroke-dasharray="6 5"/>
+  <!-- Center crown ornament -->
+  <g transform="translate(450, 56)">
+    <polygon points="0,-32 22,0 0,32 -22,0" fill="#8F1523" stroke="#F1D68A" stroke-width="2.5"/>
+    <polygon points="0,-18 12,0 0,18 -12,0" fill="#D4AF37"/>
+    <circle cx="0" cy="0" r="6" fill="#5B0B14"/>
+  </g>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" width="900" height="1600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#290308"/>
+      <stop offset="28%" stop-color="#5B0B14"/>
+      <stop offset="56%" stop-color="#8F1523"/>
+      <stop offset="76%" stop-color="#B9232E"/>
+      <stop offset="100%" stop-color="#3D050C"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx="50%" cy="38%" r="42%">
+      <stop offset="0%" stop-color="#F9E7B2" stop-opacity="0.72"/>
+      <stop offset="28%" stop-color="#D4AF37" stop-opacity="0.34"/>
+      <stop offset="68%" stop-color="#B9232E" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#5B0B14" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="seaGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6E0F1B"/>
+      <stop offset="100%" stop-color="#3A060C"/>
+    </linearGradient>
+    <linearGradient id="seaGrad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4A0810" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#8F1523" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#4A0810" stop-opacity="0.9"/>
+    </linearGradient>
+    <pattern id="walasujiSkyMesh" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#D4AF37" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="1600" fill="url(#skyGrad)"/>
+  <rect width="900" height="1600" fill="url(#walasujiSkyMesh)"/>
+  <rect width="900" height="1600" fill="url(#moonGlow)"/>
+  <!-- Moon disc subtly behind clouds -->
+  <circle cx="450" cy="610" r="145" fill="#F1D68A" fill-opacity="0.14"/>
+  <circle cx="450" cy="610" r="105" fill="#F9E7B2" fill-opacity="0.16"/>
+  <!-- Stars -->
+  <g fill="#F1D68A" fill-opacity="0.55">
+    <polygon points="150,180 153,188 161,191 153,194 150,202 147,194 139,191 147,188"/>
+    <polygon points="730,220 734,230 744,234 734,238 730,248 726,238 716,234 726,230"/>
+    <polygon points="280,310 282,316 288,318 282,320 280,326 278,320 272,318 278,316"/>
+    <polygon points="625,160 627,166 633,168 627,170 625,176 623,170 617,168 623,166"/>
+    <circle cx="195" cy="260" r="2.2"/><circle cx="765" cy="340" r="2"/><circle cx="410" cy="145" r="2"/>
+    <circle cx="515" cy="210" r="1.8"/><circle cx="110" cy="390" r="1.8"/><circle cx="810" cy="150" r="2.4"/>
+  </g>
+  <!-- Distant archipelago mountain silhouette -->
+  <path d="M0 990 Q120 920 240 965 Q360 915 470 960 Q610 910 740 955 Q820 935 900 970 L900 1050 L0 1050 Z" fill="#46060D" fill-opacity="0.72"/>
+  <path d="M0 1015 Q170 965 330 995 Q520 950 700 990 Q810 975 900 1005 L900 1060 L0 1060 Z" fill="#320409" fill-opacity="0.88"/>
+  <!-- Shimmering sea waves -->
+  <rect x="0" y="1030" width="900" height="570" fill="url(#seaGrad1)"/>
+  <ellipse cx="450" cy="1055" rx="220" ry="18" fill="#F1D68A" fill-opacity="0.28"/>
+  <ellipse cx="450" cy="1095" rx="160" ry="10" fill="#D4AF37" fill-opacity="0.22"/>
+  <path d="M0 1080 Q150 1058 300 1080 T600 1080 T900 1080 L900 1600 L0 1600 Z" fill="url(#seaGrad2)" opacity="0.75"/>
+  <path d="M0 1150 Q180 1122 360 1150 T720 1150 T900 1140 L900 1600 L0 1600 Z" fill="#4C0811" opacity="0.85"/>
+  <path d="M0 1240 Q220 1208 450 1240 T900 1235 L900 1600 L0 1600 Z" fill="#3A060C" opacity="0.92"/>
+  <path d="M0 1350 Q200 1315 450 1350 T900 1345 L900 1600 L0 1600 Z" fill="#2A0308"/>
+  <!-- Gold wave shimmer highlights -->
+  <path d="M60 1110 Q220 1094 380 1110 T740 1108" fill="none" stroke="#D4AF37" stroke-opacity="0.38" stroke-width="2"/>
+  <path d="M120 1188 Q310 1170 490 1188 T830 1185" fill="none" stroke="#F1D68A" stroke-opacity="0.28" stroke-width="1.5"/>
+  <path d="M40 1280 Q250 1260 460 1280 T860 1278" fill="none" stroke="#D4AF37" stroke-opacity="0.24" stroke-width="1.5"/>
+</svg>

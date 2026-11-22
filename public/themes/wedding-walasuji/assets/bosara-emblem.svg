@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="domeGrad" cx="42%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#C92A37"/>
+      <stop offset="55%" stop-color="#8F1523"/>
+      <stop offset="100%" stop-color="#4A070F"/>
+    </radialGradient>
+    <linearGradient id="goldMetal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F9E7B2"/>
+      <stop offset="45%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#8C621B"/>
+    </linearGradient>
+  </defs>
+  <!-- Aura ring -->
+  <circle cx="200" cy="200" r="158" fill="#5B0B14" fill-opacity="0.22" stroke="#D4AF37" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 6"/>
+  <!-- Finial spire on top -->
+  <path d="M200 44 L212 72 L200 84 L188 72 Z" fill="url(#goldMetal)" stroke="#5B0B14" stroke-width="1.5"/>
+  <circle cx="200" cy="86" r="10" fill="url(#goldMetal)"/>
+  <!-- Ornate Bosara dome cover -->
+  <path d="M84 226 C88 134 142 90 200 90 C258 90 312 134 316 226 Z" fill="url(#domeGrad)" stroke="url(#goldMetal)" stroke-width="4"/>
+  <!-- Gold filigree vertical ribs & diamond embroidery on dome -->
+  <path d="M200 92 L200 226" stroke="#F1D68A" stroke-width="2.5"/>
+  <path d="M144 106 Q130 165 128 226" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M256 106 Q270 165 272 226" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  <polygon points="200,136 224,168 200,200 176,168" fill="#5B0B14" stroke="#F1D68A" stroke-width="2"/>
+  <polygon points="200,150 212,168 200,186 188,168" fill="#D4AF37"/>
+  <!-- Platter rim & scalloped skirt -->
+  <ellipse cx="200" cy="230" rx="134" ry="18" fill="url(#goldMetal)" stroke="#5B0B14" stroke-width="2"/>
+  <path d="M74 234 Q105 260 137 238 Q168 262 200 238 Q232 262 263 238 Q295 260 326 234 L310 258 L90 258 Z" fill="#8F1523" stroke="#D4AF37" stroke-width="2"/>
+  <!-- Pedestal base -->
+  <path d="M168 258 L232 258 L220 302 L180 302 Z" fill="url(#goldMetal)" stroke="#5B0B14" stroke-width="2"/>
+  <path d="M126 302 L274 302 L292 326 L108 326 Z" fill="url(#goldMetal)" stroke="#5B0B14" stroke-width="2"/>
+  <rect x="102" y="326" width="196" height="10" rx="5" fill="#5B0B14" stroke="#D4AF37" stroke-width="1.5"/>
+</svg>

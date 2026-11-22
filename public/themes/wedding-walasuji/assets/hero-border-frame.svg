@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" width="900" height="1600" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="frameGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="50%" stop-color="#F9E7B2"/>
+      <stop offset="100%" stop-color="#A67C23"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer chamfered frame line -->
+  <polygon points="56,28 844,28 872,56 872,1544 844,1572 56,1572 28,1544 28,56" fill="none" stroke="url(#frameGold)" stroke-width="4" stroke-opacity="0.85"/>
+  <!-- Inner dashed hairline -->
+  <polygon points="66,40 834,40 860,66 860,1534 834,1560 66,1560 40,1534 40,66" fill="none" stroke="#F1D68A" stroke-width="1.5" stroke-opacity="0.55" stroke-dasharray="10 6"/>
+  <!-- Corner diamonds -->
+  <g fill="#8F1523" stroke="#F1D68A" stroke-width="2">
+    <polygon points="44,28 60,44 44,60 28,44"/>
+    <polygon points="856,28 872,44 856,60 840,44"/>
+    <polygon points="44,1540 60,1556 44,1572 28,1556"/>
+    <polygon points="856,1540 872,1556 856,1572 840,1556"/>
+  </g>
+</svg>
