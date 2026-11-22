@@ -46,7 +46,7 @@ Route::post('/form-sosmed', [SiswakkriController::class, 'store'])->name('social
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/img/{token}.{ext}', [ImageController::class, 'show'])
     ->where('token', '[A-Za-z0-9_-]+')
-    ->whereIn('ext', ['mp3', 'wav', 'ogg', 'm4a', 'aac'])
+    ->whereIn('ext', ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'webm'])
     ->withoutMiddleware(['web'])
     ->name('image.media');
 Route::get('/img/{token}', [ImageController::class, 'show'])

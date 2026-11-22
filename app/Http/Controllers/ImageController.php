@@ -24,13 +24,22 @@ class ImageController extends Controller
             'ogg' => 'audio/ogg',
             'm4a' => 'audio/mp4',
             'aac' => 'audio/aac',
+            'webm' => 'audio/webm',
         ];
 
-        if (isset($audioMimes[$ext])) {
-            return $this->serveFileWithCache($request, $fullPath, $audioMimes[$ext], 86400);
-        }
-
         $mime = Storage::disk('public')->mimeType($path) ?: 'application/octet-stream';
+
+        if (isset($audioMimes[$ext])) {
+            $detectedMime = strtolower((string) $mime);
+            $servedMime = match (true) {
+                in_array($detectedMime, ['video/mp4', 'audio/mp4', 'application/mp4'], true) => 'audio/mp4',
+                in_array($detectedMime, ['video/webm', 'audio/webm'], true) => 'audio/webm',
+                in_array($detectedMime, ['audio/ogg', 'video/ogg', 'application/ogg'], true) => 'audio/ogg',
+                default => $audioMimes[$ext],
+            };
+
+            return $this->serveFileWithCache($request, $fullPath, $servedMime, 86400);
+        }
 
         // Non-image files (e.g. other media) — serve directly with ETag & long cache
         if (! str_starts_with($mime, 'image/')) {

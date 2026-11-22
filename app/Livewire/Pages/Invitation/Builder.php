@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages\Invitation;
 
+use App\Models\BackgroundMusic;
 use App\Models\Guest;
 use App\Models\Invitation;
 use App\Models\InvitationPhoto;
@@ -488,10 +489,9 @@ class Builder extends Component
     public function updatedMusicUpload(): void
     {
         $this->validate([
-            'musicUpload' => 'required|file|extensions:mp3,wav,ogg,m4a|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/wave,audio/ogg,audio/mp4,audio/x-m4a,audio/aac,application/octet-stream|max:10240',
+            'musicUpload' => BackgroundMusic::audioValidationRules(true),
         ], [
-            'musicUpload.extensions' => 'Format file harus berupa MP3, WAV, OGG, atau M4A.',
-            'musicUpload.mimetypes' => 'Format file harus berupa audio (MP3, WAV, OGG, atau M4A).',
+            'musicUpload.extensions' => 'Format file harus berupa MP3, WAV, OGG, M4A, AAC, atau WEBM.',
             'musicUpload.max' => 'Ukuran file musik maksimal 10MB.',
         ]);
 

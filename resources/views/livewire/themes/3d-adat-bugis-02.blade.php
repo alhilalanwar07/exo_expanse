@@ -1563,6 +1563,7 @@
         'ogg' => 'audio/ogg',
         'm4a' => 'audio/mp4',
         'aac' => 'audio/aac',
+        'webm' => 'audio/webm',
         default => 'audio/mpeg',
     };
 

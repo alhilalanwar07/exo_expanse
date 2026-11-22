@@ -42,10 +42,10 @@
                     </div>
 
                     <div>
-                        <label for="musicFile" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">File Audio (MP3/WAV/M4A/OGG) @if(!$editingMusicId)<span class="text-red-500">*</span>@endif</label>
+                        <label for="musicFile" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">File Audio (MP3/WAV/M4A/OGG/AAC/WEBM) @if(!$editingMusicId)<span class="text-red-500">*</span>@endif</label>
                         
                         <div class="relative mt-1">
-                            <input type="file" id="musicFile" wire:model="musicFile" accept=".mp3,.wav,.m4a,.ogg,audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/mp4,audio/ogg" class="block w-full text-sm text-slate-500 dark:text-slate-400
+                            <input type="file" id="musicFile" wire:model="musicFile" accept=".mp3,.wav,.m4a,.ogg,.aac,.webm,audio/*" class="block w-full text-sm text-slate-500 dark:text-slate-400
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded-full file:border-0
                                 file:text-sm file:font-semibold

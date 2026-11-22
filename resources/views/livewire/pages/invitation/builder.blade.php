@@ -932,8 +932,8 @@
                                         @if(empty($this->music_id))
                                             <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-3">
                                                 <div>
-                                                    <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Upload File Musik Custom (MP3/WAV/M4A/OGG, Max 10MB)</label>
-                                                    <input type="file" wire:model="musicUpload" accept=".mp3,.wav,.m4a,.ogg,audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/mp4,audio/ogg"
+                                                    <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Upload File Musik Custom (MP3/WAV/M4A/OGG/AAC/WEBM, Max 10MB)</label>
+                                                    <input type="file" wire:model="musicUpload" accept=".mp3,.wav,.m4a,.ogg,.aac,.webm,audio/*"
                                                         class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 p-1 cursor-pointer">
                                                     <div wire:loading wire:target="musicUpload" class="text-xs text-rose-600 mt-1">Mengunggah file musik...</div>
                                                     @error('musicUpload') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror

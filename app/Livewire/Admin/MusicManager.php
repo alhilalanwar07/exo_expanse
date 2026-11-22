@@ -39,18 +39,11 @@ class MusicManager extends Component
             'artist' => 'nullable|string|max:255',
         ];
 
-        $audioRule = 'file|extensions:mp3,wav,ogg,m4a|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/wave,audio/ogg,audio/mp4,audio/x-m4a,audio/aac,application/octet-stream|max:10240';
-
-        if ($this->editingMusicId) {
-            $rules['musicFile'] = 'nullable|'.$audioRule;
-        } else {
-            $rules['musicFile'] = 'required|'.$audioRule;
-        }
+        $rules['musicFile'] = BackgroundMusic::audioValidationRules(! (bool) $this->editingMusicId);
 
         $this->validate($rules, [
             'musicFile.required' => 'File musik wajib diunggah!',
-            'musicFile.extensions' => 'Format file harus berupa MP3, WAV, OGG, atau M4A.',
-            'musicFile.mimetypes' => 'Format file harus berupa audio (MP3, WAV, OGG, atau M4A).',
+            'musicFile.extensions' => 'Format file harus berupa MP3, WAV, OGG, M4A, AAC, atau WEBM.',
             'musicFile.max' => 'Ukuran file maksimal 10MB.',
             'title.required' => 'Judul lagu wajib diisi.',
         ]);

@@ -56,7 +56,7 @@ class ImageService
         $token = static::encodePath($path);
         $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-        if (in_array($ext, ['mp3', 'wav', 'ogg', 'm4a', 'aac'], true)) {
+        if (in_array($ext, ['mp3', 'wav', 'ogg', 'm4a', 'aac', 'webm'], true)) {
             return route('image.media', ['token' => $token, 'ext' => $ext]);
         }
 
