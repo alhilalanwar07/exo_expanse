@@ -149,4 +149,32 @@ class Invitation extends Model
             'styles' => $styles,
         ];
     }
+
+    public function getEventDateAttribute(): ?\Carbon\Carbon
+    {
+        $styles = $this->custom_styles ?? [];
+        if (!empty($styles['event_date'])) {
+            try {
+                return \Carbon\Carbon::parse($styles['event_date']);
+            } catch (\Throwable $e) {}
+        }
+
+        $eventType = $styles['event_type'] ?? 'both';
+        if ($eventType === 'resepsi_only') {
+            return $this->resepsi_date ? \Carbon\Carbon::parse($this->resepsi_date) : null;
+        }
+
+        if ($eventType === 'akad_only') {
+            return $this->akad_date ? \Carbon\Carbon::parse($this->akad_date) : null;
+        }
+
+        return $this->akad_date 
+            ? \Carbon\Carbon::parse($this->akad_date) 
+            : ($this->resepsi_date ? \Carbon\Carbon::parse($this->resepsi_date) : null);
+    }
+
+    public function getEventTypeAttribute(): string
+    {
+        return $this->custom_styles['event_type'] ?? 'both';
+    }
 }

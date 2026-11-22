@@ -230,9 +230,13 @@ class Builder extends Component
         $this->title = $invitation->title ?? 'Untitled Invitation';
         $this->slug = $invitation->slug ?? Str::slug($this->title);
         $this->cover_photo = $invitation->cover_image;
-        $this->event_date = $invitation->akad_date?->format('Y-m-d')
-            ?? $invitation->resepsi_date?->format('Y-m-d')
-            ?? date('Y-m-d');
+        $styles = $invitation->custom_styles ?? [];
+        $this->name_order = $styles['name_order'] ?? 'groom_first';
+        $this->event_type = $styles['event_type'] ?? 'both';
+        $this->event_date = $styles['event_date']
+            ?? ($this->event_type === 'resepsi_only'
+                ? $invitation->resepsi_date?->format('Y-m-d')
+                : ($invitation->akad_date?->format('Y-m-d') ?? $invitation->resepsi_date?->format('Y-m-d') ?? date('Y-m-d')));
 
         $this->theme_id = $invitation->theme_id;
 
@@ -254,9 +258,6 @@ class Builder extends Component
         $this->countdown_enabled = $invitation->custom_styles['countdown_enabled'] ?? true;
 
         // Settings (JSON)
-        $styles = $invitation->custom_styles ?? [];
-        $this->name_order = $styles['name_order'] ?? 'groom_first';
-        $this->event_type = $styles['event_type'] ?? 'both';
         $this->cover_title = $styles['cover_title'] ?? '';
         $this->cover_subtitle = $styles['cover_subtitle'] ?? '';
         $this->akad_maps_link = $invitation->akad_maps_link ?? '';
@@ -323,17 +324,17 @@ class Builder extends Component
             'instagram_bride' => $this->bride_instagram,
 
             // Events
-            'akad_date' => $this->akad_date ?: null,
-            'akad_time' => $this->akad_time,
-            'akad_venue' => $this->akad_venue,
-            'akad_address' => $this->akad_address,
-            'akad_maps_link' => $this->akad_maps_link,
+            'akad_date' => $this->event_type === 'resepsi_only' ? null : ($this->akad_date ?: null),
+            'akad_time' => $this->event_type === 'resepsi_only' ? null : $this->akad_time,
+            'akad_venue' => $this->event_type === 'resepsi_only' ? null : $this->akad_venue,
+            'akad_address' => $this->event_type === 'resepsi_only' ? null : $this->akad_address,
+            'akad_maps_link' => $this->event_type === 'resepsi_only' ? null : $this->akad_maps_link,
 
-            'resepsi_date' => $this->resepsi_date ?: null,
-            'resepsi_time' => $this->resepsi_time,
-            'resepsi_venue' => $this->resepsi_venue,
-            'resepsi_address' => $this->resepsi_address,
-            'resepsi_maps_link' => $this->resepsi_maps_link,
+            'resepsi_date' => $this->event_type === 'akad_only' ? null : ($this->resepsi_date ?: null),
+            'resepsi_time' => $this->event_type === 'akad_only' ? null : $this->resepsi_time,
+            'resepsi_venue' => $this->event_type === 'akad_only' ? null : $this->resepsi_venue,
+            'resepsi_address' => $this->event_type === 'akad_only' ? null : $this->resepsi_address,
+            'resepsi_maps_link' => $this->event_type === 'akad_only' ? null : $this->resepsi_maps_link,
 
             // Media & Content
             'cover_image' => $this->cover_photo,
@@ -356,6 +357,7 @@ class Builder extends Component
             'custom_styles' => [
                 'name_order' => $this->name_order,
                 'event_type' => $this->event_type,
+                'event_date' => $this->event_date,
                 'cover_title' => $this->cover_title,
                 'cover_subtitle' => $this->cover_subtitle,
                 'maps_embed' => $this->maps_embed,
@@ -407,6 +409,32 @@ class Builder extends Component
     public function updatedSlug(string $value): void
     {
         $this->slug = Str::slug($value);
+    }
+
+    public function updatedEventDate($value): void
+    {
+        if ($this->event_type === 'resepsi_only') {
+            $this->resepsi_date = $value;
+        } elseif ($this->event_type === 'akad_only') {
+            $this->akad_date = $value;
+        } else {
+            if (empty($this->akad_date)) {
+                $this->akad_date = $value;
+            }
+        }
+    }
+
+    public function updatedEventType($value): void
+    {
+        if ($value === 'resepsi_only') {
+            if (!empty($this->event_date) && empty($this->resepsi_date)) {
+                $this->resepsi_date = $this->event_date;
+            }
+        } elseif ($value === 'akad_only') {
+            if (!empty($this->event_date) && empty($this->akad_date)) {
+                $this->akad_date = $this->event_date;
+            }
+        }
     }
 
     public function loadExistingPhotos(Invitation $invitation): void

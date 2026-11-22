@@ -355,14 +355,18 @@
 
                             <!-- Maps -->
                             <div class="grid md:grid-cols-2 gap-4">
+                                @if(in_array($this->event_type, ['akad_only', 'both']))
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Maps Akad</label>
                                     <input wire:model.blur="akad_maps_link" type="url" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700" placeholder="https://maps.google.com/...">
                                 </div>
+                                @endif
+                                @if(in_array($this->event_type, ['resepsi_only', 'both']))
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Maps Resepsi</label>
                                     <input wire:model.blur="resepsi_maps_link" type="url" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700" placeholder="https://maps.google.com/...">
                                 </div>
+                                @endif
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Tamu bisa langsung buka lokasi di Maps</p>
 

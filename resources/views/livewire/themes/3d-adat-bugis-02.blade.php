@@ -113,7 +113,29 @@
     }
     </style>
 @endpush
+<div>
+@php
+    $eventType = $invitation->event_type ?? ($invitation->custom_styles['event_type'] ?? 'both');
+    
+    // Main display date (Tanggal Utama):
+    $mainDateObj = $invitation->event_date;
+    if (!$mainDateObj && !empty($invitation->custom_styles['event_date'])) {
+        try { $mainDateObj = \Carbon\Carbon::parse($invitation->custom_styles['event_date']); } catch (\Throwable $e) {}
+    }
+    if (!$mainDateObj) {
+        if ($eventType === 'resepsi_only') {
+            $mainDateObj = $invitation->resepsi_date ? \Carbon\Carbon::parse($invitation->resepsi_date) : null;
+        } else {
+            $mainDateObj = $invitation->akad_date ? \Carbon\Carbon::parse($invitation->akad_date) : ($invitation->resepsi_date ? \Carbon\Carbon::parse($invitation->resepsi_date) : null);
+        }
+    }
+    $displayDate = $mainDateObj ? $mainDateObj->format('d . m . Y') : '03 . 02 . 2027';
+    $targetTimestamp = $mainDateObj ? $mainDateObj->timestamp : \Carbon\Carbon::parse('2026-12-22 08:00:00')->timestamp;
 
+    $mainAddress = ($eventType === 'resepsi_only')
+        ? ($invitation->resepsi_address ?? $invitation->resepsi_venue ?? '')
+        : ($invitation->akad_address ?? $invitation->akad_venue ?? $invitation->resepsi_address ?? '');
+@endphp
 <div class="elementor elementor-346 elementor-location-single post-759 post type-post status-publish format-standard has-post-thumbnail hentry category-3d-motion 3d-motion-3d-adat-bugis-02"
      x-data="bugisTheme({ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? '2026-11-22 08:00:00')->timestamp })"
      x-init="init()">
@@ -133,7 +155,7 @@
 <div class="elementor-element elementor-element-41dfae8f elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="41dfae8f" data-widget_type="heading.default">
 <h2 class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }} &amp; {{ $invitation->bride_nickname }}</h2> </div>
 <div class="elementor-element elementor-element-2b80dfdf elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2b80dfdf" data-widget_type="heading.default">
-<p class="elementor-heading-title elementor-size-default">{{ \Carbon\Carbon::parse($invitation->event_date ?? $invitation->akad_date ?? '2027-02-03')->format('d . m . Y') }}</p> </div>
+<p class="elementor-heading-title elementor-size-default">{{ $displayDate }}</p> </div>
 </div>
 
         <!-- Main Mobile/Center Content Column (elementor-element-35ac074c) -->
@@ -241,7 +263,7 @@
 <div class="elementor-element elementor-element-7689559c animated-slow wdsdv-enabled--yes custom-font-opening elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7689559c" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
 <h1 class="elementor-heading-title elementor-size-default">{{ $invitation->bride_nickname }}</h1> </div>
 <div class="elementor-element elementor-element-2bc135a1 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2bc135a1" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
-<h1 class="elementor-heading-title elementor-size-default">{{ \Carbon\Carbon::parse($invitation->event_date ?? $invitation->akad_date ?? '2027-02-03')->format('d . m . Y') }}</h1> </div>
+<h1 class="elementor-heading-title elementor-size-default">{{ $displayDate }}</h1> </div>
 <div class="elementor-element elementor-element-477aca49 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="477aca49" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
 <h1 class="elementor-heading-title elementor-size-default">{{ $invitation->hashtag ?? ('#' . ($invitation->groom_nickname ?? 'Groom') . ($invitation->bride_nickname ?? 'Bride')) }}</h1> </div>
 <div class="elementor-element elementor-element-8c314b6 elementor-align-center elementor-mobile-align-center elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="8c314b6" data-settings='{"_animation_mobile":"fadeInDown","_animation":"fadeInDown","_animation_delay":400}' data-widget_type="button.default">
@@ -309,6 +331,7 @@
 </div>
 </div>
 <div id="events" class="has_eae_slider elementor-element elementor-element-50d22c29 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="83808" data-element_type="container" data-id="50d22c29" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+@if(in_array($eventType, ['akad_only', 'both']) && ($invitation->akad_date || $invitation->akad_venue || $invitation->akad_maps_link || !isset($invitation->custom_styles['event_type'])))
 <div class="has_eae_slider elementor-element elementor-element-58f2f6ac e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="40160" data-element_type="container" data-id="58f2f6ac" data-settings='{"jet_parallax_layout_list":[]}'>
 <div class="has_eae_slider elementor-element elementor-element-28543923 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="75451" data-element_type="container" data-id="28543923" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
 <div class="elementor-element elementor-element-53867c96 elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="53867c96" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
@@ -342,6 +365,8 @@
 </div>
 </div>
 </div>
+@endif
+@if(in_array($eventType, ['resepsi_only', 'both']))
 <div class="has_eae_slider elementor-element elementor-element-16ca673e e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="94923" data-element_type="container" data-id="16ca673e" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
 <div class="elementor-element elementor-element-515998fd elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="515998fd" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
 <img alt="" class="attachment-large size-large wp-image-306" height="512" src="{{ asset('themes/3d-adat-bugis-02/assets/icon-bunga-1.png') }}" width="512"/> </div>
@@ -373,6 +398,8 @@
 </a>
 </div>
 </div>
+@endif
+@if(!empty($invitation->unduh_mantu_date) || !empty($invitation->unduh_mantu_venue))
 <div class="has_eae_slider elementor-element elementor-element-4a4571fe e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="79784" data-element_type="container" data-id="4a4571fe" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
 <div class="elementor-element elementor-element-6c1bcce6 elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="6c1bcce6" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
 <img alt="" class="attachment-large size-large wp-image-306" height="512" src="{{ asset('themes/3d-adat-bugis-02/assets/icon-bunga-1.png') }}" width="512"/> </div>
@@ -404,6 +431,8 @@
 </a>
 </div>
 </div>
+@endif
+@if(!empty($invitation->streaming_link))
 <div class="has_eae_slider elementor-element elementor-element-431cd505 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="17458" data-element_type="container" data-id="431cd505" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
 <div class="elementor-element elementor-element-21d93487 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="21d93487" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
 <p class="elementor-heading-title elementor-size-default">Live Streaming</p> </div>
@@ -420,6 +449,8 @@
 </div>
 </div>
 </div>
+@endif
+
 <div id="countdown" class="has_eae_slider elementor-element elementor-element-7741f858 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="88758" data-element_type="container" data-id="7741f858" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
 <div class="has_eae_slider elementor-element elementor-element-42ca87c3 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="97018" data-element_type="container" data-id="42ca87c3" data-settings='{"jet_parallax_layout_list":[]}'>
 <div class="elementor-element elementor-element-5a9f45e9 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5a9f45e9" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
@@ -433,7 +464,7 @@
 <div class="elementor-element elementor-element-60649bf6 elementor-align-center elementor-invisible elementor-widget elementor-widget-wds_calendar" data-e-type="widget" data-element_type="widget" data-id="60649bf6" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="wds_calendar.default">
 <div class="elementor-widget-container">
 <div class="elementor-button-wrapper">
-<a class="elementor-button-link elementor-button elementor-size-xs" href="https://www.google.com/calendar/render?action=TEMPLATE&text={{ urlencode("Pernikahan " . ($invitation->groom_nickname ?? "Groom") . " & " . ($invitation->bride_nickname ?? "Bride")) }}&dates={{ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? "2026-11-22")->format("Ymd\THis\Z") }}/{{ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? "2026-11-22")->addHours(4)->format("Ymd\THis\Z") }}&details={{ urlencode("Undangan Pernikahan " . ($invitation->groom_name ?? "") . " & " . ($invitation->bride_name ?? "")) }}&location={{ urlencode($invitation->akad_address ?? $invitation->resepsi_address ?? "") }}" rel="nofollow" role="button" target="_blank"> <span class="elementor-button-content-wrapper wds-flexbox">
+<a class="elementor-button-link elementor-button elementor-size-xs" href="https://www.google.com/calendar/render?action=TEMPLATE&text={{ urlencode("Pernikahan " . ($invitation->groom_nickname ?? "Groom") . " & " . ($invitation->bride_nickname ?? "Bride")) }}&dates={{ $mainDateObj ? $mainDateObj->format("Ymd\THis\Z") : "20261222T010000Z" }}/{{ $mainDateObj ? $mainDateObj->copy()->addHours(4)->format("Ymd\THis\Z") : "20261222T050000Z" }}&details={{ urlencode("Undangan Pernikahan " . ($invitation->groom_name ?? "") . " & " . ($invitation->bride_name ?? "")) }}&location={{ urlencode($mainAddress) }}"Pernikahan " . ($invitation->groom_nickname ?? "Groom") . " & " . ($invitation->bride_nickname ?? "Bride")) }}&dates={{ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? "2026-11-22")->format("Ymd\THis\Z") }}/{{ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? "2026-11-22")->addHours(4)->format("Ymd\THis\Z") }}&details={{ urlencode("Undangan Pernikahan " . ($invitation->groom_name ?? "") . " & " . ($invitation->bride_name ?? "")) }}&location={{ urlencode($invitation->akad_address ?? $invitation->resepsi_address ?? "") }}" rel="nofollow" role="button" target="_blank"> <span class="elementor-button-content-wrapper wds-flexbox">
 <span class="elementor-button-icon elementor-align-icon-row">
 <i aria-hidden="true" class="far fa-calendar-alt"></i> </span>
 <span class="elementor-button-text">Save on the calendar</span>
@@ -1695,3 +1726,4 @@ function bugisTheme(targetTimestamp) {
     };
 }
 </script>
+</div>
