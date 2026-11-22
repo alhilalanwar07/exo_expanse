@@ -36,8 +36,7 @@ Thumbs.db
 /public/fonts/filament
 /public/vendor/livewire
 
-# Lock files (optional — uncomment if team uses different OS/PHP versions)
-composer.lock
+# Node lock file (optional — uncomment if team uses different Node versions)
 package-lock.json
 
 /public/build
