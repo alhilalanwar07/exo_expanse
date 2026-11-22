@@ -1,1409 +1,1666 @@
-@section('title', 'Wedding of ' . $invitation->groom_nickname . ' & ' . $invitation->bride_nickname)
-
-@push('fonts')
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-@endpush
-
 @push('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-<style>
-:root {
-    --bugis-bg: #4a0714;
-    --bugis-bg-dark: #32030c;
-    --bugis-gold: #dfb76c;
-    --bugis-gold-light: #f5e4bc;
-    --bugis-gold-dark: #b88d3e;
-    --bugis-card-bg: rgba(50, 4, 13, 0.78);
-    --bugis-card-border: rgba(223, 183, 108, 0.35);
-    --font-heading: 'Cinzel', serif;
-    --font-script: 'Great Vibes', cursive;
-    --font-body: 'Poppins', sans-serif;
-    --font-quote: 'Cormorant Garamond', serif;
-}
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Caudex:ital,wght@0,400;0,700;1,400&family=ZCOOL+XiaoWei&family=Pinyon+Script&family=Gilda+Display&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-html {
-    scroll-behavior: smooth;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    background-color: var(--bugis-bg-dark);
-    color: #ffffff;
-    font-family: var(--font-body);
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-}
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/fontawesome.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/v4-shims.min.css') }}" />
 
-/* Background Wrapper */
-.bugis-page-wrapper {
-    width: 100%;
-    min-height: 100dvh;
-    background-color: var(--bugis-bg-dark);
-    background-image: url('{{ asset('themes/3d-adat-bugis-02/assets/BACKGROUND-FIXED.jpg') }}');
-    background-size: cover;
-    background-position: center top;
-    background-attachment: fixed;
-    position: relative;
-}
+    <!-- Elementor & Theme CSS -->
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/uaf.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/elementor-icons.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/elementor-frontend.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-heading.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-image.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-lottie.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-countdown.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-gallery.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/e-gallery.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/jet-elements.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/jet-timeline.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/jet-elements-jet-timeline.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-icon-box.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/post-7.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/post-346.css') }}" />
 
-/* 480px Centered Mobile Frame */
-.bugis-container {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    position: relative;
-    background-color: rgba(58, 5, 16, 0.92);
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(223, 183, 108, 0.2);
-    overflow: hidden;
-    min-height: 100dvh;
-}
+    <!-- Custom Fonts Definitions -->
+    <style>
+    @font-face { font-family: photograph; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/7117photograph.woff2') }}') format('woff2'); }
+    @font-face { font-family: montecarlo; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/6821montecarlo.woff2') }}') format('woff2'); }
+    @font-face { font-family: saudagar; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/7851Saudagar.woff2') }}') format('woff2'); }
+    @font-face { font-family: brittany-signature; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/3979Brittany-Signature.woff2') }}') format('woff2'); }
+    @font-face { font-family: amiri; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/8907Amiri.woff2') }}') format('woff2'); }
+    @font-face { font-family: iskry; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/2701Iskry.woff2') }}') format('woff2'); }
+    @font-face { font-family: qene-g; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/1598Qene-G.woff2') }}') format('woff2'); }
+    @font-face { font-family: silent-caroline; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/1164Silent-Caroline.woff2') }}') format('woff2'); }
+    @font-face { font-family: hatolie; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/4915hatolie.woff2') }}') format('woff2'); }
+    @font-face { font-family: ivymode-regular; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/9060IvyMode-Regular.woff2') }}') format('woff2'); }
+    @font-face { font-family: amiri-bold; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/5421Amiri-Bold.woff2') }}') format('woff2'); }
+    @font-face { font-family: analogue; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/4709Analogue.woff2') }}') format('woff2'); }
+    @font-face { font-family: andrea-bellarosa; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/2312Andrea-Bellarosa.woff2') }}') format('woff2'); }
+    @font-face { font-family: aston-script; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/5293Aston-Script.woff2') }}') format('woff2'); }
+    @font-face { font-family: garlicha; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/8140garlicha.woff2') }}') format('woff2'); }
+    @font-face { font-family: iskry-regular; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/2015Iskry-Regular.woff2') }}') format('woff2'); }
+    @font-face { font-family: mesheddisplay; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/1502MeshedDisplay.woff2') }}') format('woff2'); }
+    @font-face { font-family: shelleyandantebt; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/7576ShelleyAndanteBT.woff2') }}') format('woff2'); }
+    @font-face { font-family: edwardianscriptitc; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/6750edwardianscriptitc.woff2') }}') format('woff2'); }
+    @font-face { font-family: amsterdam-one; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/4868Amsterdam-One.woff2') }}') format('woff2'); }
+    @font-face { font-family: madelyn; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/2350Madelyn.woff2') }}') format('woff2'); }
+    @font-face { font-family: brittany; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/3077Brittany.woff2') }}') format('woff2'); }
+    @font-face { font-family: gethuk-jawa; font-style: normal; font-weight: 400; font-display: fallback; src: url('{{ asset('themes/3d-adat-bugis-02/assets/2559Gethuk-Jawa.woff2') }}') format('woff2'); }
 
-/* Typography Helpers */
-.font-heading { font-family: var(--font-heading); }
-.font-script { font-family: var(--font-script); }
-.font-quote { font-family: var(--font-quote); }
-.color-gold { color: var(--bugis-gold); }
-.color-gold-light { color: var(--bugis-gold-light); }
-
-.gold-gradient-text {
-    background: linear-gradient(135deg, #fceecb 0%, #dfb76c 50%, #b88d3e 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.gold-gradient-bg {
-    background: linear-gradient(135deg, #dfb76c 0%, #c4994d 50%, #a0762f 100%);
-    color: #2a030b;
-}
-
-/* Card Styling */
-.bugis-card {
-    background: var(--bugis-card-bg);
-    border: 1px solid var(--bugis-card-border);
-    border-radius: 18px;
-    padding: 24px 20px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-    position: relative;
-}
-
-/* Button Styles */
-.btn-bugis-gold {
-    background: linear-gradient(135deg, #dfb76c 0%, #c99c4c 100%);
-    color: #2b040c;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 28px;
-    font-weight: 600;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(223, 183, 108, 0.35);
-}
-.btn-bugis-gold:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(223, 183, 108, 0.5);
-    color: #1a0207;
-}
-
-.btn-bugis-outline {
-    background: rgba(223, 183, 108, 0.08);
-    color: var(--bugis-gold);
-    border: 1px solid var(--bugis-gold);
-    border-radius: 50px;
-    padding: 10px 24px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    text-decoration: none;
-}
-.btn-bugis-outline:hover {
-    background: var(--bugis-gold);
-    color: #2b040c;
-}
-
-/* Floating Corner Ornaments with breathing animation */
-.corner-ornament {
-    position: absolute;
-    pointer-events: none;
-    z-index: 5;
-    width: 110px;
-    opacity: 0.75;
-    animation: ornamentBreathe 6s ease-in-out infinite alternate;
-}
-.corner-tl { top: -10px; left: -10px; }
-.corner-tr { top: -10px; right: -10px; transform: scaleX(-1); }
-.corner-bl { bottom: -10px; left: -10px; transform: scaleY(-1); }
-.corner-br { bottom: -10px; right: -10px; transform: scale(-1); }
-
-@keyframes ornamentBreathe {
-    0% { transform: scale(1) translateY(0); opacity: 0.7; }
-    50% { transform: scale(1.05) translateY(-3px); opacity: 0.85; }
-    100% { transform: scale(1) translateY(0); opacity: 0.7; }
-}
-
-/* Section Separator */
-.bugis-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin: 20px auto;
-}
-.bugis-divider::before, .bugis-divider::after {
-    content: '';
-    height: 1px;
-    width: 50px;
-    background: linear-gradient(to right, transparent, var(--bugis-gold));
-}
-.bugis-divider::after {
-    background: linear-gradient(to left, transparent, var(--bugis-gold));
-}
-
-/* 3D Motion Video Container */
-.motion-video-container {
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    border-radius: 0 0 24px 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-}
-.motion-video-container video {
-    width: 100%;
-    height: 100%;
-    min-height: 480px;
-    object-fit: cover;
-    display: block;
-}
-
-/* Floating Music Disc */
-.music-toggle-btn {
-    position: fixed;
-    top: 20px;
-    right: max(16px, calc((100vw - 480px) / 2 + 16px));
-    z-index: 99;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(45, 4, 12, 0.88);
-    border: 1.5px solid var(--bugis-gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--bugis-gold);
-    box-shadow: 0 4px 18px rgba(0,0,0,0.6);
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: transform 0.3s ease, background 0.3s ease;
-}
-.music-toggle-btn:hover { transform: scale(1.08); }
-.music-disc-rotating {
-    animation: discRotate 4s linear infinite;
-}
-@keyframes discRotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-@media (max-width: 480px) {
-    .music-toggle-btn {
-        top: max(16px, env(safe-area-inset-top, 16px));
-        right: 16px;
-        width: 40px;
-        height: 40px;
+    /* Layout & Animation Overrides */
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #0b0706;
+        color: #fff;
+        overflow-x: hidden;
     }
-    .music-toggle-btn svg {
-        width: 18px;
-        height: 18px;
+    .stop-scrolling {
+        height: 100vh;
+        overflow: hidden !important;
     }
-}
-
-/* ========================================= */
-/* FULLY RESPONSIVE BOTTOM NAVIGATION BAR   */
-/* ========================================= */
-.bugis-nav-wrap {
-    position: fixed;
-    bottom: max(14px, env(safe-area-inset-bottom, 14px));
-    left: 0;
-    right: 0;
-    z-index: 900;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-    padding: 0 10px;
-}
-
-.bugis-nav {
-    width: 100%;
-    max-width: 440px;
-    background: rgba(35, 3, 9, 0.94);
-    border: 1px solid rgba(223, 183, 108, 0.45);
-    border-radius: 50px;
-    padding: 4px 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2px;
-    pointer-events: auto;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.75), inset 0 0 12px rgba(223, 183, 108, 0.12);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    margin: 0 auto;
-}
-.bugis-nav::-webkit-scrollbar {
-    display: none;
-}
-
-.bugis-nav-btn {
-    flex: 1 1 0;
-    min-width: 38px;
-    height: 46px;
-    padding: 3px 2px;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    color: rgba(255, 255, 255, 0.65);
-    background: transparent;
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    font-family: inherit;
-    flex-shrink: 0;
-}
-
-.bugis-nav-btn svg {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-    transition: transform 0.22s ease, color 0.22s ease;
-}
-
-.bugis-nav-btn span {
-    font-size: 8.5px;
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -0.2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    display: block;
-    transition: color 0.22s ease, font-weight 0.22s ease;
-}
-
-.bugis-nav-btn:hover {
-    color: var(--bugis-gold-light);
-}
-
-.bugis-nav-btn.active {
-    color: var(--bugis-gold);
-    background: rgba(223, 183, 108, 0.16);
-}
-
-.bugis-nav-btn.active svg {
-    color: var(--bugis-gold);
-    transform: translateY(-1px) scale(1.1);
-}
-
-.bugis-nav-btn.active span {
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.bugis-nav-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--bugis-gold);
-    box-shadow: 0 0 6px var(--bugis-gold);
-}
-
-/* Collapse Toggle Button on Main Dock */
-.bugis-collapse-btn {
-    opacity: 0.75;
-    border-left: 1px solid rgba(223, 183, 108, 0.25);
-    margin-left: 1px;
-}
-.bugis-collapse-btn:hover {
-    opacity: 1;
-    color: var(--bugis-gold);
-}
-
-/* Floating Side Dock (When menu is collapsed to the side) */
-.bugis-side-dock {
-    position: fixed;
-    bottom: max(16px, env(safe-area-inset-bottom, 16px));
-    right: max(14px, calc((100vw - 480px) / 2 + 14px));
-    z-index: 950;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(40, 4, 11, 0.94);
-    border: 1px solid rgba(223, 183, 108, 0.45);
-    border-radius: 40px;
-    padding: 5px 8px;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.75), inset 0 0 12px rgba(223, 183, 108, 0.15);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-}
-
-.bugis-side-btn {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 11px;
-    font-weight: 500;
-    padding: 6px 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.22s ease;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-.bugis-side-btn svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-.bugis-side-btn:hover {
-    color: var(--bugis-gold-light);
-    background: rgba(223, 183, 108, 0.12);
-}
-.bugis-side-btn.active {
-    color: var(--bugis-gold);
-    background: rgba(223, 183, 108, 0.2);
-    font-weight: 600;
-}
-.bugis-side-btn.menu-trigger {
-    border-left: 1px solid rgba(223, 183, 108, 0.3);
-    padding-left: 10px;
-}
-
-/* Tablet & Standard Mobile (361px - 420px) */
-@media (max-width: 420px) {
-    .bugis-nav-wrap {
-        padding: 0 6px;
-        bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    .cover-hidden {
+        transform: translateY(-100%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease !important;
     }
-    .bugis-nav {
-        padding: 3px 4px;
-        gap: 1px;
+    .audioRotate {
+        animation: wdpMP3-muter 4s linear infinite;
     }
-    .bugis-nav-btn {
-        min-width: 33px;
-        height: 42px;
-        padding: 2px 1px;
+    @keyframes wdpMP3-muter {
+        100% { transform: rotate(360deg); }
     }
-    .bugis-nav-btn svg {
-        width: 15px;
-        height: 15px;
+    @keyframes bugisKenBurns {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.15); }
     }
-    .bugis-nav-btn span {
-        font-size: 8px;
-        letter-spacing: -0.3px;
+    /* Dock responsive adjustments */
+    .dock-btn:hover {
+        background: rgba(212, 175, 55, 0.2);
+        color: #d4af37 !important;
     }
-    .bugis-side-dock {
-        bottom: max(12px, env(safe-area-inset-bottom, 12px));
-        right: 10px;
-        padding: 4px 6px;
-        gap: 4px;
+    .dock-hidden {
+        transform: translateY(120%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: all 0.4s ease !important;
     }
-    .bugis-side-btn {
-        font-size: 10px;
-        padding: 5px 8px;
-        gap: 4px;
+    /* Ensure all background containers render without suppression */
+    .e-con.e-parent:nth-of-type(n+4) {
+        background-image: initial;
     }
-    .bugis-side-btn svg {
-        width: 14px;
-        height: 14px;
+    /* Toast styles */
+    .bugis-toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 20, 20, 0.95);
+        color: #4ade80;
+        border: 1px solid #22c55e;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 100000;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
-}
-
-/* Ultra-compact Mobile (<= 360px, e.g. Galaxy Fold / iPhone SE) */
-@media (max-width: 360px) {
-    .bugis-nav-wrap {
-        padding: 0 4px;
-        bottom: max(8px, env(safe-area-inset-bottom, 8px));
-    }
-    .bugis-nav {
-        padding: 2px 3px;
-        border-radius: 35px;
-    }
-    .bugis-nav-btn {
-        min-width: 30px;
-        height: 38px;
-        padding: 1px 1px;
-    }
-    .bugis-nav-btn svg {
-        width: 14px;
-        height: 14px;
-    }
-    .bugis-nav-btn span {
-        font-size: 7.5px;
-        letter-spacing: -0.4px;
-    }
-    .bugis-nav-btn.active::after {
-        width: 3px;
-        height: 3px;
-        bottom: 1.5px;
-    }
-    .bugis-side-dock {
-        bottom: max(10px, env(safe-area-inset-bottom, 10px));
-        right: 8px;
-        padding: 3px 5px;
-    }
-    .bugis-side-btn {
-        font-size: 9px;
-        padding: 4px 6px;
-    }
-}
-
-/* Input Form */
-.bugis-input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(223, 183, 108, 0.3);
-    border-radius: 12px;
-    padding: 12px 16px;
-    color: #ffffff;
-    font-size: 13px;
-    font-family: var(--font-body);
-    transition: all 0.3s;
-    outline: none;
-    margin-bottom: 12px;
-}
-.bugis-input:focus {
-    border-color: var(--bugis-gold);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 10px rgba(223, 183, 108, 0.2);
-}
-.bugis-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-/* Circular Photo Frames */
-.couple-photo-frame {
-    width: 140px;
-    height: 140px;
-    margin: 0 auto 16px;
-    border-radius: 50%;
-    border: 3px solid var(--bugis-gold);
-    padding: 4px;
-    position: relative;
-    box-shadow: 0 0 25px rgba(223, 183, 108, 0.35);
-}
-.couple-photo-frame img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* Countdown Box */
-.timer-box {
-    background: rgba(45, 4, 12, 0.7);
-    border: 1px solid var(--bugis-gold);
-    border-radius: 12px;
-    padding: 10px 8px;
-    text-align: center;
-    min-width: 65px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-.timer-num {
-    font-family: var(--font-heading);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--bugis-gold);
-    line-height: 1.1;
-}
-.timer-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.8;
-    margin-top: 2px;
-}
-
-/* Bank Account Card */
-.bank-card {
-    background: linear-gradient(135deg, rgba(65, 8, 20, 0.9) 0%, rgba(35, 3, 9, 0.95) 100%);
-    border: 1px solid rgba(223, 183, 108, 0.35);
-    border-radius: 16px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-}
-.bank-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(223, 183, 108, 0.1) 0%, transparent 70%);
-    pointer-events: none;
-}
-</style>
+    </style>
 @endpush
 
-<div class="bugis-page-wrapper" x-data="{
-    opened: false,
-    playing: false,
-    audioEl: null,
-    autoScrollInterval: null,
-    isAutoScrolling: false,
-    lightboxOpen: false,
-    lightboxImg: '',
-    activeSection: 'hero',
-    hasLeftHero: false,
-    menuCollapsed: false,
-    observer: null,
+<div class="elementor elementor-346 elementor-location-single post-759 post type-post status-publish format-standard has-post-thumbnail hentry category-3d-motion 3d-motion-3d-adat-bugis-02"
+     x-data="bugisTheme({ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? '2026-11-22 08:00:00')->timestamp })"
+     x-init="init()">
 
-    open() {
-        this.opened = true;
-        this.$nextTick(() => {
-            this.audioEl = document.getElementById('bugisAudio');
-            if (this.audioEl) {
-                this.audioEl.play().then(() => { this.playing = true; }).catch(() => {});
-            }
-            const heroVid = document.getElementById('heroVideo');
-            if (heroVid) {
-                heroVid.currentTime = 0;
-                heroVid.play().catch(() => {});
-            }
-            this.hasLeftHero = false;
-            this.initScrollSpy();
-            this.scrollTo('hero');
-        });
-    },
-
-    scrollTo(id) {
-        if (id === 'hero' && this.activeSection !== 'hero') {
-            const heroVid = document.getElementById('heroVideo');
-            if (heroVid) {
-                heroVid.currentTime = 0;
-                heroVid.play().catch(() => {});
-            }
-            this.hasLeftHero = false;
-        }
-        this.activeSection = id;
-        const target = document.getElementById('section-' + id);
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-    },
-
-    initScrollSpy() {
-        if (this.observer) this.observer.disconnect();
-        const sectionIds = ['hero', 'couple', 'events', 'gallery', 'story', 'gift', 'rsvp'];
-        this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const id = entry.target.id.replace('section-', '');
-                
-                // Kontrol animasi video di 'Awal':
-                // Tidak berulang-ulang, diputar lagi saat user kembali ke section hero
-                if (id === 'hero') {
-                    const heroVid = document.getElementById('heroVideo');
-                    if (!entry.isIntersecting) {
-                        this.hasLeftHero = true;
-                        if (heroVid && !heroVid.paused) {
-                            heroVid.pause();
-                        }
-                    } else if (entry.isIntersecting && this.hasLeftHero) {
-                        this.hasLeftHero = false;
-                        if (heroVid) {
-                            heroVid.currentTime = 0;
-                            heroVid.play().catch(() => {});
-                        }
-                    }
-                }
-
-                if (entry.isIntersecting) {
-                    this.activeSection = id;
-                }
-            });
-        }, {
-            root: null,
-            rootMargin: '-15% 0px -55% 0px',
-            threshold: 0
-        });
-
-        sectionIds.forEach(id => {
-            const el = document.getElementById('section-' + id);
-            if (el) this.observer.observe(el);
-        });
-    },
-
-    toggleAudio() {
-        if (!this.audioEl) this.audioEl = document.getElementById('bugisAudio');
-        if (!this.audioEl) return;
-        if (this.playing) {
-            this.audioEl.pause();
-            this.playing = false;
-        } else {
-            this.audioEl.play().then(() => { this.playing = true; }).catch(() => {});
-        }
-    },
-
-    toggleAutoScroll() {
-        if (this.isAutoScrolling) {
-            this.stopAutoScroll();
-        } else {
-            this.isAutoScrolling = true;
-            this.autoScrollInterval = setInterval(() => {
-                window.scrollBy({ top: 1.5, behavior: 'auto' });
-                if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 15)) {
-                    this.stopAutoScroll();
-                }
-            }, 25);
-        }
-    },
-
-    stopAutoScroll() {
-        if (this.autoScrollInterval) {
-            clearInterval(this.autoScrollInterval);
-            this.autoScrollInterval = null;
-        }
-        this.isAutoScrolling = false;
-    },
-
-    openLightbox(src) {
-        this.lightboxImg = src;
-        this.lightboxOpen = true;
-    }
-}"
-@wheel.passive="if (isAutoScrolling) stopAutoScroll()"
-@touchstart.passive="if (isAutoScrolling) stopAutoScroll()">
-
-    {{-- Background Audio --}}
-    @php
-        $audioSource = $invitation->background_music 
-            ?? $invitation->music_url 
-            ?? asset('themes/3d-adat-bugis-02/assets/759IcESZZqg.mp3');
-    @endphp
-    <audio id="bugisAudio" loop preload="auto">
-        <source src="{{ $audioSource }}" type="audio/mpeg">
+    <!-- Audio Element -->
+    <audio id="song" loop preload="auto">
+        <source src="{{ $invitation->background_music ? asset($invitation->background_music) : asset('themes/3d-adat-bugis-02/assets/759IcESZZqg.mp3') }}" type="audio/mp3">
     </audio>
 
-    {{-- Floating Music Control (Visible after opened) --}}
-    <button x-show="opened" x-transition.opacity type="button" @click="toggleAudio()" class="music-toggle-btn" :title="playing ? 'Matikan Musik' : 'Putar Musik'">
-        <svg :class="{'music-disc-rotating': playing}" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 2a10 10 0 0 1 10 10"/>
-        </svg>
-    </button>
+    <!-- Outer Elementor Container: 2b26d455 -->
+    <div class="has_eae_slider elementor-element elementor-element-2b26d455 e-con-full e-flex e-con e-parent">
 
-    {{-- =================================================== --}}
-    {{-- COVER SCREEN (Fixed Overlay until Opened)           --}}
-    {{-- =================================================== --}}
-    <div x-show="!opened" x-transition:leave="transition ease-in-out duration-700" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-full" style="position:fixed;inset:0;z-index:9999;background:#32030c;display:flex;align-items:center;justify-content:center;">
-        <div class="bugis-container" style="height:100dvh;display:flex;flex-direction:column;justify-content:space-between;padding:50px 24px;text-align:center;background-image:url('{{ $invitation->cover_image ? img_url($invitation->cover_image) : asset('themes/3d-adat-bugis-02/assets/COVER-BUKA-UNDANGAN.jpg') }}');background-size:cover;background-position:center;position:relative;">
-            
-            {{-- Dark Overlay --}}
-            <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(50,3,12,0.65) 0%, rgba(50,3,12,0.4) 40%, rgba(50,3,12,0.7) 70%, rgba(40,2,9,0.95) 100%);z-index:1;"></div>
+        <!-- Desktop Sidebar Column (elementor-element-7a2531fd) -->
+        <div class="has_eae_slider elementor-element elementor-element-7a2531fd elementor-hidden-mobile e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="99051" data-element_type="container" data-id="7a2531fd" data-settings='{"jet_parallax_layout_list":[],"background_background":"slideshow","background_slideshow_gallery":[{"id":326,"url":"assets\/BACKGROUND-FIXED.jpg"}],"sticky":"top","background_slideshow_loop":"yes","background_slideshow_slide_duration":5000,"background_slideshow_slide_transition":"fade","background_slideshow_transition_duration":500,"sticky_on":["desktop","tablet","mobile"],"sticky_offset":0,"sticky_effects_offset":0,"sticky_anchor_link_offset":0}'>
+<div class="elementor-element elementor-element-3e314f4a elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3e314f4a" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">The Wedding Of</p> </div>
+<div class="elementor-element elementor-element-41dfae8f elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="41dfae8f" data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }} &amp; {{ $invitation->bride_nickname }}</h2> </div>
+<div class="elementor-element elementor-element-2b80dfdf elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2b80dfdf" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ \Carbon\Carbon::parse($invitation->event_date ?? $invitation->akad_date ?? '2027-02-03')->format('d . m . Y') }}</p> </div>
+</div>
 
-            {{-- Corner Ornaments --}}
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-tl" alt="">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-tr" alt="">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-bl" alt="">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-br" alt="">
+        <!-- Main Mobile/Center Content Column (elementor-element-35ac074c) -->
+        <div class="has_eae_slider elementor-element elementor-element-35ac074c e-con-full e-flex e-con e-child">
+            <div class="has_eae_slider elementor-element elementor-element-f9feda1 e-con-full cover e-flex e-con e-child" data-e-type="container" data-eae-slider="20387" data-element_type="container" data-id="f9feda1" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}' id="cover">
+<div class="has_eae_slider elementor-element elementor-element-132bad9a e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="56440" data-element_type="container" data-id="132bad9a" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-2f225040 animated-slow elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2f225040" data-settings='{"_animation":"zoomIn"}' data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">The Wedding Of</h2> </div>
+<div class="elementor-element elementor-element-423e4dc1 animated-slow custom-font-cover elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="423e4dc1" data-settings='{"_animation":"zoomIn"}' data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }} &amp; {{ $invitation->bride_nickname }}</h2> </div>
+<div class="elementor-element elementor-element-2ec0975a animated-slow elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="2ec0975a" data-settings='{"_animation":"zoomIn","_animation_delay":200,"_animation_mobile":"zoomIn"}' data-widget_type="image.default">
+<img alt="" class="attachment-full size-full wp-image-862" height="1590" src="{{ $invitation->cover_image ? asset($invitation->cover_image) : asset('themes/3d-adat-bugis-02/assets/DSCF7920-1.jpeg') }}" width="1060"/> </div>
+<div class="elementor-element elementor-element-325a7260 animated-slow elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="325a7260" data-settings='{"_animation":"zoomIn"}' data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">Kepada Yth: <br/>Bapak/Ibu/Saudara/i</h2> </div>
+<div class="elementor-element elementor-element-30ed7aeb animated-slow namatamu elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="30ed7aeb" data-settings='{"_animation":"zoomIn"}' data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">{{ $guestName ?? 'Tamu Undangan' }}</h2> </div>
+<div class="elementor-element elementor-element-46720f30 elementor-align-center animated-slow tombolbuka elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="46720f30" data-settings='{"_animation":"zoomIn"}' data-widget_type="button.default" id="tombolbuka">
+<a @click.prevent="openInvitation()" class="elementor-button elementor-button-link elementor-size-sm" href="#">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-icon">
+<i aria-hidden="true" class="far fa-envelope-open"></i> </span>
+<span class="elementor-button-text">Buka Undangan</span>
+</span>
+</a>
+</div>
+<div class="elementor-element elementor-element-5c3d2b71 elementor-widget elementor-widget-html" data-e-type="widget" data-element_type="widget" data-id="5c3d2b71" data-widget_type="html.default">
+<style>
+ @media (min-width: 320px){ 
+      .cover {
+    background-position: center center;
+      background-size: cover;
+        background-repeat: no-repeat;
+        margin:0;
+	padding:0;
+	border:0;
+       position: fixed;
+        height: 100vh;
+        overflow: hidden;  
+        width:100%; 
+   max-width:100%; 
+   display: inline-block; 
+   
+    }   
+ }
+ 
+ @media (min-width: 768px){
+          .cover {
+    background-position: center center;
+      background-size: cover;
+        background-repeat: no-repeat;
+        margin:0;
+	padding:0;
+	border:0;
+       position: fixed;
+        height: 100vh;
+        overflow: hidden;  
+        width:30%; 
+   max-width:30%; 
+   display: inline-block; 
+   
+    }   
+ }
+ 
+ 
+ 
+    .stop-scrolling {
+        height: 100vh;
+        overflow: hidden;
+    }
+            /* animasi icon wdp-mp3 berputar */
+    .audioRotate {
+        -webkit-animation: wdpMP3-muter 4s linear infinite;
+        -moz-animation: wdpMP3-muter 4s linear infinite;
+        animation: wdpMP3-muter 4s linear infinite;
+    }
+    @-moz-keyframes wdpMP3-muter { 100% { -moz-transform: rotate(360deg); } }
+    @-webkit-keyframes wdpMP3-muter { 100% { -webkit-transform: rotate(360deg); } }
+    @keyframes wdpMP3-muter { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+    .audio-box {
+        cursor:pointer;
+    }
+    </style>
 
-            {{-- Top Header --}}
-            <div style="position:relative;z-index:10;padding-top:20px;" class="animate__animated animate__fadeInDown">
-                <p style="font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--bugis-gold);font-weight:600;">The Wedding Of</p>
-                <h1 class="font-script color-gold-light" style="font-size:44px;line-height:1.2;margin:10px 0;text-shadow:0 2px 15px rgba(0,0,0,0.8);">
-                    {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
-                </h1>
-                @if($invitation->akad_date || $invitation->resepsi_date)
-                <p style="font-size:13px;letter-spacing:3px;color:rgba(255,255,255,0.85);font-weight:500;">
-                    {{ ($invitation->akad_date ?? $invitation->resepsi_date)->translatedFormat('d . m . Y') }}
-                </p>
-                @endif
+</div>
+</div>
+</div>
+<style>
+        .tombolbuka { opacity:1 !important; }
+        .locked-section { overflow: hidden !important; }
+        </style>
+<div class="has_eae_slider elementor-element elementor-element-40db289a e-con-full motionSection e-flex e-con e-child" data-e-type="container" data-eae-slider="82956" data-element_type="container" data-id="40db289a" data-settings='{"background_background":"video","background_video_start":0,"background_video_end":20,"background_play_once":"yes","background_play_on_mobile":"yes","background_privacy_mode":"yes","jet_parallax_layout_list":[],"background_video_link":"assets\/BUGIS-MAROON.mp4"}'>
+<div class="elementor-background-video-container">
+<video class="elementor-background-video-hosted" id="heroVideo" muted="" playsinline="" poster="{{ asset('themes/3d-adat-bugis-02/assets/BUGISMAROONFALLBACK.jpg') }}" role="presentation" style="width:100%;height:100%;object-fit:cover;">
+<source src="{{ asset('themes/3d-adat-bugis-02/assets/BUGIS-MAROON.mp4') }}" type="video/mp4"/>
+</video>
+</div><div class="has_eae_slider elementor-element elementor-element-1aa90ea9 e-con-full motionText e-flex e-con e-child" data-e-type="container" data-eae-slider="96906" data-element_type="container" data-id="1aa90ea9" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-761cee93 elementor-absolute elementor-align-center elementor-widget elementor-widget-lottie" data-e-type="widget" data-element_type="widget" data-id="761cee93" data-settings='{"source_json":{"url":"assets\/animation_lnbjd092-1-1-1.json","id":"233","size":""},"loop":"yes","_position":"absolute","source":"media_file","caption_source":"none","link_to":"none","trigger":"arriving_to_viewport","viewport":{"unit":"%","size":"","sizes":{"start":0,"end":100}},"play_speed":{"unit":"px","size":1,"sizes":[]},"start_point":{"unit":"%","size":0,"sizes":[]},"end_point":{"unit":"%","size":100,"sizes":[]},"renderer":"svg"}' data-widget_type="lottie.default">
+<div class="e-lottie__container"><div class="e-lottie__animation"></div></div> </div>
+<div class="elementor-element elementor-element-729d7126 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="729d7126" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">The Wedding Of</h2> </div>
+<div class="elementor-element elementor-element-53c49100 animated-slow wdsdv-enabled--yes custom-font-opening elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="53c49100" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
+<h1 class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }}</h1> </div>
+<div class="elementor-element elementor-element-2117e8c7 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2117e8c7" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
+<h1 class="elementor-heading-title elementor-size-default">&amp;</h1> </div>
+<div class="elementor-element elementor-element-7689559c animated-slow wdsdv-enabled--yes custom-font-opening elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7689559c" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
+<h1 class="elementor-heading-title elementor-size-default">{{ $invitation->bride_nickname }}</h1> </div>
+<div class="elementor-element elementor-element-2bc135a1 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2bc135a1" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
+<h1 class="elementor-heading-title elementor-size-default">{{ \Carbon\Carbon::parse($invitation->event_date ?? $invitation->akad_date ?? '2027-02-03')->format('d . m . Y') }}</h1> </div>
+<div class="elementor-element elementor-element-477aca49 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="477aca49" data-settings='{"_animation":"zoomIn","_animation_delay":300}' data-widget_type="heading.default">
+<h1 class="elementor-heading-title elementor-size-default">{{ $invitation->hashtag ?? ('#' . ($invitation->groom_nickname ?? 'Groom') . ($invitation->bride_nickname ?? 'Bride')) }}</h1> </div>
+<div class="elementor-element elementor-element-8c314b6 elementor-align-center elementor-mobile-align-center elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="8c314b6" data-settings='{"_animation_mobile":"fadeInDown","_animation":"fadeInDown","_animation_delay":400}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-sm" href="#sc">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-text">I</span>
+</span>
+</a>
+</div>
+</div>
+
+</div>
+<div class="has_eae_slider elementor-element elementor-element-1b4036b1 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="53116" data-element_type="container" data-id="1b4036b1" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}' id="sc">
+<div class="has_eae_slider elementor-element elementor-element-6517fc08 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="64407" data-element_type="container" data-id="6517fc08" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-4957ef64 elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="4957ef64" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
+<img alt="" class="attachment-full size-full wp-image-863" height="1590" src="{{ $invitation->quote_image ? asset($invitation->quote_image) : asset('themes/3d-adat-bugis-02/assets/DSCF7882-1.jpeg') }}" width="1060"/> </div>
+<div class="elementor-element elementor-element-29338a02 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="29338a02" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">WE FOUND LOVE</p> </div>
+<div class="elementor-element elementor-element-5cc07038 elementor-invisible elementor-widget elementor-widget-text-editor" data-e-type="widget" data-element_type="widget" data-id="5cc07038" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="text-editor.default">
+									“Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.”								</div>
+<div class="elementor-element elementor-element-3c98760a elementor-invisible elementor-widget elementor-widget-text-editor" data-e-type="widget" data-element_type="widget" data-id="3c98760a" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="text-editor.default">
+									Q.S Ar-Rum : 21								</div>
+</div>
+</div>
+<div id="couple" class="has_eae_slider elementor-element elementor-element-25e9fe6 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="22712" data-element_type="container" data-id="25e9fe6" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-3ca70f12 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="99232" data-element_type="container" data-id="3ca70f12" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-1238a045 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="1238a045" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Assalamualaikum Warahmatullaahi Wabarakaatuh <br/>Dengan memohon rahmat dan ridho Allah Swt. kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan putra-putri kami:</p> </div>
+<div class="elementor-element elementor-element-4f01d582 animated-slow elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="4f01d582" data-settings='{"_animation":"fadeInLeft","_animation_delay":200,"_animation_mobile":"fadeInLeft"}' data-widget_type="image.default">
+<img alt="" class="attachment-full size-full wp-image-867" height="1590" src="{{ $invitation->groom_photo ? asset($invitation->groom_photo) : asset('themes/3d-adat-bugis-02/assets/DSCF7972-2.jpeg') }}" width="1060"/> </div>
+<div class="elementor-element elementor-element-1ed755bd custom-font-nama-pendek elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="1ed755bd" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }}</p> </div>
+<div class="elementor-element elementor-element-5a868f7f custom-font-nama-panjang elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5a868f7f" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default"><span class="wds-jfb-typography-meta-_nama_lengkap_pria">{{ $invitation->groom_name }}</span></p> </div>
+<div class="elementor-element elementor-element-7d28a885 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7d28a885" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Putra Pertama Dari</p> </div>
+<div class="elementor-element elementor-element-4ebd532b elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="4ebd532b" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Bpk. {{ $invitation->groom_father ?? 'Groom Father' }} &amp; Ibu {{ $invitation->groom_mother ?? 'Groom Mother' }}</p> </div>
+<div class="elementor-element elementor-element-7ceeffae elementor-align-center animated-slow wdsdv-enabled--yes elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="7ceeffae" data-settings='{"_animation":"zoomIn"}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-md" href="https://instagram.com/{{ ltrim($invitation->instagram_groom ?? 'zehan_invitation', '@') }}" target="_blank" target="_blank">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-text">{{ $invitation->instagram_groom ? '@' . ltrim($invitation->instagram_groom, '@') : '@instagram' }}</span>
+</span>
+</a>
+</div>
+<div class="elementor-element elementor-element-2194bbef elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="2194bbef" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
+<img alt="" class="attachment-large size-large wp-image-302" height="870" src="{{ asset('themes/3d-adat-bugis-02/assets/dan-bugis-1.png') }}" width="774"/> </div>
+<div class="elementor-element elementor-element-3ce2deed animated-slow elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="3ce2deed" data-settings='{"_animation":"fadeInRight","_animation_delay":200,"_animation_mobile":"fadeInRight"}' data-widget_type="image.default">
+<img alt="" class="attachment-full size-full wp-image-866" height="1590" src="{{ $invitation->bride_photo ? asset($invitation->bride_photo) : asset('themes/3d-adat-bugis-02/assets/DSCF7981-2.jpeg') }}" width="1060"/> </div>
+<div class="elementor-element elementor-element-74ac10ba custom-font-nama-pendek elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="74ac10ba" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->bride_nickname }}</p> </div>
+<div class="elementor-element elementor-element-63ed8e8e custom-font-nama-panjang elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="63ed8e8e" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default"><span class="wds-jfb-typography-meta-_nama_lengkap_wanita">{{ $invitation->bride_name }}</span></p> </div>
+<div class="elementor-element elementor-element-6450c259 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6450c259" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Putri Pertama Dari</p> </div>
+<div class="elementor-element elementor-element-100da207 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="100da207" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Bpk. {{ $invitation->bride_father ?? 'Bride Father' }} &amp; Ibu {{ $invitation->bride_mother ?? 'Bride Mother' }}</p> </div>
+<div class="elementor-element elementor-element-db60ba5 elementor-align-center animated-slow wdsdv-enabled--yes elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="db60ba5" data-settings='{"_animation":"zoomIn"}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-md" href="https://instagram.com/{{ ltrim($invitation->instagram_bride ?? 'zehan_invitation', '@') }}" target="_blank" target="_blank">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-text">{{ $invitation->instagram_bride ? '@' . ltrim($invitation->instagram_bride, '@') : '@instagram' }}</span>
+</span>
+</a>
+</div>
+</div>
+</div>
+<div id="events" class="has_eae_slider elementor-element elementor-element-50d22c29 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="83808" data-element_type="container" data-id="50d22c29" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-58f2f6ac e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="40160" data-element_type="container" data-id="58f2f6ac" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-28543923 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="75451" data-element_type="container" data-id="28543923" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-53867c96 elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="53867c96" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
+<img alt="" class="attachment-large size-large wp-image-305" height="819" src="{{ asset('themes/3d-adat-bugis-02/assets/01-2-1.png') }}" width="953"/> </div>
+<div class="elementor-element elementor-element-7339f369 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7339f369" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Akad Nikah</p> </div>
+<div class="elementor-element elementor-element-2422d853 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2422d853" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->akad_date ? \Carbon\Carbon::parse($invitation->akad_date)->locale('id')->isoFormat('dddd') : 'Senin' }}</p> </div>
+<div class="elementor-element elementor-element-68cc7cbc elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="68cc7cbc" data-settings='{"_animation":"zoomIn","_animation_delay":200}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->akad_date ? \Carbon\Carbon::parse($invitation->akad_date)->locale('id')->isoFormat('D MMMM Y') : '10 Agustus 2026' }}</p> </div>
+<div class="elementor-element elementor-element-5ba6ee95 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5ba6ee95" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->akad_time ? $invitation->akad_time . ' WIB - Selesai' : '08:00 WIB - Selesai' }}</p> </div>
+<div class="elementor-element elementor-element-6b92d7a7 elementor-view-default elementor-invisible elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="6b92d7a7" data-settings='{"_animation":"fadeInDown","_animation_delay":300}' data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fas fa-map-marker-alt"></i> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-55b29470 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="55b29470" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->akad_venue ?? 'Kediaman Mempelai Wanita' }}</p> </div>
+<div class="elementor-element elementor-element-6da697c4 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6da697c4" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->akad_address ?? 'Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No,2 Pekanbaru.' }}</p> </div>
+<div class="elementor-element elementor-element-62f4a2b8 elementor-align-center wdsdv-enabled--yes elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="62f4a2b8" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-xs" href="{{ $invitation->akad_maps_link ?? 'https://maps.google.com' }}" target="_blank" target="_blank">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-icon">
+<i aria-hidden="true" class="fas fa-map-marker-alt"></i> </span>
+<span class="elementor-button-text">Open Maps</span>
+</span>
+</a>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-16ca673e e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="94923" data-element_type="container" data-id="16ca673e" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-515998fd elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="515998fd" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
+<img alt="" class="attachment-large size-large wp-image-306" height="512" src="{{ asset('themes/3d-adat-bugis-02/assets/icon-bunga-1.png') }}" width="512"/> </div>
+<div class="elementor-element elementor-element-24e96e0e elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="24e96e0e" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Resepsi</p> </div>
+<div class="elementor-element elementor-element-45e610ee elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="45e610ee" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->resepsi_date ? \Carbon\Carbon::parse($invitation->resepsi_date)->locale('id')->isoFormat('dddd') : 'Rabu' }}</p> </div>
+<div class="elementor-element elementor-element-6bb26c0c elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6bb26c0c" data-settings='{"_animation":"zoomIn","_animation_delay":200}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->resepsi_date ? \Carbon\Carbon::parse($invitation->resepsi_date)->locale('id')->isoFormat('D MMMM Y') : '26 Agustus 2026' }}</p> </div>
+<div class="elementor-element elementor-element-42183b5b elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="42183b5b" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->resepsi_time ? $invitation->resepsi_time . ' WIB - Selesai' : '10:00 WIB - Selesai' }}</p> </div>
+<div class="elementor-element elementor-element-1c20eef2 elementor-view-default elementor-invisible elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="1c20eef2" data-settings='{"_animation":"fadeInDown","_animation_delay":300}' data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fas fa-map-marker-alt"></i> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-5b0e4b13 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5b0e4b13" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->resepsi_venue ?? 'Kediaman Mempelai Wanita' }}</p> </div>
+<div class="elementor-element elementor-element-ced8f3c elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="ced8f3c" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->resepsi_address ?? 'Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No,2 Pekanbaru.' }}</p> </div>
+<div class="elementor-element elementor-element-53d80eda elementor-align-center wdsdv-enabled--yes elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="53d80eda" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-xs" href="{{ $invitation->resepsi_maps_link ?? 'https://maps.google.com' }}" target="_blank" target="_blank">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-icon">
+<i aria-hidden="true" class="fas fa-map-marker-alt"></i> </span>
+<span class="elementor-button-text">Open Maps</span>
+</span>
+</a>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-4a4571fe e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="79784" data-element_type="container" data-id="4a4571fe" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-6c1bcce6 elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="6c1bcce6" data-settings='{"_animation":"fadeInDown","_animation_delay":100,"_animation_mobile":"fadeInDown"}' data-widget_type="image.default">
+<img alt="" class="attachment-large size-large wp-image-306" height="512" src="{{ asset('themes/3d-adat-bugis-02/assets/icon-bunga-1.png') }}" width="512"/> </div>
+<div class="elementor-element elementor-element-720bfe6a elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="720bfe6a" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Unduh Mantu</p> </div>
+<div class="elementor-element elementor-element-63b6144b elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="63b6144b" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Selasa</p> </div>
+<div class="elementor-element elementor-element-6d2a8985 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6d2a8985" data-settings='{"_animation":"zoomIn","_animation_delay":200}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">8 September 2026</p> </div>
+<div class="elementor-element elementor-element-5f309065 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5f309065" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">11.00 WIB - Selesai</p> </div>
+<div class="elementor-element elementor-element-3a1a56b elementor-view-default elementor-invisible elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="3a1a56b" data-settings='{"_animation":"fadeInDown","_animation_delay":300}' data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fas fa-map-marker-alt"></i> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-3ed7805a elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3ed7805a" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Kediaman Mempelai Pria</p> </div>
+<div class="elementor-element elementor-element-4320230 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="4320230" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No,2 Pekanbaru.</p> </div>
+<div class="elementor-element elementor-element-52301062 elementor-align-center wdsdv-enabled--yes elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="52301062" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-xs" href="{{ $invitation->resepsi_maps_link ?? 'https://maps.google.com' }}" target="_blank" target="_blank">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-icon">
+<i aria-hidden="true" class="fas fa-map-marker-alt"></i> </span>
+<span class="elementor-button-text">Open Maps</span>
+</span>
+</a>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-431cd505 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="17458" data-element_type="container" data-id="431cd505" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-21d93487 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="21d93487" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Live Streaming</p> </div>
+<div class="elementor-element elementor-element-2ff52334 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2ff52334" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Kami mengundang Bapak/Ibu/Saudara/i untuk menyaksikan Pernikahan kami secara Virtual yang disiarkan langsung melalui Sosial Media di bawah ini</p> </div>
+<div class="elementor-element elementor-element-6a037e56 elementor-align-center elementor-invisible elementor-widget elementor-widget-button" data-e-type="widget" data-element_type="widget" data-id="6a037e56" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="button.default">
+<a class="elementor-button elementor-button-link elementor-size-xs" href="https://www.instagram.com/zehan_invitation" target="_blank">
+<span class="elementor-button-content-wrapper">
+<span class="elementor-button-icon">
+<i aria-hidden="true" class="fas fa-video"></i> </span>
+<span class="elementor-button-text">Klik Disini</span>
+</span>
+</a>
+</div>
+</div>
+</div>
+<div id="countdown" class="has_eae_slider elementor-element elementor-element-7741f858 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="88758" data-element_type="container" data-id="7741f858" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-42ca87c3 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="97018" data-element_type="container" data-id="42ca87c3" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-5a9f45e9 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5a9f45e9" data-settings='{"_animation":"zoomIn","_animation_delay":350}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Counting The Days</p> </div>
+<div class="elementor-element elementor-element-11a582ee elementor-absolute elementor-align-center elementor-widget elementor-widget-lottie" data-e-type="widget" data-element_type="widget" data-id="11a582ee" data-settings='{"source_json":{"url":"assets\/animation_lnbjd092-1-1-1.json","id":"233","size":""},"loop":"yes","_position":"absolute","source":"media_file","caption_source":"none","link_to":"none","trigger":"arriving_to_viewport","viewport":{"unit":"%","size":"","sizes":{"start":0,"end":100}},"play_speed":{"unit":"px","size":1,"sizes":[]},"start_point":{"unit":"%","size":0,"sizes":[]},"end_point":{"unit":"%","size":100,"sizes":[]},"renderer":"svg"}' data-widget_type="lottie.default">
+<div class="e-lottie__container"><div class="e-lottie__animation"></div></div> </div>
+<div class="elementor-element elementor-element-65709850 elementor-countdown--label-block elementor-widget elementor-widget-countdown" data-e-type="widget" data-element_type="widget" data-id="65709850" data-widget_type="countdown.default">
+<div class="elementor-countdown-wrapper" data-date="1801641720">
+<div class="elementor-countdown-item"><span class="elementor-countdown-digits elementor-countdown-days" x-text="days">0</span> <span class="elementor-countdown-label">Hari</span></div><div class="elementor-countdown-item"><span class="elementor-countdown-digits elementor-countdown-hours" x-text="hours">0</span> <span class="elementor-countdown-label">Jam</span></div><div class="elementor-countdown-item"><span class="elementor-countdown-digits elementor-countdown-minutes" x-text="minutes">0</span> <span class="elementor-countdown-label">Menit</span></div><div class="elementor-countdown-item"><span class="elementor-countdown-digits elementor-countdown-seconds" x-text="seconds">0</span> <span class="elementor-countdown-label">Detik</span></div> </div>
+</div>
+<div class="elementor-element elementor-element-60649bf6 elementor-align-center elementor-invisible elementor-widget elementor-widget-wds_calendar" data-e-type="widget" data-element_type="widget" data-id="60649bf6" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="wds_calendar.default">
+<div class="elementor-widget-container">
+<div class="elementor-button-wrapper">
+<a class="elementor-button-link elementor-button elementor-size-xs" href="https://www.google.com/calendar/render?action=TEMPLATE&text={{ urlencode("Pernikahan " . ($invitation->groom_nickname ?? "Groom") . " & " . ($invitation->bride_nickname ?? "Bride")) }}&dates={{ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? "2026-11-22")->format("Ymd\THis\Z") }}/{{ \Carbon\Carbon::parse($invitation->akad_date ?? $invitation->event_date ?? "2026-11-22")->addHours(4)->format("Ymd\THis\Z") }}&details={{ urlencode("Undangan Pernikahan " . ($invitation->groom_name ?? "") . " & " . ($invitation->bride_name ?? "")) }}&location={{ urlencode($invitation->akad_address ?? $invitation->resepsi_address ?? "") }}" rel="nofollow" role="button" target="_blank"> <span class="elementor-button-content-wrapper wds-flexbox">
+<span class="elementor-button-icon elementor-align-icon-row">
+<i aria-hidden="true" class="far fa-calendar-alt"></i> </span>
+<span class="elementor-button-text">Save on the calendar</span>
+</span>
+</a>
+</div>
+</div>
+</div>
+<div class="elementor-element elementor-element-2559009f elementor-widget-divider--view-line_icon elementor-view-default elementor-widget-divider--element-align-center elementor-invisible elementor-widget elementor-widget-divider" data-e-type="widget" data-element_type="widget" data-id="2559009f" data-settings='{"_animation":"zoomIn","_animation_delay":200}' data-widget_type="divider.default">
+<div class="elementor-divider">
+<span class="elementor-divider-separator">
+<div class="elementor-icon elementor-divider__element">
+<i aria-hidden="true" class="simple-line-icons icon-diamond"></i></div>
+</span>
+</div>
+</div>
+<div class="elementor-element elementor-element-7c203bca elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="7c203bca" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="gallery" class="has_eae_slider elementor-element elementor-element-5bc5469a e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="68477" data-element_type="container" data-id="5bc5469a" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-511afdbf elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="511afdbf" data-settings='{"_animation":"fadeInUp","_animation_delay":200}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Our Gallery</p> </div>
+<div class="elementor-element elementor-element-3e68f57a elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3e68f57a" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Constantly, consistently, continually, You.</p> </div>
+<div class="elementor-element elementor-element-cb59f60 elementor-widget elementor-widget-video" data-e-type="widget" data-element_type="widget" data-id="cb59f60" data-settings='{"youtube_url":"https:\/\/www.youtube.com\/watch?v=KCquqtb2AfM","autoplay":"yes","play_on_mobile":"yes","mute":"yes","loop":"yes","yt_privacy":"yes","video_type":"youtube","controls":"yes"}' data-widget_type="video.default">
+<div class="elementor-wrapper elementor-open-inline">
+<div class="elementor-video"></div> </div>
+</div>
+<div class="elementor-element elementor-element-21562324 elementor-widget elementor-widget-gallery" data-e-type="widget" data-element_type="widget" data-id="21562324" data-settings='{"gallery_layout":"masonry","columns":2,"columns_mobile":2,"lazyload":"yes","columns_tablet":2,"gap":{"unit":"px","size":10,"sizes":[]},"gap_tablet":{"unit":"px","size":10,"sizes":[]},"gap_mobile":{"unit":"px","size":10,"sizes":[]},"link_to":"file","overlay_background":"yes","content_hover_animation":"fade-in"}' data-widget_type="gallery.default">
+<div class="elementor-gallery__container">
+<a class="e-gallery-item elementor-gallery-item elementor-animated-content" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6OTM0LCJ1cmwiOiJodHRwczpcL1wvYnkuemVoYW5pbnYuaWRcL3dwLWNvbnRlbnRcL3VwbG9hZHNcL2pldC1mb3JtLWJ1aWxkZXJcLzM2MzY2Mzg4MTc3NzJlNDJiNTlkNzRjZmY1NzFmYmIzXC8yMDI2XC8wNFwvRFNDRjc4MzgtMS5qcGVnIiwic2xpZGVzaG93IjoiMjE1NjIzMjQifQ%3D%3D" data-elementor-lightbox-slideshow="21562324" data-elementor-open-lightbox="yes" href="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7838-1.jpeg') }}">
+<div aria-label="" class="e-gallery-image elementor-gallery-item__image" data-height="1590" data-thumbnail="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7838-1.jpeg') }}" data-width="1060" role="img"></div>
+<div class="elementor-gallery-item__overlay"></div>
+</a>
+<a class="e-gallery-item elementor-gallery-item elementor-animated-content" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6OTM1LCJ1cmwiOiJodHRwczpcL1wvYnkuemVoYW5pbnYuaWRcL3dwLWNvbnRlbnRcL3VwbG9hZHNcL2pldC1mb3JtLWJ1aWxkZXJcLzM2MzY2Mzg4MTc3NzJlNDJiNTlkNzRjZmY1NzFmYmIzXC8yMDI2XC8wNFwvRFNDRjc4NDAtMS5qcGVnIiwic2xpZGVzaG93IjoiMjE1NjIzMjQifQ%3D%3D" data-elementor-lightbox-slideshow="21562324" data-elementor-open-lightbox="yes" href="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7840-1.jpeg') }}">
+<div aria-label="" class="e-gallery-image elementor-gallery-item__image" data-height="1590" data-thumbnail="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7840-1.jpeg') }}" data-width="1060" role="img"></div>
+<div class="elementor-gallery-item__overlay"></div>
+</a>
+<a class="e-gallery-item elementor-gallery-item elementor-animated-content" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6OTM2LCJ1cmwiOiJodHRwczpcL1wvYnkuemVoYW5pbnYuaWRcL3dwLWNvbnRlbnRcL3VwbG9hZHNcL2pldC1mb3JtLWJ1aWxkZXJcLzM2MzY2Mzg4MTc3NzJlNDJiNTlkNzRjZmY1NzFmYmIzXC8yMDI2XC8wNFwvRFNDRjc4NDktMS5qcGVnIiwic2xpZGVzaG93IjoiMjE1NjIzMjQifQ%3D%3D" data-elementor-lightbox-slideshow="21562324" data-elementor-open-lightbox="yes" href="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7849-1.jpeg') }}">
+<div aria-label="" class="e-gallery-image elementor-gallery-item__image" data-height="1590" data-thumbnail="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7849-1.jpeg') }}" data-width="1060" role="img"></div>
+<div class="elementor-gallery-item__overlay"></div>
+</a>
+<a class="e-gallery-item elementor-gallery-item elementor-animated-content" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6OTM3LCJ1cmwiOiJodHRwczpcL1wvYnkuemVoYW5pbnYuaWRcL3dwLWNvbnRlbnRcL3VwbG9hZHNcL2pldC1mb3JtLWJ1aWxkZXJcLzM2MzY2Mzg4MTc3NzJlNDJiNTlkNzRjZmY1NzFmYmIzXC8yMDI2XC8wNFwvRFNDRjc4NzYtMS5qcGVnIiwic2xpZGVzaG93IjoiMjE1NjIzMjQifQ%3D%3D" data-elementor-lightbox-slideshow="21562324" data-elementor-open-lightbox="yes" href="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7876-1.jpeg') }}">
+<div aria-label="" class="e-gallery-image elementor-gallery-item__image" data-height="1590" data-thumbnail="{{ asset('themes/3d-adat-bugis-02/assets/DSCF7876-1.jpeg') }}" data-width="1060" role="img"></div>
+<div class="elementor-gallery-item__overlay"></div>
+</a>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-749fd8c6 e-con-full e-flex e-con e-child" data-e-type="container" data-id="749fd8c6" style="min-height: 50vh; position: relative; overflow: hidden;">
+    <div class="bugis-kenburns-bg" style="position: absolute; inset: 0; background-image: url('{{ asset('themes/3d-adat-bugis-02/assets/DSCF7849-2.jpeg') }}'); background-size: cover; background-position: center; animation: bugisKenBurns 14s ease-in-out infinite alternate;"></div>
+</div>
+<div id="story" class="has_eae_slider elementor-element elementor-element-2838b78c e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="16873" data-element_type="container" data-id="2838b78c" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-1d47a666 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="79935" data-element_type="container" data-id="1d47a666" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-3314bf86 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3314bf86" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Love Story</p> </div>
+<div class="elementor-element elementor-element-24abdce5 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="24abdce5" data-settings='{"_animation":"fadeInUp","_animation_mobile":"fadeInDown","_animation_delay":300}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Every love story is beautiful, but ours is my favorite.</p> </div>
+<div class="elementor-element elementor-element-50f723ba elementor-widget elementor-widget-jet-timeline" data-e-type="widget" data-element_type="widget" data-id="50f723ba" data-widget_type="jet-timeline.default">
+<div class="elementor-widget-container">
+<div class="elementor-jet-timeline jet-elements"><div class="jet-timeline jet-timeline--align-left jet-timeline--align-middle">
+<div class="jet-timeline__line"><div class="jet-timeline__line-progress"></div></div>
+<div class="jet-timeline-list"><div class="jet-timeline-item jet-timeline-item--animated elementor-repeater-item-a1d724f-0 jet-timeline-item--image-inside">
+<div class="timeline-item__card">
+<div class="timeline-item__card-inner">
+<div class="timeline-item__card-img"><img alt="" class="attachment-full size-full wp-image-859" decoding="async" height="1590" src="{{ asset('themes/3d-adat-bugis-02/assets/04-DSCF7849-1.jpeg') }}" width="1060"/></div> <div class="timeline-item__card-content">
+<div class="timeline-item__meta"><div class="timeline-item__meta-content">2023</div></div><h5 class="timeline-item__card-title">Awal yang Gak Disangka</h5><div class="timeline-item__card-desc">Semua berawal dari hal sederhana—entah itu chat random, ketemu tanpa sengaja, atau cuma “iseng kenal”. Tapi dari situ, perlahan tumbuh rasa yang gak pernah direncanakan.</div> </div>
+</div>
+<div class="timeline-item__card-arrow"></div>
+</div>
+<div class="timeline-item__point"><div class="timeline-item__point-content timeline-item__point-content--icon"><span class="jet-elements-icon"><i aria-hidden="true" class="fas fa-hand-holding-heart"></i></span></div></div><div class="timeline-item__meta"><div class="timeline-item__meta-content">2023</div></div></div><div class="jet-timeline-item jet-timeline-item--animated elementor-repeater-item-a1d724f-1 jet-timeline-item--image-inside">
+<div class="timeline-item__card">
+<div class="timeline-item__card-inner">
+<div class="timeline-item__card-img"><img alt="" class="attachment-full size-full wp-image-858" decoding="async" height="1590" src="{{ asset('themes/3d-adat-bugis-02/assets/04-DSCF7840-1.jpeg') }}" width="1060"/></div> <div class="timeline-item__card-content">
+<div class="timeline-item__meta"><div class="timeline-item__meta-content">2024</div></div><h5 class="timeline-item__card-title">Makin Dekat, Makin Nyaman</h5><div class="timeline-item__card-desc">Hari-hari mulai diisi dengan cerita, tawa, dan perhatian kecil. Dari yang awalnya biasa aja, jadi tempat pulang paling nyaman.</div> </div>
+</div>
+<div class="timeline-item__card-arrow"></div>
+</div>
+<div class="timeline-item__point"><div class="timeline-item__point-content timeline-item__point-content--icon"><span class="jet-elements-icon"><i aria-hidden="true" class="fas fa-hand-holding-heart"></i></span></div></div><div class="timeline-item__meta"><div class="timeline-item__meta-content">2024</div></div></div><div class="jet-timeline-item jet-timeline-item--animated elementor-repeater-item-a1d724f-2 jet-timeline-item--image-inside">
+<div class="timeline-item__card">
+<div class="timeline-item__card-inner">
+<div class="timeline-item__card-img"><img alt="" class="attachment-full size-full wp-image-857" decoding="async" height="1590" src="{{ asset('themes/3d-adat-bugis-02/assets/04-DSCF7838-1.jpeg') }}" width="1060"/></div> <div class="timeline-item__card-content">
+<div class="timeline-item__meta"><div class="timeline-item__meta-content">2025</div></div><h5 class="timeline-item__card-title">Melewati Segalanya Bareng</h5><div class="timeline-item__card-desc">Gak selalu mulus, ada beda pendapat, ada jarak, ada ujian. Tapi justru di situ, cinta makin kuat karena selalu pilih untuk bertahan.</div> </div>
+</div>
+<div class="timeline-item__card-arrow"></div>
+</div>
+<div class="timeline-item__point"><div class="timeline-item__point-content timeline-item__point-content--icon"><span class="jet-elements-icon"><i aria-hidden="true" class="fas fa-hand-holding-heart"></i></span></div></div><div class="timeline-item__meta"><div class="timeline-item__meta-content">2025</div></div></div><div class="jet-timeline-item jet-timeline-item--animated elementor-repeater-item-a1d724f-3 jet-timeline-item--image-inside">
+<div class="timeline-item__card">
+<div class="timeline-item__card-inner">
+<div class="timeline-item__card-img"><img alt="" class="attachment-full size-full wp-image-856" decoding="async" height="1590" src="{{ asset('themes/3d-adat-bugis-02/assets/04-DSCF7876-1.jpeg') }}" width="1060"/></div> <div class="timeline-item__card-content">
+<div class="timeline-item__meta"><div class="timeline-item__meta-content">2026</div></div><h5 class="timeline-item__card-title">Memilih Selamanya</h5><div class="timeline-item__card-desc">Sampai akhirnya sadar, “ini orangnya.” Bukan cuma untuk sekarang, tapi untuk semua hari ke depan. Dari dua cerita, jadi satu perjalanan selamanya.</div> </div>
+</div>
+<div class="timeline-item__card-arrow"></div>
+</div>
+<div class="timeline-item__point"><div class="timeline-item__point-content timeline-item__point-content--icon"><span class="jet-elements-icon"><i aria-hidden="true" class="fas fa-hand-holding-heart"></i></span></div></div><div class="timeline-item__meta"><div class="timeline-item__meta-content">2026</div></div></div></div></div></div> </div>
+</div>
+<div class="elementor-element elementor-element-409643d3 elementor-absolute animated-slow elementor-invisible elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="409643d3" data-settings='{"_animation":"rotateInDownLeft","_animation_delay":300,"_animation_mobile":"fadeInLeft","_position":"absolute"}' data-widget_type="image.default">
+<img alt="" class="attachment-full size-full wp-image-316" height="978" src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" width="585"/> </div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-3057ba0d e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="96982" data-element_type="container" data-id="3057ba0d" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}' id="gift">
+<div class="has_eae_slider elementor-element elementor-element-273fc174 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="18519" data-element_type="container" data-id="273fc174" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-79776c1 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="79776c1" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Wedding Gift</p> </div>
+<div class="elementor-element elementor-element-2939947d elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2939947d" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.</p> </div>
+<div class="has_eae_slider elementor-element elementor-element-47fd9bdd e-con-full elementor-hidden-desktop elementor-hidden-tablet elementor-hidden-mobile e-flex e-con e-child" data-e-type="container" data-eae-slider="35120" data-element_type="container" data-id="47fd9bdd" data-settings='{"jet_parallax_layout_list":[],"background_background":"classic","animation_mobile":"fadeInUp"}' id="amplop">
+<div class="has_eae_slider elementor-element elementor-element-4a48b3ae e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="68147" data-element_type="container" data-id="4a48b3ae" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-353ffc0b e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="28734" data-element_type="container" data-id="353ffc0b" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-3f41cec6 elementor-view-default elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="3f41cec6" data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fas fa-gift"></i> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-355317ca elementor-widget__width-initial elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="355317ca" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Gift</p> </div>
+</div>
+<div class="elementor-element elementor-element-149f1d7b elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="149f1d7b" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Nama Penerima</p> </div>
+<div class="elementor-element elementor-element-6a6a9ef1 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6a6a9ef1" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }} &amp; {{ $invitation->bride_nickname }}</p> </div>
+<div class="elementor-element elementor-element-3eef158e elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3eef158e" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Alamat Penerima</p> </div>
+<div class="elementor-element elementor-element-1c15892a elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="1c15892a" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->gift_address ?? $invitation->akad_address ?? "Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No.2, Pekanbaru." }}</p> </div>
+<div class="elementor-element elementor-element-2986c92 elementor-align-center elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="2986c92" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">{{ $invitation->gift_address ?? $invitation->akad_address ?? "Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No.2, Pekanbaru." }}</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Alamat</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-3959a328 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="85687" data-element_type="container" data-id="3959a328" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-2cb2d3f0 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="50054" data-element_type="container" data-id="2cb2d3f0" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-16f3b968 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="94458" data-element_type="container" data-id="16f3b968" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-17dcea4c elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="17dcea4c" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-52e8c167 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="25124" data-element_type="container" data-id="52e8c167" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-2d329ee3 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="2d329ee3" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/1200px-Bank_Central_Asia.svg-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-3505b06f elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3505b06f" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-5927d44 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5927d44" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-6f29e840 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6f29e840" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-2299e5e7 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2299e5e7" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_name }}</p> </div>
+<div class="elementor-element elementor-element-194cce89 elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="194cce89" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-52fcf21c e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="25324" data-element_type="container" data-id="52fcf21c" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-26479a97 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="78344" data-element_type="container" data-id="26479a97" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-6ad8d414 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="61888" data-element_type="container" data-id="6ad8d414" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-5504e5e3 elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="5504e5e3" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-2daa1f9 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="83719" data-element_type="container" data-id="2daa1f9" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-6fc3c270 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="6fc3c270" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/logo-bcas-full-color-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-33d78da6 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="33d78da6" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-609ed723 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="609ed723" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-91eca7b elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="91eca7b" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-4ec33c9 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="4ec33c9" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_name }}</p> </div>
+<div class="elementor-element elementor-element-61be2b0f elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="61be2b0f" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-288147c4 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="94450" data-element_type="container" data-id="288147c4" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-b37d5d7 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="59977" data-element_type="container" data-id="b37d5d7" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-2217e136 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="89376" data-element_type="container" data-id="2217e136" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-6c730789 elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="6c730789" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-9b081a1 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="95019" data-element_type="container" data-id="9b081a1" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-5f735b96 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="5f735b96" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/bank_bank-aceh-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-6f1cd367 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6f1cd367" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-2f07f4d0 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="2f07f4d0" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-1ec6733d elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="1ec6733d" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-379e2161 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="379e2161" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->bride_name }}</p> </div>
+<div class="elementor-element elementor-element-5f600100 elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="5f600100" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-16679ac7 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="20066" data-element_type="container" data-id="16679ac7" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-6298e815 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="86737" data-element_type="container" data-id="6298e815" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-22237af1 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="38069" data-element_type="container" data-id="22237af1" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-78f15fad elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="78f15fad" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-17029cbc e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="77848" data-element_type="container" data-id="17029cbc" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-27df340a elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="27df340a" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/bank_bni-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-ea546cd elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="ea546cd" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-739a9b37 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="739a9b37" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-63bd1242 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="63bd1242" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-4a8c1da4 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="4a8c1da4" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->bride_name }}</p> </div>
+<div class="elementor-element elementor-element-53a3827a elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="53a3827a" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+</div>
+<div class="elementor-element elementor-element-7cb18346 elementor-widget elementor-widget-html" data-e-type="widget" data-element_type="widget" data-id="7cb18346" data-widget_type="html.default">
+ </div>
+<div class="has_eae_slider elementor-element elementor-element-774c3988 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="26322" data-element_type="container" data-id="774c3988" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-62ae0d81 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="70609" data-element_type="container" data-id="62ae0d81" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-34d256a e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="51004" data-element_type="container" data-id="34d256a" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-1ec52691 elementor-view-default elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="1ec52691" data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fas fa-gift"></i> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-5d18c60e elementor-widget__width-initial elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="5d18c60e" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Gift</p> </div>
+</div>
+<div class="elementor-element elementor-element-437a1b68 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="437a1b68" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Nama Penerima</p> </div>
+<div class="elementor-element elementor-element-25567066 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="25567066" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }} &amp; {{ $invitation->bride_nickname }}</p> </div>
+<div class="elementor-element elementor-element-59feb8a elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="59feb8a" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Alamat Penerima</p> </div>
+<div class="elementor-element elementor-element-d106704 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="d106704" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->gift_address ?? $invitation->akad_address ?? "Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No.2, Pekanbaru." }}</p> </div>
+<div class="elementor-element elementor-element-3fab5e6b elementor-align-center elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="3fab5e6b" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">{{ $invitation->gift_address ?? $invitation->akad_address ?? "Jl. Suka Karya, Kualu, Perumahan Bintungan V, Blok C8 No.2, Pekanbaru." }}</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Alamat</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-2b1d7932 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="56473" data-element_type="container" data-id="2b1d7932" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-73d2be4c e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="6061" data-element_type="container" data-id="73d2be4c" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-2fed61fe e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="4280" data-element_type="container" data-id="2fed61fe" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-bac28ac elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="bac28ac" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-4307ea14 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="2955" data-element_type="container" data-id="4307ea14" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-7e004ae5 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="7e004ae5" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/1200px-Bank_Central_Asia.svg-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-7c806a63 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7c806a63" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-a8dd9fb elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="a8dd9fb" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-39f40727 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="39f40727" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-76b22250 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="76b22250" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_name }}</p> </div>
+<div class="elementor-element elementor-element-518e93ea elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="518e93ea" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-2efcbe77 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="91169" data-element_type="container" data-id="2efcbe77" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-62bf69cd e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="42024" data-element_type="container" data-id="62bf69cd" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-42db09ad e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="8795" data-element_type="container" data-id="42db09ad" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-75ac042e elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="75ac042e" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-6c18aa27 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="83967" data-element_type="container" data-id="6c18aa27" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-3f537f4d elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="3f537f4d" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/logo-bcas-full-color-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-67f63413 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="67f63413" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-6e79a102 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="6e79a102" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-1c85ce6f elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="1c85ce6f" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-36384d57 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="36384d57" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->groom_name }}</p> </div>
+<div class="elementor-element elementor-element-b45b415 elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="b45b415" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-123328d3 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="63886" data-element_type="container" data-id="123328d3" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-64e972cb e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="39222" data-element_type="container" data-id="64e972cb" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-525c91e2 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="29833" data-element_type="container" data-id="525c91e2" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-2b9f5149 elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="2b9f5149" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-6902f2b5 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="78875" data-element_type="container" data-id="6902f2b5" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-50760ee7 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="50760ee7" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/bank_bank-aceh-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-7cf1a804 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7cf1a804" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-60d606ed elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="60d606ed" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-534c80c3 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="534c80c3" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-7f4763ab elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7f4763ab" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->bride_name }}</p> </div>
+<div class="elementor-element elementor-element-3fd7ee7f elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="3fd7ee7f" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-d6b4bf8 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="3080" data-element_type="container" data-id="d6b4bf8" data-settings='{"background_background":"classic","jet_parallax_layout_list":[],"animation_mobile":"fadeInUp"}'>
+<div class="has_eae_slider elementor-element elementor-element-39bf1da5 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="66111" data-element_type="container" data-id="39bf1da5" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-4647225c e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="55898" data-element_type="container" data-id="4647225c" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-32d338cb elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="32d338cb" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-f85d1ce e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="97758" data-element_type="container" data-id="f85d1ce" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-10300540 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="10300540" data-widget_type="image.default">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/bank_bni-1.png') }}" title=""/> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-39cb859a elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="39cb859a" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">No Rekening</p> </div>
+<div class="elementor-element elementor-element-599fa8c7 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="599fa8c7" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">1234567890</p> </div>
+<div class="elementor-element elementor-element-94a727f elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="94a727f" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Atas Nama</p> </div>
+<div class="elementor-element elementor-element-68281fae elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="68281fae" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">{{ $invitation->bride_name }}</p> </div>
+<div class="elementor-element elementor-element-760c94ec elementor-align-right elementor-widget elementor-widget-weddingpress-copy-text" data-e-type="widget" data-element_type="widget" data-id="760c94ec" data-widget_type="weddingpress-copy-text.default">
+<div class="elementor-widget-container">
+<div class="elementor-image img"></div>
+<div class="head-title"></div>
+<div class="elementor-button-wrapper">
+<div class="copy-content spancontent" style="display: none;">1234567890</div>
+<a @click.prevent="copyFromContent($el)" class="elementor-button" data-message="berhasil disalin" role="button" style="cursor:pointer;">
+<div class="elementor-button-content-wrapper">
+<span>
+<i aria-hidden="true" class="far fa-copy"></i> </span>
+<span class="elementor-button-text">Salin Rekening</span>
+</div>
+</a>
+</div>
+<style type="text/css">
+			.spancontent {
+				padding-bottom: 20px;
+			}
+			.copy-content {
+				color: #6EC1E4;
+				text-align: center;
+			}
+			.head-title {
+				color: #6EC1E4;
+				text-align: center;
+			}
+		</style>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-7f6afcc1 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="99958" data-element_type="container" data-id="7f6afcc1" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-5930b296 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="92935" data-element_type="container" data-id="5930b296" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-3586365c elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3586365c" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Dress Code</p> </div>
+<div class="elementor-element elementor-element-57b64ec9 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="57b64ec9" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Kami dengan hormat menganjurkan tamu kami untuk mengenakan warna-warna ini untuk hari istimewa kami</p> </div>
+<div class="has_eae_slider elementor-element elementor-element-7ce01607 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="67908" data-element_type="container" data-id="7ce01607" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-2e1a1ea4 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="32006" data-element_type="container" data-id="2e1a1ea4" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-87a460a elementor-view-default elementor-position-block-start elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-e-type="widget" data-element_type="widget" data-id="87a460a" data-widget_type="icon-box.default">
+<div class="elementor-icon-box-wrapper">
+<div class="elementor-icon-box-icon">
+<span class="elementor-icon">
+<i aria-hidden="true" class="fas fa-circle"></i> </span>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-36239372 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="27953" data-element_type="container" data-id="36239372" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-143a13c9 elementor-view-default elementor-position-block-start elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-e-type="widget" data-element_type="widget" data-id="143a13c9" data-widget_type="icon-box.default">
+<div class="elementor-icon-box-wrapper">
+<div class="elementor-icon-box-icon">
+<span class="elementor-icon">
+<i aria-hidden="true" class="fas fa-circle"></i> </span>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-6853d7d7 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="98147" data-element_type="container" data-id="6853d7d7" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-6fba60cd elementor-view-default elementor-position-block-start elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-e-type="widget" data-element_type="widget" data-id="6fba60cd" data-widget_type="icon-box.default">
+<div class="elementor-icon-box-wrapper">
+<div class="elementor-icon-box-icon">
+<span class="elementor-icon">
+<i aria-hidden="true" class="fas fa-circle"></i> </span>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-3b3bcc90 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="11470" data-element_type="container" data-id="3b3bcc90" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-10c3f317 elementor-view-default elementor-position-block-start elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-e-type="widget" data-element_type="widget" data-id="10c3f317" data-widget_type="icon-box.default">
+<div class="elementor-icon-box-wrapper">
+<div class="elementor-icon-box-icon">
+<span class="elementor-icon">
+<i aria-hidden="true" class="fas fa-circle"></i> </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-512fd482 e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-eae-slider="55346" data-element_type="container" data-id="512fd482" data-settings='{"background_background":"gradient","jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-7923ce75 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="7923ce75" data-settings='{"_animation_mobile":"zoomIn"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Turut Mengundang</p> </div>
+<div class="elementor-element elementor-element-705f3fc3 elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="705f3fc3" data-settings='{"_animation":"fadeInUp","_animation_delay":300,"_animation_mobile":"fadeInDown"}' data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Dengan segala hormat, kami juga mengundang Bapak/Ibu/Saudara(i) yang tersebut di bawah ini untuk berkenan hadir dan memberikan doa restu pada acara tersebut:</p> </div>
+<div class="elementor-element elementor-element-397bb84f elementor-widget elementor-widget-text-editor" data-e-type="widget" data-element_type="widget" data-id="397bb84f" data-widget_type="text-editor.default">
+<b>Keluarga Mempelai Wanita</b><br>
+1.<br>
+2.<br/>
+3.<br/>
+4.<br/>
+5.<br/>
+<br/>
+<b>Keluarga Mempelai Pria</b><br/>
+1.<br/>
+2.<br/>
+3.<br/>
+4.<br/>
+5.								</br></br></div>
+</div>
+</div>
+<div id="rsvp" class="has_eae_slider elementor-element elementor-element-2f42a54 e-con-full e-flex e-con e-child" data-e-type="container" data-id="2f42a54">
+<div class="has_eae_slider elementor-element elementor-element-49f6526d e-con-full e-flex e-con e-child" data-e-type="container" data-id="49f6526d">
+<div class="elementor-element elementor-element-4d0fea9f elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="4d0fea9f" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Best Wishes</p> </div>
+<div class="elementor-element elementor-element-3187e611 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="3187e611" data-widget_type="heading.default">
+<p class="elementor-heading-title elementor-size-default">Sampaikan doa dan ucapan terbaik Anda</p> </div>
+
+<div class="elementor-element elementor-element-b25636f elementor-widget elementor-widget-wds_rsvp" data-e-type="widget" data-element_type="widget" data-id="b25636f" data-widget_type="wds_rsvp.default">
+<div class="elementor-widget-container">
+<div class="saic-wrapper saic-default saic-border saic-full" style="overflow: hidden; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid rgba(212,175,55,0.3);">
+    
+    <!-- Ucapan count badge -->
+    <div class="saic-wrap-link" style="margin-bottom: 20px; text-align: center;">
+        <span class="saic-link saic-icon-link" style="font-size: 16px; color: #d4af37; font-weight: 600;">
+            <i class="far fa-comments"></i>
+            <span>{{ $wishes->count() }}</span> Ucapan Doa &amp; Kehadiran
+        </span>
+    </div>
+
+    <!-- Livewire RSVP Form -->
+    <div class="saic-wrap-form saic-clearfix" style="margin-bottom: 25px;">
+        <form wire:submit.prevent="submitRSVP">
+            @if (session()->has('rsvp_success'))
+                <div style="background: rgba(34, 197, 94, 0.25); border: 1px solid #22c55e; color: #4ade80; padding: 12px 16px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center;">
+                    <i class="fas fa-check-circle" style="margin-right: 6px;"></i>{{ session('rsvp_success') }}
+                </div>
+            @endif
+
+            <p class="comment-form-author saic-field-1" style="margin-bottom: 12px;">
+                <input type="text" wire:model="rsvpName" class="saic-input" placeholder="Nama Anda" style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,55,0.4); border-radius: 6px; color: #fff; font-size: 14px;" required>
+                @error('rsvpName') <span class="saic-error-info" style="display:block; color:#f87171; font-size: 12px; margin-top: 4px;">{{ $message }}</span> @enderror
+            </p>
+
+            <div class="saic-wrap-attendance" style="margin-bottom: 12px;">
+                <select wire:model.live="rsvpStatus" class="saic-select" style="width: 100%; padding: 10px 14px; background: #1a1a1a; border: 1px solid rgba(212,175,55,0.4); border-radius: 6px; color: #fff; font-size: 14px;" required>
+                    <option value="confirmed">Hadir</option>
+                    <option value="declined">Tidak Hadir</option>
+                    <option value="tentative">Masih Ragu</option>
+                </select>
+                @error('rsvpStatus') <span class="saic-error-info" style="display:block; color:#f87171; font-size: 12px; margin-top: 4px;">{{ $message }}</span> @enderror
             </div>
 
-            {{-- Bottom Guest Info & Open Button --}}
-            <div style="position:relative;z-index:10;padding-bottom:20px;" class="animate__animated animate__fadeInUp">
-                <div class="bugis-card" style="margin-bottom:24px;padding:18px 16px;background:rgba(40,2,9,0.75);">
-                    <p style="font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.7);margin-bottom:4px;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-                    <h2 class="font-heading color-gold" style="font-size:18px;font-weight:700;margin-bottom:2px;">
-                        {{ $guestName ?? request('to', request('kpd', 'Nama Tamu')) }}
-                    </h2>
-                    <p style="font-size:11px;color:rgba(255,255,255,0.5);font-style:italic;">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
-                </div>
+            <div class="saic-wrap-guest" style="margin-bottom: 12px;">
+                <select wire:model="rsvpGuests" class="saic-select" style="width: 100%; padding: 10px 14px; background: #1a1a1a; border: 1px solid rgba(212,175,55,0.4); border-radius: 6px; color: #fff; font-size: 14px;">
+                    <option value="1">1 Orang</option>
+                    <option value="2">2 Orang</option>
+                    <option value="3">3 Orang</option>
+                    <option value="4">4 Orang</option>
+                    <option value="5">5 Orang</option>
+                </select>
+                @error('rsvpGuests') <span class="saic-error-info" style="display:block; color:#f87171; font-size: 12px; margin-top: 4px;">{{ $message }}</span> @enderror
+            </div>
 
-                <button type="button" @click="open()" class="btn-bugis-gold" style="width:100%;max-width:240px;margin:0 auto;padding:14px 28px;font-size:14px;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    Buka Undangan
+            <div class="saic-wrap-textarea" style="margin-bottom: 15px;">
+                <textarea wire:model="rsvpMessage" class="saic-textarea" placeholder="Tulis doa restu &amp; ucapan untuk kedua mempelai..." rows="3" style="width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,55,0.4); border-radius: 6px; color: #fff; font-size: 14px; resize: vertical;" required></textarea>
+                @error('rsvpMessage') <span class="saic-error-info" style="display:block; color:#f87171; font-size: 12px; margin-top: 4px;">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="saic-wrap-submit saic-clearfix">
+                <button type="submit" class="elementor-button" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #7c1a22 0%, #4a0d12 100%); color: #fff; border: 1px solid #d4af37; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s ease;">
+                    <span wire:loading.remove wire:target="submitRSVP"><i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Kirim Ucapan</span>
+                    <span wire:loading wire:target="submitRSVP"><i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Mengirim...</span>
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 
-    {{-- =================================================== --}}
-    {{-- MAIN INVITATION CONTENT (Inside Centered Mobile Container) --}}
-    {{-- =================================================== --}}
-    <div class="bugis-container">
-
-        {{-- =============================================== --}}
-        {{-- SECTION 1: 3D ANIMATION HERO VIDEO             --}}
-        {{-- =============================================== --}}
-        <section id="section-hero" style="position:relative;min-height:540px;display:flex;flex-direction:column;justify-content:flex-end;">
-            <div class="motion-video-container" style="position:relative;">
-                <video id="heroVideo" autoplay muted playsinline poster="{{ asset('themes/3d-adat-bugis-02/assets/BUGISMAROONFALLBACK.jpg') }}">
-                    <source src="{{ asset('themes/3d-adat-bugis-02/assets/BUGIS-MAROON.mp4') }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <div style="position:absolute;inset:0;background:linear-gradient(to top, #3a0510 0%, rgba(58,5,16,0.2) 50%, rgba(58,5,16,0.6) 100%);"></div>
-            </div>
-
-            {{-- Text Overlay --}}
-            <div style="position:absolute;bottom:25px;left:0;right:0;text-align:center;padding:0 20px;z-index:10;">
-                <p style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--bugis-gold);font-weight:600;margin-bottom:6px;">The Wedding Of</p>
-                <h1 class="font-script color-gold-light" style="font-size:46px;line-height:1.1;text-shadow:0 3px 20px rgba(0,0,0,0.9);margin-bottom:8px;">
-                    {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
-                </h1>
-                @if($invitation->akad_date || $invitation->resepsi_date)
-                <p style="font-size:14px;letter-spacing:3px;color:#ffffff;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,0.8);">
-                    {{ ($invitation->akad_date ?? $invitation->resepsi_date)->translatedFormat('d . m . Y') }}
-                </p>
-                @endif
-                <div style="margin-top:14px;">
-                    <a href="#section-quote" style="display:inline-block;color:var(--bugis-gold);animation:bounce 2s infinite;">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                    </a>
+    <!-- Wishes List -->
+    <ul class="saic-container-comments" style="list-style: none; padding: 0; margin: 0; max-height: 480px; overflow-y: auto;">
+        @forelse ($wishes as $wish)
+        <li class="saic-item-comment" style="padding: 12px 14px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #d4af37;">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: #6b141d; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 15px; flex-shrink: 0; border: 1px solid #d4af37;">
+                    {{ strtoupper(substr($wish->name ?? 'G', 0, 1)) }}
                 </div>
-            </div>
-        </section>
-
-        {{-- =============================================== --}}
-        {{-- SECTION 2: QUOTE / AYAT SUCI (QS. AR-RUM 21)   --}}
-        {{-- =============================================== --}}
-        <section id="section-quote" style="padding:60px 24px;text-align:center;position:relative;">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-tl" alt="" style="width:80px;">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-tr" alt="" style="width:80px;">
-
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;">WE FOUND LOVE</p>
-            
-            <div class="bugis-divider">
-                <img src="{{ asset('themes/3d-adat-bugis-02/assets/icon-bunga-1.png') }}" style="width:24px;height:auto;" alt="*">
-            </div>
-
-            <div class="bugis-card" style="margin-top:20px;padding:30px 22px;">
-                <p class="font-quote" style="font-size:17px;line-height:1.9;color:rgba(255,255,255,0.92);font-style:italic;margin-bottom:16px;">
-                    "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir."
-                </p>
-                <p class="font-heading color-gold" style="font-size:13px;font-weight:600;letter-spacing:1px;">
-                    (QS. Ar-Rum: 21)
-                </p>
-            </div>
-        </section>
-
-        {{-- =============================================== --}}
-        {{-- SECTION 3: MEMPELAI (BRIDE & GROOM PROFILES)   --}}
-        {{-- =============================================== --}}
-        <section id="section-couple" style="padding:40px 24px;text-align:center;position:relative;">
-            <p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--bugis-gold);font-weight:600;margin-bottom:6px;">Assalamu'alaikum Wr. Wb.</p>
-            <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.8);max-width:380px;margin:0 auto 36px;">
-                Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:
-            </p>
-
-            @php
-                $order = $invitation->custom_styles['name_order'] ?? 'groom_first';
-                $isGroomFirst = ($order === 'groom_first');
-            @endphp
-
-            {{-- Mempelai 1 --}}
-            <div class="bugis-card" style="margin-bottom:24px;">
-                <div class="couple-photo-frame">
-                    <img src="{{ ($isGroomFirst ? $invitation->groom_photo : $invitation->bride_photo) ? img_url($isGroomFirst ? $invitation->groom_photo : $invitation->bride_photo) : asset('themes/3d-adat-bugis-02/assets/' . ($isGroomFirst ? 'DSCF7838-1.jpeg' : 'DSCF7840-1.jpeg')) }}" alt="Mempelai 1">
-                </div>
-                <h3 class="font-heading color-gold" style="font-size:20px;font-weight:700;margin-bottom:6px;">
-                    {{ $isGroomFirst ? $invitation->groom_name : $invitation->bride_name }}
-                </h3>
-                <p style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:12px;">
-                    {{ $isGroomFirst ? 'Putra tercinta dari' : 'Putri tercinta dari' }}<br>
-                    <strong>{{ $isGroomFirst ? $invitation->groom_father : $invitation->bride_father }}</strong> & <strong>{{ $isGroomFirst ? $invitation->groom_mother : $invitation->bride_mother }}</strong>
-                </p>
-                @php $ig1 = $isGroomFirst ? $invitation->instagram_groom : $invitation->instagram_bride; @endphp
-                @if($ig1)
-                <a href="https://instagram.com/{{ ltrim($ig1, '@') }}" target="_blank" class="btn-bugis-outline" style="font-size:11px;padding:6px 16px;">
-                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    <span>{{ $ig1 }}</span>
-                </a>
-                @endif
-            </div>
-
-            {{-- Bugis '&' Calligraphy Divider --}}
-            <div style="margin:16px 0;">
-                <img src="{{ asset('themes/3d-adat-bugis-02/assets/dan-bugis-1.png') }}" style="max-width:70px;margin:0 auto;display:block;" alt="&">
-            </div>
-
-            {{-- Mempelai 2 --}}
-            <div class="bugis-card" style="margin-top:24px;">
-                <div class="couple-photo-frame">
-                    <img src="{{ (!$isGroomFirst ? $invitation->groom_photo : $invitation->bride_photo) ? img_url(!$isGroomFirst ? $invitation->groom_photo : $invitation->bride_photo) : asset('themes/3d-adat-bugis-02/assets/' . (!$isGroomFirst ? 'DSCF7838-1.jpeg' : 'DSCF7840-1.jpeg')) }}" alt="Mempelai 2">
-                </div>
-                <h3 class="font-heading color-gold" style="font-size:20px;font-weight:700;margin-bottom:6px;">
-                    {{ !$isGroomFirst ? $invitation->groom_name : $invitation->bride_name }}
-                </h3>
-                <p style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:12px;">
-                    {{ !$isGroomFirst ? 'Putra tercinta dari' : 'Putri tercinta dari' }}<br>
-                    <strong>{{ !$isGroomFirst ? $invitation->groom_father : $invitation->bride_father }}</strong> & <strong>{{ !$isGroomFirst ? $invitation->groom_mother : $invitation->bride_mother }}</strong>
-                </p>
-                @php $ig2 = !$isGroomFirst ? $invitation->instagram_groom : $invitation->instagram_bride; @endphp
-                @if($ig2)
-                <a href="https://instagram.com/{{ ltrim($ig2, '@') }}" target="_blank" class="btn-bugis-outline" style="font-size:11px;padding:6px 16px;">
-                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    <span>{{ $ig2 }}</span>
-                </a>
-                @endif
-            </div>
-        </section>
-
-        {{-- =============================================== --}}
-        {{-- SECTION 4: RANGKAIAN ACARA (AKAD & RESEPSI)    --}}
-        {{-- =============================================== --}}
-        <section id="section-events" style="padding:40px 24px;text-align:center;">
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">WAKTU & TEMPAT</p>
-            <h2 class="font-script color-gold-light" style="font-size:38px;margin-bottom:20px;">Rangkaian Acara</h2>
-
-            {{-- Akad Nikah --}}
-            <div class="bugis-card" style="margin-bottom:24px;">
-                <div style="width:48px;height:48px;border-radius:50%;background:rgba(223,183,108,0.15);border:1px solid var(--bugis-gold);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--bugis-gold);">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                </div>
-                <h3 class="font-heading color-gold" style="font-size:22px;font-weight:700;margin-bottom:8px;">Akad Nikah</h3>
-                <div class="bugis-divider" style="margin:10px auto 14px;"></div>
-                <p style="font-size:14px;font-weight:600;margin-bottom:4px;">
-                    {{ $invitation->akad_date?->translatedFormat('l, d F Y') ?? 'Senin, 10 Agustus 2026' }}
-                </p>
-                <p style="font-size:12px;color:var(--bugis-gold);margin-bottom:14px;">
-                    {{ $invitation->akad_time ?? ($invitation->akad_date ? $invitation->akad_date->format('H:i') . ' WITA - Selesai' : '08:00 WITA - Selesai') }}
-                </p>
-                <p style="font-size:13px;font-weight:600;margin-bottom:4px;">{{ $invitation->akad_venue ?? 'Kediaman Mempelai' }}</p>
-                <p style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:18px;">{{ $invitation->akad_address ?? 'Jl. Suka Karya, Pekanbaru' }}</p>
-                @if($invitation->akad_maps_link)
-                <a href="{{ $invitation->akad_maps_link }}" target="_blank" class="btn-bugis-gold" style="font-size:12px;padding:9px 20px;">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Buka Google Maps
-                </a>
-                @endif
-            </div>
-
-            {{-- Resepsi Pernikahan --}}
-            <div class="bugis-card">
-                <div style="width:48px;height:48px;border-radius:50%;background:rgba(223,183,108,0.15);border:1px solid var(--bugis-gold);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--bugis-gold);">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M3 21h18M3 10h18M3 7l9-4 9 4v14H3V7z"/></svg>
-                </div>
-                <h3 class="font-heading color-gold" style="font-size:22px;font-weight:700;margin-bottom:8px;">Resepsi Pernikahan</h3>
-                <div class="bugis-divider" style="margin:10px auto 14px;"></div>
-                <p style="font-size:14px;font-weight:600;margin-bottom:4px;">
-                    {{ $invitation->resepsi_date?->translatedFormat('l, d F Y') ?? 'Senin, 10 Agustus 2026' }}
-                </p>
-                <p style="font-size:12px;color:var(--bugis-gold);margin-bottom:14px;">
-                    {{ $invitation->resepsi_time ?? ($invitation->resepsi_date ? $invitation->resepsi_date->format('H:i') . ' WITA - Selesai' : '11:00 WITA - Selesai') }}
-                </p>
-                <p style="font-size:13px;font-weight:600;margin-bottom:4px;">{{ $invitation->resepsi_venue ?? 'Gedung Serbaguna' }}</p>
-                <p style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:18px;">{{ $invitation->resepsi_address ?? 'Jl. Suka Karya, Pekanbaru' }}</p>
-                @if($invitation->resepsi_maps_link)
-                <a href="{{ $invitation->resepsi_maps_link }}" target="_blank" class="btn-bugis-gold" style="font-size:12px;padding:9px 20px;">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Buka Google Maps
-                </a>
-                @endif
-            </div>
-        </section>
-
-        {{-- =============================================== --}}
-        {{-- SECTION 5: COUNTDOWN TIMER & CALENDAR          --}}
-        {{-- =============================================== --}}
-        @php
-            $targetDate = $invitation->akad_date ?? $invitation->resepsi_date ?? now()->addMonths(2);
-            $targetIso = $targetDate->toIso8601String();
-            $gCalUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text=" 
-                . urlencode("Wedding of {$invitation->groom_nickname} & {$invitation->bride_nickname}")
-                . "&dates=" . $targetDate->format('Ymd\THis\Z') . "/" . $targetDate->copy()->addHours(4)->format('Ymd\THis\Z')
-                . "&details=" . urlencode("Undangan Pernikahan {$invitation->groom_name} & {$invitation->bride_name}")
-                . "&location=" . urlencode($invitation->akad_venue ?? $invitation->resepsi_venue ?? '');
-        @endphp
-        <section id="section-countdown" style="padding:40px 24px;text-align:center;" x-data="{
-            target: new Date('{{ $targetIso }}').getTime(),
-            days: 0, hours: 0, minutes: 0, seconds: 0,
-            updateTimer() {
-                const now = new Date().getTime();
-                const diff = this.target - now;
-                if (diff > 0) {
-                    this.days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    this.hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    this.minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    this.seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                }
-            },
-            init() {
-                this.updateTimer();
-                setInterval(() => this.updateTimer(), 1000);
-            }
-        }">
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">MENUJU HARI BAHAGIA</p>
-            <h2 class="font-script color-gold-light" style="font-size:36px;margin-bottom:20px;">Counting The Days</h2>
-
-            <div style="display:flex;justify-content:center;gap:10px;margin-bottom:24px;">
-                <div class="timer-box">
-                    <div class="timer-num" x-text="days">00</div>
-                    <div class="timer-label">Hari</div>
-                </div>
-                <div class="timer-box">
-                    <div class="timer-num" x-text="hours">00</div>
-                    <div class="timer-label">Jam</div>
-                </div>
-                <div class="timer-box">
-                    <div class="timer-num" x-text="minutes">00</div>
-                    <div class="timer-label">Menit</div>
-                </div>
-                <div class="timer-box">
-                    <div class="timer-num" x-text="seconds">00</div>
-                    <div class="timer-label">Detik</div>
-                </div>
-            </div>
-
-            <a href="{{ $gCalUrl }}" target="_blank" class="btn-bugis-outline" style="font-size:12px;">
-                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                Simpan di Google Calendar
-            </a>
-        </section>
-
-        {{-- =============================================== --}}
-        {{-- SECTION 6: GALERI FOTO (OUR GALLERY)           --}}
-        {{-- =============================================== --}}
-        @if($invitation->enable_gallery)
-        <section id="section-gallery" style="padding:40px 24px;text-align:center;">
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">MOMEN BAHAGIA</p>
-            <h2 class="font-script color-gold-light" style="font-size:38px;margin-bottom:8px;">Our Gallery</h2>
-            <p style="font-size:12px;color:rgba(255,255,255,0.7);font-style:italic;margin-bottom:24px;">
-                "Constantly, consistently, continually, You."
-            </p>
-
-            @php
-                $galleryPhotos = $invitation->gallery_images ?? [];
-                if (empty($galleryPhotos) && $invitation->photos()->exists()) {
-                    $galleryPhotos = $invitation->photos()->pluck('file_path')->toArray();
-                }
-                if (empty($galleryPhotos)) {
-                    $galleryPhotos = [
-                        asset('themes/3d-adat-bugis-02/assets/DSCF7838-1.jpeg'),
-                        asset('themes/3d-adat-bugis-02/assets/DSCF7840-1.jpeg'),
-                        asset('themes/3d-adat-bugis-02/assets/DSCF7849-1.jpeg'),
-                        asset('themes/3d-adat-bugis-02/assets/DSCF7876-1.jpeg'),
-                        asset('themes/3d-adat-bugis-02/assets/DSCF7882-1.jpeg'),
-                        asset('themes/3d-adat-bugis-02/assets/DSCF7920-1.jpeg'),
-                    ];
-                }
-            @endphp
-
-            <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;">
-                @foreach($galleryPhotos as $index => $photo)
-                    @php
-                        $photoUrl = str_starts_with($photo, 'http') || str_starts_with($photo, '/themes') 
-                            ? $photo 
-                            : img_url($photo);
-                    @endphp
-                    <div @click="openLightbox('{{ $photoUrl }}')" style="border-radius:12px;overflow:hidden;border:1px solid rgba(223,183,108,0.3);aspect-ratio:1/1;cursor:pointer;position:relative;" class="hover:opacity-90 transition">
-                        <img src="{{ $photoUrl }}" style="width:100%;height:100%;object-fit:cover;" alt="Gallery {{ $index + 1 }}">
-                    </div>
-                @endforeach
-            </div>
-        </section>
-        @endif
-
-        {{-- =============================================== --}}
-        {{-- SECTION 7: CERITA CINTA (LOVE STORY)           --}}
-        {{-- =============================================== --}}
-        @if(!empty($invitation->love_story) && count($invitation->love_story) > 0)
-        <section id="section-story" style="padding:40px 24px;text-align:center;">
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">KISAH KAMI</p>
-            <h2 class="font-script color-gold-light" style="font-size:38px;margin-bottom:8px;">Love Story</h2>
-            <p style="font-size:12px;color:rgba(255,255,255,0.7);font-style:italic;margin-bottom:28px;">
-                "Every love story is beautiful, but ours is my favorite."
-            </p>
-
-            <div style="position:relative;padding-left:20px;border-left:2px solid rgba(223,183,108,0.3);margin-left:14px;text-align:left;">
-                @foreach($invitation->love_story as $story)
-                <div style="margin-bottom:24px;position:relative;">
-                    <div style="position:absolute;left:-27px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bugis-gold);border:2px solid #3a0510;box-shadow:0 0 10px rgba(223,183,108,0.5);"></div>
-                    <div class="bugis-card" style="padding:16px;">
-                        @if(!empty($story['year']) || !empty($story['date']))
-                        <div class="color-gold" style="font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:4px;">
-                            {{ $story['year'] ?? $story['date'] }}
-                        </div>
+                <div style="flex-grow: 1;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+                        <span style="font-weight: 600; color: #f4ede4; font-size: 14px;">{{ $wish->name }}</span>
+                        @if ($wish->attendance_status === 'confirmed' || $wish->attendance_status === 'present')
+                            <span style="background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); font-size: 11px; padding: 2px 8px; border-radius: 12px;"><i class="fas fa-check" style="margin-right: 4px;"></i>Hadir ({{ $wish->pax ?? 1 }})</span>
+                        @elseif ($wish->attendance_status === 'declined' || $wish->attendance_status === 'notpresent')
+                            <span style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-size: 11px; padding: 2px 8px; border-radius: 12px;"><i class="fas fa-times" style="margin-right: 4px;"></i>Tidak Hadir</span>
+                        @else
+                            <span style="background: rgba(234,179,8,0.2); color: #facc15; border: 1px solid rgba(234,179,8,0.4); font-size: 11px; padding: 2px 8px; border-radius: 12px;"><i class="fas fa-question" style="margin-right: 4px;"></i>Masih Ragu</span>
                         @endif
-                        <h4 class="font-heading" style="font-size:15px;color:#ffffff;margin-bottom:6px;">{{ $story['title'] ?? '' }}</h4>
-                        <p style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.6;">{{ $story['description'] ?? '' }}</p>
+                    </div>
+                    <div style="color: #d1d5db; font-size: 13px; line-height: 1.5; margin-bottom: 4px;">
+                        {{ $wish->message }}
+                    </div>
+                    <div style="font-size: 10px; color: #9ca3af; text-align: right;">
+                        {{ $wish->created_at ? $wish->created_at->diffForHumans() : 'Baru saja' }}
                     </div>
                 </div>
-                @endforeach
             </div>
-        </section>
-        @endif
+        </li>
+        @empty
+        <li style="text-align: center; color: #9ca3af; padding: 20px; font-size: 13px;">
+            Belum ada ucapan. Jadilah yang pertama memberikan doa restu!
+        </li>
+        @endforelse
+    </ul>
 
-        {{-- =============================================== --}}
-        {{-- SECTION 8: WEDDING GIFT / AMPLOP DIGITAL       --}}
-        {{-- =============================================== --}}
-        @if($invitation->enable_gift)
-        <section id="section-gift" style="padding:40px 24px;text-align:center;" x-data="{ showGift: true }">
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">TANDA KASIH</p>
-            <h2 class="font-script color-gold-light" style="font-size:38px;margin-bottom:12px;">Wedding Gift</h2>
-            <p style="font-size:12px;color:rgba(255,255,255,0.75);line-height:1.7;max-width:380px;margin:0 auto 24px;">
-                Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.
-            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-2d3d35f6 e-con-full e-flex e-con e-child" data-e-type="container" data-id="2d3d35f6" style="min-height: 50vh; position: relative; overflow: hidden;">
+    <div class="bugis-kenburns-bg" style="position: absolute; inset: 0; background-image: url('{{ asset('themes/3d-adat-bugis-02/assets/DSCF7943-1.jpeg') }}'); background-size: cover; background-position: center; animation: bugisKenBurns 14s ease-in-out infinite alternate;"></div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-626ff90 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="51425" data-element_type="container" data-id="626ff90" data-settings='{"background_background":"classic","jet_parallax_layout_list":[]}'>
+<div class="has_eae_slider elementor-element elementor-element-226bfae8 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="17082" data-element_type="container" data-id="226bfae8" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-7f03092c elementor-absolute elementor-align-center elementor-widget elementor-widget-lottie" data-e-type="widget" data-element_type="widget" data-id="7f03092c" data-settings='{"source_json":{"url":"assets\/animation_lnbjd092-1-1-1.json","id":"233","size":""},"loop":"yes","_position":"absolute","source":"media_file","caption_source":"none","link_to":"none","trigger":"arriving_to_viewport","viewport":{"unit":"%","size":"","sizes":{"start":0,"end":100}},"play_speed":{"unit":"px","size":1,"sizes":[]},"start_point":{"unit":"%","size":0,"sizes":[]},"end_point":{"unit":"%","size":100,"sizes":[]},"renderer":"svg"}' data-widget_type="lottie.default">
+<div class="e-lottie__container"><div class="e-lottie__animation"></div></div> </div>
+<div class="elementor-element elementor-element-78290e07 elementor-invisible elementor-widget elementor-widget-text-editor" data-e-type="widget" data-element_type="widget" data-id="78290e07" data-settings='{"_animation":"fadeInUp","_animation_delay":300}' data-widget_type="text-editor.default">
+									Menjadi sebuah kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dalam hari bahagia ini. Terima kasih atas segala doa, ucapan dan perhatian yang diberikan.								</div>
+<div class="elementor-element elementor-element-259a9dd7 custom-font-closing elementor-invisible elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="259a9dd7" data-settings='{"_animation":"zoomIn","_animation_delay":200}' data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default">{{ $invitation->groom_nickname }} &amp; {{ $invitation->bride_nickname }}</h2> </div>
 
-            <button type="button" @click="showGift = !showGift" class="btn-bugis-gold" style="margin-bottom:24px;">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
-                <span x-text="showGift ? 'Tutup Amplop Digital' : 'Kirim Hadiah / Amplop'"></span>
-            </button>
 
-            <div x-show="showGift" x-transition.duration.400ms style="text-align:left;">
-                @php
-                    $bankAccounts = $invitation->bank_accounts ?? [];
-                    if (empty($bankAccounts) && !empty($invitation->bank_name)) {
-                        $bankAccounts = [[
-                            'bank' => $invitation->bank_name,
-                            'account_number' => $invitation->bank_account,
-                            'account_name' => $invitation->bank_holder,
-                        ]];
-                    }
-                    if (empty($bankAccounts)) {
-                        $bankAccounts = [
-                            ['bank' => 'Bank Central Asia (BCA)', 'account_number' => '8210394821', 'account_name' => $invitation->groom_name],
-                            ['bank' => 'Bank Negara Indonesia (BNI)', 'account_number' => '1394820194', 'account_name' => $invitation->bride_name],
-                        ];
-                    }
-                @endphp
 
-                @foreach($bankAccounts as $acc)
-                <div class="bank-card" x-data="{ copied: false }">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                        <span class="font-heading color-gold" style="font-size:14px;font-weight:700;">{{ $acc['bank'] ?? 'Rekening Bank' }}</span>
-                        <svg width="22" height="22" fill="none" stroke="var(--bugis-gold)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                    </div>
-                    <div style="font-family:monospace;font-size:18px;font-weight:700;letter-spacing:2px;color:#ffffff;margin-bottom:4px;">
-                        {{ $acc['account_number'] ?? '-' }}
-                    </div>
-                    <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:14px;">
-                        a.n {{ $acc['account_name'] ?? '-' }}
-                    </div>
-                    <button type="button" @click="navigator.clipboard.writeText('{{ $acc['account_number'] ?? '' }}'); copied = true; setTimeout(() => copied = false, 2500)" class="btn-bugis-outline" style="font-size:11px;padding:6px 14px;">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                        <span x-text="copied ? '✓ Berhasil Disalin' : 'Salin Nomor Rekening'"></span>
-                    </button>
-                </div>
-                @endforeach
-            </div>
-        </section>
-        @endif
 
-        {{-- =============================================== --}}
-        {{-- SECTION 9: RSVP & UCAPAN / DOA (BEST WISHES)   --}}
-        {{-- =============================================== --}}
-        @if($invitation->enable_rsvp || $invitation->enable_wishes)
-        <section id="section-rsvp" style="padding:40px 24px;text-align:center;">
-            <p class="font-heading color-gold" style="font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">BUKU TAMU</p>
-            <h2 class="font-script color-gold-light" style="font-size:38px;margin-bottom:8px;">Best Wishes & RSVP</h2>
-            <p style="font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:24px;">
-                Sampaikan doa dan konfirmasi kehadiran Anda untuk kedua mempelai
-            </p>
-
-            {{-- Flash Alert --}}
-            @if (session()->has('rsvp_success'))
-            <div style="background:rgba(34, 197, 94, 0.2);border:1px solid #22c55e;color:#bbf7d0;padding:12px 16px;border-radius:12px;font-size:13px;margin-bottom:16px;">
-                {{ session('rsvp_success') }}
-            </div>
-            @endif
-
-            {{-- RSVP Form --}}
-            <div class="bugis-card" style="text-align:left;margin-bottom:28px;">
-                <form wire:submit.prevent="submitRSVP">
-                    <label style="font-size:12px;color:var(--bugis-gold);font-weight:600;display:block;margin-bottom:4px;">Nama Lengkap *</label>
-                    <input type="text" wire:model="rsvpName" class="bugis-input" placeholder="Masukkan nama Anda">
-                    @if(isset($errors) && $errors->has('rsvpName')) <span style="color:#f87171;font-size:11px;display:block;margin:-8px 0 8px;">{{ $errors->first('rsvpName') }}</span> @endif
-
-                    @if($invitation->enable_rsvp)
-                    <label style="font-size:12px;color:var(--bugis-gold);font-weight:600;display:block;margin-bottom:4px;">Konfirmasi Kehadiran *</label>
-                    <select wire:model="rsvpStatus" class="bugis-input" style="background:#2a030b;">
-                        <option value="confirmed">Hadir</option>
-                        <option value="declined">Berhalangan Hadir</option>
-                        <option value="tentative">Masih Ragu</option>
-                    </select>
-
-                    <label style="font-size:12px;color:var(--bugis-gold);font-weight:600;display:block;margin-bottom:4px;">Jumlah Tamu</label>
-                    <select wire:model="rsvpGuests" class="bugis-input" style="background:#2a030b;">
-                        <option value="1">1 Orang</option>
-                        <option value="2">2 Orang</option>
-                        <option value="3">3 Orang</option>
-                        <option value="4">4 Orang</option>
-                        <option value="5">5 Orang</option>
-                    </select>
-                    @endif
-
-                    <label style="font-size:12px;color:var(--bugis-gold);font-weight:600;display:block;margin-bottom:4px;">Ucapan & Doa Restu *</label>
-                    <textarea wire:model="rsvpMessage" rows="3" class="bugis-input" placeholder="Tuliskan ucapan dan doa terbaik Anda..."></textarea>
-                    @if(isset($errors) && $errors->has('rsvpMessage')) <span style="color:#f87171;font-size:11px;display:block;margin:-8px 0 8px;">{{ $errors->first('rsvpMessage') }}</span> @endif
-
-                    <button type="submit" wire:loading.attr="disabled" class="btn-bugis-gold" style="width:100%;margin-top:6px;">
-                        <span wire:loading.remove>Kirim Ucapan & Konfirmasi</span>
-                        <span wire:loading>Mengirim...</span>
-                    </button>
-                </form>
-            </div>
-
-            {{-- Feed Daftar Ucapan --}}
-            <div style="text-align:left;">
-                <h4 class="font-heading color-gold" style="font-size:14px;letter-spacing:1px;margin-bottom:12px;">
-                    Ucapan & Doa ({{ count($wishes) }})
-                </h4>
-                <div style="max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;">
-                    @forelse($wishes as $wish)
-                    <div class="bugis-card" style="padding:14px;background:rgba(35,3,9,0.7);">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <span style="font-weight:600;font-size:13px;color:var(--bugis-gold);">{{ $wish->name }}</span>
-                            @if($wish->attendance_status === 'confirmed')
-                                <span style="font-size:9px;background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid #22c55e;padding:2px 6px;border-radius:20px;">Hadir</span>
-                            @elseif($wish->attendance_status === 'declined')
-                                <span style="font-size:9px;background:rgba(239,68,68,0.2);color:#f87171;border:1px solid #ef4444;padding:2px 6px;border-radius:20px;">Berhalangan</span>
-                            @endif
-                        </div>
-                        <p style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5;">{{ $wish->message }}</p>
-                        <span style="font-size:10px;color:rgba(255,255,255,0.4);display:block;margin-top:4px;">{{ $wish->created_at?->diffForHumans() }}</span>
-                    </div>
-                    @empty
-                    <div style="text-align:center;padding:20px;font-size:12px;color:rgba(255,255,255,0.5);">
-                        Belum ada ucapan. Jadilah yang pertama memberikan doa restu!
-                    </div>
-                    @endforelse
-                </div>
-            </div>
-        </section>
-        @endif
-
-        {{-- =============================================== --}}
-        {{-- SECTION 10: PENUTUP (CLOSING)                  --}}
-        {{-- =============================================== --}}
-        <section id="section-closing" style="padding:60px 24px 100px;text-align:center;position:relative;">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-bl" alt="" style="width:80px;">
-            <img src="{{ asset('themes/3d-adat-bugis-02/assets/bunga-bugis.png') }}" class="corner-ornament corner-br" alt="" style="width:80px;">
-
-            <p style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.8;max-width:380px;margin:0 auto 24px;">
-                Menjadi sebuah kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dalam hari bahagia ini. Terima kasih atas segala doa, ucapan dan perhatian yang diberikan.
-            </p>
-
-            <p style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--bugis-gold);margin-bottom:8px;">Kami yang berbahagia,</p>
-            <h2 class="font-script color-gold-light" style="font-size:42px;margin-bottom:16px;">
-                {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
-            </h2>
-            <p style="font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.5px;">Keluarga Besar Kedua Mempelai</p>
-
-            <div class="bugis-divider" style="margin:24px auto;"></div>
-
-            <p style="font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1px;">
-                © {{ date('Y') }} {{ config('app.name', 'Exo Expanse') }} · All Rights Reserved
-            </p>
-        </section>
+<div class="elementor-element elementor-element-52f0c192 elementor-widget-mobile__width-initial elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="52f0c192" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+<div class="elementor-element elementor-element-5ddeaeaa elementor-widget elementor-widget-spacer" data-e-type="widget" data-element_type="widget" data-id="5ddeaeaa" data-widget_type="spacer.default">
+<div class="elementor-spacer">
+<div class="elementor-spacer-inner"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="has_eae_slider elementor-element elementor-element-34aa0a29 e-con-full e-flex e-con e-child" data-e-type="container" data-eae-slider="61415" data-element_type="container" data-id="34aa0a29" data-settings='{"jet_parallax_layout_list":[],"background_background":"classic"}'>
+<div class="elementor-element elementor-element-34a93772 elementor-widget elementor-widget-image" data-e-type="widget" data-element_type="widget" data-id="34a93772" data-widget_type="image.default">
+<a href="https://zehaninv.id/">
+<img alt="" loading="lazy" src="{{ asset('themes/3d-adat-bugis-02/assets/logo-4-png-2-e1722418062474-1.png') }}" title=""> </img></a>
+</div>
+<div class="elementor-element elementor-element-292a0be7 elementor-widget elementor-widget-heading" data-e-type="widget" data-element_type="widget" data-id="292a0be7" data-widget_type="heading.default">
+<h2 class="elementor-heading-title elementor-size-default"><a href="https://zehaninv.id/">Powered By Zehan invitation ID</a></h2> </div>
+<div class="has_eae_slider elementor-element elementor-element-5fcccf3f e-grid e-con-full e-con e-child" data-e-type="container" data-eae-slider="83382" data-element_type="container" data-id="5fcccf3f" data-settings='{"jet_parallax_layout_list":[]}'>
+<div class="elementor-element elementor-element-30608850 elementor-widget__width-auto elementor-view-default elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="30608850" data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fab fa-instagram"></i> </div>
+</div>
+</div>
+<div class="elementor-element elementor-element-3f3c4899 elementor-widget__width-auto elementor-view-default elementor-widget elementor-widget-icon" data-e-type="widget" data-element_type="widget" data-id="3f3c4899" data-widget_type="icon.default">
+<div class="elementor-icon-wrapper">
+<div class="elementor-icon">
+<i aria-hidden="true" class="fab fa-tiktok"></i> </div>
+</div>
+</div>
+</div>
+</div>
+        </div>
 
     </div>
 
-    {{-- =================================================== --}}
-    {{-- FLOATING BOTTOM NAV (Visible after opened)          --}}
-    {{-- =================================================== --}}
-    <div x-show="opened && !menuCollapsed" 
-         x-transition:enter="transition ease-out duration-300 transform" 
-         x-transition:enter-start="opacity-0 translate-x-16" 
-         x-transition:enter-end="opacity-100 translate-x-0" 
-         x-transition:leave="transition ease-in duration-200 transform" 
-         x-transition:leave-start="opacity-100 translate-x-0" 
-         x-transition:leave-end="opacity-0 translate-x-16" 
-         class="bugis-nav-wrap">
-        <nav class="bugis-nav" aria-label="Navigasi Undangan">
-            {{-- 1. Awal --}}
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'hero'}" 
-                    @click="scrollTo('hero')" 
-                    title="Awal">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                <span>Awal</span>
-            </button>
-
-            {{-- 2. Mempelai --}}
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'couple'}" 
-                    @click="scrollTo('couple')" 
-                    title="Mempelai">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                <span>Mempelai</span>
-            </button>
-
-            {{-- 3. Acara --}}
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'events'}" 
-                    @click="scrollTo('events')" 
-                    title="Acara">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <span>Acara</span>
-            </button>
-
-            {{-- 4. Galeri --}}
-            @if($invitation->enable_gallery)
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'gallery'}" 
-                    @click="scrollTo('gallery')" 
-                    title="Galeri">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <span>Galeri</span>
-            </button>
-            @endif
-
-            {{-- 5. Cerita Cinta (jika ada) --}}
-            @if(!empty($invitation->love_story) && count($invitation->love_story) > 0)
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'story'}" 
-                    @click="scrollTo('story')" 
-                    title="Cerita">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                <span>Cerita</span>
-            </button>
-            @endif
-
-            {{-- 6. Hadiah --}}
-            @if($invitation->enable_gift)
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'gift'}" 
-                    @click="scrollTo('gift')" 
-                    title="Hadiah">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
-                <span>Hadiah</span>
-            </button>
-            @endif
-
-            {{-- 7. Ucapan / RSVP --}}
-            @if($invitation->enable_rsvp || $invitation->enable_wishes)
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': activeSection === 'rsvp'}" 
-                    @click="scrollTo('rsvp')" 
-                    title="Ucapan">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                <span>Ucapan</span>
-            </button>
-            @endif
-
-            {{-- 8. Auto Scroll --}}
-            <button type="button" 
-                    class="bugis-nav-btn" 
-                    :class="{'active': isAutoScrolling}" 
-                    @click="toggleAutoScroll()" 
-                    :title="isAutoScrolling ? 'Hentikan Scroll Otomatis' : 'Mulai Scroll Otomatis'">
-                <template x-if="!isAutoScrolling">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"/></svg>
-                </template>
-                <template x-if="isAutoScrolling">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </template>
-                <span x-text="isAutoScrolling ? 'Stop' : 'Auto'">Auto</span>
-            </button>
-
-            {{-- 9. Sembunyikan ke Samping (Collapse Button) --}}
-            <button type="button" 
-                    class="bugis-nav-btn bugis-collapse-btn" 
-                    @click="menuCollapsed = true" 
-                    title="Sembunyikan Menu ke Samping">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                <span>Tutup</span>
-            </button>
-        </nav>
-    </div>
-
-    {{-- =================================================== --}}
-    {{-- FLOATING SIDE DOCK (Visible when menu is collapsed) --}}
-    {{-- =================================================== --}}
-    <div x-show="opened && menuCollapsed" 
-         x-transition:enter="transition ease-out duration-300 transform" 
-         x-transition:enter-start="opacity-0 translate-x-12" 
-         x-transition:enter-end="opacity-100 translate-x-0" 
-         x-transition:leave="transition ease-in duration-200 transform" 
-         x-transition:leave-start="opacity-100 translate-x-0" 
-         x-transition:leave-end="opacity-0 translate-x-12" 
-         class="bugis-side-dock" 
-         aria-label="Panel Kontrol Samping">
+    <!-- Responsive Floating Navigation Dock (Bottom) with Side Collapse -->
+    <div class="bugis-bottom-dock"
+         :class="{ 'dock-hidden': menuCollapsed }"
+         x-show="isOpened"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0 transform translate-y-10"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: rgba(18, 18, 20, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-width: 95vw; overflow-x: auto; transition: transform 0.4s ease, opacity 0.4s ease;">
         
-        {{-- Auto Scroll Button (Quick access in side dock) --}}
-        <button type="button" 
-                class="bugis-side-btn" 
-                :class="{'active': isAutoScrolling}" 
-                @click="toggleAutoScroll()" 
-                :title="isAutoScrolling ? 'Hentikan Scroll Otomatis' : 'Mulai Scroll Otomatis'">
-            <template x-if="!isAutoScrolling">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"/></svg>
-            </template>
-            <template x-if="isAutoScrolling">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </template>
-            <span x-text="isAutoScrolling ? 'Stop' : 'Auto'">Auto</span>
-        </button>
+        <a href="#cover" @click.prevent="scrollTo('#sc')" class="dock-btn" title="Sampul" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-home" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Awal</span>
+        </a>
 
-        {{-- Buka Menu Button --}}
-        <button type="button" 
-                class="bugis-side-btn menu-trigger" 
-                @click="menuCollapsed = false" 
-                title="Tampilkan Menu Lengkap">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <a href="#couple" @click.prevent="scrollTo('#couple')" class="dock-btn" title="Mempelai" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-heart" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Pasangan</span>
+        </a>
+
+        <a href="#events" @click.prevent="scrollTo('#events')" class="dock-btn" title="Acara" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-calendar-alt" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Acara</span>
+        </a>
+
+        <a href="#countdown" @click.prevent="scrollTo('#countdown')" class="dock-btn" title="Waktu" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-clock" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Waktu</span>
+        </a>
+
+        <a href="#gallery" @click.prevent="scrollTo('#gallery')" class="dock-btn" title="Galeri" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-images" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Galeri</span>
+        </a>
+
+        <a href="#story" @click.prevent="scrollTo('#story')" class="dock-btn" title="Kisah" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-book-open" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Cerita</span>
+        </a>
+
+        <a href="#gift" @click.prevent="scrollTo('#gift')" class="dock-btn" title="Kado" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-gift" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Kado</span>
+        </a>
+
+        <a href="#rsvp" @click.prevent="scrollTo('#rsvp')" class="dock-btn" title="Ucapan" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; color: #e5e7eb; border-radius: 50%; text-decoration: none; font-size: 11px; transition: all 0.2s;">
+            <i class="fas fa-envelope-open-text" style="font-size: 16px; margin-bottom: 2px;"></i>
+            <span style="font-size: 9px; font-family: sans-serif;">Ucapan</span>
+        </a>
+
+        <!-- Collapse to Side button -->
+        <button type="button" @click="menuCollapsed = true" title="Sembunyikan Menu" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: rgba(255,255,255,0.12); color: #d4af37; border: 1px solid rgba(212,175,55,0.4); border-radius: 50%; margin-left: 6px; cursor: pointer; transition: all 0.2s;">
+            <i class="fas fa-chevron-right" style="font-size: 13px;"></i>
+        </button>
+    </div>
+
+    <!-- Floating side trigger when menu is collapsed -->
+    <div x-show="isOpened && menuCollapsed"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-x-10"
+         x-transition:enter-end="opacity-100 transform translate-x-0"
+         style="position: fixed; right: 14px; bottom: 85px; z-index: 9999;">
+        <button type="button" @click="menuCollapsed = false" title="Buka Menu Navigasi" style="display: flex; align-items: center; gap: 6px; padding: 10px 16px; background: rgba(18, 18, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid #d4af37; border-radius: 30px; color: #d4af37; font-weight: 600; font-size: 13px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer;">
+            <i class="fas fa-compass"></i>
             <span>Menu</span>
         </button>
     </div>
 
-    {{-- =================================================== --}}
-    {{-- LIGHTBOX MODAL FOR GALLERY                         --}}
-    {{-- =================================================== --}}
-    <div x-show="lightboxOpen" x-transition.opacity style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:20px;" @click="lightboxOpen = false">
-        <button type="button" @click="lightboxOpen = false" style="position:absolute;top:20px;right:20px;color:white;background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-        <img :src="lightboxImg" style="max-width:95vw;max-height:85vh;border-radius:8px;box-shadow:0 0 30px rgba(0,0,0,0.8);" @click.stop alt="Preview">
+    <!-- Floating Auto Scroll Widget (Side Collapsible) -->
+    <div x-show="isOpened" style="position: fixed; right: 14px; bottom: 145px; z-index: 9999;">
+        <div x-show="!autoScrollCollapsed"
+             style="display: flex; flex-direction: column; align-items: center; gap: 6px; background: rgba(18, 18, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 25px; padding: 8px 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.5);">
+            
+            <!-- Toggle Auto Scroll -->
+            <button type="button" @click="toggleAutoScroll()" :title="autoScrolling ? 'Hentikan Auto Scroll' : 'Mulai Auto Scroll'"
+                    :style="autoScrolling ? 'background: #22c55e; color: #fff;' : 'background: rgba(255,255,255,0.1); color: #d4af37;'"
+                    style="width: 38px; height: 38px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                <i class="fas" :class="autoScrolling ? 'fa-pause' : 'fa-play'" style="font-size: 13px;"></i>
+            </button>
+
+            <!-- Speed button -->
+            <button type="button" @click="cycleScrollSpeed()" title="Ubah Kecepatan" style="width: 34px; height: 24px; border-radius: 12px; background: rgba(255,255,255,0.1); color: #e5e7eb; border: none; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <span x-text="scrollSpeed + 'x'">1x</span>
+            </button>
+
+            <!-- Hide to Side -->
+            <button type="button" @click="autoScrollCollapsed = true" title="Sembunyikan ke samping" style="width: 24px; height: 24px; border-radius: 50%; background: transparent; color: #9ca3af; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+            </button>
+        </div>
+
+        <!-- Side trigger when auto-scroll is collapsed -->
+        <button type="button" x-show="autoScrollCollapsed" @click="autoScrollCollapsed = false" title="Tampilkan Kontrol Scroll"
+                style="width: 38px; height: 38px; border-radius: 50%; background: rgba(18, 18, 20, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.4); color: #d4af37; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer;">
+            <i class="fas fa-angle-double-down" style="font-size: 14px;"></i>
+        </button>
+    </div>
+
+    <!-- Floating Music Disc Button -->
+    <div x-show="isOpened" style="position: fixed; right: 14px; bottom: 215px; z-index: 9999;">
+        <button type="button" @click="toggleMusic()" :title="isPlaying ? 'Jeda Musik' : 'Putar Musik'"
+                style="width: 44px; height: 44px; border-radius: 50%; background: #121214; border: 2px solid #d4af37; color: #d4af37; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,0.6); cursor: pointer; position: relative;">
+            <div :class="{ 'audioRotate': isPlaying }" style="width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-compact-disc" style="font-size: 24px;"></i>
+            </div>
+            <i x-show="!isPlaying" class="fas fa-slash" style="position: absolute; font-size: 20px; color: #ef4444;"></i>
+        </button>
+    </div>
+
+    <!-- Lightbox Modal for Gallery -->
+    <div x-show="lightboxOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="lightboxOpen = false"
+         style="position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;"
+         style="display: none;">
+        <img :src="lightboxImg" style="max-width: 95vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); object-fit: contain;">
+        <button type="button" @click="lightboxOpen = false" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer;">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Toast Notification for Copy -->
+    <div x-show="toastShow"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-4"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-4"
+         class="bugis-toast"
+         style="display: none;">
+        <i class="fas fa-check-circle" style="margin-right: 6px;"></i>
+        <span x-text="toastMessage">Tersalin ke clipboard!</span>
     </div>
 
 </div>
+
+<script>
+function bugisTheme(targetTimestamp) {
+    return {
+        isOpened: false,
+        isPlaying: false,
+        menuCollapsed: false,
+        autoScrolling: false,
+        autoScrollCollapsed: false,
+        scrollSpeed: 1,
+        autoScrollInterval: null,
+        lightboxOpen: false,
+        lightboxImg: '',
+        toastShow: false,
+        toastMessage: '',
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        targetTime: targetTimestamp * 1000,
+
+        init() {
+            document.body.classList.add('stop-scrolling');
+            this.updateCountdown();
+            setInterval(() => {
+                this.updateCountdown();
+            }, 1000);
+            this.initVideoReplay();
+        },
+
+        openInvitation() {
+            this.isOpened = true;
+            document.body.classList.remove('stop-scrolling');
+            
+            // Animate cover slide up
+            const coverEl = document.getElementById('cover');
+            if (coverEl) {
+                coverEl.classList.add('cover-hidden');
+            }
+
+            // Start background music
+            this.playMusic();
+
+            // Start Hero video
+            const heroVideo = document.getElementById('heroVideo');
+            if (heroVideo) {
+                heroVideo.currentTime = 0;
+                heroVideo.play().catch(e => console.log('Video autoplay error:', e));
+            }
+
+            // Show motion text
+            setTimeout(() => {
+                const motionText = document.querySelector('.motionText');
+                if (motionText) {
+                    motionText.style.display = 'flex';
+                }
+            }, 1200);
+
+            // Scroll into hero
+            this.scrollTo('.motionSection');
+        },
+
+        playMusic() {
+            const audio = document.getElementById('song');
+            if (audio) {
+                audio.play().then(() => {
+                    this.isPlaying = true;
+                }).catch(e => console.log('Audio error:', e));
+            }
+        },
+
+        pauseMusic() {
+            const audio = document.getElementById('song');
+            if (audio) {
+                audio.pause();
+                this.isPlaying = false;
+            }
+        },
+
+        toggleMusic() {
+            if (this.isPlaying) {
+                this.pauseMusic();
+            } else {
+                this.playMusic();
+            }
+        },
+
+        initVideoReplay() {
+            // Video replay logic:
+            // "animasi di awal jangan putar berulang ulang tapi nanti setelah pergi lalu kembali baru di play lagi"
+            const heroVideo = document.getElementById('heroVideo');
+            const heroSection = document.querySelector('.motionSection');
+            if (!heroVideo || !heroSection) return;
+
+            // Ensure video does NOT loop endlessly in-place
+            heroVideo.loop = false;
+
+            let hasLeftHero = false;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        // Scrolled away from hero video
+                        hasLeftHero = true;
+                        heroVideo.pause();
+                    } else {
+                        // Returned to hero video!
+                        if (hasLeftHero) {
+                            hasLeftHero = false;
+                            heroVideo.currentTime = 0;
+                            heroVideo.play().catch(e => console.log('Replay error:', e));
+                        }
+                    }
+                });
+            }, { threshold: 0.25 });
+
+            observer.observe(heroSection);
+        },
+
+        scrollTo(selector) {
+            const el = document.querySelector(selector);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        },
+
+        toggleAutoScroll() {
+            this.autoScrolling = !this.autoScrolling;
+            if (this.autoScrolling) {
+                this.startScroll();
+            } else {
+                this.stopScroll();
+            }
+        },
+
+        startScroll() {
+            this.stopScroll();
+            const step = () => {
+                if (!this.autoScrolling) return;
+                const distance = 1.2 * this.scrollSpeed;
+                window.scrollBy({ top: distance, behavior: 'instant' });
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
+                    this.autoScrolling = false;
+                    return;
+                }
+                this.autoScrollInterval = requestAnimationFrame(step);
+            };
+            this.autoScrollInterval = requestAnimationFrame(step);
+        },
+
+        stopScroll() {
+            if (this.autoScrollInterval) {
+                cancelAnimationFrame(this.autoScrollInterval);
+                this.autoScrollInterval = null;
+            }
+        },
+
+        cycleScrollSpeed() {
+            if (this.scrollSpeed === 1) this.scrollSpeed = 2;
+            else if (this.scrollSpeed === 2) this.scrollSpeed = 3;
+            else this.scrollSpeed = 1;
+        },
+
+        openLightbox(url) {
+            this.lightboxImg = url;
+            this.lightboxOpen = true;
+        },
+
+        copyFromContent(el) {
+            let content = '';
+            const parent = el.closest('.elementor-widget-weddingpress-copy-text');
+            if (parent) {
+                const copyDiv = parent.querySelector('.copy-content');
+                if (copyDiv) content = copyDiv.innerText.trim();
+            }
+            if (!content) {
+                const prev = el.previousElementSibling;
+                if (prev) content = prev.innerText.trim();
+            }
+            if (content) {
+                this.copyToClipboard(content);
+            }
+        },
+
+        copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                this.showToast('Berhasil disalin: ' + text);
+            }).catch(() => {
+                this.showToast('Gagal menyalin');
+            });
+        },
+
+        showToast(msg) {
+            this.toastMessage = msg;
+            this.toastShow = true;
+            setTimeout(() => {
+                this.toastShow = false;
+            }, 2500);
+        },
+
+        updateCountdown() {
+            const now = new Date().getTime();
+            const distance = this.targetTime - now;
+            if (distance < 0) {
+                this.days = 0;
+                this.hours = 0;
+                this.minutes = 0;
+                this.seconds = 0;
+                return;
+            }
+            this.days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            this.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            this.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            this.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        }
+    };
+}
+</script>
