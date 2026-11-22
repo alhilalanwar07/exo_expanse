@@ -16,17 +16,34 @@
     
     <!-- Open Graph & Social Meta Tags -->
     @if(isset($metadata))
-        <meta property="og:title" content="{{ $metadata['title'] ?? 'Wedding Invitation' }}">
-        <meta property="og:description" content="{{ $metadata['description'] ?? 'You are invited to our wedding celebration' }}">
-        <meta property="og:image" content="{{ $metadata['image'] ?? asset('images/og-default.jpg') }}">
-        <meta property="og:image:alt" content="{{ $metadata['image_alt'] ?? 'Wedding Invitation' }}">
+        @php
+            $ogImg = $metadata['image'] ?? asset('themes/3d-adat-bugis-02/assets/COVER-BUKA-UNDANGAN.jpg');
+            $ogTitle = $metadata['title'] ?? 'Wedding Invitation';
+            $ogDesc = $metadata['description'] ?? 'You are invited to our wedding celebration';
+        @endphp
+        <meta property="og:site_name" content="{{ config('app.name', 'ExoInvite') }}">
+        <meta property="og:title" content="{{ $ogTitle }}">
+        <meta property="og:description" content="{{ $ogDesc }}">
         <meta property="og:type" content="website">
-        <meta property="og:url" content="{{ $metadata['url'] ?? request()->url() }}">
-        <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+        <meta property="og:url" content="{{ $metadata['url'] ?? request()->fullUrl() }}">
+        <meta property="og:locale" content="id_ID">
+        <meta property="og:image" content="{{ $ogImg }}">
+        <meta property="og:image:secure_url" content="{{ $ogImg }}">
+        <meta property="og:image:alt" content="{{ $metadata['image_alt'] ?? $ogTitle }}">
+        @if(!empty($metadata['image_type']))
+            <meta property="og:image:type" content="{{ $metadata['image_type'] }}">
+        @endif
+        @if(!empty($metadata['image_width']))
+            <meta property="og:image:width" content="{{ $metadata['image_width'] }}">
+        @endif
+        @if(!empty($metadata['image_height']))
+            <meta property="og:image:height" content="{{ $metadata['image_height'] }}">
+        @endif
+        <link rel="image_src" href="{{ $ogImg }}">
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="{{ $metadata['title'] ?? 'Wedding Invitation' }}">
-        <meta name="twitter:description" content="{{ $metadata['description'] ?? 'You are invited to our wedding celebration' }}">
-        <meta name="twitter:image" content="{{ $metadata['image'] ?? asset('images/og-default.jpg') }}">
+        <meta name="twitter:title" content="{{ $ogTitle }}">
+        <meta name="twitter:description" content="{{ $ogDesc }}">
+        <meta name="twitter:image" content="{{ $ogImg }}">
     @else
         <meta property="og:type" content="website">
     @endif
@@ -131,11 +148,11 @@
     <!-- Main Content Slot -->
     {{ $slot }}
     
+    <!-- Alpine.js Component Factories (must load before Livewire/Alpine init, outside <head>) -->
+    @stack('alpine-components')
+    
     <!-- Livewire Scripts (Required for component interactivity) -->
     @livewireScripts
-    
-    <!-- Alpine.js Integration with Livewire -->
-    @stack('alpine-components')
     
     <!-- Additional Scripts Stack -->
     @stack('scripts')

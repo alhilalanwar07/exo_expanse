@@ -3,6 +3,7 @@
 namespace App\Livewire\Themes;
 
 use App\Models\Invitation;
+use App\Services\ImageService;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -40,12 +41,22 @@ class JavaneseHeritage extends Component
         } else {
             $groom = $invitation->groom_nickname ?? 'Groom';
             $bride = $invitation->bride_nickname ?? 'Bride';
-            $coverImage = $invitation->cover_image ? asset('storage/'.$invitation->cover_image) : 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200';
+            $title = trim((string) ($invitation->title ?? '')) !== ''
+                ? trim((string) $invitation->title)
+                : "The Royal Wedding of $groom & $bride";
+            $ogMeta = app(ImageService::class)->resolveOgImageMetadata(
+                $invitation->cover_image,
+                $invitation->theme?->thumbnail_url
+            );
 
             $this->metadata = [
-                'title' => "The Royal Wedding of $groom & $bride",
+                'title' => $title,
                 'description' => "Kepada Yth. $this->guestName, Tanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.",
-                'image' => $coverImage,
+                'image' => $ogMeta['url'],
+                'image_alt' => $title,
+                'image_type' => $ogMeta['type'],
+                'image_width' => $ogMeta['width'],
+                'image_height' => $ogMeta['height'],
                 'url' => url()->current(),
             ];
         }

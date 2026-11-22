@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Invitation;
 use App\Models\Theme;
+use App\Services\ImageService;
 use App\Services\ThemeService;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
@@ -59,10 +60,16 @@ class DemoPage extends Component
         $this->themeCssVariables = $themeService->generateCssVariables($themeConfig);
         $this->googleFontsUrl = $themeService->getGoogleFontsUrl($themeConfig['fonts']);
 
+        $ogMeta = app(ImageService::class)->resolveOgImageMetadata(null, $theme?->thumbnail_url);
+
         $this->metadata = [
             'title' => 'Demo Tema Undangan Digital - ExoInvite',
             'description' => 'Preview tema undangan digital ExoInvite. Lihat berbagai pilihan tema premium untuk undangan pernikahan online Anda.',
-            'image' => $theme?->thumbnail_url ? $theme->protected_thumbnail : asset('images/og-default.jpg'),
+            'image' => $ogMeta['url'],
+            'image_alt' => 'Demo Tema Undangan Digital - ExoInvite',
+            'image_type' => $ogMeta['type'],
+            'image_width' => $ogMeta['width'],
+            'image_height' => $ogMeta['height'],
             'url' => request()->url(),
         ];
     }

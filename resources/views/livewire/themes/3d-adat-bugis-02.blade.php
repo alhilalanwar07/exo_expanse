@@ -849,8 +849,10 @@
                 white-space: nowrap;
             }
         </style>
+    @endpush
 
-        <!-- Lottie runtime & Alpine controller loaded in <head> before Livewire initializes Alpine -->
+    @push('alpine-components')
+        <!-- Lottie runtime & Alpine controller loaded in body before Livewire initializes Alpine (keeps <head> under 64 KB for WhatsApp OG parser) -->
         <script src="{{ asset('themes/3d-adat-bugis-02/assets/lottie.min.js') }}" defer></script>
         <script>
             window.bugisTheme = function (targetTimestamp, config = {}) {
@@ -859,6 +861,8 @@
                     coverBtnVisible: false,
                     heroTextVisible: false,
                     isPlaying: false,
+                    userPausedMusic: false,
+                    pendingMusicUnlock: false,
                     menuCollapsed: true,
                     autoScrolling: false,
                     scrollSpeed: 1,
@@ -899,10 +903,26 @@
                         this.initVideoReplay();
                         this.initScrollListeners();
 
+                        const song = document.getElementById('song');
+                        if (song && !song.dataset.iosSynced) {
+                            song.dataset.iosSynced = '1';
+                            song.addEventListener('play', () => {
+                                this.isPlaying = true;
+                                this.pendingMusicUnlock = false;
+                            });
+                            song.addEventListener('pause', () => {
+                                this.isPlaying = false;
+                            });
+                        }
+
                         const warmHeroMedia = () => {
                             const heroVideo = document.getElementById('heroVideo');
                             if (heroVideo && heroVideo.preload === 'none') {
                                 heroVideo.preload = 'metadata';
+                            }
+                            const songEl = document.getElementById('song');
+                            if (songEl && songEl.preload === 'none') {
+                                songEl.preload = 'metadata';
                             }
                         };
                         if (document.readyState === 'complete') {
@@ -921,10 +941,20 @@
 
                         const heroVideo = document.getElementById('heroVideo');
                         if (heroVideo) {
+                            heroVideo.muted = true;
+                            heroVideo.defaultMuted = true;
+                            heroVideo.playsInline = true;
                             heroVideo.preload = 'auto';
                             heroVideo.loop = false;
-                            heroVideo.currentTime = 0;
-                            heroVideo.play().catch(() => { });
+                            if (heroVideo.readyState >= 1) {
+                                heroVideo.currentTime = 0;
+                            }
+                            heroVideo.play().then(() => {
+                                const songEl = document.getElementById('song');
+                                if (songEl && songEl.paused && !this.userPausedMusic) {
+                                    this.playMusic();
+                                }
+                            }).catch(() => { });
                         }
 
                         // Reveal hero text synchronized with 3D motion reveal (~9.5s) or fallback
@@ -1138,17 +1168,81 @@
 
                     playMusic() {
                         const audio = document.getElementById('song');
-                        if (audio) {
-                            if (audio.preload === 'none') {
-                                audio.preload = 'auto';
+                        if (!audio) return;
+
+                        this.userPausedMusic = false;
+                        if (audio.preload !== 'auto') {
+                            audio.preload = 'auto';
+                        }
+                        if (audio.readyState === 0 && !audio.currentSrc && audio.src) {
+                            audio.load();
+                        }
+
+                        try {
+                            const playPromise = audio.play();
+                            if (playPromise && typeof playPromise.then === 'function') {
+                                playPromise.then(() => {
+                                    this.isPlaying = true;
+                                    this.pendingMusicUnlock = false;
+                                }).catch(() => {
+                                    this.isPlaying = false;
+                                    this.armIosAudioUnlock();
+                                });
+                            } else {
+                                this.isPlaying = !audio.paused;
                             }
-                            audio.play().then(() => {
-                                this.isPlaying = true;
-                            }).catch(() => { });
+                        } catch (e) {
+                            this.isPlaying = false;
+                            this.armIosAudioUnlock();
                         }
                     },
 
+                    armIosAudioUnlock() {
+                        if (this.pendingMusicUnlock || this.userPausedMusic) return;
+                        this.pendingMusicUnlock = true;
+
+                        const cleanup = () => {
+                            window.removeEventListener('touchend', tryUnlock, true);
+                            window.removeEventListener('click', tryUnlock, true);
+                        };
+
+                        const tryUnlock = () => {
+                            if (this.userPausedMusic) {
+                                this.pendingMusicUnlock = false;
+                                cleanup();
+                                return;
+                            }
+                            const audio = document.getElementById('song');
+                            if (!audio) {
+                                this.pendingMusicUnlock = false;
+                                cleanup();
+                                return;
+                            }
+                            if (audio.preload !== 'auto') {
+                                audio.preload = 'auto';
+                            }
+                            if (audio.readyState === 0 && !audio.currentSrc && audio.src) {
+                                audio.load();
+                            }
+                            try {
+                                const p = audio.play();
+                                if (p && typeof p.then === 'function') {
+                                    p.then(() => {
+                                        this.isPlaying = true;
+                                        this.pendingMusicUnlock = false;
+                                        cleanup();
+                                    }).catch(() => { });
+                                }
+                            } catch (e) { }
+                        };
+
+                        window.addEventListener('touchend', tryUnlock, { capture: true, passive: true });
+                        window.addEventListener('click', tryUnlock, { capture: true, passive: true });
+                    },
+
                     pauseMusic() {
+                        this.userPausedMusic = true;
+                        this.pendingMusicUnlock = false;
                         const audio = document.getElementById('song');
                         if (audio) {
                             audio.pause();
@@ -1463,6 +1557,14 @@
     } else {
         $musicSrc = asset($assetBase . '759IcESZZqg.mp3');
     }
+    $musicExt = strtolower(pathinfo((string) parse_url($musicSrc, PHP_URL_PATH), PATHINFO_EXTENSION));
+    $musicMime = match ($musicExt) {
+        'wav' => 'audio/wav',
+        'ogg' => 'audio/ogg',
+        'm4a' => 'audio/mp4',
+        'aac' => 'audio/aac',
+        default => 'audio/mpeg',
+    };
 
     // Event & Feature Visibility
     $showAkad = in_array($eventType, ['akad_only', 'both']) && ($invitation->akad_date || $invitation->akad_venue || $invitation->akad_maps_link || !isset($styles['event_type']));
@@ -1583,9 +1685,9 @@
         class="elementor elementor-346 elementor-location-single post-759 post type-post status-publish format-standard has-post-thumbnail hentry category-3d-motion 3d-motion-3d-adat-bugis-02">
 
         <!-- Audio Element -->
-        <div wire:ignore style="display: none;">
-            <audio id="song" loop preload="none">
-                <source src="{{ $musicSrc }}">
+        <div wire:ignore style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none;" aria-hidden="true">
+            <audio id="song" loop preload="none" playsinline webkit-playsinline src="{{ $musicSrc }}">
+                <source src="{{ $musicSrc }}" type="{{ $musicMime }}">
             </audio>
         </div>
 

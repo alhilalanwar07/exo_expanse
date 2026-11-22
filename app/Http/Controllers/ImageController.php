@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
-    public function show(Request $request, string $token)
+    public function show(Request $request, string $token, ?string $ext = null)
     {
         $path = ImageService::decodePath($token);
 
@@ -43,6 +43,27 @@ class ImageController extends Controller
         if ($cachedPath && is_file($cachedPath)) {
             return $this->serveFileWithCache($request, $cachedPath, 'image/webp', 31536000, true);
         }
+
+        return $this->serveFileWithCache($request, $fullPath, $mime, 86400);
+    }
+
+    public function ogImage(Request $request, string $token)
+    {
+        $path = ImageService::decodePath($token);
+
+        if (! $path || ! Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        $fullPath = Storage::disk('public')->path($path);
+        $imageService = app(ImageService::class);
+        $cachedPath = $imageService->getOgJpegCachePath($path, $fullPath);
+
+        if ($cachedPath && is_file($cachedPath)) {
+            return $this->serveFileWithCache($request, $cachedPath, 'image/jpeg', 31536000, true);
+        }
+
+        $mime = Storage::disk('public')->mimeType($path) ?: 'image/jpeg';
 
         return $this->serveFileWithCache($request, $fullPath, $mime, 86400);
     }

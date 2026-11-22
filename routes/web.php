@@ -44,9 +44,18 @@ Route::get('/', Welcome::class)->name('home');
 Route::view('/form-sosmed', 'tools.social-account-form')->name('social-form');
 Route::post('/form-sosmed', [SiswakkriController::class, 'store'])->name('social-form.store');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/img/{token}.{ext}', [ImageController::class, 'show'])
+    ->where('token', '[A-Za-z0-9_-]+')
+    ->whereIn('ext', ['mp3', 'wav', 'ogg', 'm4a', 'aac'])
+    ->withoutMiddleware(['web'])
+    ->name('image.media');
 Route::get('/img/{token}', [ImageController::class, 'show'])
+    ->where('token', '[A-Za-z0-9_-]+')
     ->withoutMiddleware(['web'])
     ->name('image.show');
+Route::get('/og/{token}.jpg', [ImageController::class, 'ogImage'])
+    ->withoutMiddleware(['web'])
+    ->name('image.og');
 
 // Block direct storage access — all files served through /img/{token}
 Route::get('/storage/{path}', fn () => abort(403))->where('path', '.*');

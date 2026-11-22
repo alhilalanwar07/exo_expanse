@@ -11,6 +11,8 @@
 </head>
 <body style="margin:0; padding:0; overflow:hidden;">
     {{ $slot }}
+    @stack('alpine-components')
     @livewireScripts
+    @stack('scripts')
 </body>
 </html>
