@@ -66,6 +66,8 @@ class Builder extends Component
 
     public string $groom_instagram = 'andi.prasetyo';
 
+    public string $groom_child_order = 'Putra Pertama Dari';
+
     public ?string $groom_photo = null;
 
     // Mempelai Wanita
@@ -79,6 +81,8 @@ class Builder extends Component
     public string $bride_mother = 'Ibu Dewi';
 
     public string $bride_instagram = 'rina.wulandari';
+
+    public string $bride_child_order = 'Putri Pertama Dari';
 
     public ?string $bride_photo = null;
 
@@ -294,6 +298,9 @@ class Builder extends Component
         $this->groom_father = $invitation->groom_father ?? '';
         $this->groom_mother = $invitation->groom_mother ?? '';
         $this->groom_instagram = $invitation->instagram_groom ?? '';
+        $this->groom_child_order = (isset($styles['groom_child_order']) && trim((string) $styles['groom_child_order']) !== '')
+            ? $styles['groom_child_order']
+            : 'Putra Pertama Dari';
         $this->groom_photo = $invitation->groom_photo;
 
         // Bride
@@ -302,6 +309,9 @@ class Builder extends Component
         $this->bride_father = $invitation->bride_father ?? '';
         $this->bride_mother = $invitation->bride_mother ?? '';
         $this->bride_instagram = $invitation->instagram_bride ?? '';
+        $this->bride_child_order = (isset($styles['bride_child_order']) && trim((string) $styles['bride_child_order']) !== '')
+            ? $styles['bride_child_order']
+            : 'Putri Pertama Dari';
         $this->bride_photo = $invitation->bride_photo;
 
         // Akad
@@ -375,6 +385,8 @@ class Builder extends Component
             ],
             'custom_styles' => array_merge($this->invitation?->custom_styles ?? [], [
                 'name_order' => $this->name_order,
+                'groom_child_order' => trim($this->groom_child_order) !== '' ? trim($this->groom_child_order) : 'Putra Pertama Dari',
+                'bride_child_order' => trim($this->bride_child_order) !== '' ? trim($this->bride_child_order) : 'Putri Pertama Dari',
                 'event_type' => $this->event_type,
                 'event_date' => $this->event_date,
                 'cover_title' => $this->cover_title,

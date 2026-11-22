@@ -1187,12 +1187,19 @@
     $groomPhotoUrl = $invitation->groom_photo ? img_url($invitation->groom_photo) : asset($assetBase . 'DSCF7972-2.jpeg');
     $bridePhotoUrl = $invitation->bride_photo ? img_url($invitation->bride_photo) : asset($assetBase . 'DSCF7981-2.jpeg');
 
+    $groomChildLabel = trim((string) ($styles['groom_child_order'] ?? '')) !== ''
+        ? trim((string) $styles['groom_child_order'])
+        : 'Putra Pertama Dari';
+    $brideChildLabel = trim((string) ($styles['bride_child_order'] ?? '')) !== ''
+        ? trim((string) $styles['bride_child_order'])
+        : 'Putri Pertama Dari';
+
     if ($nameOrder === 'bride_first') {
         $firstPerson = [
             'nick' => $brideNick,
             'full' => $brideFull,
             'photo' => $bridePhotoUrl,
-            'childLabel' => 'Putri Pertama Dari',
+            'childLabel' => $brideChildLabel,
             'parents' => $brideParents,
             'ig' => $brideIgRaw,
             'spanClass' => 'wds-jfb-typography-meta-_nama_lengkap_wanita',
@@ -1202,7 +1209,7 @@
             'nick' => $groomNick,
             'full' => $groomFull,
             'photo' => $groomPhotoUrl,
-            'childLabel' => 'Putra Pertama Dari',
+            'childLabel' => $groomChildLabel,
             'parents' => $groomParents,
             'ig' => $groomIgRaw,
             'spanClass' => 'wds-jfb-typography-meta-_nama_lengkap_pria',
@@ -1215,7 +1222,7 @@
             'nick' => $groomNick,
             'full' => $groomFull,
             'photo' => $groomPhotoUrl,
-            'childLabel' => 'Putra Pertama Dari',
+            'childLabel' => $groomChildLabel,
             'parents' => $groomParents,
             'ig' => $groomIgRaw,
             'spanClass' => 'wds-jfb-typography-meta-_nama_lengkap_pria',
@@ -1225,7 +1232,7 @@
             'nick' => $brideNick,
             'full' => $brideFull,
             'photo' => $bridePhotoUrl,
-            'childLabel' => 'Putri Pertama Dari',
+            'childLabel' => $brideChildLabel,
             'parents' => $brideParents,
             'ig' => $brideIgRaw,
             'spanClass' => 'wds-jfb-typography-meta-_nama_lengkap_wanita',
@@ -1367,7 +1374,19 @@
         ['date' => '2025', 'title' => 'Melewati Segalanya Bareng', 'description' => 'Gak selalu mulus, ada beda pendapat, ada jarak, ada ujian. Tapi justru di situ, cinta makin kuat karena selalu pilih untuk bertahan.'],
         ['date' => '2026', 'title' => 'Memilih Selamanya', 'description' => 'Sampai akhirnya sadar, “ini orangnya.” Bukan cuma untuk sekarang, tapi untuk semua hari ke depan. Dari dua cerita, jadi satu perjalanan selamanya.'],
     ];
-    $rawStories = !empty($invitation->love_story) && is_array($invitation->love_story) ? $invitation->love_story : $defaultStories;
+    $filteredStories = (is_array($invitation->love_story) && !empty($invitation->love_story))
+        ? array_values(array_filter($invitation->love_story, function ($story) {
+            if (!is_array($story)) {
+                return false;
+            }
+            return trim((string) ($story['title'] ?? '')) !== ''
+                || trim((string) ($story['description'] ?? '')) !== ''
+                || trim((string) ($story['date'] ?? '')) !== '';
+        }))
+        : [];
+    $rawStories = !empty($filteredStories)
+        ? $filteredStories
+        : (!$invitation->exists ? $defaultStories : []);
     $loveStories = collect($rawStories)->values()->map(function ($story, $idx) use ($defaultStoryImages) {
         return [
             'date' => $story['date'] ?? date('Y'),
@@ -1376,6 +1395,7 @@
             'image' => $story['image'] ?? $defaultStoryImages[$idx % count($defaultStoryImages)],
         ];
     })->all();
+    $showLoveStory = count($loveStories) > 0;
 
     // Wedding Gift Accounts
     $giftAddress = $styles['gift_address'] ?? $invitation->gift_address ?? $mainAddress;
@@ -1868,53 +1888,55 @@
                 </div>
 
                 <!-- 10. Love Story Section (2838b78c / #story) -->
-                <div id="story" class="has_eae_slider elementor-element elementor-element-2838b78c e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="2838b78c">
-                    <div class="has_eae_slider elementor-element elementor-element-1d47a666 e-con-full e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="1d47a666">
-                        <div class="elementor-element elementor-element-3314bf86 elementor-widget elementor-widget-heading" data-widget_type="heading.default">
-                            <p class="elementor-heading-title elementor-size-default">Love Story</p>
-                        </div>
-                        <div class="elementor-element elementor-element-24abdce5 elementor-invisible elementor-widget elementor-widget-heading" data-settings='{"_animation":"fadeInUp","_animation_mobile":"fadeInDown","_animation_delay":250}' data-widget_type="heading.default">
-                            <p class="elementor-heading-title elementor-size-default">Every love story is beautiful, but ours is my favorite.</p>
-                        </div>
-                        <div class="elementor-element elementor-element-50f723ba elementor-widget elementor-widget-jet-timeline" data-widget_type="jet-timeline.default">
-                            <div class="elementor-widget-container">
-                                <div class="elementor-jet-timeline jet-elements">
-                                    <div class="jet-timeline jet-timeline--align-left jet-timeline--align-middle">
-                                        <div class="jet-timeline__line"><div class="jet-timeline__line-progress"></div></div>
-                                        <div class="jet-timeline-list">
-                                            @foreach($loveStories as $sIdx => $story)
-                                                <div class="jet-timeline-item jet-timeline-item--animated elementor-repeater-item-a1d724f-{{ $sIdx }} jet-timeline-item--image-inside is--show" wire:key="story-{{ $sIdx }}">
-                                                    <div class="timeline-item__card">
-                                                        <div class="timeline-item__card-inner">
-                                                            <div class="timeline-item__card-img">
-                                                                <img alt="{{ $story['title'] }}" class="attachment-full size-full" loading="lazy" height="1590" width="1060" src="{{ $story['image'] }}" />
+                @if($showLoveStory)
+                    <div id="story" class="has_eae_slider elementor-element elementor-element-2838b78c e-con-full wdsdv-enabled--yes e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="2838b78c">
+                        <div class="has_eae_slider elementor-element elementor-element-1d47a666 e-con-full e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="1d47a666">
+                            <div class="elementor-element elementor-element-3314bf86 elementor-widget elementor-widget-heading" data-widget_type="heading.default">
+                                <p class="elementor-heading-title elementor-size-default">Love Story</p>
+                            </div>
+                            <div class="elementor-element elementor-element-24abdce5 elementor-invisible elementor-widget elementor-widget-heading" data-settings='{"_animation":"fadeInUp","_animation_mobile":"fadeInDown","_animation_delay":250}' data-widget_type="heading.default">
+                                <p class="elementor-heading-title elementor-size-default">Every love story is beautiful, but ours is my favorite.</p>
+                            </div>
+                            <div class="elementor-element elementor-element-50f723ba elementor-widget elementor-widget-jet-timeline" data-widget_type="jet-timeline.default">
+                                <div class="elementor-widget-container">
+                                    <div class="elementor-jet-timeline jet-elements">
+                                        <div class="jet-timeline jet-timeline--align-left jet-timeline--align-middle">
+                                            <div class="jet-timeline__line"><div class="jet-timeline__line-progress"></div></div>
+                                            <div class="jet-timeline-list">
+                                                @foreach($loveStories as $sIdx => $story)
+                                                    <div class="jet-timeline-item jet-timeline-item--animated elementor-repeater-item-a1d724f-{{ $sIdx }} jet-timeline-item--image-inside is--show" wire:key="story-{{ $sIdx }}">
+                                                        <div class="timeline-item__card">
+                                                            <div class="timeline-item__card-inner">
+                                                                <div class="timeline-item__card-img">
+                                                                    <img alt="{{ $story['title'] }}" class="attachment-full size-full" loading="lazy" height="1590" width="1060" src="{{ $story['image'] }}" />
+                                                                </div>
+                                                                <div class="timeline-item__card-content">
+                                                                    <div class="timeline-item__meta"><div class="timeline-item__meta-content">{{ $story['date'] }}</div></div>
+                                                                    <h5 class="timeline-item__card-title">{{ $story['title'] }}</h5>
+                                                                    <div class="timeline-item__card-desc">{{ $story['description'] }}</div>
+                                                                </div>
                                                             </div>
-                                                            <div class="timeline-item__card-content">
-                                                                <div class="timeline-item__meta"><div class="timeline-item__meta-content">{{ $story['date'] }}</div></div>
-                                                                <h5 class="timeline-item__card-title">{{ $story['title'] }}</h5>
-                                                                <div class="timeline-item__card-desc">{{ $story['description'] }}</div>
+                                                            <div class="timeline-item__card-arrow"></div>
+                                                        </div>
+                                                        <div class="timeline-item__point">
+                                                            <div class="timeline-item__point-content timeline-item__point-content--icon">
+                                                                <span class="jet-elements-icon"><i aria-hidden="true" class="fas fa-hand-holding-heart"></i></span>
                                                             </div>
                                                         </div>
-                                                        <div class="timeline-item__card-arrow"></div>
+                                                        <div class="timeline-item__meta"><div class="timeline-item__meta-content">{{ $story['date'] }}</div></div>
                                                     </div>
-                                                    <div class="timeline-item__point">
-                                                        <div class="timeline-item__point-content timeline-item__point-content--icon">
-                                                            <span class="jet-elements-icon"><i aria-hidden="true" class="fas fa-hand-holding-heart"></i></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="timeline-item__meta"><div class="timeline-item__meta-content">{{ $story['date'] }}</div></div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="elementor-element elementor-element-409643d3 elementor-absolute animated-slow elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"rotateInDownLeft","_animation_delay":300,"_animation_mobile":"fadeInLeft","_position":"absolute"}' data-widget_type="image.default">
-                            <img alt="" class="attachment-full size-full wp-image-316" height="978" width="585" src="{{ asset($assetBase . 'bunga-bugis.png') }}" />
+                            <div class="elementor-element elementor-element-409643d3 elementor-absolute animated-slow elementor-invisible elementor-widget elementor-widget-image" data-settings='{"_animation":"rotateInDownLeft","_animation_delay":300,"_animation_mobile":"fadeInLeft","_position":"absolute"}' data-widget_type="image.default">
+                                <img alt="" class="attachment-full size-full wp-image-316" height="978" width="585" src="{{ asset($assetBase . 'bunga-bugis.png') }}" />
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 <!-- 11. Wedding Gift Section (3057ba0d / #gift) -->
                 @if($showGift)
@@ -2372,9 +2394,11 @@
                 <i class="fas fa-images"></i><span>Galeri</span>
             </a>
         @endif
-        <a href="#story" @click.prevent="scrollTo('#story')" class="dock-btn" title="Kisah">
-            <i class="fas fa-book-open"></i><span>Cerita</span>
-        </a>
+        @if($showLoveStory)
+            <a href="#story" @click.prevent="scrollTo('#story')" class="dock-btn" title="Kisah">
+                <i class="fas fa-book-open"></i><span>Cerita</span>
+            </a>
+        @endif
         @if($showGift)
             <a href="#gift" @click.prevent="scrollTo('#gift')" class="dock-btn" title="Kado">
                 <i class="fas fa-gift"></i><span>Kado</span>

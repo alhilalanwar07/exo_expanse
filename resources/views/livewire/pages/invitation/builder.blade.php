@@ -232,6 +232,11 @@
                                             <input wire:model.blur="groom_instagram" type="text" class="w-full pl-8 pr-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="username">
                                         </div>
                                     </div>
+                                    <div>
+                                        <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Keterangan Anak (Putra ke-)</label>
+                                        <input wire:model.blur="groom_child_order" type="text" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="Putra Pertama Dari">
+                                        <p class="text-xs text-slate-400 mt-1">Contoh: Putra Pertama Dari, Putra Kedua Dari, Putra Bungsu Dari</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -265,6 +270,11 @@
                                             <span class="absolute left-3 top-2.5 text-slate-400">@</span>
                                             <input wire:model.blur="bride_instagram" type="text" class="w-full pl-8 pr-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="username">
                                         </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Keterangan Anak (Putri ke-)</label>
+                                        <input wire:model.blur="bride_child_order" type="text" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="Putri Pertama Dari">
+                                        <p class="text-xs text-slate-400 mt-1">Contoh: Putri Pertama Dari, Putri Kedua Dari, Putri Bungsu Dari</p>
                                     </div>
                                 </div>
                             </div>
