@@ -147,5 +147,5 @@ Route::get('/i/demo', DemoPage::class)->name('invitation.demo')->middleware('all
 Route::get('/i/{slug}', ThemePage::class)->name('invitation.show');
 
 // Deployment Tools (Sinkronisasi Tema 3D Adat Bugis 02 ke Database Hosting)
-Route::get('/deploy/add-theme-3d-adat-bugis-02', [ThemeDeploymentController::class, 'addAdatBugisTheme'])->name('deploy.theme-bugis');
-Route::get('/tools/add-theme-bugis', [ThemeDeploymentController::class, 'addAdatBugisTheme']);
+// Route::get('/deploy/add-theme-3d-adat-bugis-02', [ThemeDeploymentController::class, 'addAdatBugisTheme'])->name('deploy.theme-bugis');
+// Route::get('/tools/add-theme-bugis', [ThemeDeploymentController::class, 'addAdatBugisTheme']);

@@ -2271,7 +2271,7 @@
                 <div class="has_eae_slider elementor-element elementor-element-34aa0a29 e-con-full e-flex e-con e-child" data-e-type="container" data-element_type="container" data-id="34aa0a29">
                     <div class="elementor-element elementor-element-34a93772 elementor-widget elementor-widget-image" data-widget_type="image.default">
                         <a href="{{ url('/') }}">
-                            <img alt="Invitation Logo" loading="lazy" src="{{ asset($assetBase . 'logo-4-png-2-e1722418062474-1.png') }}" />
+                            <img alt="ExoInvite Logo" loading="lazy" src="{{ asset('assets/svg/logo.svg') }}" style="width: 170px; max-width: 65%; height: auto;" />
                         </a>
                     </div>
                     <div class="elementor-element elementor-element-292a0be7 elementor-widget elementor-widget-heading" data-widget_type="heading.default">
