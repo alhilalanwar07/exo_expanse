@@ -39,15 +39,18 @@ class MusicManager extends Component
             'artist' => 'nullable|string|max:255',
         ];
 
+        $audioRule = 'file|extensions:mp3,wav,ogg,m4a|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/wave,audio/ogg,audio/mp4,audio/x-m4a,audio/aac,application/octet-stream|max:10240';
+
         if ($this->editingMusicId) {
-            $rules['musicFile'] = 'nullable|file|mimes:mp3,wav|max:10240';
+            $rules['musicFile'] = 'nullable|'.$audioRule;
         } else {
-            $rules['musicFile'] = 'required|file|mimes:mp3,wav|max:10240';
+            $rules['musicFile'] = 'required|'.$audioRule;
         }
 
         $this->validate($rules, [
             'musicFile.required' => 'File musik wajib diunggah!',
-            'musicFile.mimes' => 'Format file harus berupa MP3 atau WAV.',
+            'musicFile.extensions' => 'Format file harus berupa MP3, WAV, OGG, atau M4A.',
+            'musicFile.mimetypes' => 'Format file harus berupa audio (MP3, WAV, OGG, atau M4A).',
             'musicFile.max' => 'Ukuran file maksimal 10MB.',
             'title.required' => 'Judul lagu wajib diisi.',
         ]);
@@ -55,7 +58,6 @@ class MusicManager extends Component
         $path = null;
         if ($this->musicFile) {
             $path = $this->musicFile->store('music', 'public');
-            $path = 'storage/' . $path; // standard laravel symlink path
         }
 
         if ($this->editingMusicId) {
@@ -65,11 +67,11 @@ class MusicManager extends Component
                 'artist' => $this->artist,
                 'is_active' => $this->isActive,
             ];
-            
+
             if ($path) {
                 // Hapus file lama jika di-upload ulang file baru
-                $oldPath = str_replace('storage/', '', $music->file_path);
-                if (Storage::disk('public')->exists($oldPath)) {
+                $oldPath = $music->storage_path;
+                if ($oldPath && Storage::disk('public')->exists($oldPath)) {
                     Storage::disk('public')->delete($oldPath);
                 }
                 $data['file_path'] = $path;
@@ -113,12 +115,12 @@ class MusicManager extends Component
     public function delete($id)
     {
         $music = BackgroundMusic::findOrFail($id);
-        
-        $filePath = str_replace('storage/', '', $music->file_path);
-        if (Storage::disk('public')->exists($filePath)) {
+
+        $filePath = $music->storage_path;
+        if ($filePath && Storage::disk('public')->exists($filePath)) {
             Storage::disk('public')->delete($filePath);
         }
-        
+
         $music->delete();
         session()->flash('message', 'Lagu dan file berhasil dihapus selamanya.');
     }

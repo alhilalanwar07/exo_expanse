@@ -32,13 +32,18 @@ class ThemeService
             $invitation->custom_colors ?? []
         );
 
+        $customFonts = array_filter(
+            $invitation->custom_fonts ?? [],
+            fn ($v) => is_string($v) && trim($v) !== ''
+        );
+
         $fonts = array_merge(
             [
                 'heading' => $theme->heading_font ?? 'Playfair Display',
                 'body' => $theme->body_font ?? 'Inter',
                 'accent' => $theme->accent_font ?? 'Great Vibes',
             ],
-            $invitation->custom_fonts ?? []
+            $customFonts
         );
 
         $settings = array_merge(
@@ -123,10 +128,23 @@ CSS;
      */
     public function getGoogleFontsUrl(array $fonts): string
     {
+        $genericFamilies = [
+            'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy',
+            'system-ui', 'ui-serif', 'ui-sans-serif', 'ui-monospace',
+            'inherit', 'initial', 'unset',
+        ];
+
         $fontList = collect($fonts)
+            ->filter(fn ($font) => is_string($font) && trim($font) !== '')
+            ->map(fn ($font) => trim(explode(',', $font)[0], " \t\n\r\0\x0B\"'"))
+            ->filter(fn ($font) => $font !== '' && ! in_array(strtolower($font), $genericFamilies, true))
             ->unique()
             ->map(fn ($font) => str_replace(' ', '+', $font).':wght@300;400;500;600;700')
             ->implode('&family=');
+
+        if ($fontList === '') {
+            return '';
+        }
 
         return "https://fonts.googleapis.com/css2?family={$fontList}&display=swap";
     }

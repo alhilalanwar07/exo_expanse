@@ -2,7 +2,7 @@
 					font-family: 'photograph';
 					src: url("7117photograph.woff2") format('woff2'),
 						url("7117photograph.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.photograph{font-family: 'photograph' !important;}
@@ -11,7 +11,7 @@
 					font-family: 'montecarlo';
 					src: url("6821montecarlo.woff2") format('woff2'),
 						url("6821montecarlo.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.montecarlo{font-family: 'montecarlo' !important;}
@@ -20,7 +20,7 @@
 					font-family: 'saudagar';
 					src: url("7851Saudagar.woff2") format('woff2'),
 						url("7851Saudagar.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.saudagar{font-family: 'saudagar' !important;}
@@ -29,7 +29,7 @@
 					font-family: 'brittany-signature';
 					src: url("3979Brittany-Signature.woff2") format('woff2'),
 						url("3979Brittany-Signature.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.brittany-signature{font-family: 'brittany-signature' !important;}
@@ -38,7 +38,7 @@
 					font-family: 'amiri';
 					src: url("8907Amiri.woff2") format('woff2'),
 						url("8907Amiri.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.amiri{font-family: 'amiri' !important;}
@@ -47,7 +47,7 @@
 					font-family: 'iskry';
 					src: url("2701Iskry.woff2") format('woff2'),
 						url("2701Iskry.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.iskry{font-family: 'iskry' !important;}
@@ -56,7 +56,7 @@
 					font-family: 'qene-g';
 					src: url("1598Qene-G.woff2") format('woff2'),
 						url("1598Qene-G.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.qene-g{font-family: 'qene-g' !important;}
@@ -65,7 +65,7 @@
 					font-family: 'silent-caroline';
 					src: url("1164Silent-Caroline.woff2") format('woff2'),
 						url("1164Silent-Caroline.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.silent-caroline{font-family: 'silent-caroline' !important;}
@@ -74,7 +74,7 @@
 					font-family: 'hatolie';
 					src: url("4915hatolie.woff2") format('woff2'),
 						url("4915hatolie.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.hatolie{font-family: 'hatolie' !important;}
@@ -83,7 +83,7 @@
 					font-family: 'ivymode-regular';
 					src: url("9060IvyMode-Regular.woff2") format('woff2'),
 						url("9060IvyMode-Regular.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.ivymode-regular{font-family: 'ivymode-regular' !important;}
@@ -92,7 +92,7 @@
 					font-family: 'amiri-bold';
 					src: url("5421Amiri-Bold.woff2") format('woff2'),
 						url("5421Amiri-Bold.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.amiri-bold{font-family: 'amiri-bold' !important;}
@@ -101,7 +101,7 @@
 					font-family: 'analogue';
 					src: url("4709Analogue.woff2") format('woff2'),
 						url("4709Analogue.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.analogue{font-family: 'analogue' !important;}
@@ -110,7 +110,7 @@
 					font-family: 'andrea-bellarosa';
 					src: url("2312Andrea-Bellarosa.woff2") format('woff2'),
 						url("2312Andrea-Bellarosa.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.andrea-bellarosa{font-family: 'andrea-bellarosa' !important;}
@@ -119,7 +119,7 @@
 					font-family: 'aston-script';
 					src: url("5293Aston-Script.woff2") format('woff2'),
 						url("5293Aston-Script.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.aston-script{font-family: 'aston-script' !important;}
@@ -128,7 +128,7 @@
 					font-family: 'garlicha';
 					src: url("8140garlicha.woff2") format('woff2'),
 						url("8140garlicha.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.garlicha{font-family: 'garlicha' !important;}
@@ -137,7 +137,7 @@
 					font-family: 'iskry-regular';
 					src: url("2015Iskry-Regular.woff2") format('woff2'),
 						url("2015Iskry-Regular.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.iskry-regular{font-family: 'iskry-regular' !important;}
@@ -146,7 +146,7 @@
 					font-family: 'mesheddisplay';
 					src: url("1502MeshedDisplay.woff2") format('woff2'),
 						url("1502MeshedDisplay.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.mesheddisplay{font-family: 'mesheddisplay' !important;}
@@ -155,7 +155,7 @@
 					font-family: 'shelleyandantebt';
 					src: url("7576ShelleyAndanteBT.woff2") format('woff2'),
 						url("7576ShelleyAndanteBT.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.shelleyandantebt{font-family: 'shelleyandantebt' !important;}
@@ -164,7 +164,7 @@
 					font-family: 'edwardianscriptitc';
 					src: url("6750edwardianscriptitc.woff2") format('woff2'),
 						url("6750edwardianscriptitc.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.edwardianscriptitc{font-family: 'edwardianscriptitc' !important;}
@@ -173,7 +173,7 @@
 					font-family: 'amsterdam-one';
 					src: url("4868Amsterdam-One.woff2") format('woff2'),
 						url("4868Amsterdam-One.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.amsterdam-one{font-family: 'amsterdam-one' !important;}
@@ -182,7 +182,7 @@
 					font-family: 'madelyn';
 					src: url("2350Madelyn.woff2") format('woff2'),
 						url("2350Madelyn.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.madelyn{font-family: 'madelyn' !important;}
@@ -191,7 +191,7 @@
 					font-family: 'brittany';
 					src: url("3077Brittany.woff2") format('woff2'),
 						url("3077Brittany.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.brittany{font-family: 'brittany' !important;}
@@ -200,7 +200,7 @@
 					font-family: 'gethuk-jawa';
 					src: url("2559Gethuk-Jawa.woff2") format('woff2'),
 						url("2559Gethuk-Jawa.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.gethuk-jawa{font-family: 'gethuk-jawa' !important;}
@@ -209,7 +209,7 @@
 					font-family: 'javassoul';
 					src: url("7034javassoul.woff2") format('woff2'),
 						url("7034javassoul.woff") format('woff');
-					   font-display: auto;
+					   font-display: swap;
 				}
 
 				.javassoul{font-family: 'javassoul' !important;}

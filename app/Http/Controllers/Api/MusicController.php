@@ -23,7 +23,7 @@ class MusicController extends Controller
             ->paginate(15);
             
         $musics->getCollection()->transform(function ($music) {
-            $music->file_url = asset($music->file_path);
+            $music->file_url = $music->url;
             return $music;
         });
 

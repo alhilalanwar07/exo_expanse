@@ -17,9 +17,22 @@ class ImageController extends Controller
         }
 
         $fullPath = Storage::disk('public')->path($path);
-        $mime = Storage::disk('public')->mimeType($path);
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $audioMimes = [
+            'mp3' => 'audio/mpeg',
+            'wav' => 'audio/wav',
+            'ogg' => 'audio/ogg',
+            'm4a' => 'audio/mp4',
+            'aac' => 'audio/aac',
+        ];
 
-        // Non-image files (e.g. music) — serve directly with ETag & long cache
+        if (isset($audioMimes[$ext])) {
+            return $this->serveFileWithCache($request, $fullPath, $audioMimes[$ext], 86400);
+        }
+
+        $mime = Storage::disk('public')->mimeType($path) ?: 'application/octet-stream';
+
+        // Non-image files (e.g. other media) — serve directly with ETag & long cache
         if (! str_starts_with($mime, 'image/')) {
             return $this->serveFileWithCache($request, $fullPath, $mime, 86400);
         }

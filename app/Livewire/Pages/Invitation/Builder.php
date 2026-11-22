@@ -254,7 +254,7 @@ class Builder extends Component
 
         // Settings (Columns & Derived)
         $this->music_enabled = ! empty($invitation->background_music) || ! empty($invitation->music_id);
-        $this->music_url = $invitation->background_music;
+        $this->music_url = $invitation->getRawOriginal('background_music');
         $this->music_id = $invitation->music_id;
 
         $this->bank_accounts = $invitation->bank_accounts ?? [];
@@ -367,8 +367,8 @@ class Builder extends Component
 
             // Media & Content
             'cover_image' => $this->cover_photo,
-            'background_music' => $this->music_enabled ? $this->music_url : null,
-            'music_id' => $this->music_enabled ? $this->music_id : null,
+            'background_music' => ($this->music_enabled && empty($this->music_id)) ? ($this->music_url ?: null) : null,
+            'music_id' => $this->music_enabled ? ($this->music_id ?: null) : null,
             'love_story' => $this->love_story,
             'bank_accounts' => $this->gift_enabled ? $this->bank_accounts : null,
 
@@ -488,16 +488,23 @@ class Builder extends Component
     public function updatedMusicUpload(): void
     {
         $this->validate([
-            'musicUpload' => 'required|file|mimes:mp3|max:10240', // 10MB
+            'musicUpload' => 'required|file|extensions:mp3,wav,ogg,m4a|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/wave,audio/ogg,audio/mp4,audio/x-m4a,audio/aac,application/octet-stream|max:10240',
+        ], [
+            'musicUpload.extensions' => 'Format file harus berupa MP3, WAV, OGG, atau M4A.',
+            'musicUpload.mimetypes' => 'Format file harus berupa audio (MP3, WAV, OGG, atau M4A).',
+            'musicUpload.max' => 'Ukuran file musik maksimal 10MB.',
         ]);
 
         if ($this->musicUpload) {
-            if ($this->music_url) {
-                Storage::disk('public')->delete($this->music_url);
+            if ($this->music_url && ! str_starts_with($this->music_url, 'http')) {
+                $oldPath = preg_replace('#^/?storage/#', '', ltrim($this->music_url, '/'));
+                Storage::disk('public')->delete($oldPath);
             }
 
             $path = $this->musicUpload->store('invitations/music', 'public');
             $this->music_url = $path;
+            $this->music_id = null;
+            $this->music_enabled = true;
             $this->musicUpload = null;
         }
     }
@@ -505,7 +512,10 @@ class Builder extends Component
     public function removeMusic(): void
     {
         if ($this->music_url) {
-            Storage::disk('public')->delete($this->music_url);
+            if (! str_starts_with($this->music_url, 'http')) {
+                $oldPath = preg_replace('#^/?storage/#', '', ltrim($this->music_url, '/'));
+                Storage::disk('public')->delete($oldPath);
+            }
             $this->music_url = null;
         }
     }

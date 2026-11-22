@@ -347,7 +347,7 @@
         {{-- Audio Player --}}
         @if($invitation->background_music)
             <audio x-ref="bgMusic" loop>
-                <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}" type="audio/mp3">
+                <source src="{{ str_starts_with($invitation->background_music, 'http') ? $invitation->background_music : img_url($invitation->background_music) }}">
             </audio>
             
             {{-- Music Toggle FAB --}}

@@ -44,9 +44,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     
-    <!-- Google Fonts (Optimized with font-display=swap) -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Sacramento&family=Outfit:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Sacramento&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+    <!-- Google Fonts (display=swap is non-blocking and avoids preload/onload race in WebViews) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Sacramento&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- Additional Fonts Stack (Theme-specific) -->
     @stack('fonts')

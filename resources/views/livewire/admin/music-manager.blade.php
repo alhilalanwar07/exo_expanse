@@ -42,10 +42,10 @@
                     </div>
 
                     <div>
-                        <label for="musicFile" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">File Audio (MP3/WAV) {{ !$editingMusicId ? '<span class="text-red-500">*</span>' : '' }}</label>
+                        <label for="musicFile" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">File Audio (MP3/WAV/M4A/OGG) @if(!$editingMusicId)<span class="text-red-500">*</span>@endif</label>
                         
                         <div class="relative mt-1">
-                            <input type="file" id="musicFile" wire:model="musicFile" accept="audio/mp3,audio/wav" class="block w-full text-sm text-slate-500 dark:text-slate-400
+                            <input type="file" id="musicFile" wire:model="musicFile" accept=".mp3,.wav,.m4a,.ogg,audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/mp4,audio/ogg" class="block w-full text-sm text-slate-500 dark:text-slate-400
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded-full file:border-0
                                 file:text-sm file:font-semibold
@@ -110,8 +110,8 @@
                                         <div class="text-sm text-slate-500 dark:text-slate-400">{{ $item->artist ?? '-' }}</div>
                                     </td>
                                     <td class="px-5 py-4 w-64 text-center">
-                                        <audio controls class="h-10 w-full max-w-[200px] mx-auto rounded-full" preload="none">
-                                            <source src="{{ asset($item->file_path) }}" type="audio/mpeg">
+                                        <audio controls wire:key="music-audio-{{ $item->id }}-{{ md5((string) $item->file_path) }}"
+                                            src="{{ $item->url }}" class="h-10 w-full max-w-[200px] mx-auto rounded-full" preload="none">
                                             Browser tidak mendukung pemutar audio.
                                         </audio>
                                     </td>

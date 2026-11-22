@@ -1,6 +1,8 @@
 <div class="theme-page-router">
     @push('fonts')
-        <link rel="stylesheet" href="{{ $this->googleFontsUrl }}">
+        @if(!empty($this->googleFontsUrl))
+            <link rel="stylesheet" href="{{ $this->googleFontsUrl }}">
+        @endif
     @endpush
 
     @push('styles')

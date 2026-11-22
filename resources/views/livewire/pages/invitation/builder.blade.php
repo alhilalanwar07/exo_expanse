@@ -909,13 +909,15 @@
                                         <label class="block text-sm text-slate-600 dark:text-slate-400 mb-3 font-medium">Pilihan Latar Belakang Musik</label>
                                         <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                             @foreach($this->backgroundMusics as $music)
-                                            <div class="flex gap-3 p-3 border {{ $this->music_id == $music->id ? 'border-rose-500 bg-rose-50 dark:bg-rose-900/20' : 'border-slate-200 dark:border-slate-600' }} rounded-lg cursor-pointer hover:border-rose-400 transition-colors">
-                                                <input type="radio" wire:model.live="music_id" value="{{ $music->id }}" id="music-{{ $music->id }}" class="w-4 h-4 text-rose-500 focus:ring-rose-500 mt-1">
-                                                <label for="music-{{ $music->id }}" class="flex-1 cursor-pointer">
-                                                    <div class="font-medium text-slate-800 dark:text-white">{{ $music->title }}</div>
-                                                    <div class="text-xs text-slate-500 mb-2">{{ $music->artist ?: 'Unknown Artist' }}</div>
-                                                    <audio controls src="{{ asset($music->file_path) }}" class="h-8 w-full max-w-[200px]" preload="none"></audio>
-                                                </label>
+                                            <div class="flex items-start gap-3 p-3 border {{ $this->music_id == $music->id ? 'border-rose-500 bg-rose-50 dark:bg-rose-900/20' : 'border-slate-200 dark:border-slate-600' }} rounded-lg hover:border-rose-400 transition-colors">
+                                                <input type="radio" wire:model.live="music_id" value="{{ $music->id }}" id="music-{{ $music->id }}" class="w-4 h-4 text-rose-500 focus:ring-rose-500 mt-1 cursor-pointer">
+                                                <div class="flex-1 min-w-0">
+                                                    <label for="music-{{ $music->id }}" class="block cursor-pointer">
+                                                        <div class="font-medium text-slate-800 dark:text-white">{{ $music->title }}</div>
+                                                        <div class="text-xs text-slate-500 mb-2">{{ $music->artist ?: 'Unknown Artist' }}</div>
+                                                    </label>
+                                                    <audio controls wire:key="builder-music-{{ $music->id }}-{{ md5((string) $music->file_path) }}" src="{{ $music->url }}" class="h-8 w-full max-w-[240px]" preload="none"></audio>
+                                                </div>
                                             </div>
                                             @endforeach
                                             <div class="flex gap-3 p-3 border {{ empty($this->music_id) ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20' : 'border-slate-200 dark:border-slate-600' }} rounded-lg cursor-pointer hover:border-amber-400 transition-colors">
@@ -928,9 +930,31 @@
                                         </div>
                                         
                                         @if(empty($this->music_id))
-                                            <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                                                <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">URL Musik (opsional)</label>
-                                                <input wire:model.blur="music_url" type="url" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="https://example.com/music.mp3">
+                                            <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-3">
+                                                <div>
+                                                    <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Upload File Musik Custom (MP3/WAV/M4A/OGG, Max 10MB)</label>
+                                                    <input type="file" wire:model="musicUpload" accept=".mp3,.wav,.m4a,.ogg,audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/mp4,audio/ogg"
+                                                        class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 p-1 cursor-pointer">
+                                                    <div wire:loading wire:target="musicUpload" class="text-xs text-rose-600 mt-1">Mengunggah file musik...</div>
+                                                    @error('musicUpload') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                                </div>
+
+                                                @if(!empty($this->music_url))
+                                                    @php
+                                                        $customMusicPreviewUrl = str_starts_with($this->music_url, 'http')
+                                                            ? $this->music_url
+                                                            : img_url(preg_replace('#^/?storage/#', '', ltrim((string) $this->music_url, '/')));
+                                                    @endphp
+                                                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-2.5 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                                        <audio controls wire:key="custom-music-{{ md5((string) $this->music_url) }}" src="{{ $customMusicPreviewUrl }}" class="h-8 flex-1 max-w-full" preload="none"></audio>
+                                                        <button type="button" wire:click="removeMusic" class="px-2.5 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg self-start sm:self-center">Hapus Musik</button>
+                                                    </div>
+                                                @endif
+
+                                                <div>
+                                                    <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Atau URL Musik Eksternal (opsional)</label>
+                                                    <input wire:model.blur="music_url" type="text" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" placeholder="https://example.com/music.mp3">
+                                                </div>
                                             </div>
                                         @endif
                                     </div>

@@ -87,16 +87,27 @@ class Invitation extends Model
 
     public function getBackgroundMusicAttribute($value): ?string
     {
-        // If it has a related music_id from the new centralized library, 
-        // return the complete asset URL. This will make all existing themes 
-        // treat it as an external HTTP link automatically.
+        // If it has a related music_id from the centralized library,
+        // resolve through BackgroundMusic::$url (/img/{token} for storage files).
         if ($this->music_id) {
             $music = $this->getRelationValue('backgroundMusic');
             if ($music) {
-                return asset($music->file_path);
+                return $music->url;
             }
         }
-        
+
+        if (is_string($value) && trim($value) !== '') {
+            $trimmed = trim($value);
+
+            if (str_starts_with($trimmed, '/storage/') || str_starts_with($trimmed, 'storage/')) {
+                return img_url(preg_replace('#^/?storage/#', '', $trimmed));
+            }
+
+            if (preg_match('#^https?://[^/]+/storage/(.+)$#i', $trimmed, $m)) {
+                return img_url($m[1]);
+            }
+        }
+
         return $value;
     }
 

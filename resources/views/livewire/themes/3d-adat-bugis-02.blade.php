@@ -1,27 +1,29 @@
 @once
-    @push('styles')
+    @push('fonts')
         <!-- Google Fonts matching 3d-adat-bugis-02/index.html -->
         <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link
             href="https://fonts.googleapis.com/css2?family=Aboreto&family=Acme&family=Caudex:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;500;600;700;800&family=Epilogue:wght@400;500;600;700&family=Gilda+Display&family=Great+Vibes&family=Libre+Caslon+Display&family=Lusitana:wght@400;700&family=Montserrat:wght@400;500;600;700&family=Pinyon+Script&family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Roboto+Slab:wght@400;600;700&family=Vidaloka&family=ZCOOL+XiaoWei&display=swap"
             rel="stylesheet">
+    @endpush
 
+    @push('styles')
         <!-- Preload Cover Background for Fast First Paint -->
         <link rel="preload" as="image" href="{{ asset('themes/3d-adat-bugis-02/assets/COVER-BUKA-UNDANGAN.jpg') }}"
             fetchpriority="high" />
 
         <!-- FontAwesome & Icons (all.min.css bundles solid, regular & brands) -->
-        <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/all.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/all.min.css') }}?v=2" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/v4-shims.min.css') }}" />
 
         <!-- Elementor & Theme CSS from 3d-adat-bugis-02/index.html -->
-        <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/uaf.css') }}" />
+        <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/uaf.css') }}?v=2" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/wds-elementor.css') }}" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/saic_style.css') }}" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/eae.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/wdp.css') }}" />
-        <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/elementor-icons.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/elementor-icons.min.css') }}?v=2" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/elementor-frontend.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-heading.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/widget-image.min.css') }}" />
@@ -48,197 +50,14 @@
         <link rel="stylesheet" href="{{ asset('themes/3d-adat-bugis-02/assets/post-346.css') }}" />
 
         <style>
-            /* Local Font Definitions from 3d-adat-bugis-02/index.html */
-            @font-face {
-                font-family: photograph;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/7117photograph.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: montecarlo;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/6821montecarlo.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: saudagar;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/7851Saudagar.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: brittany-signature;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/3979Brittany-Signature.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: amiri;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/8907Amiri.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: iskry;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/2701Iskry.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: qene-g;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/1598Qene-G.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: silent-caroline;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/1164Silent-Caroline.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: hatolie;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/4915hatolie.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: ivymode-regular;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/9060IvyMode-Regular.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: amiri-bold;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/5421Amiri-Bold.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: analogue;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/4709Analogue.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: andrea-bellarosa;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/2312Andrea-Bellarosa.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: aston-script;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/5293Aston-Script.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: garlicha;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/8140garlicha.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: iskry-regular;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/2015Iskry-Regular.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: mesheddisplay;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/1502MeshedDisplay.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: shelleyandantebt;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/7576ShelleyAndanteBT.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: edwardianscriptitc;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/6750edwardianscriptitc.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: amsterdam-one;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/4868Amsterdam-One.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: madelyn;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/2350Madelyn.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: brittany;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/3077Brittany.woff2') }}') format('woff2');
-            }
-
-            @font-face {
-                font-family: gethuk-jawa;
-                font-style: normal;
-                font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/2559Gethuk-Jawa.woff2') }}') format('woff2');
-            }
-
+            /* Local Font Fallback for "Gethuk Jawa" (all other UAF fonts come from uaf.css?v=2 with font-display: swap) */
             @font-face {
                 font-family: "Gethuk Jawa";
                 font-style: normal;
                 font-weight: 400;
-                font-display: fallback;
-                src: url('{{ asset('themes/3d-adat-bugis-02/assets/Gethuk-Jawa.otf') }}') format('opentype');
+                font-display: swap;
+                src: url('{{ asset('themes/3d-adat-bugis-02/assets/2559Gethuk-Jawa.woff2') }}') format('woff2'),
+                     url('{{ asset('themes/3d-adat-bugis-02/assets/Gethuk-Jawa.otf') }}') format('opentype');
             }
 
             /* Core Widget Inline Helpers */
@@ -1766,7 +1585,7 @@
         <!-- Audio Element -->
         <div wire:ignore style="display: none;">
             <audio id="song" loop preload="none">
-                <source src="{{ $musicSrc }}" type="audio/mp3">
+                <source src="{{ $musicSrc }}">
             </audio>
         </div>
 
