@@ -345,6 +345,71 @@ body {
     box-shadow: 0 0 6px var(--bugis-gold);
 }
 
+/* Collapse Toggle Button on Main Dock */
+.bugis-collapse-btn {
+    opacity: 0.75;
+    border-left: 1px solid rgba(223, 183, 108, 0.25);
+    margin-left: 1px;
+}
+.bugis-collapse-btn:hover {
+    opacity: 1;
+    color: var(--bugis-gold);
+}
+
+/* Floating Side Dock (When menu is collapsed to the side) */
+.bugis-side-dock {
+    position: fixed;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    right: max(14px, calc((100vw - 480px) / 2 + 14px));
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(40, 4, 11, 0.94);
+    border: 1px solid rgba(223, 183, 108, 0.45);
+    border-radius: 40px;
+    padding: 5px 8px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.75), inset 0 0 12px rgba(223, 183, 108, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.bugis-side-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.22s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.bugis-side-btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+.bugis-side-btn:hover {
+    color: var(--bugis-gold-light);
+    background: rgba(223, 183, 108, 0.12);
+}
+.bugis-side-btn.active {
+    color: var(--bugis-gold);
+    background: rgba(223, 183, 108, 0.2);
+    font-weight: 600;
+}
+.bugis-side-btn.menu-trigger {
+    border-left: 1px solid rgba(223, 183, 108, 0.3);
+    padding-left: 10px;
+}
+
 /* Tablet & Standard Mobile (361px - 420px) */
 @media (max-width: 420px) {
     .bugis-nav-wrap {
@@ -356,7 +421,7 @@ body {
         gap: 1px;
     }
     .bugis-nav-btn {
-        min-width: 35px;
+        min-width: 33px;
         height: 42px;
         padding: 2px 1px;
     }
@@ -367,6 +432,21 @@ body {
     .bugis-nav-btn span {
         font-size: 8px;
         letter-spacing: -0.3px;
+    }
+    .bugis-side-dock {
+        bottom: max(12px, env(safe-area-inset-bottom, 12px));
+        right: 10px;
+        padding: 4px 6px;
+        gap: 4px;
+    }
+    .bugis-side-btn {
+        font-size: 10px;
+        padding: 5px 8px;
+        gap: 4px;
+    }
+    .bugis-side-btn svg {
+        width: 14px;
+        height: 14px;
     }
 }
 
@@ -381,7 +461,7 @@ body {
         border-radius: 35px;
     }
     .bugis-nav-btn {
-        min-width: 32px;
+        min-width: 30px;
         height: 38px;
         padding: 1px 1px;
     }
@@ -397,6 +477,15 @@ body {
         width: 3px;
         height: 3px;
         bottom: 1.5px;
+    }
+    .bugis-side-dock {
+        bottom: max(10px, env(safe-area-inset-bottom, 10px));
+        right: 8px;
+        padding: 3px 5px;
+    }
+    .bugis-side-btn {
+        font-size: 9px;
+        padding: 4px 6px;
     }
 }
 
@@ -499,6 +588,8 @@ body {
     lightboxOpen: false,
     lightboxImg: '',
     activeSection: 'hero',
+    hasLeftHero: false,
+    menuCollapsed: false,
     observer: null,
 
     open() {
@@ -510,14 +601,24 @@ body {
             }
             const heroVid = document.getElementById('heroVideo');
             if (heroVid) {
+                heroVid.currentTime = 0;
                 heroVid.play().catch(() => {});
             }
+            this.hasLeftHero = false;
             this.initScrollSpy();
             this.scrollTo('hero');
         });
     },
 
     scrollTo(id) {
+        if (id === 'hero' && this.activeSection !== 'hero') {
+            const heroVid = document.getElementById('heroVideo');
+            if (heroVid) {
+                heroVid.currentTime = 0;
+                heroVid.play().catch(() => {});
+            }
+            this.hasLeftHero = false;
+        }
         this.activeSection = id;
         const target = document.getElementById('section-' + id);
         if (target) {
@@ -530,8 +631,27 @@ body {
         const sectionIds = ['hero', 'couple', 'events', 'gallery', 'story', 'gift', 'rsvp'];
         this.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                const id = entry.target.id.replace('section-', '');
+                
+                // Kontrol animasi video di 'Awal':
+                // Tidak berulang-ulang, diputar lagi saat user kembali ke section hero
+                if (id === 'hero') {
+                    const heroVid = document.getElementById('heroVideo');
+                    if (!entry.isIntersecting) {
+                        this.hasLeftHero = true;
+                        if (heroVid && !heroVid.paused) {
+                            heroVid.pause();
+                        }
+                    } else if (entry.isIntersecting && this.hasLeftHero) {
+                        this.hasLeftHero = false;
+                        if (heroVid) {
+                            heroVid.currentTime = 0;
+                            heroVid.play().catch(() => {});
+                        }
+                    }
+                }
+
                 if (entry.isIntersecting) {
-                    const id = entry.target.id.replace('section-', '');
                     this.activeSection = id;
                 }
             });
@@ -663,7 +783,7 @@ body {
         {{-- =============================================== --}}
         <section id="section-hero" style="position:relative;min-height:540px;display:flex;flex-direction:column;justify-content:flex-end;">
             <div class="motion-video-container" style="position:relative;">
-                <video id="heroVideo" autoplay loop muted playsinline poster="{{ asset('themes/3d-adat-bugis-02/assets/BUGISMAROONFALLBACK.jpg') }}">
+                <video id="heroVideo" autoplay muted playsinline poster="{{ asset('themes/3d-adat-bugis-02/assets/BUGISMAROONFALLBACK.jpg') }}">
                     <source src="{{ asset('themes/3d-adat-bugis-02/assets/BUGIS-MAROON.mp4') }}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -1127,10 +1247,13 @@ body {
     {{-- =================================================== --}}
     {{-- FLOATING BOTTOM NAV (Visible after opened)          --}}
     {{-- =================================================== --}}
-    <div x-show="opened" 
-         x-transition:enter="transition ease-out duration-300" 
-         x-transition:enter-start="opacity-0 transform translate-y-8" 
-         x-transition:enter-end="opacity-100 transform translate-y-0" 
+    <div x-show="opened && !menuCollapsed" 
+         x-transition:enter="transition ease-out duration-300 transform" 
+         x-transition:enter-start="opacity-0 translate-x-16" 
+         x-transition:enter-end="opacity-100 translate-x-0" 
+         x-transition:leave="transition ease-in duration-200 transform" 
+         x-transition:leave-start="opacity-100 translate-x-0" 
+         x-transition:leave-end="opacity-0 translate-x-16" 
          class="bugis-nav-wrap">
         <nav class="bugis-nav" aria-label="Navigasi Undangan">
             {{-- 1. Awal --}}
@@ -1225,7 +1348,54 @@ body {
                 </template>
                 <span x-text="isAutoScrolling ? 'Stop' : 'Auto'">Auto</span>
             </button>
+
+            {{-- 9. Sembunyikan ke Samping (Collapse Button) --}}
+            <button type="button" 
+                    class="bugis-nav-btn bugis-collapse-btn" 
+                    @click="menuCollapsed = true" 
+                    title="Sembunyikan Menu ke Samping">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span>Tutup</span>
+            </button>
         </nav>
+    </div>
+
+    {{-- =================================================== --}}
+    {{-- FLOATING SIDE DOCK (Visible when menu is collapsed) --}}
+    {{-- =================================================== --}}
+    <div x-show="opened && menuCollapsed" 
+         x-transition:enter="transition ease-out duration-300 transform" 
+         x-transition:enter-start="opacity-0 translate-x-12" 
+         x-transition:enter-end="opacity-100 translate-x-0" 
+         x-transition:leave="transition ease-in duration-200 transform" 
+         x-transition:leave-start="opacity-100 translate-x-0" 
+         x-transition:leave-end="opacity-0 translate-x-12" 
+         class="bugis-side-dock" 
+         aria-label="Panel Kontrol Samping">
+        
+        {{-- Auto Scroll Button (Quick access in side dock) --}}
+        <button type="button" 
+                class="bugis-side-btn" 
+                :class="{'active': isAutoScrolling}" 
+                @click="toggleAutoScroll()" 
+                :title="isAutoScrolling ? 'Hentikan Scroll Otomatis' : 'Mulai Scroll Otomatis'">
+            <template x-if="!isAutoScrolling">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"/></svg>
+            </template>
+            <template x-if="isAutoScrolling">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </template>
+            <span x-text="isAutoScrolling ? 'Stop' : 'Auto'">Auto</span>
+        </button>
+
+        {{-- Buka Menu Button --}}
+        <button type="button" 
+                class="bugis-side-btn menu-trigger" 
+                @click="menuCollapsed = false" 
+                title="Tampilkan Menu Lengkap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            <span>Menu</span>
+        </button>
     </div>
 
     {{-- =================================================== --}}
