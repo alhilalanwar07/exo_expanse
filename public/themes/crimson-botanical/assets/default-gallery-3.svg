@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5C111B"/>
+      <stop offset="60%" stop-color="#8B1E2B"/>
+      <stop offset="100%" stop-color="#4A0C14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g3)"/>
+  <rect x="28" y="28" width="744" height="544" rx="18" fill="none" stroke="#C59B5F" stroke-opacity="0.65" stroke-width="2"/>
+  <path d="M295 400 L295 225 C295 150 505 150 505 225 L505 400 Z" fill="none" stroke="#F7F1E8" stroke-opacity="0.35" stroke-width="2"/>
+  <text x="400" y="265" text-anchor="middle" font-family="sans-serif" font-size="16" letter-spacing="5" fill="#C59B5F">DOA &amp; RESTU</text>
+  <text x="400" y="315" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#F7F1E8">Selamanya Bersama</text>
+</svg>
