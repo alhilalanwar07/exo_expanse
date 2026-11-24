@@ -330,6 +330,7 @@
                 background-position: center top;
                 background-size: 100% auto;
                 background-repeat: repeat-y;
+                overflow-x: hidden;
             }
             @media (min-width: 1024px) {
                 .cb-desktop-left {
@@ -356,6 +357,7 @@
                     opacity: 0.22;
                     mix-blend-mode: luminosity;
                     pointer-events: none;
+                    animation: cbSlowKenBurns 22s ease-in-out infinite alternate;
                 }
                 .cb-mobile-col {
                     width: 440px;
@@ -364,7 +366,12 @@
                 }
             }
 
-            /* Breathing Corner Botanical Ornaments */
+            @keyframes cbSlowKenBurns {
+                0% { transform: scale(1) translateY(0); }
+                100% { transform: scale(1.08) translateY(-10px); }
+            }
+
+            /* Organic Wind-Swaying Botanical Corner Ornaments */
             .cb-deco-layer {
                 position: absolute;
                 inset: 0;
@@ -372,32 +379,123 @@
                 overflow: hidden;
                 z-index: 2;
             }
-            @keyframes cbBreathe {
-                0%, 100% { transform: scale(1) rotate(0deg); }
-                50% { transform: scale(1.06) rotate(1.2deg); }
+            @keyframes cbWindSwayTL {
+                0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+                33% { transform: translate(3px, 3px) rotate(2.2deg) scale(1.04); }
+                66% { transform: translate(-1px, 4px) rotate(-1.4deg) scale(1.06); }
             }
-            @keyframes cbBreatheMirrorX {
-                0%, 100% { transform: scaleX(-1) scale(1); }
-                50% { transform: scaleX(-1) scale(1.06); }
+            @keyframes cbWindSwayTR {
+                0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+                35% { transform: translate(-3px, 4px) rotate(-2deg) scale(1.05); }
+                70% { transform: translate(2px, 2px) rotate(1.5deg) scale(1.02); }
+            }
+            @keyframes cbWindSwayBL {
+                0%, 100% { transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+                40% { transform: scaleX(-1) translate(3px, -3px) rotate(2deg) scale(1.05); }
+                75% { transform: scaleX(-1) translate(-2px, -4px) rotate(-1.4deg) scale(1.03); }
+            }
+            @keyframes cbWindSwayBR {
+                0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+                40% { transform: translate(-3px, -4px) rotate(-2.2deg) scale(1.05); }
+                75% { transform: translate(2px, -2px) rotate(1.4deg) scale(1.03); }
             }
             .cb-deco-tl {
-                position: absolute; top: -8px; left: -8px; width: 145px; opacity: 0.85;
-                animation: cbBreathe 6s ease-in-out infinite;
+                position: absolute; top: -8px; left: -8px; width: 145px; opacity: 0.86;
+                transform-origin: top left;
+                animation: cbWindSwayTL 6.2s ease-in-out infinite;
             }
             .cb-deco-tr {
-                position: absolute; top: -8px; right: -10px; width: 120px; opacity: 0.85;
-                animation: cbBreathe 7s ease-in-out infinite 0.8s;
+                position: absolute; top: -8px; right: -10px; width: 120px; opacity: 0.86;
+                transform-origin: top right;
+                animation: cbWindSwayTR 7s ease-in-out infinite 0.7s;
             }
             .cb-deco-bl {
-                position: absolute; bottom: -8px; left: -8px; width: 135px; opacity: 0.85;
-                animation: cbBreatheMirrorX 6.5s ease-in-out infinite 1.2s;
+                position: absolute; bottom: -8px; left: -8px; width: 135px; opacity: 0.86;
+                transform-origin: bottom left;
+                animation: cbWindSwayBL 6.6s ease-in-out infinite 1.1s;
             }
             .cb-deco-br {
-                position: absolute; bottom: -8px; right: -8px; width: 135px; opacity: 0.85;
-                animation: cbBreathe 6.5s ease-in-out infinite 1.8s;
+                position: absolute; bottom: -8px; right: -8px; width: 135px; opacity: 0.86;
+                transform-origin: bottom right;
+                animation: cbWindSwayBR 6.8s ease-in-out infinite 1.7s;
             }
 
-            /* Cover Lock Screen */
+            /* Ambient Falling Rose Petals & Twinkling Sparkles */
+            .cb-ambient-layer {
+                position: fixed;
+                inset: 0;
+                z-index: 4;
+                pointer-events: none;
+                overflow: hidden;
+            }
+            @media (min-width: 1024px) {
+                .cb-ambient-layer {
+                    left: auto;
+                    width: 440px;
+                }
+            }
+            @keyframes cbPetalFall {
+                0% { transform: translate3d(0, -10vh, 0) rotate(0deg) scale(0.85); opacity: 0; }
+                12% { opacity: 0.62; }
+                50% { transform: translate3d(26px, 48vh, 0) rotate(170deg) scale(1); opacity: 0.55; }
+                88% { opacity: 0.45; }
+                100% { transform: translate3d(-18px, 106vh, 0) rotate(330deg) scale(0.8); opacity: 0; }
+            }
+            @keyframes cbTwinkle {
+                0%, 100% { transform: scale(0.6) rotate(45deg); opacity: 0.2; }
+                50% { transform: scale(1.25) rotate(45deg); opacity: 0.85; }
+            }
+            .cb-petal {
+                position: absolute;
+                top: -24px;
+                width: 12px;
+                height: 16px;
+                border-radius: 75% 15% 75% 15%;
+                background: linear-gradient(135deg, rgba(168, 42, 57, 0.72), rgba(241, 214, 138, 0.45));
+                box-shadow: 0 2px 6px rgba(92, 17, 27, 0.14);
+                animation: cbPetalFall 13s linear infinite;
+            }
+            .cb-sparkle {
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: linear-gradient(135deg, #F5DFA0, #C59B5F);
+                animation: cbTwinkle 3.8s ease-in-out infinite;
+            }
+
+            /* Fluttering Crimson-Gold Butterflies */
+            .cb-butterfly {
+                position: absolute;
+                z-index: 6;
+                pointer-events: none;
+                width: 26px;
+                height: 26px;
+                opacity: 0;
+            }
+            .cb-butterfly svg { width: 100%; height: 100%; overflow: visible; }
+            .cb-wing-l { transform-origin: 12px 12px; animation: cbWingL 0.28s ease-in-out infinite; }
+            .cb-wing-r { transform-origin: 12px 12px; animation: cbWingR 0.28s ease-in-out infinite; }
+            @keyframes cbWingL { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(58deg); } }
+            @keyframes cbWingR { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(-58deg); } }
+            @keyframes cbFlyA {
+                0% { top: 72%; left: -8%; opacity: 0; transform: rotate(-18deg) scale(0.8); }
+                12% { opacity: 0.78; }
+                42% { top: 34%; left: 36%; transform: rotate(12deg) scale(1); }
+                75% { top: 24%; left: 74%; transform: rotate(-10deg) scale(0.92); }
+                90% { opacity: 0.65; }
+                100% { top: 8%; left: 108%; opacity: 0; transform: rotate(-6deg) scale(0.8); }
+            }
+            @keyframes cbFlyB {
+                0% { top: 20%; right: -8%; left: auto; opacity: 0; transform: rotate(14deg) scale(0.72); }
+                15% { opacity: 0.62; }
+                50% { top: 52%; right: 44%; transform: rotate(-14deg) scale(0.95); }
+                85% { opacity: 0.52; }
+                100% { top: 76%; right: 108%; opacity: 0; transform: rotate(8deg) scale(0.75); }
+            }
+            .cb-bf-a { animation: cbFlyA 14s ease-in-out infinite 0.8s; }
+            .cb-bf-b { animation: cbFlyB 17s ease-in-out infinite 3.5s; width: 21px; height: 21px; }
+
+            /* Cover Lock Screen & Choreographed Entrance */
             .cb-cover-gate {
                 position: fixed;
                 inset: 0;
@@ -413,10 +511,7 @@
                 transition: transform 1.05s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.85s ease;
             }
             @media (min-width: 1024px) {
-                .cb-cover-gate {
-                    left: auto;
-                    width: 440px;
-                }
+                .cb-cover-gate { left: auto; width: 440px; }
             }
             .cb-cover-gate.is-opened {
                 transform: translateY(-100%);
@@ -434,8 +529,28 @@
                 align-items: center;
                 text-align: center;
             }
+            @keyframes cbCoverRise {
+                from { opacity: 0; transform: translateY(18px) scale(0.97); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            .cb-cover-anim-1 { animation: cbCoverRise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+            .cb-cover-anim-2 { animation: cbCoverRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+            .cb-cover-anim-3 { animation: cbCoverRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both; }
+            .cb-cover-anim-4 { animation: cbCoverRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.56s both; }
 
             /* Safari-Safe Explicit Arch Photo Wrappers */
+            @keyframes cbArchFloat {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-5px); }
+            }
+            @keyframes cbFlowerSwayL {
+                0%, 100% { transform: scaleX(-1) rotate(0deg); }
+                50% { transform: scaleX(-1) rotate(5deg); }
+            }
+            @keyframes cbFlowerSwayR {
+                0%, 100% { transform: rotate(0deg); }
+                50% { transform: rotate(-5deg); }
+            }
             .cb-arch-wrap {
                 position: relative;
                 display: inline-flex;
@@ -444,6 +559,7 @@
                 margin-bottom: 18px;
                 flex-shrink: 0;
             }
+            .cb-arch-float { animation: cbArchFloat 5.5s ease-in-out infinite; }
             .cb-arch-cover {
                 width: clamp(160px, 48vw, 200px);
                 height: clamp(210px, 62vw, 260px);
@@ -475,11 +591,13 @@
             }
             .cb-arch-flower-bl {
                 position: absolute; bottom: -10px; left: -24px; width: 76px;
-                transform: scaleX(-1); pointer-events: none; z-index: 3;
+                transform-origin: bottom right; pointer-events: none; z-index: 3;
+                animation: cbFlowerSwayL 5.2s ease-in-out infinite;
             }
             .cb-arch-flower-br {
                 position: absolute; bottom: -10px; right: -24px; width: 76px;
-                pointer-events: none; z-index: 3;
+                transform-origin: bottom left; pointer-events: none; z-index: 3;
+                animation: cbFlowerSwayR 5.2s ease-in-out infinite 0.4s;
             }
 
             /* Typography & Buttons */
@@ -491,6 +609,8 @@
                 color: var(--cb-primary);
             }
             .cb-btn {
+                position: relative;
+                overflow: hidden;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
@@ -504,7 +624,7 @@
                 border: none;
                 cursor: pointer;
                 text-decoration: none;
-                transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+                transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
             }
             .cb-btn-primary {
                 background-color: var(--cb-primary);
@@ -513,7 +633,7 @@
             }
             .cb-btn-primary:hover {
                 background-color: var(--cb-primary-dark);
-                transform: translateY(-1px);
+                transform: translateY(-2px);
             }
             .cb-btn-outline {
                 background-color: rgba(255, 255, 255, 0.85);
@@ -524,8 +644,50 @@
                 background-color: var(--cb-primary);
                 color: #FFFFFF;
             }
+            @keyframes cbShimmerSweep {
+                0% { transform: translateX(-140%) skewX(-20deg); }
+                45%, 100% { transform: translateX(220%) skewX(-20deg); }
+            }
+            @keyframes cbPulseRing {
+                0% { box-shadow: 0 0 0 0 rgba(139, 30, 43, 0.45), 0 6px 18px rgba(139, 30, 43, 0.28); }
+                70% { box-shadow: 0 0 0 11px rgba(139, 30, 43, 0), 0 6px 18px rgba(139, 30, 43, 0.28); }
+                100% { box-shadow: 0 0 0 0 rgba(139, 30, 43, 0), 0 6px 18px rgba(139, 30, 43, 0.28); }
+            }
+            .cb-btn-shimmer {
+                animation: cbPulseRing 2.6s ease-out infinite;
+            }
+            .cb-btn-shimmer::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                width: 45%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.36), transparent);
+                animation: cbShimmerSweep 3.4s ease-in-out infinite;
+                pointer-events: none;
+            }
 
-            /* Countdown Crimson Boxes */
+            /* Hero Choreographed Entrance & Bouncing Scroll Hint */
+            .cb-hero-step {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            .cb-hero-active .cb-hero-step { opacity: 1; transform: translateY(0); }
+            .cb-hero-active .cb-hs-1 { transition-delay: 0.15s; }
+            .cb-hero-active .cb-hs-2 { transition-delay: 0.3s; }
+            .cb-hero-active .cb-hs-3 { transition-delay: 0.45s; }
+            .cb-hero-active .cb-hs-4 { transition-delay: 0.6s; }
+            @keyframes cbBounceDown {
+                0%, 100% { transform: translateY(0); opacity: 0.7; }
+                50% { transform: translateY(6px); opacity: 1; }
+            }
+            .cb-scroll-cue {
+                animation: cbBounceDown 2s ease-in-out infinite;
+            }
+
+            /* Countdown Crimson Boxes with Pop Stagger */
             .cb-countdown-grid {
                 display: grid;
                 grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -542,7 +704,15 @@
                 border: 1px solid rgba(197, 155, 95, 0.45);
                 box-shadow: 0 6px 14px rgba(92, 17, 27, 0.2);
                 text-align: center;
+                opacity: 0;
+                transform: scale(0.84) translateY(10px);
+                transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
             }
+            .cb-hero-active .cb-cd-box { opacity: 1; transform: scale(1) translateY(0); }
+            .cb-hero-active .cb-cd-box:nth-child(1) { transition-delay: 0.45s; }
+            .cb-hero-active .cb-cd-box:nth-child(2) { transition-delay: 0.54s; }
+            .cb-hero-active .cb-cd-box:nth-child(3) { transition-delay: 0.63s; }
+            .cb-hero-active .cb-cd-box:nth-child(4) { transition-delay: 0.72s; }
             .cb-cd-val {
                 display: block;
                 font-family: var(--cb-font-heading);
@@ -558,20 +728,25 @@
                 margin-top: 2px;
             }
 
-            /* Sections & Cards */
+            /* Sections, Cards & Hover Lift */
             .cb-section {
                 position: relative;
                 padding: 52px 24px;
                 z-index: 3;
             }
             .cb-card {
-                background: rgba(255, 253, 249, 0.9);
+                background: rgba(255, 253, 249, 0.92);
                 backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);
                 border: 1px solid var(--cb-border);
                 border-radius: 18px;
                 overflow: hidden;
                 box-shadow: 0 10px 26px rgba(92, 17, 27, 0.08);
+                transition: transform 0.35s ease, box-shadow 0.35s ease;
+            }
+            .cb-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 14px 30px rgba(92, 17, 27, 0.13);
             }
             .cb-card-header {
                 background: linear-gradient(135deg, var(--cb-primary), var(--cb-primary-dark));
@@ -579,8 +754,20 @@
                 padding: 12px 18px;
                 text-align: center;
             }
+            @keyframes cbHeartPulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.12); }
+            }
+            .cb-amp-pulse {
+                display: inline-block;
+                animation: cbHeartPulse 2.8s ease-in-out infinite;
+            }
 
-            /* ATM Bank Card Style (matching s03 Gift cards) */
+            /* ATM Bank Card Style + Periodic Metallic Sheen */
+            @keyframes cbAtmSheen {
+                0% { transform: translateX(-160%) rotate(22deg); }
+                30%, 100% { transform: translateX(260%) rotate(22deg); }
+            }
             .cb-atm-card {
                 position: relative;
                 background: linear-gradient(135deg, #FFFDF9 0%, #F7EBEC 58%, #EFD8DB 100%);
@@ -600,8 +787,19 @@
                 height: 4px;
                 background: linear-gradient(90deg, var(--cb-primary-dark), var(--cb-primary), var(--cb-gold));
             }
+            .cb-atm-card::after {
+                content: '';
+                position: absolute;
+                top: -40%;
+                bottom: -40%;
+                left: 0;
+                width: 38%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+                animation: cbAtmSheen 5.5s ease-in-out infinite;
+                pointer-events: none;
+            }
 
-            /* Form Controls */
+            /* Form Controls & Wish Card Entrance */
             .cb-input, .cb-select, .cb-textarea {
                 width: 100%;
                 background-color: #FFFFFF;
@@ -619,6 +817,13 @@
                 border-color: var(--cb-primary);
                 box-shadow: 0 0 0 3px rgba(139, 30, 43, 0.12);
             }
+            @keyframes cbWishIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .cb-wish-card {
+                animation: cbWishIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+            }
 
             /* Gallery Grid */
             .cb-gal-grid {
@@ -633,17 +838,22 @@
                 cursor: pointer;
                 aspect-ratio: 4/3;
                 background: #EEDEE0;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.7s ease, transform 0.7s ease;
+            }
+            .cb-gal-item:hover {
+                border-color: var(--cb-gold);
+                box-shadow: 0 8px 22px rgba(92, 17, 27, 0.18);
             }
             .cb-gal-item img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
                 display: block;
-                transition: transform 0.4s ease;
+                transition: transform 0.45s ease;
             }
-            .cb-gal-item:hover img { transform: scale(1.04); }
+            .cb-gal-item:hover img { transform: scale(1.06); }
 
-            /* Floating Dock & Quick FABs */
+            /* Floating Dock & Animated FABs */
             .cb-dock-wrap {
                 position: fixed;
                 bottom: 16px;
@@ -656,10 +866,7 @@
                 pointer-events: none;
             }
             @media (min-width: 1024px) {
-                .cb-dock-wrap {
-                    left: auto;
-                    width: 440px;
-                }
+                .cb-dock-wrap { left: auto; width: 440px; }
             }
             .cb-dock {
                 pointer-events: auto;
@@ -685,11 +892,12 @@
                 justify-content: center;
                 color: rgba(255, 255, 255, 0.78);
                 text-decoration: none;
-                transition: background-color 0.25s ease, color 0.25s ease;
+                transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
             }
             .cb-dock-item.is-active {
                 background-color: var(--cb-primary-dark);
                 color: #F1D68A;
+                transform: translateY(-2px);
                 box-shadow: inset 0 0 0 1px rgba(197, 155, 95, 0.55);
             }
             .cb-dock-item svg { width: 17px; height: 17px; }
@@ -704,6 +912,7 @@
                 gap: 8px;
             }
             .cb-fab-btn {
+                position: relative;
                 width: 38px;
                 height: 38px;
                 border-radius: 50%;
@@ -716,20 +925,59 @@
                 cursor: pointer;
                 box-shadow: 0 4px 14px rgba(62, 11, 18, 0.35);
             }
+            @keyframes cbMusicSpin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes cbGoldHalo {
+                0% { box-shadow: 0 0 0 0 rgba(197, 155, 95, 0.55), 0 4px 14px rgba(62, 11, 18, 0.35); }
+                75% { box-shadow: 0 0 0 10px rgba(197, 155, 95, 0), 0 4px 14px rgba(62, 11, 18, 0.35); }
+                100% { box-shadow: 0 0 0 0 rgba(197, 155, 95, 0), 0 4px 14px rgba(62, 11, 18, 0.35); }
+            }
+            .cb-fab-btn.is-playing {
+                animation: cbGoldHalo 2.1s ease-out infinite;
+            }
+            .cb-fab-btn.is-playing svg {
+                animation: cbMusicSpin 7s linear infinite;
+            }
+            .cb-fab-btn.is-active {
+                background: var(--cb-primary-dark);
+                color: #F1D68A;
+                animation: cbGoldHalo 1.8s ease-out infinite;
+            }
 
-            /* Scroll Reveal */
+            /* Directional Scroll Reveals (Reactive via Alpine revealed[key]) */
             .cb-reveal {
                 opacity: 0;
-                transform: translateY(20px);
-                transition: opacity 0.7s ease, transform 0.7s ease;
+                transform: translateY(22px);
+                transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1), transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
             }
-            .cb-revealed {
+            .cb-reveal.cb-from-left { transform: translateX(-26px); }
+            .cb-reveal.cb-from-right { transform: translateX(26px); }
+            .cb-reveal.cb-from-scale { transform: scale(0.92); }
+            .cb-reveal.cb-revealed {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0) scale(1);
             }
+            .cb-d1 { transition-delay: 0.12s; }
+            .cb-d2 { transition-delay: 0.24s; }
+            .cb-d3 { transition-delay: 0.36s; }
+
             @media (prefers-reduced-motion: reduce) {
-                .cb-deco-tl, .cb-deco-tr, .cb-deco-bl, .cb-deco-br { animation: none !important; }
-                .cb-reveal { opacity: 1 !important; transform: none !important; }
+                .cb-deco-tl, .cb-deco-tr, .cb-deco-bl, .cb-deco-br,
+                .cb-arch-float, .cb-arch-flower-bl, .cb-arch-flower-br,
+                .cb-petal, .cb-sparkle, .cb-butterfly, .cb-wing-l, .cb-wing-r,
+                .cb-btn-shimmer, .cb-btn-shimmer::after, .cb-scroll-cue,
+                .cb-amp-pulse, .cb-atm-card::after, .cb-desktop-left-bg,
+                .cb-fab-btn.is-playing, .cb-fab-btn.is-playing svg, .cb-fab-btn.is-active,
+                .cb-cover-anim-1, .cb-cover-anim-2, .cb-cover-anim-3, .cb-cover-anim-4, .cb-wish-card {
+                    animation: none !important;
+                }
+                .cb-reveal, .cb-hero-step, .cb-cd-box {
+                    opacity: 1 !important;
+                    transform: none !important;
+                    transition: none !important;
+                }
             }
         </style>
     @endpush
@@ -768,15 +1016,31 @@
     <!-- Opening Cover Screen -->
     <div id="cover" class="cb-cover-gate" :class="{ 'is-opened': isOpened }" :aria-hidden="isOpened ? 'true' : 'false'"
          style="background-image: url('{{ $slots['parchment_bg'] }}');">
-        <div class="cb-deco-layer">
+        <div class="cb-deco-layer" wire:ignore>
             <img src="{{ $slots['floral_tl'] }}" alt="" class="cb-deco-tl" fetchpriority="high">
             <img src="{{ $slots['floral_tr'] }}" alt="" class="cb-deco-tr" fetchpriority="high">
             <img src="{{ $slots['floral_br'] }}" alt="" class="cb-deco-bl">
             <img src="{{ $slots['floral_br'] }}" alt="" class="cb-deco-br">
         </div>
 
+        <!-- Cover Petals & Butterfly -->
+        <div class="cb-deco-layer" wire:ignore style="z-index: 3;">
+            <span class="cb-petal" style="left: 16%; animation-duration: 11s; animation-delay: 0s;"></span>
+            <span class="cb-petal" style="left: 52%; animation-duration: 13.5s; animation-delay: 2.5s; width: 10px; height: 14px;"></span>
+            <span class="cb-petal" style="left: 82%; animation-duration: 12s; animation-delay: 1.2s;"></span>
+            <span class="cb-sparkle" style="top: 22%; left: 18%; animation-delay: 0.4s;"></span>
+            <span class="cb-sparkle" style="top: 30%; right: 20%; animation-delay: 1.6s;"></span>
+            <div class="cb-butterfly cb-bf-a" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="#8B1E2B">
+                    <path class="cb-wing-l" d="M12 12C9 6 2 5 2 10c0 2.8 3.5 4 6.5 3.2C6 15 4 17.5 6 19.5c2 2 5-1.5 6-5z" fill-opacity="0.72"/>
+                    <path class="cb-wing-r" d="M12 12c3-6 10-7 10-2 0 2.8-3.5 4-6.5 3.2 2.5 1.8 4.5 4.3 2.5 6.3-2 2-5-1.5-6-5z" fill-opacity="0.72"/>
+                    <ellipse cx="12" cy="13" rx="1" ry="4" fill="#C59B5F"/>
+                </svg>
+            </div>
+        </div>
+
         <div class="cb-cover-stack">
-            <div class="cb-arch-wrap">
+            <div class="cb-arch-wrap cb-arch-float cb-cover-anim-1">
                 <div class="cb-arch-cover">
                     <img src="{{ $coverPhotoUrl }}" alt="{{ $coupleTitle }}" fetchpriority="high">
                 </div>
@@ -784,20 +1048,24 @@
                 <img src="{{ $slots['floral_br'] }}" alt="" class="cb-arch-flower-br">
             </div>
 
-            <p class="cb-eyebrow" style="margin: 0 0 4px;">{{ $coverSubtitle }}</p>
-            <h1 class="cb-font-script" style="font-size: clamp(32px, 5.2dvh, 42px); font-weight: 400; color: var(--cb-primary); line-height: 1.2; margin: 0 0 10px;">
-                {{ $coupleTitle }}
-            </h1>
+            <div class="cb-cover-anim-2">
+                <p class="cb-eyebrow" style="margin: 0 0 4px;">{{ $coverSubtitle }}</p>
+                <h1 class="cb-font-script" style="font-size: clamp(32px, 5.2dvh, 42px); font-weight: 400; color: var(--cb-primary); line-height: 1.2; margin: 0 0 10px;">
+                    {{ $coupleTitle }}
+                </h1>
+            </div>
 
-            <p style="font-size: 12px; color: var(--cb-muted); margin: 0 0 3px;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-            <p class="cb-font-heading" style="font-size: 21px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 6px; word-break: break-word;">
-                {{ $resolvedGuest }}
-            </p>
-            <p style="font-size: 10px; font-style: italic; color: var(--cb-muted); margin: 0 0 18px;">
-                *Mohon maaf jika ada kesalahan dalam penulisan nama / gelar.
-            </p>
+            <div class="cb-cover-anim-3">
+                <p style="font-size: 12px; color: var(--cb-muted); margin: 0 0 3px;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                <p class="cb-font-heading" style="font-size: 21px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 6px; word-break: break-word;">
+                    {{ $resolvedGuest }}
+                </p>
+                <p style="font-size: 10px; font-style: italic; color: var(--cb-muted); margin: 0 0 18px;">
+                    *Mohon maaf jika ada kesalahan dalam penulisan nama / gelar.
+                </p>
+            </div>
 
-            <button type="button" @click="openInvitation()" class="cb-btn cb-btn-primary">
+            <button type="button" @click="openInvitation()" class="cb-btn cb-btn-primary cb-btn-shimmer cb-cover-anim-4">
                 <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
@@ -806,20 +1074,40 @@
         </div>
     </div>
 
+    <!-- Fixed Ambient Falling Petals & Sparkles After Opening -->
+    <div class="cb-ambient-layer" wire:ignore x-show="isOpened" x-transition.opacity style="display: none;" aria-hidden="true">
+        <span class="cb-petal" style="left: 12%; animation-duration: 12s; animation-delay: 0s;"></span>
+        <span class="cb-petal" style="left: 34%; animation-duration: 15s; animation-delay: 3.1s; width: 10px; height: 13px;"></span>
+        <span class="cb-petal" style="left: 58%; animation-duration: 13.5s; animation-delay: 1.4s;"></span>
+        <span class="cb-petal" style="left: 78%; animation-duration: 16s; animation-delay: 4.5s; width: 11px; height: 14px;"></span>
+        <span class="cb-petal" style="left: 90%; animation-duration: 14s; animation-delay: 2.2s;"></span>
+        <span class="cb-sparkle" style="top: 18%; left: 16%; animation-delay: 0.2s;"></span>
+        <span class="cb-sparkle" style="top: 44%; right: 14%; animation-delay: 1.4s;"></span>
+        <span class="cb-sparkle" style="top: 72%; left: 22%; animation-delay: 2.3s;"></span>
+    </div>
+
     <!-- Scrollable Single Mobile Column -->
     <main class="cb-mobile-col" style="background-image: url('{{ $slots['parchment_bg'] }}');">
 
         <!-- 1. Hero & Countdown -->
-        <section id="hero" class="cb-section cb-section-spy" style="min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 64px;">
-            <div class="cb-deco-layer">
+        <section id="hero" class="cb-section cb-section-spy" :class="{ 'cb-hero-active': isOpened }"
+                 style="min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 64px;">
+            <div class="cb-deco-layer" wire:ignore>
                 <img src="{{ $slots['floral_tl'] }}" alt="" class="cb-deco-tl">
                 <img src="{{ $slots['floral_tr'] }}" alt="" class="cb-deco-tr">
                 <img src="{{ $slots['floral_br'] }}" alt="" class="cb-deco-bl">
                 <img src="{{ $slots['floral_br'] }}" alt="" class="cb-deco-br">
+                <div class="cb-butterfly cb-bf-b" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#8B1E2B">
+                        <path class="cb-wing-l" d="M12 12C9 6 2 5 2 10c0 2.8 3.5 4 6.5 3.2C6 15 4 17.5 6 19.5c2 2 5-1.5 6-5z" fill-opacity="0.65"/>
+                        <path class="cb-wing-r" d="M12 12c3-6 10-7 10-2 0 2.8-3.5 4-6.5 3.2 2.5 1.8 4.5 4.3 2.5 6.3-2 2-5-1.5-6-5z" fill-opacity="0.65"/>
+                        <ellipse cx="12" cy="13" rx="1" ry="4" fill="#C59B5F"/>
+                    </svg>
+                </div>
             </div>
 
             <div style="position: relative; z-index: 4; width: 100%;">
-                <div class="cb-arch-wrap">
+                <div class="cb-arch-wrap cb-arch-float cb-hero-step cb-hs-1">
                     <div class="cb-arch-cover">
                         <img src="{{ $heroPhotoUrl }}" alt="{{ $coupleTitle }}" decoding="async">
                     </div>
@@ -827,13 +1115,15 @@
                     <img src="{{ $slots['floral_br'] }}" alt="" class="cb-arch-flower-br">
                 </div>
 
-                <p class="cb-eyebrow" style="margin: 0 0 4px;">THE WEDDING OF</p>
-                <h2 class="cb-font-script" style="font-size: 38px; font-weight: 400; color: var(--cb-primary); line-height: 1.2; margin: 0 0 4px;">
-                    {{ $coupleTitle }}
-                </h2>
-                <p style="font-size: 13px; font-weight: 600; color: var(--cb-muted); margin: 0;">
-                    {{ $heroDisplayDate }}
-                </p>
+                <div class="cb-hero-step cb-hs-2">
+                    <p class="cb-eyebrow" style="margin: 0 0 4px;">THE WEDDING OF</p>
+                    <h2 class="cb-font-script" style="font-size: 38px; font-weight: 400; color: var(--cb-primary); line-height: 1.2; margin: 0 0 4px;">
+                        {{ $coupleTitle }}
+                    </h2>
+                    <p style="font-size: 13px; font-weight: 600; color: var(--cb-muted); margin: 0;">
+                        {{ $heroDisplayDate }}
+                    </p>
+                </div>
 
                 @if($showCountdown)
                     <div class="cb-countdown-grid" aria-label="Hitung mundur">
@@ -844,18 +1134,22 @@
                     </div>
                 @endif
 
-                <a href="{{ $heroCalendarUrl }}" target="_blank" rel="noopener" class="cb-btn cb-btn-primary" style="padding: 9px 22px; font-size: 12px;">
-                    Simpan Tanggal
-                </a>
+                <div class="cb-hero-step cb-hs-3">
+                    <a href="{{ $heroCalendarUrl }}" target="_blank" rel="noopener" class="cb-btn cb-btn-primary cb-btn-shimmer" style="padding: 9px 22px; font-size: 12px;">
+                        Simpan Tanggal
+                    </a>
+                </div>
 
-                <p style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cb-primary); margin: 22px 0 0; opacity: 0.8;">
-                    &darr; Scroll Down
-                </p>
+                <div class="cb-hero-step cb-hs-4">
+                    <p class="cb-scroll-cue" style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cb-primary); margin: 22px 0 0;">
+                        &darr; Scroll Down
+                    </p>
+                </div>
             </div>
         </section>
 
         <!-- 2. Quote / Ayat Section -->
-        <section id="quote" class="cb-section cb-reveal" style="padding-top: 20px; padding-bottom: 24px;">
+        <section id="quote" class="cb-section cb-reveal cb-from-scale" data-reveal="quote" :class="{ 'cb-revealed': revealed['quote'] }" style="padding-top: 20px; padding-bottom: 24px;">
             <div style="background: linear-gradient(145deg, var(--cb-primary), var(--cb-primary-dark)); color: #FFFFFF; border-radius: 18px; padding: 28px 22px; text-align: center; box-shadow: 0 12px 28px rgba(92, 17, 27, 0.24); border: 1px solid rgba(197, 155, 95, 0.45);">
                 @if($quotePhotoUrl)
                     <div style="width: 140px; height: 140px; margin: 0 auto 16px; border-radius: 500px 500px 10px 10px; overflow: hidden; border: 3px solid rgba(255,255,255,0.85);">
@@ -874,26 +1168,28 @@
         </section>
 
         <!-- 3. Mempelai Section -->
-        <section id="mempelai" class="cb-section cb-section-spy cb-reveal" style="text-align: center;">
-            <div class="cb-deco-layer">
+        <section id="mempelai" class="cb-section cb-section-spy" style="text-align: center;">
+            <div class="cb-deco-layer" wire:ignore>
                 <img src="{{ $slots['floral_tl'] }}" alt="" class="cb-deco-tl" style="width: 115px; opacity: 0.65;">
                 <img src="{{ $slots['floral_br'] }}" alt="" class="cb-deco-br" style="width: 115px; opacity: 0.65;">
             </div>
 
             <div style="position: relative; z-index: 4;">
-                <p class="cb-font-arabic" dir="rtl" style="font-size: 22px; color: var(--cb-primary); margin: 0 0 8px;">
-                    بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
-                </p>
-                <p style="font-size: 12.5px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 4px;">
-                    Assalamu’alaikum Warahmatullahi Wabarakatuh
-                </p>
-                <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.7; max-width: 340px; margin: 0 auto 30px;">
-                    {{ $openingPrayer }}
-                </p>
+                <div class="cb-reveal" data-reveal="mempelai" :class="{ 'cb-revealed': revealed['mempelai'] }">
+                    <p class="cb-font-arabic" dir="rtl" style="font-size: 22px; color: var(--cb-primary); margin: 0 0 8px;">
+                        بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+                    </p>
+                    <p style="font-size: 12.5px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 4px;">
+                        Assalamu’alaikum Warahmatullahi Wabarakatuh
+                    </p>
+                    <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.7; max-width: 340px; margin: 0 auto 30px;">
+                        {{ $openingPrayer }}
+                    </p>
+                </div>
 
                 <!-- First Person -->
-                <div style="margin-bottom: 18px;">
-                    <div class="cb-arch-wrap">
+                <div class="cb-reveal cb-from-left cb-d1" data-reveal="mempelai-1" :class="{ 'cb-revealed': revealed['mempelai-1'] }" style="margin-bottom: 18px;">
+                    <div class="cb-arch-wrap cb-arch-float">
                         <div class="cb-arch-couple">
                             <img src="{{ $firstPerson['photo'] }}" alt="{{ $firstPerson['full'] }}" loading="lazy">
                         </div>
@@ -914,11 +1210,11 @@
                     @endif
                 </div>
 
-                <div class="cb-font-heading" style="font-style: italic; font-size: 38px; font-weight: 600; color: var(--cb-primary); margin: 12px 0 18px;">&amp;</div>
+                <div class="cb-font-heading cb-amp-pulse" style="font-style: italic; font-size: 38px; font-weight: 600; color: var(--cb-primary); margin: 12px 0 18px;">&amp;</div>
 
                 <!-- Second Person -->
-                <div>
-                    <div class="cb-arch-wrap">
+                <div class="cb-reveal cb-from-right cb-d2" data-reveal="mempelai-2" :class="{ 'cb-revealed': revealed['mempelai-2'] }">
+                    <div class="cb-arch-wrap cb-arch-float">
                         <div class="cb-arch-couple">
                             <img src="{{ $secondPerson['photo'] }}" alt="{{ $secondPerson['full'] }}" loading="lazy">
                         </div>
@@ -942,12 +1238,14 @@
         </section>
 
         <!-- 4. Acara Section -->
-        <section id="acara" class="cb-section cb-section-spy cb-reveal" style="text-align: center;">
-            <p class="cb-eyebrow" style="margin: 0 0 4px;">SAVE THE DATE</p>
-            <h2 class="cb-font-heading" style="font-size: 32px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 22px;">Rangkaian Acara</h2>
+        <section id="acara" class="cb-section cb-section-spy" style="text-align: center;">
+            <div class="cb-reveal" data-reveal="acara" :class="{ 'cb-revealed': revealed['acara'] }">
+                <p class="cb-eyebrow" style="margin: 0 0 4px;">SAVE THE DATE</p>
+                <h2 class="cb-font-heading" style="font-size: 32px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 22px;">Rangkaian Acara</h2>
+            </div>
 
             @if($showAkad)
-                <div class="cb-card" style="margin-bottom: 18px;">
+                <div class="cb-card cb-reveal cb-from-scale cb-d1" data-reveal="acara-akad" :class="{ 'cb-revealed': revealed['acara-akad'] }" style="margin-bottom: 18px;">
                     <div class="cb-card-header">
                         <h3 class="cb-font-heading" style="font-size: 24px; font-weight: 700; margin: 0;">Akad Nikah</h3>
                     </div>
@@ -979,7 +1277,7 @@
             @endif
 
             @if($showResepsi)
-                <div class="cb-card" style="margin-bottom: 18px;">
+                <div class="cb-card cb-reveal cb-from-scale cb-d2" data-reveal="acara-resepsi" :class="{ 'cb-revealed': revealed['acara-resepsi'] }" style="margin-bottom: 18px;">
                     <div class="cb-card-header">
                         <h3 class="cb-font-heading" style="font-size: 24px; font-weight: 700; margin: 0;">Resepsi</h3>
                     </div>
@@ -1011,7 +1309,7 @@
             @endif
 
             @if($showUnduhMantu && $unduhMeta)
-                <div class="cb-card" style="margin-bottom: 18px;">
+                <div class="cb-card cb-reveal cb-d2" data-reveal="acara-unduh" :class="{ 'cb-revealed': revealed['acara-unduh'] }" style="margin-bottom: 18px;">
                     <div class="cb-card-header"><h3 class="cb-font-heading" style="font-size: 22px; font-weight: 700; margin: 0;">Ngunduh Mantu</h3></div>
                     <div style="padding: 20px 18px;">
                         <p style="font-size: 13px; font-weight: 700; color: var(--cb-primary); margin: 0 0 6px;">{{ $unduhMeta['day'] }}, {{ $unduhMeta['dayNum'] }} {{ $unduhMeta['monthName'] }} {{ $unduhMeta['year'] }}</p>
@@ -1024,7 +1322,7 @@
             @endif
 
             @if($showStreaming)
-                <div class="cb-card" style="padding: 22px 18px; margin-bottom: 18px;">
+                <div class="cb-card cb-reveal cb-d3" data-reveal="acara-stream" :class="{ 'cb-revealed': revealed['acara-stream'] }" style="padding: 22px 18px; margin-bottom: 18px;">
                     <h3 class="cb-font-heading" style="font-size: 24px; font-weight: 700; color: var(--cb-primary); margin: 0 0 6px;">Live Streaming</h3>
                     <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.6; margin: 0 0 14px;">Saksikan momen pernikahan kami secara virtual melalui tautan di bawah ini.</p>
                     <a href="{{ $streamingLink }}" target="_blank" rel="noopener" class="cb-btn cb-btn-primary" style="padding: 9px 20px; font-size: 12px;">Lihat Live Streaming</a>
@@ -1032,7 +1330,7 @@
             @endif
 
             @if($dressCode !== '' || $turutMengundang !== '')
-                <div class="cb-card" style="padding: 20px 18px;">
+                <div class="cb-card cb-reveal cb-d3" data-reveal="acara-note" :class="{ 'cb-revealed': revealed['acara-note'] }" style="padding: 20px 18px;">
                     @if($dressCode !== '')
                         <h3 class="cb-font-heading" style="font-size: 22px; font-weight: 700; color: var(--cb-primary); margin: 0 0 6px;">Dresscode</h3>
                         <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.6; margin: 0 0 {{ $turutMengundang !== '' ? '14px' : '0' }};">{{ $dressCode }}</p>
@@ -1047,14 +1345,17 @@
 
         <!-- 5. Love Story -->
         @if($showLoveStory)
-            <section id="story" class="cb-section cb-reveal">
-                <div style="text-align: center; margin-bottom: 22px;">
+            <section id="story" class="cb-section">
+                <div class="cb-reveal" data-reveal="story" :class="{ 'cb-revealed': revealed['story'] }" style="text-align: center; margin-bottom: 22px;">
                     <p class="cb-eyebrow" style="margin: 0 0 4px;">PERJALANAN CINTA</p>
                     <h2 class="cb-font-heading" style="font-size: 32px; font-weight: 700; color: var(--cb-primary-dark); margin: 0;">Love Story</h2>
                 </div>
 
-                @foreach($loveStories as $story)
-                    <div class="cb-card" style="padding: 18px; margin-bottom: 14px;">
+                @foreach($loveStories as $sIdx => $story)
+                    <div class="cb-card cb-reveal {{ $sIdx % 2 === 0 ? 'cb-from-left' : 'cb-from-right' }}"
+                         data-reveal="story-{{ $sIdx }}"
+                         :class="{ 'cb-revealed': revealed['story-{{ $sIdx }}'] }"
+                         style="padding: 18px; margin-bottom: 14px;">
                         @if(!empty($story['image']))
                             <img src="{{ $story['image'] }}" alt="{{ $story['title'] }}" loading="lazy" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; margin-bottom: 12px; display: block;">
                         @endif
@@ -1070,15 +1371,18 @@
 
         <!-- 6. Our Moments / Galeri -->
         @if($showGallery)
-            <section id="galeri" class="cb-section cb-section-spy cb-reveal">
-                <div style="text-align: center; margin-bottom: 22px;">
+            <section id="galeri" class="cb-section cb-section-spy">
+                <div class="cb-reveal" data-reveal="galeri" :class="{ 'cb-revealed': revealed['galeri'] }" style="text-align: center; margin-bottom: 22px;">
                     <p class="cb-eyebrow" style="margin: 0 0 4px;">POTRET BAHAGIA</p>
                     <h2 class="cb-font-heading" style="font-size: 32px; font-weight: 700; color: var(--cb-primary-dark); margin: 0;">Our Moments</h2>
                 </div>
 
                 <div class="cb-gal-grid">
                     @foreach($galleryPhotos as $idx => $photo)
-                        <div class="cb-gal-item"
+                        @php $delayCls = ['cb-d1', 'cb-d2', 'cb-d3'][$idx % 3]; @endphp
+                        <div class="cb-gal-item cb-reveal cb-from-scale {{ $delayCls }}"
+                             data-reveal="gal-{{ $idx }}"
+                             :class="{ 'cb-revealed': revealed['gal-{{ $idx }}'] }"
                              style="{{ ($idx === 0 && count($galleryPhotos) % 2 === 1) ? 'grid-column: span 2; aspect-ratio: 16/10;' : '' }}"
                              @click="openLightbox({{ $idx }})">
                             <img src="{{ $photo }}" alt="Galeri {{ $idx + 1 }}" loading="lazy" decoding="async">
@@ -1090,8 +1394,8 @@
 
         <!-- 7. Wedding Gift & Kado -->
         @if($showGift)
-            <section id="kado" class="cb-section cb-section-spy cb-reveal">
-                <div style="text-align: center; margin-bottom: 22px;">
+            <section id="kado" class="cb-section cb-section-spy">
+                <div class="cb-reveal" data-reveal="kado" :class="{ 'cb-revealed': revealed['kado'] }" style="text-align: center; margin-bottom: 22px;">
                     <p class="cb-eyebrow" style="margin: 0 0 4px;">TANDA KASIH</p>
                     <h2 class="cb-font-heading" style="font-size: 32px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 8px;">Wedding Gift</h2>
                     <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.65; margin: 0 auto; max-width: 340px;">
@@ -1099,14 +1403,14 @@
                     </p>
                 </div>
 
-                @foreach($bankAccounts as $account)
+                @foreach($bankAccounts as $bIdx => $account)
                     @php
                         $accNum = (string) ($account['account_number'] ?? '');
                         $accName = (string) ($account['account_name'] ?? '');
                         $bankName = strtoupper((string) ($account['bank'] ?? 'BANK'));
                         $bankLogo = $resolveBankLogo($bankName);
                     @endphp
-                    <div class="cb-atm-card">
+                    <div class="cb-atm-card cb-reveal cb-from-scale cb-d1" data-reveal="kado-{{ $bIdx }}" :class="{ 'cb-revealed': revealed['kado-{{ $bIdx }}'] }">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                             <img src="{{ $slots['atm_chip'] }}" alt="Chip" loading="lazy" style="width: 36px; height: auto;">
                             @if($bankLogo)
@@ -1134,7 +1438,7 @@
                 @endforeach
 
                 @if(trim((string) $giftAddress) !== '')
-                    <div class="cb-card" style="padding: 20px 18px; text-align: center;">
+                    <div class="cb-card cb-reveal cb-d2" data-reveal="kado-addr" :class="{ 'cb-revealed': revealed['kado-addr'] }" style="padding: 20px 18px; text-align: center;">
                         <h3 class="cb-font-heading" style="font-size: 22px; font-weight: 700; color: var(--cb-primary); margin: 0 0 8px;">Kirim Kado</h3>
                         <p style="font-size: 12.5px; font-weight: 700; color: var(--cb-text); margin: 0 0 4px;">{{ $giftRecipient }}</p>
                         <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.6; margin: 0 0 14px;">{{ $giftAddress }}</p>
@@ -1148,7 +1452,7 @@
 
         <!-- 8. Ucapan & RSVP -->
         @if($showRsvp)
-            <section id="ucapan" class="cb-section cb-section-spy cb-reveal" :class="{ 'cb-revealed': isOpened }">
+            <section id="ucapan" class="cb-section cb-section-spy cb-reveal" data-reveal="ucapan" :class="{ 'cb-revealed': isOpened || revealed['ucapan'] }">
                 <div style="text-align: center; margin-bottom: 22px;">
                     <p class="cb-eyebrow" style="margin: 0 0 4px;">KEHADIRAN &amp; DOA ({{ $wishesCount }})</p>
                     <h2 class="cb-font-heading" style="font-size: 32px; font-weight: 700; color: var(--cb-primary-dark); margin: 0 0 4px;">Ucapan &amp; RSVP</h2>
@@ -1193,7 +1497,7 @@
                 </div>
 
                 @forelse($wishesList as $wish)
-                    <div class="cb-card" style="padding: 14px 16px; margin-bottom: 10px;" wire:key="cb-wish-{{ $wish->id }}">
+                    <div class="cb-card cb-wish-card" style="padding: 14px 16px; margin-bottom: 10px;" wire:key="cb-wish-{{ $wish->id }}">
                         <div style="display: flex; align-items: flex-start; gap: 12px;">
                             <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--cb-primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
                                 {{ strtoupper(mb_substr(trim((string) ($wish->name ?? 'T')), 0, 1)) }}
@@ -1215,7 +1519,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="cb-card" style="padding: 20px; text-align: center;">
+                    <div class="cb-card cb-wish-card" style="padding: 20px; text-align: center;">
                         <p style="font-size: 12.5px; color: var(--cb-muted); margin: 0;">Belum ada ucapan. Jadilah yang pertama memberikan doa restu!</p>
                     </div>
                 @endforelse
@@ -1223,7 +1527,7 @@
         @endif
 
         <!-- 9. Closing & ExoInvite Footer -->
-        <footer class="cb-section cb-reveal" style="text-align: center; padding-top: 24px; padding-bottom: 112px;">
+        <footer class="cb-section cb-reveal cb-from-scale" data-reveal="closing" :class="{ 'cb-revealed': revealed['closing'] }" style="text-align: center; padding-top: 24px; padding-bottom: 112px;">
             <p class="cb-eyebrow" style="margin: 0 0 8px;">TERIMA KASIH</p>
             <p style="font-size: 12.5px; color: var(--cb-muted); line-height: 1.7; max-width: 330px; margin: 0 auto 14px;">
                 Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir serta memberikan doa restu.
@@ -1243,7 +1547,7 @@
     <!-- Floating Music & Auto-Scroll Buttons -->
     <div class="cb-fab-stack" x-show="isOpened" x-transition.opacity style="display: none;">
         @if($musicSrc !== '')
-            <button type="button" class="cb-fab-btn" @click="toggleMusic()" :aria-label="isPlaying ? 'Jeda Musik' : 'Putar Musik'" :title="isPlaying ? 'Jeda Musik' : 'Putar Musik'">
+            <button type="button" class="cb-fab-btn" :class="{ 'is-playing': isPlaying }" @click="toggleMusic()" :aria-label="isPlaying ? 'Jeda Musik' : 'Putar Musik'" :title="isPlaying ? 'Jeda Musik' : 'Putar Musik'">
                 <svg x-show="isPlaying" style="width: 17px; height: 17px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
                 </svg>
@@ -1253,7 +1557,7 @@
             </button>
         @endif
 
-        <button type="button" class="cb-fab-btn" @click="toggleAutoScroll()" :aria-label="autoScrolling ? 'Hentikan Auto Scroll' : 'Mulai Auto Scroll'" :title="autoScrolling ? 'Hentikan Auto Scroll' : 'Auto Scroll'">
+        <button type="button" class="cb-fab-btn" :class="{ 'is-active': autoScrolling }" @click="toggleAutoScroll()" :aria-label="autoScrolling ? 'Hentikan Auto Scroll' : 'Mulai Auto Scroll'" :title="autoScrolling ? 'Hentikan Auto Scroll' : 'Auto Scroll'">
             <svg x-show="!autoScrolling" style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-6-6l6 6 6-6"/>
             </svg>
@@ -1340,6 +1644,9 @@
                     wakeLockSentinel: null,
 
                     activeSection: 'hero',
+                    revealed: {},
+                    revealObserver: null,
+                    spyObserver: null,
 
                     galleryPhotos: [],
                     lightboxOpen: false,
@@ -1360,12 +1667,29 @@
                         this.updateCountdown();
                         this.countdownTimer = setInterval(() => this.updateCountdown(), 1000);
                         this.initScrollListeners();
+
+                        if (window.Livewire && typeof window.Livewire.hook === 'function') {
+                            window.Livewire.hook('morph.updated', () => {
+                                if (this.isOpened) {
+                                    document.body.classList.remove('cb-locked');
+                                    this.markRevealed('ucapan');
+                                    this.observeReveals();
+                                }
+                            });
+                        }
+                    },
+
+                    markRevealed(key) {
+                        if (key && !this.revealed[key]) {
+                            this.revealed[key] = true;
+                        }
                     },
 
                     openInvitation() {
                         if (this.isOpened) return;
                         this.isOpened = true;
                         document.body.classList.remove('cb-locked');
+                        this.markRevealed('ucapan');
 
                         if (config.hasMusic) {
                             this.playMusic();
@@ -1386,30 +1710,45 @@
                         this.seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
                     },
 
-                    initObservers() {
+                    observeReveals() {
+                        const els = document.querySelectorAll('[data-reveal]');
                         if (!('IntersectionObserver' in window)) {
-                            document.querySelectorAll('.cb-reveal').forEach((el) => el.classList.add('cb-revealed'));
+                            els.forEach((el) => this.markRevealed(el.dataset.reveal));
                             return;
                         }
+                        if (!this.revealObserver) {
+                            this.revealObserver = new IntersectionObserver((entries) => {
+                                entries.forEach((entry) => {
+                                    if (entry.isIntersecting) {
+                                        this.markRevealed(entry.target.dataset.reveal);
+                                        this.revealObserver.unobserve(entry.target);
+                                    }
+                                });
+                            }, { threshold: 0.1 });
+                        }
+                        els.forEach((el) => {
+                            const key = el.dataset.reveal;
+                            if (key && !this.revealed[key]) {
+                                this.revealObserver.observe(el);
+                            }
+                        });
+                    },
 
-                        const revealObserver = new IntersectionObserver((entries) => {
-                            entries.forEach((entry) => {
-                                if (entry.isIntersecting) {
-                                    entry.target.classList.add('cb-revealed');
-                                    revealObserver.unobserve(entry.target);
-                                }
-                            });
-                        }, { threshold: 0.12 });
-                        document.querySelectorAll('.cb-reveal').forEach((el) => revealObserver.observe(el));
+                    initObservers() {
+                        this.observeReveals();
 
-                        const spyObserver = new IntersectionObserver((entries) => {
-                            entries.forEach((entry) => {
-                                if (entry.isIntersecting && entry.target.id) {
-                                    this.activeSection = entry.target.id;
-                                }
-                            });
-                        }, { rootMargin: '-35% 0px -45% 0px', threshold: 0.01 });
-                        document.querySelectorAll('.cb-section-spy').forEach((el) => spyObserver.observe(el));
+                        if ('IntersectionObserver' in window) {
+                            if (!this.spyObserver) {
+                                this.spyObserver = new IntersectionObserver((entries) => {
+                                    entries.forEach((entry) => {
+                                        if (entry.isIntersecting && entry.target.id) {
+                                            this.activeSection = entry.target.id;
+                                        }
+                                    });
+                                }, { rootMargin: '-35% 0px -45% 0px', threshold: 0.01 });
+                            }
+                            document.querySelectorAll('.cb-section-spy').forEach((el) => this.spyObserver.observe(el));
+                        }
                     },
 
                     initScrollListeners() {
