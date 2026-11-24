@@ -8,7 +8,7 @@ Anda bisa mengganti gambar apa saja (`.svg` -> `.png`, `.webp`, atau `.jpg`) cuk
 | Key di `$slots` | File Bawaan | Lokasi Tampil di Template | Fungsi & Motif | Rasio / Ukuran Rekomendasi |
 | :--- | :--- | :--- | :--- | :--- |
 | `cover_hero_bg` | `cover-hero-bg.svg` | Cover pembuka & Hero | Latar langit senja merah maroon & ombak laut | `9:16` potret (`900×1600` px) |
-| `walasuji_gate_pillar` | `walasuji-gate-pillar.svg` | Sisi kiri & kanan Cover | Pilar gerbang anyaman bambu Walasuji (kanan di-mirror otomatis) | Vertikal tipis `1:6` (`140×840` px), transparan |
+| `walasuji_gate_pillar` | `walasuji-g ate-pillar.svg` | Sisi kiri & kanan Cover | Pilar gerbang anyaman bambu Walasuji (kanan di-mirror otomatis) | Vertikal tipis `1:6` (`140×840` px), transparan |
 | `canopy_arch_top` | `canopy-arch-top.svg` | Bagian atas Cover & Hero | Kanopi ukiran emas & rantai manik gantung | Horizontal lebar `~2.2:1` (`900×410` px), transparan |
 | `floral_crest_bottom` | `floral-crest-bottom.svg` | Bagian bawah Cover & Hero | Ornamen bunga & tumpal Bugis lengkung bawah | Horizontal `~2:1` (`900×450` px), transparan |
 | `hero_border_frame` | `hero-border-frame.svg` | Bingkai keliling Hero | Bingkai garis emas ramping keliling layar | `9:16` (`900×1600` px), tengah transparan |
