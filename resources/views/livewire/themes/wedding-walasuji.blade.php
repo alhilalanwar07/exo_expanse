@@ -1812,8 +1812,9 @@
                 </h2>
 
                 <div style="border-top: 1px solid rgba(212, 175, 55, 0.35); padding-top: 18px;">
-                    <a href="{{ url('/') }}" style="display: inline-flex; flex-direction: column; align-items: center; text-decoration: none; gap: 4px;">
-                        <img src="{{ asset('assets/svg/logo.svg') }}" alt="ExoInvite" loading="lazy" style="width: 124px; height: auto; opacity: 0.78;">
+                    <a href="{{ url('/') }}" style="display: inline-flex; flex-direction: column; align-items: center; text-decoration: none; gap: 6px;">
+                        <span style="font-size: 9px; letter-spacing: 2.2px; text-transform: uppercase; color: var(--wl-crimson-warm); opacity: 0.72;">Digital Invitation By</span>
+                        <img src="{{ asset('assets/svg/logo-dark.svg') }}" alt="ExoInvite" loading="lazy" style="width: 138px; height: auto; opacity: 0.92;">
                     </a>
                 </div>
             </footer>

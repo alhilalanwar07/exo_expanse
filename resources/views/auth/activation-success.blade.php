@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Aktivasi Berhasil - ExoInvite</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=catchy-mager:400|cormorant-garamond:400,500,600,700|great-vibes:400|outfit:300,400,500,600,700,800|playfair-display:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -16,6 +19,9 @@
         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(197,150,79,0.2),transparent_42%),radial-gradient(circle_at_80%_82%,rgba(149,105,59,0.15),transparent_38%)]"></div>
 
         <div class="relative w-full max-w-lg mx-auto">
+            <div class="text-center mb-6">
+                <x-logo variant="full" :subtitle="true" class="justify-center" />
+            </div>
             <div class="rounded-[28px] border border-[#e8d9be] bg-white/90 backdrop-blur-xl p-8 md:p-10 shadow-[0_24px_60px_-24px_rgba(119,77,31,0.45)] text-center">
                 <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 border border-emerald-300">
                     <svg class="h-8 w-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,14 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
   <defs>
     <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#5C111B"/>
-      <stop offset="60%" stop-color="#8B1E2B"/>
-      <stop offset="100%" stop-color="#4A0C14"/>
+      <stop offset="0%" stop-color="#6B131F"/>
+      <stop offset="50%" stop-color="#8B1E2B"/>
+      <stop offset="100%" stop-color="#3D0810"/>
+    </linearGradient>
+    <linearGradient id="gg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F6E4BC"/>
+      <stop offset="50%" stop-color="#C59B5F"/>
+      <stop offset="100%" stop-color="#966E38"/>
     </linearGradient>
   </defs>
   <rect width="800" height="600" fill="url(#g1)"/>
-  <rect x="28" y="28" width="744" height="544" rx="18" fill="none" stroke="#C59B5F" stroke-opacity="0.65" stroke-width="2"/>
-  <path d="M295 400 L295 225 C295 150 505 150 505 225 L505 400 Z" fill="none" stroke="#F7F1E8" stroke-opacity="0.35" stroke-width="2"/>
-  <text x="400" y="265" text-anchor="middle" font-family="sans-serif" font-size="16" letter-spacing="5" fill="#C59B5F">MOMEN CINTA</text>
-  <text x="400" y="315" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#F7F1E8">Awal Kisah Bersama</text>
+  <rect x="26" y="26" width="748" height="548" rx="18" fill="none" stroke="url(#gg1)" stroke-opacity="0.7" stroke-width="2"/>
+  <rect x="40" y="40" width="720" height="520" rx="12" fill="none" stroke="#F6E4BC" stroke-opacity="0.28" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- Cathedral Arch & Floral Crest in Center -->
+  <path d="M250 475 L250 225 C250 115 550 115 550 225 L550 475 Z" fill="#3B070E" fill-opacity="0.35" stroke="url(#gg1)" stroke-opacity="0.65" stroke-width="1.8"/>
+  <circle cx="400" cy="235" r="46" fill="none" stroke="url(#gg1)" stroke-width="2.2"/>
+  <circle cx="384" cy="235" r="22" fill="none" stroke="#F6E4BC" stroke-width="3.5"/>
+  <circle cx="416" cy="235" r="22" fill="none" stroke="url(#gg1)" stroke-width="3.5"/>
+  <polygon points="416,207 424,213 416,219 408,213" fill="#FAF0E1"/>
+
+  <text x="400" y="335" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="600" letter-spacing="5" fill="#E8C98F">CHAPTER I • MOMEN CINTA</text>
+  <text x="400" y="382" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="36" fill="#FAF0E1">Awal Kisah Bersama</text>
+  <line x1="320" y1="406" x2="480" y2="406" stroke="url(#gg1)" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="400" y="436" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="16" fill="#E6C9A2" fill-opacity="0.85">Two hearts met under a gentle sky</text>
 </svg>

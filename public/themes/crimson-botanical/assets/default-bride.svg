@@ -1,13 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620">
   <defs>
-    <linearGradient id="cbBr" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8B1E2B"/>
-      <stop offset="100%" stop-color="#510E17"/>
+    <linearGradient id="cbBrideBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#871B2A"/>
+      <stop offset="100%" stop-color="#450A12"/>
+    </linearGradient>
+    <linearGradient id="cbBrGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F7E6C2"/>
+      <stop offset="50%" stop-color="#C89E63"/>
+      <stop offset="100%" stop-color="#966E38"/>
     </linearGradient>
   </defs>
-  <rect width="500" height="620" fill="url(#cbBr)"/>
-  <circle cx="250" cy="235" r="145" fill="#F7F1E8" fill-opacity="0.14"/>
-  <path d="M200 172 Q250 120 300 172" fill="#C59B5F"/>
-  <ellipse cx="250" cy="220" rx="44" ry="50" fill="#F7F1E8" fill-opacity="0.92"/>
-  <path d="M115 545 C126 400 182 342 250 342 C318 342 374 400 385 545 L385 620 L115 620 Z" fill="#A52837" stroke="#C59B5F" stroke-width="3"/>
+  <rect width="500" height="620" fill="url(#cbBrideBg)"/>
+  <!-- Inner Arch Filigree Frame -->
+  <path d="M36 588 L36 225 C36 92 464 92 464 225 L464 588 Z" fill="none" stroke="url(#cbBrGold)" stroke-opacity="0.6" stroke-width="2"/>
+  <path d="M52 574 L52 232 C52 115 448 115 448 232 L448 574 Z" fill="none" stroke="#F7E6C2" stroke-opacity="0.28" stroke-width="1" stroke-dasharray="5 4"/>
+
+  <!-- Glowing Medallion Halo -->
+  <circle cx="250" cy="275" r="122" fill="#F7E6C2" fill-opacity="0.1" stroke="url(#cbBrGold)" stroke-width="2"/>
+  <circle cx="250" cy="275" r="110" fill="none" stroke="url(#cbBrGold)" stroke-opacity="0.45" stroke-width="1"/>
+
+  <!-- Royal Bridal Tiara & Blooming Rose Bouquet Crest -->
+  <g transform="translate(250, 275)">
+    <!-- Filigree Bridal Tiara Crown at Top -->
+    <path d="M-58,-48 L-42,-82 L-22,-58 L0,-96 L22,-58 L42,-82 L58,-48 Z" fill="none" stroke="url(#cbBrGold)" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M-64,-46 Q0,-56 64,-46" fill="none" stroke="url(#cbBrGold)" stroke-width="3"/>
+    <circle cx="0" cy="-98" r="5" fill="#FAF2E6"/>
+    <circle cx="-42" cy="-84" r="3.5" fill="#FAF2E6"/>
+    <circle cx="42" cy="-84" r="3.5" fill="#FAF2E6"/>
+
+    <!-- Sage & Gold Leaf Backdrop -->
+    <path d="M-15,15 C-65,-10 -95,12 -102,42 C-70,42 -42,32 -15,22 Z" fill="#4D6E5D" stroke="url(#cbBrGold)" stroke-width="1.2"/>
+    <path d="M15,15 C65,-10 95,12 102,42 C70,42 42,32 15,22 Z" fill="#4D6E5D" stroke="url(#cbBrGold)" stroke-width="1.2"/>
+    <path d="M-10,5 C-55,-35 -85,-22 -92,6 C-62,10 -35,10 -10,12 Z" fill="url(#cbBrGold)" fill-opacity="0.7"/>
+    <path d="M10,5 C55,-35 85,-22 92,6 C62,10 35,10 10,12 Z" fill="url(#cbBrGold)" fill-opacity="0.7"/>
+
+    <!-- Left & Right Ivory Blush Roses -->
+    <g transform="translate(-48, 12)">
+      <circle cx="0" cy="0" r="26" fill="#F5E1D8" stroke="url(#cbBrGold)" stroke-width="1.5"/>
+      <path d="M-14,-4 C-6,-18 12,-16 16,-2 C18,10 4,20 -8,14 C-18,8 -16,-6 -6,-10 C4,-12 10,-2 6,4" fill="none" stroke="#8B1E2B" stroke-opacity="0.5" stroke-width="1.8"/>
+    </g>
+    <g transform="translate(48, 12)">
+      <circle cx="0" cy="0" r="26" fill="#F5E1D8" stroke="url(#cbBrGold)" stroke-width="1.5"/>
+      <path d="M-14,-4 C-6,-18 12,-16 16,-2 C18,10 4,20 -8,14 C-18,8 -16,-6 -6,-10 C4,-12 10,-2 6,4" fill="none" stroke="#8B1E2B" stroke-opacity="0.5" stroke-width="1.8"/>
+    </g>
+
+    <!-- Center Crimson Bridal Rose -->
+    <g transform="translate(0, 4)">
+      <circle cx="0" cy="0" r="36" fill="#A62132" stroke="url(#cbBrGold)" stroke-width="2"/>
+      <path d="M-20,-6 C-8,-24 16,-22 22,-4 C26,12 8,26 -10,20 C-24,14 -22,-8 -8,-14 C6,-18 14,-4 8,6 C4,12 -6,10 -8,2" fill="none" stroke="#FAF2E6" stroke-opacity="0.85" stroke-width="2"/>
+      <circle cx="0" cy="0" r="3.5" fill="#FAF2E6"/>
+    </g>
+
+    <!-- Silk Bouquet Ribbon Bow at Bottom -->
+    <path d="M-16,42 L-34,84 L-12,76 L-4,42 Z" fill="url(#cbBrGold)"/>
+    <path d="M16,42 L34,84 L12,76 L4,42 Z" fill="url(#cbBrGold)"/>
+    <circle cx="0" cy="44" r="9" fill="#FAF2E6" stroke="url(#cbBrGold)" stroke-width="2"/>
+  </g>
+
+  <!-- Botanical Laurel Under Medallion -->
+  <path d="M150 435 Q250 468 350 435" fill="none" stroke="url(#cbBrGold)" stroke-width="1.8"/>
+  <polygon points="250,443 258,451 250,459 242,451" fill="url(#cbBrGold)"/>
+
+  <text x="250" y="502" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="600" letter-spacing="6" fill="#E8C98F">THE BRIDE</text>
+  <text x="250" y="536" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#FAF0E1">Mempelai Wanita</text>
 </svg>

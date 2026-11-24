@@ -172,7 +172,12 @@
                         <p class="text-gradient font-display text-2xl font-bold">
                             {{ $content['groom_name'] ?? '' }} & {{ $content['bride_name'] ?? '' }}
                         </p>
-                        <p class="text-white/40 text-sm mt-6">Powered by ExoInvite</p>
+                        <div class="mt-6 flex flex-col items-center gap-2">
+                            <span class="text-white/40 text-[10px] uppercase tracking-[0.2em]">Powered by</span>
+                            <a href="{{ url('/') }}">
+                                <img src="{{ asset('assets/svg/logo-light.svg') }}" alt="ExoInvite" class="h-7 w-auto opacity-85 hover:opacity-100 transition-opacity" loading="lazy">
+                            </a>
+                        </div>
                     </div>
                 </footer>
 

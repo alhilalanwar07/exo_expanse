@@ -399,7 +399,7 @@
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
                 <!-- Brand -->
                 <div class="lg:col-span-1">
-                    <x-logo variant="full" :white="true" class="mb-4" />
+                    <x-logo variant="full" :white="true" :subtitle="true" class="mb-4" />
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">Platform undangan digital premium #1 di Indonesia. Buat undangan berkesan dalam hitungan menit.</p>
                     <div class="flex gap-4">
                         <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all" aria-label="Instagram">

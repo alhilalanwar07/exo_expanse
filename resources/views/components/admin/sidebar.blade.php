@@ -2,10 +2,14 @@
 
 <aside class="fixed inset-y-0 left-0 bg-white dark:bg-slate-800 shadow-lg w-64 z-50 transform transition-transform duration-300 md:translate-x-0 flex flex-col" :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }">
     <!-- Header Sidebar -->
-    <div class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-700">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-            <span class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">
-                ExoAdmin
+    <div class="h-16 flex items-center justify-between px-5 border-b border-slate-200 dark:border-slate-700">
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
+            <img src="{{ asset('assets/svg/logo-icon.svg') }}" alt="ExoInvite" class="w-8 h-8 shrink-0">
+            <span class="flex flex-col leading-none">
+                <span class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 bg-clip-text text-transparent">
+                    Exo<span class="font-light">Invite</span>
+                </span>
+                <span class="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mt-0.5">Admin Panel</span>
             </span>
         </a>
         <button @click="sidebarOpen = false" class="md:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">

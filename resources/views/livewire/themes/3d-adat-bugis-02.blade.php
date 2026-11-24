@@ -2849,7 +2849,7 @@
                     <div class="elementor-element elementor-element-34a93772 elementor-widget elementor-widget-image"
                         data-widget_type="image.default">
                         <a href="{{ url('/') }}">
-                            <img alt="ExoInvite Logo" loading="lazy" src="{{ asset('assets/svg/logo.svg') }}"
+                            <img alt="ExoInvite Logo" loading="lazy" src="{{ asset('assets/svg/logo-light.svg') }}"
                                 style="width: 170px; max-width: 65%; height: auto;" />
                         </a>
                     </div>

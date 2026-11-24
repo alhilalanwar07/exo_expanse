@@ -615,7 +615,10 @@ a { color: inherit; text-decoration: none; }
                     <div class="s03-reveal" style="font-size:14px;opacity:0.7;font-style:italic;line-height:1.8;margin-bottom:24px;">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu.</div>
                     <div class="s03-reveal d1" style="font-size:13px;opacity:0.6;font-style:italic;">Hormat Kami</div>
                     <div class="s03-reveal d2 font-script color-accent" style="font-size:40px;margin:8px 0 24px;">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</div>
-                    <div class="s03-reveal d3" style="opacity:0.3;font-size:9px;text-transform:uppercase;letter-spacing:2px;">Powered by Exo Expanse</div>
+                    <div class="s03-reveal d3" style="margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                        <span style="opacity:0.55;font-size:9px;text-transform:uppercase;letter-spacing:2px;">Digital Invitation By</span>
+                        <a href="{{ url('/') }}"><img src="{{ asset('assets/svg/logo-dark.svg') }}" alt="ExoInvite" style="width:120px;height:auto;opacity:0.88;" loading="lazy"></a>
+                    </div>
                 </div>
             </div>
         </div>

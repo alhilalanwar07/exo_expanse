@@ -797,8 +797,9 @@
                 </h2>
             </div>
             
-            <div style="text-align: center; font-size: 0.8rem; opacity: 0.5; margin-top: 30px;">
-                Built with ❤️ by ExoInvite
+            <div style="text-align: center; margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                <span style="font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.65;">Digital Invitation By</span>
+                <a href="{{ url('/') }}"><img src="{{ asset('assets/svg/logo-light.svg') }}" alt="ExoInvite" style="width: 126px; height: auto; opacity: 0.88;" loading="lazy"></a>
             </div>
         </div>
 

@@ -1,13 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620">
   <defs>
-    <linearGradient id="cbGr" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#761724"/>
-      <stop offset="100%" stop-color="#480C14"/>
+    <linearGradient id="cbGroomBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6E1420"/>
+      <stop offset="100%" stop-color="#38070D"/>
+    </linearGradient>
+    <linearGradient id="cbGrGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5E2B8"/>
+      <stop offset="50%" stop-color="#C59B5F"/>
+      <stop offset="100%" stop-color="#946D36"/>
     </linearGradient>
   </defs>
-  <rect width="500" height="620" fill="url(#cbGr)"/>
-  <circle cx="250" cy="235" r="145" fill="#C59B5F" fill-opacity="0.12"/>
-  <ellipse cx="250" cy="215" rx="46" ry="54" fill="#F7F1E8" fill-opacity="0.88"/>
-  <path d="M115 540 C124 395 182 340 250 340 C318 340 376 395 385 540 L385 620 L115 620 Z" fill="#8B1E2B" stroke="#C59B5F" stroke-width="3"/>
-  <path d="M222 344 L250 420 L278 344" fill="none" stroke="#F7F1E8" stroke-width="3"/>
+  <rect width="500" height="620" fill="url(#cbGroomBg)"/>
+  <!-- Inner Arch Filigree Frame -->
+  <path d="M36 588 L36 225 C36 92 464 92 464 225 L464 588 Z" fill="none" stroke="url(#cbGrGold)" stroke-opacity="0.6" stroke-width="2"/>
+  <path d="M52 574 L52 232 C52 115 448 115 448 232 L448 574 Z" fill="none" stroke="#F5E2B8" stroke-opacity="0.28" stroke-width="1" stroke-dasharray="5 4"/>
+
+  <!-- Glowing Medallion Halo -->
+  <circle cx="250" cy="275" r="122" fill="#F5E2B8" fill-opacity="0.08" stroke="url(#cbGrGold)" stroke-width="2"/>
+  <circle cx="250" cy="275" r="110" fill="none" stroke="url(#cbGrGold)" stroke-opacity="0.45" stroke-width="1"/>
+
+  <!-- Sartorial Tuxedo Jacket, Crisp Wingtip Shirt, Bow-Tie & Rose Boutonniere Emblem -->
+  <g transform="translate(250, 285)">
+    <!-- Tuxedo Shoulders & Jacket -->
+    <path d="M-98,85 L-84,-38 C-78,-62 -52,-76 -30,-82 L0,-15 L30,-82 C52,-76 78,-62 84,-38 L98,85 Z" fill="#230509" stroke="url(#cbGrGold)" stroke-width="2.2"/>
+    <!-- Dress Shirt Placket -->
+    <polygon points="-32,-80 0,38 32,-80 14,-90 -14,-90" fill="#FAF3E8" stroke="url(#cbGrGold)" stroke-width="1.5"/>
+    <!-- Silk Satin Peak Lapels -->
+    <polygon points="-32,-80 -54,-18 0,42" fill="#3B0910" stroke="url(#cbGrGold)" stroke-width="1.6"/>
+    <polygon points="32,-80 54,-18 0,42" fill="#3B0910" stroke="url(#cbGrGold)" stroke-width="1.6"/>
+    <!-- Crimson & Gold Silk Bow-Tie -->
+    <polygon points="-4,-62 -28,-74 -28,-48" fill="#8B1E2B" stroke="url(#cbGrGold)" stroke-width="1.5"/>
+    <polygon points="4,-62 28,-74 28,-48" fill="#8B1E2B" stroke="url(#cbGrGold)" stroke-width="1.5"/>
+    <rect x="-6" y="-67" width="12" height="11" rx="3" fill="url(#cbGrGold)"/>
+    <!-- Shirt Studs -->
+    <circle cx="0" cy="-32" r="3" fill="url(#cbGrGold)"/>
+    <circle cx="0" cy="-10" r="3" fill="url(#cbGrGold)"/>
+    <!-- Gold Pocket Square -->
+    <polygon points="36,12 62,12 55,-4 44,4" fill="#F5E2B8" stroke="url(#cbGrGold)" stroke-width="1.2"/>
+    <!-- Crimson Rose Boutonniere on Left Lapel -->
+    <circle cx="-36" cy="-16" r="10" fill="#A62132" stroke="#F5E2B8" stroke-width="1.5"/>
+    <path d="M-40,-18 C-36,-22 -31,-20 -32,-14 C-33,-10 -39,-11 -38,-16" fill="none" stroke="#F5E2B8" stroke-width="1.2"/>
+    <line x1="-36" y1="-6" x2="-41" y2="8" stroke="#F5E2B8" stroke-width="1.8"/>
+  </g>
+
+  <!-- Botanical Laurel Under Medallion -->
+  <path d="M150 435 Q250 468 350 435" fill="none" stroke="url(#cbGrGold)" stroke-width="1.8"/>
+  <polygon points="250,443 258,451 250,459 242,451" fill="url(#cbGrGold)"/>
+
+  <text x="250" y="502" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="600" letter-spacing="6" fill="#E8C98F">THE GROOM</text>
+  <text x="250" y="536" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#FAF0E1">Mempelai Pria</text>
 </svg>

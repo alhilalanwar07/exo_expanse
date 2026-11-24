@@ -17,7 +17,10 @@
                     </tr>
                     <tr>
                         <td style="padding:28px 30px 10px 30px;text-align:center;">
-                            <p style="margin:0;color:#9a6f3f;font-size:12px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;">ExoInvite Account</p>
+                            <div style="margin:0 0 12px 0;">
+                                <img src="{{ asset('assets/svg/logo-dark.svg') }}" alt="{{ $appName }}" width="150" style="display:inline-block;height:auto;border:0;">
+                            </div>
+                            <p style="margin:0;color:#9a6f3f;font-size:11px;font-weight:bold;letter-spacing:1.8px;text-transform:uppercase;">ExoInvite Account</p>
                             <h1 style="margin:10px 0 0 0;color:#4b2f18;font-size:30px;line-height:36px;font-family:Georgia,'Times New Roman',serif;">Aktivasi Akun Anda</h1>
                             <p style="margin:10px 0 0 0;color:#866a4a;font-size:14px;line-height:22px;">Satu langkah lagi untuk mulai mengelola undangan digital Anda.</p>
                         </td>

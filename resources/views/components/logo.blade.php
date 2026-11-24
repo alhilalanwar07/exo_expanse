@@ -4,50 +4,80 @@
     'width' => null,
     'height' => null,
     'white' => false,
+    'subtitle' => false,
 ])
 
+@php
+    $uid = 'exo_' . \Illuminate\Support\Str::random(6);
+    $badgeId = $uid . '_badge';
+    $goldId = $uid . '_gold';
+@endphp
+
 @if($variant === 'full')
-    {{-- Full logo: icon + text --}}
-    <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'inline-flex items-center gap-2 ' . $class]) }}>
-        {{-- Icon --}}
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="{{ $width ?? 'w-9 h-9' }}">
+    {{-- Full redesigned luxury ExoInvite brand lockup --}}
+    <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'group inline-flex items-center gap-2.5 select-none ' . $class]) }}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="{{ $width ?? 'w-9 h-9' }} shrink-0 drop-shadow-sm transition-transform duration-300 group-hover:scale-105">
             <defs>
-                <linearGradient id="logoIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="{{ $white ? '#ffffff' : '#f43f5e' }}"/>
-                    <stop offset="100%" stop-color="{{ $white ? '#ffffff' : '#f59e0b' }}"/>
+                <linearGradient id="{{ $badgeId }}" x1="2" y1="2" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#E11D48"/>
+                    <stop offset="52%" stop-color="#BE123C"/>
+                    <stop offset="100%" stop-color="#D97706"/>
+                </linearGradient>
+                <linearGradient id="{{ $goldId }}" x1="2" y1="2" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#FDE68A"/>
+                    <stop offset="50%" stop-color="#F59E0B"/>
+                    <stop offset="100%" stop-color="#FDE68A"/>
                 </linearGradient>
             </defs>
-            <rect x="2" y="12" width="44" height="30" rx="4" fill="url(#logoIconGrad)" opacity="0.12"/>
-            <rect x="2" y="12" width="44" height="30" rx="4" stroke="url(#logoIconGrad)" stroke-width="2.5" fill="none"/>
-            <path d="M3 13 L24 30 L45 13" stroke="url(#logoIconGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M24 20 C24 16.5, 18 14.5, 18 18 C18 21, 24 25.5, 24 25.5 C24 25.5, 30 21, 30 18 C30 14.5, 24 16.5, 24 20Z" fill="url(#logoIconGrad)"/>
+            <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#{{ $badgeId }})"/>
+            <rect x="4.5" y="4.5" width="39" height="39" rx="10.5" stroke="url(#{{ $goldId }})" stroke-opacity="0.72" stroke-width="1.2"/>
+            <path d="M14.5 21V14.5C14.5 13.4 15.4 12.5 16.5 12.5H31.5C32.6 12.5 33.5 13.4 33.5 14.5V21" fill="#FFFDF9" fill-opacity="0.96"/>
+            <path d="M24 14.2L25.1 16.9L27.8 18L25.1 19.1L24 21.8L22.9 19.1L20.2 18L22.9 16.9L24 14.2Z" fill="url(#{{ $badgeId }})"/>
+            <path d="M11 21.2C11 20.1 11.9 19.2 13 19.2H35C36.1 19.2 37 20.1 37 21.2V33.2C37 34.9 35.6 36.2 34 36.2H14C12.4 36.2 11 34.9 11 33.2V21.2Z" fill="#FFFDF9" fill-opacity="0.18" stroke="#FFFDF9" stroke-width="1.75" stroke-linejoin="round"/>
+            <path d="M11.6 20.2L24 29.4L36.4 20.2" stroke="#FFFDF9" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <polygon points="24,25.2 27.6,28.8 24,32.4 20.4,28.8" fill="url(#{{ $goldId }})" stroke="#9F1239" stroke-width="1"/>
         </svg>
-        {{-- Text --}}
-        <span class="text-2xl font-bold {{ $white ? 'text-white' : 'bg-gradient-to-r from-rose-500 to-amber-500 bg-clip-text text-transparent' }}">
-            Exo<span class="font-normal">Invite</span>
+        <span class="flex flex-col leading-none text-left">
+            <span class="text-[22px] tracking-tight leading-none {{ $white ? 'text-white' : 'bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 bg-clip-text text-transparent' }}">
+                <span class="font-extrabold">Exo</span><span class="font-light {{ $white ? 'text-amber-200' : '' }}">Invite</span>
+            </span>
+            @if($subtitle)
+                <span class="text-[8px] font-semibold uppercase tracking-[0.26em] mt-0.5 {{ $white ? 'text-amber-200/80' : 'text-amber-600/80 dark:text-amber-400/80' }}">
+                    Digital Invitation
+                </span>
+            @endif
         </span>
     </a>
 @elseif($variant === 'icon')
-    {{-- Icon only --}}
-    <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'inline-flex items-center ' . $class]) }}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="{{ $width ?? 'w-9 h-9' }}">
+    {{-- Emblem icon only --}}
+    <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'group inline-flex items-center select-none ' . $class]) }}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" class="{{ $width ?? 'w-9 h-9' }} shrink-0 drop-shadow-sm transition-transform duration-300 group-hover:scale-105">
             <defs>
-                <linearGradient id="logoIconOnlyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="{{ $white ? '#ffffff' : '#f43f5e' }}"/>
-                    <stop offset="100%" stop-color="{{ $white ? '#ffffff' : '#f59e0b' }}"/>
+                <linearGradient id="{{ $badgeId }}" x1="2" y1="2" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#E11D48"/>
+                    <stop offset="52%" stop-color="#BE123C"/>
+                    <stop offset="100%" stop-color="#D97706"/>
+                </linearGradient>
+                <linearGradient id="{{ $goldId }}" x1="2" y1="2" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#FDE68A"/>
+                    <stop offset="50%" stop-color="#F59E0B"/>
+                    <stop offset="100%" stop-color="#FDE68A"/>
                 </linearGradient>
             </defs>
-            <rect x="2" y="12" width="44" height="30" rx="4" fill="url(#logoIconOnlyGrad)" opacity="0.12"/>
-            <rect x="2" y="12" width="44" height="30" rx="4" stroke="url(#logoIconOnlyGrad)" stroke-width="2.5" fill="none"/>
-            <path d="M3 13 L24 30 L45 13" stroke="url(#logoIconOnlyGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M24 20 C24 16.5, 18 14.5, 18 18 C18 21, 24 25.5, 24 25.5 C24 25.5, 30 21, 30 18 C30 14.5, 24 16.5, 24 20Z" fill="url(#logoIconOnlyGrad)"/>
+            <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#{{ $badgeId }})"/>
+            <rect x="4.5" y="4.5" width="39" height="39" rx="10.5" stroke="url(#{{ $goldId }})" stroke-opacity="0.72" stroke-width="1.2"/>
+            <path d="M14.5 21V14.5C14.5 13.4 15.4 12.5 16.5 12.5H31.5C32.6 12.5 33.5 13.4 33.5 14.5V21" fill="#FFFDF9" fill-opacity="0.96"/>
+            <path d="M24 14.2L25.1 16.9L27.8 18L25.1 19.1L24 21.8L22.9 19.1L20.2 18L22.9 16.9L24 14.2Z" fill="url(#{{ $badgeId }})"/>
+            <path d="M11 21.2C11 20.1 11.9 19.2 13 19.2H35C36.1 19.2 37 20.1 37 21.2V33.2C37 34.9 35.6 36.2 34 36.2H14C12.4 36.2 11 34.9 11 33.2V21.2Z" fill="#FFFDF9" fill-opacity="0.18" stroke="#FFFDF9" stroke-width="1.75" stroke-linejoin="round"/>
+            <path d="M11.6 20.2L24 29.4L36.4 20.2" stroke="#FFFDF9" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <polygon points="24,25.2 27.6,28.8 24,32.4 20.4,28.8" fill="url(#{{ $goldId }})" stroke="#9F1239" stroke-width="1"/>
         </svg>
     </a>
 @elseif($variant === 'text')
-    {{-- Text only --}}
-    <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'inline-flex items-center ' . $class]) }}>
-        <span class="text-2xl font-bold {{ $white ? 'text-white' : 'bg-gradient-to-r from-rose-500 to-amber-500 bg-clip-text text-transparent' }}">
-            Exo<span class="font-normal">Invite</span>
+    {{-- Wordmark only --}}
+    <a href="{{ url('/') }}" {{ $attributes->merge(['class' => 'inline-flex items-center select-none ' . $class]) }}>
+        <span class="text-[22px] tracking-tight {{ $white ? 'text-white' : 'bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 bg-clip-text text-transparent' }}">
+            <span class="font-extrabold">Exo</span><span class="font-light {{ $white ? 'text-amber-200' : '' }}">Invite</span>
         </span>
     </a>
 @endif

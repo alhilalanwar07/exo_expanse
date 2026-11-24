@@ -34,6 +34,9 @@ class CrimsonBotanical extends Component
     public function mount(Invitation $invitation, ?array $metadata = null): void
     {
         $this->invitation = $invitation;
+        if ($this->invitation->exists) {
+            $this->invitation->loadMissing(['backgroundMusic', 'photos']);
+        }
         $this->metadata = $metadata;
 
         $guest = trim((string) request('to', request('kpd', 'Tamu Undangan')));
@@ -69,6 +72,7 @@ class CrimsonBotanical extends Component
     public function render()
     {
         if ($this->invitation->exists) {
+            $this->invitation->loadMissing(['backgroundMusic', 'photos']);
             $wishes = $this->invitation->wishes()->latest()->take(50)->get();
             $totalWishesCount = $this->invitation->wishes()->count();
         } else {
