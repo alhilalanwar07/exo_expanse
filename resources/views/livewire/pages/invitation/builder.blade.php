@@ -291,7 +291,7 @@
                                 <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Detail waktu dan tempat acara</p>
                             </div>
 
-                            <div class="grid md:grid-cols-3 gap-4">
+                            <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Tanggal Utama *</label>
                                     <input wire:model.blur="event_date" type="date" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500">
@@ -305,15 +305,36 @@
                                         <option value="resepsi_only">🍽️ Resepsi Saja</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Zona Waktu *</label>
-                                    <select wire:model.live="timezone" class="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500">
-                                        <option value="WIB">🕐 WIB (Indonesia Barat)</option>
-                                        <option value="WITA">🕑 WITA (Indonesia Tengah)</option>
-                                        <option value="WIT">🕒 WIT (Indonesia Timur)</option>
-                                    </select>
-                                    @error('timezone') <span class="text-rose-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Zona Waktu (WIB / WITA / WIT) *</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    @foreach([
+                                        'WIB' => 'Indonesia Barat (UTC+7)',
+                                        'WITA' => 'Indonesia Tengah (UTC+8)',
+                                        'WIT' => 'Indonesia Timur (UTC+9)',
+                                    ] as $tzCode => $tzDesc)
+                                        <button
+                                            type="button"
+                                            wire:click="$set('timezone', '{{ $tzCode }}')"
+                                            @class([
+                                                'px-4 py-2.5 rounded-xl border-2 text-left transition-all flex items-center justify-between gap-2',
+                                                'border-rose-500 bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-200 dark:border-rose-500 shadow-sm' => $this->timezone === $tzCode,
+                                                'border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:border-rose-300' => $this->timezone !== $tzCode,
+                                            ])
+                                        >
+                                            <div>
+                                                <div class="font-bold text-sm">{{ $tzCode }}</div>
+                                                <div class="text-xs opacity-80">{{ $tzDesc }}</div>
+                                            </div>
+                                            @if($this->timezone === $tzCode)
+                                                <span class="text-rose-500 font-bold text-sm">✓</span>
+                                            @endif
+                                        </button>
+                                    @endforeach
                                 </div>
+                                @error('timezone') <span class="text-rose-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <!-- Akad -->
@@ -330,7 +351,10 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Waktu ({{ $this->timezone }})</label>
-                                        <input wire:model.blur="akad_time" type="time" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                                        <div class="flex items-center gap-2">
+                                            <input wire:model.blur="akad_time" type="time" class="flex-1 px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                                            <span class="shrink-0 px-3 py-2.5 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-bold border border-amber-300 dark:border-amber-700">{{ $this->timezone }}</span>
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Nama Tempat</label>
@@ -358,7 +382,10 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Waktu ({{ $this->timezone }})</label>
-                                        <input wire:model.blur="resepsi_time" type="time" class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                                        <div class="flex items-center gap-2">
+                                            <input wire:model.blur="resepsi_time" type="time" class="flex-1 px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                                            <span class="shrink-0 px-3 py-2.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-bold border border-emerald-300 dark:border-emerald-700">{{ $this->timezone }}</span>
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="block text-sm text-slate-600 dark:text-slate-400 mb-1">Nama Tempat</label>

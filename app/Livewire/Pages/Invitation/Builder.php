@@ -846,6 +846,7 @@ class Builder extends Component
         $this->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:invitations,slug'.($this->invitationId ? ','.$this->invitationId : ''),
+            'timezone' => 'required|in:WIB,WITA,WIT',
         ]);
 
         $service = app(InvitationService::class);
@@ -923,6 +924,7 @@ class Builder extends Component
         $this->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:invitations,slug'.($this->invitationId ? ','.$this->invitationId : ''),
+            'timezone' => 'required|in:WIB,WITA,WIT',
         ]);
 
         $service = app(InvitationService::class);

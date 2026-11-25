@@ -90,15 +90,16 @@ class MobileInvitationController extends Controller
                 'instagram_bride' => $invitation->instagram_bride,
                 'bride_photo' => $invitation->bride_photo ? url('storage/'.$invitation->bride_photo) : null,
                 'akad_date' => $invitation->akad_date?->format('Y-m-d'),
-                'akad_time' => $invitation->akad_time,
+                'akad_time' => $invitation->akad_time ?: ($invitation->akad_date && $invitation->akad_date->format('H:i') !== '00:00' ? $invitation->akad_date->format('H:i') : null),
                 'akad_venue' => $invitation->akad_venue,
                 'akad_address' => $invitation->akad_address,
                 'akad_maps_link' => $invitation->akad_maps_link,
                 'resepsi_date' => $invitation->resepsi_date?->format('Y-m-d'),
-                'resepsi_time' => $invitation->resepsi_time,
+                'resepsi_time' => $invitation->resepsi_time ?: ($invitation->resepsi_date && $invitation->resepsi_date->format('H:i') !== '00:00' ? $invitation->resepsi_date->format('H:i') : null),
                 'resepsi_venue' => $invitation->resepsi_venue,
                 'resepsi_address' => $invitation->resepsi_address,
                 'resepsi_maps_link' => $invitation->resepsi_maps_link,
+                'timezone' => $invitation->timezone,
                 'enable_rsvp' => $invitation->enable_rsvp ?? true,
                 'enable_wishes' => $invitation->enable_wishes ?? true,
                 'enable_gallery' => $invitation->enable_gallery ?? true,
@@ -162,7 +163,7 @@ class MobileInvitationController extends Controller
             $invitation->id
         );
 
-        app(InvitationService::class)->update($invitation, $this->buildData($request, $slug));
+        app(InvitationService::class)->update($invitation, $this->buildData($request, $slug, $invitation));
 
         return response()->json(['message' => 'Undangan berhasil diperbarui.']);
     }
@@ -387,18 +388,40 @@ class MobileInvitationController extends Controller
         return $slug;
     }
 
-    private function buildData(Request $request, string $slug): array
+    private function buildData(Request $request, string $slug, ?Invitation $existing = null): array
     {
-        $styles = array_filter([
+        $rawTimezone = $request->input('custom_styles.timezone', $request->input('timezone'));
+        $normalizedTimezone = strtoupper(trim((string) $rawTimezone));
+        $timezone = array_key_exists($normalizedTimezone, Invitation::TIMEZONES)
+            ? $normalizedTimezone
+            : ($existing?->timezone ?? 'WIB');
+
+        $styles = array_merge($existing?->custom_styles ?? [], array_filter([
             'event_type' => $request->input('custom_styles.event_type'),
             'name_order' => $request->input('custom_styles.name_order'),
             'cover_title' => $request->input('custom_styles.cover_title'),
             'cover_subtitle' => $request->input('custom_styles.cover_subtitle'),
-            'timezone' => $request->input('custom_styles.timezone'),
+            'timezone' => $timezone,
             'welcome_message' => $request->input('custom_styles.welcome_message'),
             'quran_verse' => $request->input('custom_styles.quran_verse'),
             'countdown_enabled' => $request->input('custom_styles.countdown_enabled'),
-        ], fn ($v) => $v !== null);
+        ], fn ($v) => $v !== null));
+
+        $akadDateRaw = trim((string) $request->input('akad_date', ''));
+        $akadTime = $request->input('akad_time');
+        $akadDate = $akadDateRaw === ''
+            ? null
+            : (preg_match('/^\d{4}-\d{2}-\d{2}$/', $akadDateRaw)
+                ? trim($akadDateRaw.' '.(trim((string) $akadTime) !== '' ? trim((string) $akadTime) : '08:00'))
+                : $akadDateRaw);
+
+        $resepsiDateRaw = trim((string) $request->input('resepsi_date', ''));
+        $resepsiTime = $request->input('resepsi_time');
+        $resepsiDate = $resepsiDateRaw === ''
+            ? null
+            : (preg_match('/^\d{4}-\d{2}-\d{2}$/', $resepsiDateRaw)
+                ? trim($resepsiDateRaw.' '.(trim((string) $resepsiTime) !== '' ? trim((string) $resepsiTime) : '11:00'))
+                : $resepsiDateRaw);
 
         return [
             'title' => $request->input('title'),
@@ -413,13 +436,13 @@ class MobileInvitationController extends Controller
             'bride_father' => $request->input('bride_father'),
             'bride_mother' => $request->input('bride_mother'),
             'instagram_bride' => $request->input('instagram_bride'),
-            'akad_date' => $request->input('akad_date') ?: null,
-            'akad_time' => $request->input('akad_time'),
+            'akad_date' => $akadDate,
+            'akad_time' => $akadTime,
             'akad_venue' => $request->input('akad_venue'),
             'akad_address' => $request->input('akad_address'),
             'akad_maps_link' => $request->input('akad_maps_link'),
-            'resepsi_date' => $request->input('resepsi_date') ?: null,
-            'resepsi_time' => $request->input('resepsi_time'),
+            'resepsi_date' => $resepsiDate,
+            'resepsi_time' => $resepsiTime,
             'resepsi_venue' => $request->input('resepsi_venue'),
             'resepsi_address' => $request->input('resepsi_address'),
             'resepsi_maps_link' => $request->input('resepsi_maps_link'),
