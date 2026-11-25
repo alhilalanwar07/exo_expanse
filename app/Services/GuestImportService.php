@@ -188,31 +188,28 @@ class GuestImportService
     public function formatEventDetails(Invitation $invitation): string
     {
         $details = [];
+        $eventType = $invitation->event_type;
 
-        if ($invitation->akad_date) {
+        if (in_array($eventType, ['akad_only', 'both'], true) && $invitation->akad_date) {
             $akadDate = Carbon::parse($invitation->akad_date);
-            $akadTime = $invitation->akad_time ? Carbon::parse($invitation->akad_time)->format('H:i') : '';
+            $akadTime = $invitation->formatEventTime('akad', true);
 
             $details[] = 'Pada: Akad Pernikahan';
             $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$akadDate->translatedFormat('d-m-Y');
-            if ($akadTime) {
-                $details[] = "\u{1F55B} Pukul: {$akadTime} - Selesai";
-            }
+            $details[] = "\u{1F55B} Pukul: {$akadTime}";
             if ($invitation->akad_address) {
                 $details[] = "\u{1F4CD} Lokasi: {$invitation->akad_address}";
             }
             $details[] = '';
         }
 
-        if ($invitation->resepsi_date) {
+        if (in_array($eventType, ['resepsi_only', 'both'], true) && $invitation->resepsi_date) {
             $receptionDate = Carbon::parse($invitation->resepsi_date);
-            $receptionTime = $invitation->resepsi_time ? Carbon::parse($invitation->resepsi_time)->format('H:i') : '';
+            $receptionTime = $invitation->formatEventTime('resepsi', true);
 
             $details[] = 'Pada: Resepsi Pernikahan';
             $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$receptionDate->translatedFormat('d-m-Y');
-            if ($receptionTime) {
-                $details[] = "\u{1F55B} Pukul: {$receptionTime} - Selesai";
-            }
+            $details[] = "\u{1F55B} Pukul: {$receptionTime}";
             if ($invitation->resepsi_address) {
                 $details[] = "\u{1F4CD} Lokasi: {$invitation->resepsi_address}";
             }

@@ -313,7 +313,7 @@ body {
                     <div class="absolute -top-10 -right-10 w-24 h-24 bg-cyan/10 rounded-full blur-xl"></div>
                     <h3 class="font-serif text-xl text-cyan mb-2">Akad Nikah</h3>
                     <p class="font-bold text-silver mb-2">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }}</p>
-                    <p class="text-sm text-text-muted mb-2">Pukul {{ $invitation->akad_date?->format('H:i') }} WIB</p>
+                    <p class="text-sm text-text-muted mb-2">Pukul {{ $invitation->formatEventTime('akad', false) }}</p>
                     <p class="text-sm text-text-main mb-6">{{ $invitation->akad_venue }}<br><span class="text-xs text-text-muted">{{ $invitation->akad_address }}</span></p>
                     <a href="{{ $invitation->akad_maps_link }}" target="_blank" class="btn-cyan w-full text-center inline-block">Lokasi Akad</a>
                 </div>
@@ -323,7 +323,7 @@ body {
                     <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-blue/20 rounded-full blur-xl"></div>
                     <h3 class="font-serif text-xl text-blue mb-2">Resepsi</h3>
                     <p class="font-bold text-silver mb-2">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}</p>
-                    <p class="text-sm text-text-muted mb-2">Pukul {{ $invitation->resepsi_date?->format('H:i') }} WIB</p>
+                    <p class="text-sm text-text-muted mb-2">Pukul {{ $invitation->formatEventTime('resepsi', false) }}</p>
                     <p class="text-sm text-text-main mb-6">{{ $invitation->resepsi_venue }}<br><span class="text-xs text-text-muted">{{ $invitation->resepsi_address }}</span></p>
                     <a href="{{ $invitation->resepsi_maps_link }}" target="_blank" class="btn-cyan w-full text-center inline-block" style="border-color:var(--blue); color:var(--blue);">Lokasi Resepsi</a>
                 </div>

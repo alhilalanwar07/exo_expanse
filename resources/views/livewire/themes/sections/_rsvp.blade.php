@@ -63,7 +63,7 @@
             {{-- COUNTDOWN --}}
             <div class="flex justify-center gap-2 mb-6 animate__animated animate__fadeInUp animate__slower mx-auto" style="max-width:280px;" x-data="{
                 days: 0, hours: 0, minutes: 0, seconds: 0,
-                target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') ?? now()->addDays(30)->format('Y-m-d H:i:s') }}'),
+                target: new Date('{{ $invitation->countdownIso() }}'),
                 init() {
                     setInterval(() => {
                         const diff = this.target - new Date();

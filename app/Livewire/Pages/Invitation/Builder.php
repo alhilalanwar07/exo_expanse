@@ -93,6 +93,9 @@ class Builder extends Component
 
     public string $event_type = 'both'; // both, akad_only, resepsi_only
 
+    #[Validate('required|in:WIB,WITA,WIT', as: 'Zona waktu')]
+    public string $timezone = 'WIB';
+
     #[Validate('required|date', as: 'Tanggal acara')]
     public string $event_date = '2026-06-15';
 
@@ -246,6 +249,7 @@ class Builder extends Component
         $styles = $invitation->custom_styles ?? [];
         $this->name_order = $styles['name_order'] ?? 'groom_first';
         $this->event_type = $styles['event_type'] ?? 'both';
+        $this->timezone = $invitation->timezone;
         $this->event_date = $styles['event_date']
             ?? ($this->event_type === 'resepsi_only'
                 ? $invitation->resepsi_date?->format('Y-m-d')
@@ -317,13 +321,13 @@ class Builder extends Component
 
         // Akad
         $this->akad_date = $invitation->akad_date?->format('Y-m-d') ?? '';
-        $this->akad_time = $invitation->akad_time ?? '';
+        $this->akad_time = $invitation->akad_time ?: ($invitation->akad_date && $invitation->akad_date->format('H:i') !== '00:00' ? $invitation->akad_date->format('H:i') : '');
         $this->akad_venue = $invitation->akad_venue ?? '';
         $this->akad_address = $invitation->akad_address ?? '';
 
         // Resepsi
         $this->resepsi_date = $invitation->resepsi_date?->format('Y-m-d') ?? '';
-        $this->resepsi_time = $invitation->resepsi_time ?? '';
+        $this->resepsi_time = $invitation->resepsi_time ?: ($invitation->resepsi_date && $invitation->resepsi_date->format('H:i') !== '00:00' ? $invitation->resepsi_date->format('H:i') : '');
         $this->resepsi_venue = $invitation->resepsi_venue ?? '';
         $this->resepsi_address = $invitation->resepsi_address ?? '';
 
@@ -354,13 +358,17 @@ class Builder extends Component
             'instagram_bride' => $this->bride_instagram,
 
             // Events
-            'akad_date' => $this->event_type === 'resepsi_only' ? null : ($this->akad_date ?: null),
+            'akad_date' => ($this->event_type === 'resepsi_only' || empty($this->akad_date))
+                ? null
+                : trim($this->akad_date.' '.($this->akad_time ?: '08:00')),
             'akad_time' => $this->event_type === 'resepsi_only' ? null : $this->akad_time,
             'akad_venue' => $this->event_type === 'resepsi_only' ? null : $this->akad_venue,
             'akad_address' => $this->event_type === 'resepsi_only' ? null : $this->akad_address,
             'akad_maps_link' => $this->event_type === 'resepsi_only' ? null : $this->akad_maps_link,
 
-            'resepsi_date' => $this->event_type === 'akad_only' ? null : ($this->resepsi_date ?: null),
+            'resepsi_date' => ($this->event_type === 'akad_only' || empty($this->resepsi_date))
+                ? null
+                : trim($this->resepsi_date.' '.($this->resepsi_time ?: '11:00')),
             'resepsi_time' => $this->event_type === 'akad_only' ? null : $this->resepsi_time,
             'resepsi_venue' => $this->event_type === 'akad_only' ? null : $this->resepsi_venue,
             'resepsi_address' => $this->event_type === 'akad_only' ? null : $this->resepsi_address,
@@ -389,6 +397,7 @@ class Builder extends Component
                 'groom_child_order' => trim($this->groom_child_order) !== '' ? trim($this->groom_child_order) : 'Putra Pertama Dari',
                 'bride_child_order' => trim($this->bride_child_order) !== '' ? trim($this->bride_child_order) : 'Putri Pertama Dari',
                 'event_type' => $this->event_type,
+                'timezone' => in_array($this->timezone, ['WIB', 'WITA', 'WIT'], true) ? $this->timezone : 'WIB',
                 'event_date' => $this->event_date,
                 'cover_title' => $this->cover_title,
                 'cover_subtitle' => $this->cover_subtitle,

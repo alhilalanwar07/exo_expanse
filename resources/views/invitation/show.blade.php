@@ -144,7 +144,7 @@
                                 </div>
                                 <h3 class="font-display text-2xl font-semibold mb-2">Tanggal</h3>
                                 <p class="text-white/80 text-lg">{{ $invitation->event_date?->translatedFormat('l, d F Y') ?? '-' }}</p>
-                                <p class="text-white/60 mt-2">{{ $content['event_time'] ?? '-' }} WIB</p>
+                                <p class="text-white/60 mt-2">{{ $content['event_time'] ?? '-' }} {{ $content['timezone'] ?? 'WIB' }}</p>
                             </div>
                             
                             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center">

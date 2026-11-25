@@ -358,7 +358,7 @@
                         
                         <div class="space-y-4 text-gray-600 mb-8">
                             <div class="flex flex-col items-center">
-                                <span class="font-bold font-body text-sm mb-1">{{ $invitation->akad_date?->format('H:i') }} WIB</span>
+                                <span class="font-bold font-body text-sm mb-1">{{ $invitation->formatEventTime('akad', false) }}</span>
                                 <span class="text-xs">Until Finish</span>
                             </div>
                             <div class="px-8">
@@ -386,7 +386,7 @@
                         
                         <div class="space-y-4 text-gray-600 mb-8">
                             <div class="flex flex-col items-center">
-                                <span class="font-bold font-body text-sm mb-1">{{ $invitation->resepsi_date?->format('H:i') }} WIB</span>
+                                <span class="font-bold font-body text-sm mb-1">{{ $invitation->formatEventTime('resepsi', false) }}</span>
                                 <span class="text-xs">Until Finish</span>
                             </div>
                             <div class="px-8">

@@ -12,6 +12,12 @@ class Invitation extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const TIMEZONES = [
+        'WIB' => 'Asia/Jakarta',
+        'WITA' => 'Asia/Makassar',
+        'WIT' => 'Asia/Jayapura',
+    ];
+
     protected $fillable = [
         'theme_id',
         'user_id',
@@ -187,5 +193,186 @@ class Invitation extends Model
     public function getEventTypeAttribute(): string
     {
         return $this->custom_styles['event_type'] ?? 'both';
+    }
+
+    public function getTimezoneAttribute(): string
+    {
+        $tz = strtoupper(trim((string) ($this->custom_styles['timezone'] ?? '')));
+        if (array_key_exists($tz, self::TIMEZONES)) {
+            return $tz;
+        }
+
+        if ($this->relationLoaded('theme') || $this->theme_id) {
+            $slug = (string) ($this->theme?->slug ?? '');
+            if (in_array($slug, ['adat-bone', 'wedding-walasuji', 'agung-bali', 'special-03'], true)) {
+                return 'WITA';
+            }
+        }
+
+        return 'WIB';
+    }
+
+    public function ianaTimezone(): string
+    {
+        return self::TIMEZONES[$this->timezone] ?? 'Asia/Jakarta';
+    }
+
+    public function resolveTimeHm(?string $timeCol, $dateCol, string $fallback = '08:00'): string
+    {
+        $t = trim((string) $timeCol);
+        if ($t !== '') {
+            if (preg_match('/^(\d{1,2})[:.](\d{2})(?::\d{2})?$/', $t, $m)) {
+                return sprintf('%02d:%02d', (int) $m[1], (int) $m[2]);
+            }
+
+            return $t;
+        }
+
+        if ($dateCol) {
+            try {
+                $hm = \Carbon\Carbon::parse($dateCol)->format('H:i');
+                if ($hm !== '00:00') {
+                    return $hm;
+                }
+            } catch (\Throwable $e) {
+            }
+        }
+
+        return $fallback;
+    }
+
+    public function formatCustomTime(?string $rawTime, string $fallback = '08:00', bool $withSelesai = true, string $separator = ':'): string
+    {
+        $t = trim((string) $rawTime);
+        $tz = $this->timezone;
+
+        if ($t === '') {
+            $hm = str_replace(':', $separator, $fallback);
+
+            return $hm.' '.$tz.($withSelesai ? ' - Selesai' : '');
+        }
+
+        if (preg_match('/^(\d{1,2})[:.](\d{2})(?::\d{2})?$/', $t, $m)) {
+            $hm = sprintf('%02d%s%02d', (int) $m[1], $separator, (int) $m[2]);
+
+            return $hm.' '.$tz.($withSelesai ? ' - Selesai' : '');
+        }
+
+        $hasZone = (bool) preg_match('/\b(WIB|WITA|WIT)\b/i', $t);
+        if ($hasZone) {
+            $formatted = preg_replace('/\b(WIB|WITA|WIT)\b/i', $tz, $t) ?? $t;
+        } elseif (preg_match('/\s*-\s*selesai$/i', $t)) {
+            $formatted = preg_replace('/(\s*-\s*selesai)$/i', ' '.$tz.'$1', $t) ?? ($t.' '.$tz);
+        } else {
+            $formatted = $t.' '.$tz;
+        }
+
+        $hasEndOrSelesai = str_contains(strtolower($formatted), 'selesai') || (bool) preg_match('/-\s*\d{1,2}[:.]\d{2}/', $formatted);
+        if ($withSelesai && ! $hasEndOrSelesai) {
+            $formatted .= ' - Selesai';
+        }
+
+        return $formatted;
+    }
+
+    public function formatEventTime(string $event = 'akad', bool $withSelesai = true, string $separator = ':'): string
+    {
+        if ($event === 'resepsi') {
+            $fallback = '11:00';
+            $raw = $this->resolveTimeHm($this->resepsi_time, $this->resepsi_date, $fallback);
+        } else {
+            $fallback = '08:00';
+            $raw = $this->resolveTimeHm($this->akad_time, $this->akad_date, $fallback);
+        }
+
+        return $this->formatCustomTime($raw, $fallback, $withSelesai, $separator);
+    }
+
+    public function eventDateTime(string $event = 'akad'): ?\Carbon\Carbon
+    {
+        $isResepsi = $event === 'resepsi';
+        $dateVal = $isResepsi ? $this->resepsi_date : $this->akad_date;
+        if (! $dateVal) {
+            return null;
+        }
+
+        $fallback = $isResepsi ? '11:00' : '08:00';
+        $hm = $this->resolveTimeHm(
+            $isResepsi ? $this->resepsi_time : $this->akad_time,
+            $dateVal,
+            $fallback
+        );
+
+        try {
+            $ymd = \Carbon\Carbon::parse($dateVal)->format('Y-m-d');
+            $dt = \Carbon\Carbon::createFromFormat('Y-m-d', $ymd, $this->ianaTimezone());
+            if (preg_match('/^(\d{1,2})[:.](\d{2})/', $hm, $m)) {
+                $dt->setTime((int) $m[1], (int) $m[2], 0);
+            } else {
+                [$fh, $fm] = explode(':', $fallback);
+                $dt->setTime((int) $fh, (int) $fm, 0);
+            }
+
+            return $dt;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    public function primaryEventDateTime(): \Carbon\Carbon
+    {
+        $eventType = $this->event_type;
+        $dt = $eventType === 'resepsi_only'
+            ? ($this->eventDateTime('resepsi') ?? $this->eventDateTime('akad'))
+            : ($this->eventDateTime('akad') ?? $this->eventDateTime('resepsi'));
+
+        if ($dt) {
+            return $dt;
+        }
+
+        $styles = $this->custom_styles ?? [];
+        if (! empty($styles['event_date'])) {
+            try {
+                $ymd = \Carbon\Carbon::parse($styles['event_date'])->format('Y-m-d');
+                $fallback = $eventType === 'resepsi_only' ? '11:00' : '08:00';
+                $hm = $this->resolveTimeHm(
+                    $eventType === 'resepsi_only' ? $this->resepsi_time : ($this->akad_time ?: $this->resepsi_time),
+                    null,
+                    $fallback
+                );
+                $dt = \Carbon\Carbon::createFromFormat('Y-m-d', $ymd, $this->ianaTimezone());
+                if (preg_match('/^(\d{1,2})[:.](\d{2})/', $hm, $m)) {
+                    $dt->setTime((int) $m[1], (int) $m[2], 0);
+                } else {
+                    $dt->setTime(8, 0, 0);
+                }
+
+                return $dt;
+            } catch (\Throwable $e) {
+            }
+        }
+
+        return \Carbon\Carbon::now($this->ianaTimezone())->addDays(30)->setTime(8, 0, 0);
+    }
+
+    public function countdownTimestamp(): int
+    {
+        return $this->primaryEventDateTime()->timestamp;
+    }
+
+    public function countdownIso(): string
+    {
+        return $this->primaryEventDateTime()->toIso8601String();
+    }
+
+    public function googleCalendarDates(string $event = 'primary', int $durationHours = 3): string
+    {
+        $start = ($event === 'primary'
+            ? $this->primaryEventDateTime()
+            : ($this->eventDateTime($event) ?? $this->primaryEventDateTime())
+        )->copy()->utc();
+        $end = $start->copy()->addHours($durationHours);
+
+        return $start->format('Ymd\THis\Z').'/'.$end->format('Ymd\THis\Z');
     }
 }

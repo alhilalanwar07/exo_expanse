@@ -393,7 +393,7 @@ a { color: inherit; text-decoration: none; }
                     <div class="s03-card s03-reveal" style="width:100%;">
                         <div class="font-script color-accent" style="font-size:28px;margin-bottom:8px;">Akad Nikah</div>
                         <div style="font-size:14px;margin-bottom:4px;">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }}</div>
-                        <div style="font-size:13px;opacity:0.6;">Pukul {{ $invitation->akad_date?->format('H:i') }} WITA</div>
+                        <div style="font-size:13px;opacity:0.6;">Pukul {{ $invitation->formatEventTime('akad', false) }}</div>
                         <div class="s03-sep"></div>
                         <div style="font-size:13px;"><strong>{{ $invitation->akad_venue }}</strong></div>
                         <div style="font-size:12px;opacity:0.6;">{{ $invitation->akad_address }}</div>
@@ -402,7 +402,7 @@ a { color: inherit; text-decoration: none; }
                     <div class="s03-card s03-reveal d2" style="width:100%;">
                         <div class="font-script color-accent" style="font-size:28px;margin-bottom:8px;">Resepsi</div>
                         <div style="font-size:14px;margin-bottom:4px;">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}</div>
-                        <div style="font-size:13px;opacity:0.6;">Pukul {{ $invitation->resepsi_date?->format('H:i') }} WITA - Selesai</div>
+                        <div style="font-size:13px;opacity:0.6;">Pukul {{ $invitation->formatEventTime('resepsi', true) }}</div>
                         <div class="s03-sep"></div>
                         <div style="font-size:13px;"><strong>{{ $invitation->resepsi_venue }}</strong></div>
                         <div style="font-size:12px;opacity:0.6;">{{ $invitation->resepsi_address }}</div>
@@ -547,7 +547,7 @@ a { color: inherit; text-decoration: none; }
                     {{-- Countdown --}}
                     <div class="s03-reveal d1" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;" x-data="{
                         d:0,h:0,m:0,s:0,
-                        t:new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') ?? now()->addDays(30)->format('Y-m-d H:i:s') }}'),
+                        t:new Date('{{ $invitation->countdownIso() }}'),
                         init(){setInterval(()=>{const df=this.t-new Date();if(df>0){this.d=Math.floor(df/864e5);this.h=Math.floor((df%864e5)/36e5);this.m=Math.floor((df%36e5)/6e4);this.s=Math.floor((df%6e4)/1e3);}},1000);}
                     }">
                         <template x-for="[v,l] in [[d,'Hari'],[h,'Jam'],[m,'Menit'],[s,'Detik']]">

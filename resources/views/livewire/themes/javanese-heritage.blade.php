@@ -705,7 +705,7 @@
                 
                 <div x-data="{
                     days: 0, hours: 0, minutes: 0, seconds: 0,
-                    target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+                    target: new Date('{{ $invitation->countdownIso() }}'),
                     init() { this.update(); setInterval(() => this.update(), 1000); },
                     update() {
                         const diff = this.target - new Date();
@@ -718,11 +718,10 @@
                     },
                     saveToCalendar() {
                         const title = 'Wedding of ' + '{{ $invitation->groom_nickname }}' + ' & ' + '{{ $invitation->bride_nickname }}';
-                        const start = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
-                        const end = '{{ $invitation->akad_date?->addHours(2)->format('Ymd\THis') }}';
+                        const dates = '{{ $invitation->googleCalendarDates('primary', 3) }}';
                         const details = 'Celebrating the wedding of ' + '{{ $invitation->groom_nickname }}' + ' and ' + '{{ $invitation->bride_nickname }}';
                         const location = '{{ $invitation->akad_venue }}';
-                        const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+                        const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
                         window.open(url, '_blank');
                     }
                 }">
@@ -770,7 +769,7 @@
                         </div>
                         <div class="font-serif text-gray-600 mb-5 text-sm md:text-base">
                             <p class="text-lg md:text-xl italic">{{ $invitation->akad_date?->translatedFormat('l') }}</p>
-                            <p>Pukul {{ $invitation->akad_date?->format('H:i') }} WIB</p>
+                            <p>Pukul {{ $invitation->formatEventTime('akad', false) }}</p>
                         </div>
                         <hr class="border-dashed border-gray-300 w-2/3 mx-auto mb-5">
                         <div class="mb-6">
@@ -794,7 +793,7 @@
                         </div>
                         <div class="font-serif text-gray-600 mb-5 text-sm md:text-base">
                             <p class="text-lg md:text-xl italic">{{ $invitation->resepsi_date?->translatedFormat('l') }}</p>
-                            <p>Pukul {{ $invitation->resepsi_date?->format('H:i') }} WIB - Selesai</p>
+                            <p>Pukul {{ $invitation->formatEventTime('resepsi', true) }}</p>
                         </div>
                         <hr class="border-dashed border-gray-300 w-2/3 mx-auto mb-5">
                         <div class="mb-6">

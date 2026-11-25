@@ -2,5 +2,6 @@
     'invitation' => $invitation,
     'metadata' => $metadata ?? null,
     'wishes' => $wishes ?? $invitation->wishes()->latest()->take(20)->get(),
+    'totalWishesCount' => $totalWishesCount ?? $invitation->wishes()->count(),
     'guestName' => $guestName ?? request('to', request('kpd', 'Tamu Undangan'))
 ])

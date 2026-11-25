@@ -16,7 +16,7 @@
         }, 100);
 
         // Countdown Logic
-        const targetDate = new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}').getTime();
+        const targetDate = new Date('{{ $invitation->countdownIso() }}').getTime();
         setInterval(() => {
             const now = new Date().getTime();
             const distance = targetDate - now;
@@ -614,7 +614,7 @@
                                 <p class="fw-bold text-muted mb-4">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }}</p>
                                 
                                 <div class="bg-light-custom p-3 rounded mb-3">
-                                    <p class="mb-0 fw-bold text-primary-custom"><i class="far fa-clock me-2"></i>{{ $invitation->akad_date?->format('H:i') }} WIB - Selesai</p>
+                                    <p class="mb-0 fw-bold text-primary-custom"><i class="far fa-clock me-2"></i>{{ $invitation->formatEventTime('akad', true) }}</p>
                                 </div>
                                 
                                 <p class="mb-0 fw-bold">{{ $invitation->akad_venue }}</p>
@@ -635,7 +635,7 @@
                                 <p class="fw-bold text-muted mb-4">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}</p>
                                 
                                 <div class="bg-light-custom p-3 rounded mb-3">
-                                    <p class="mb-0 fw-bold text-primary-custom"><i class="far fa-clock me-2"></i>{{ $invitation->resepsi_date?->format('H:i') }} WIB - Selesai</p>
+                                    <p class="mb-0 fw-bold text-primary-custom"><i class="far fa-clock me-2"></i>{{ $invitation->formatEventTime('resepsi', true) }}</p>
                                 </div>
                                 
                                 <p class="mb-0 fw-bold">{{ $invitation->resepsi_venue }}</p>

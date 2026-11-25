@@ -714,7 +714,7 @@ body {
         <section id="home" class="hero-section overflow-hidden" x-data="{
             days: 0, hours: 0, minutes: 0, seconds: 0,
             isActive: true,
-            target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+            target: new Date('{{ $invitation->countdownIso() }}'),
             init() { 
                 this.update(); 
                 setInterval(() => this.update(), 1000); 
@@ -733,9 +733,9 @@ body {
             },
             saveToCalendar() {
                 const title = 'Wedding of {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}';
-                const date = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
+                const dates = '{{ $invitation->googleCalendarDates('primary', 3) }}';
                 const location = '{{ $invitation->akad_venue }}';
-                const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`;
+                const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&location=${encodeURIComponent(location)}`;
                 window.open(url, '_blank');
             }
         }">
@@ -841,7 +841,7 @@ body {
                         <div style="border-top: 1px dashed var(--bali-gold); border-bottom: 1px dashed var(--bali-gold); padding: 15px 0; margin: 15px 0;">
                             <div class="event-info-item">
                                 <strong>Pukul</strong><br>
-                                {{ $invitation->akad_date?->format('H:i') }} WITA - Selesai
+                                {{ $invitation->formatEventTime('akad', true) }}
                             </div>
                             <div class="event-info-item">
                                 <strong>Bertempat di</strong><br>
@@ -864,7 +864,7 @@ body {
                         <div style="border-top: 1px dashed var(--bali-gold); border-bottom: 1px dashed var(--bali-gold); padding: 15px 0; margin: 15px 0;">
                             <div class="event-info-item">
                                 <strong>Pukul</strong><br>
-                                {{ $invitation->resepsi_date?->format('H:i') }} WITA - Selesai
+                                {{ $invitation->formatEventTime('resepsi', true) }}
                             </div>
                             <div class="event-info-item">
                                 <strong>Bertempat di</strong><br>

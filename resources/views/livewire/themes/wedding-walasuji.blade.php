@@ -135,18 +135,10 @@
         ? $mainDateObj->copy()->locale('id')->translatedFormat('d F Y')
         : '12 Desember 2026';
 
-    $mainTimeRaw = $eventType === 'resepsi_only'
-        ? ($invitation->resepsi_time ?: '10:00:00')
-        : ($invitation->akad_time ?: $invitation->resepsi_time ?: '08:00:00');
-    $countdownDateObj = $mainDateObj ? $mainDateObj->copy() : \Carbon\Carbon::now()->addMonths(2);
-    if (preg_match('/^(\d{1,2}):(\d{2})/', (string) $mainTimeRaw, $tm)) {
-        $countdownDateObj->setTime((int) $tm[1], (int) $tm[2], 0);
-    } else {
-        $countdownDateObj->setTime(8, 0, 0);
-    }
-    $targetTimestamp = $countdownDateObj->timestamp;
+    $countdownDateObj = $invitation->primaryEventDateTime();
+    $targetTimestamp = $invitation->countdownTimestamp();
 
-    $formatEventMeta = function ($dateVal, ?string $timeVal, string $defaultTime, string $titlePrefix, string $venue, string $address, ?string $mapsLink) use ($coupleTitle, $groomFull, $brideFull): array {
+    $formatEventMeta = function ($dateVal, ?string $timeVal, string $defaultTime, string $titlePrefix, string $venue, string $address, ?string $mapsLink) use ($invitation, $coupleTitle, $groomFull, $brideFull): array {
         $d = null;
         if ($dateVal) {
             try {
@@ -159,16 +151,11 @@
         $monthYear = $d ? $d->translatedFormat('M Y') : 'Des 2026';
 
         $t = trim((string) $timeVal);
-        if ($t === '') {
-            $timeDisplay = $defaultTime . ' WITA - Selesai';
-        } elseif (preg_match('/^(\d{1,2}:\d{2})/', $t, $m)) {
-            $timeDisplay = $m[1] . ' WITA - Selesai';
-        } else {
-            $timeDisplay = str_contains(strtolower($t), 'selesai') ? $t : ($t . ' - Selesai');
-        }
+        $timeDisplay = $invitation->formatCustomTime($t, $defaultTime, true, '.');
 
-        $calObj = $d ? $d->copy() : \Carbon\Carbon::now()->addMonths(2);
-        if (preg_match('/^(\d{1,2}):(\d{2})/', $t !== '' ? $t : $defaultTime, $tm)) {
+        $ymd = $d ? $d->format('Y-m-d') : \Carbon\Carbon::now($invitation->ianaTimezone())->addMonths(2)->format('Y-m-d');
+        $calObj = \Carbon\Carbon::createFromFormat('Y-m-d', $ymd, $invitation->ianaTimezone());
+        if (preg_match('/^(\d{1,2})[:.](\d{2})/', $t !== '' ? $t : $defaultTime, $tm)) {
             $calObj->setTime((int) $tm[1], (int) $tm[2], 0);
         } else {
             $calObj->setTime(8, 0, 0);
@@ -202,7 +189,7 @@
 
     $akadMeta = $formatEventMeta(
         $invitation->akad_date,
-        $invitation->akad_time,
+        $invitation->resolveTimeHm($invitation->akad_time, $invitation->akad_date, '08:00'),
         '08.00',
         'Akad Nikah',
         (string) ($invitation->akad_venue ?? ''),
@@ -212,7 +199,7 @@
 
     $resepsiMeta = $formatEventMeta(
         $invitation->resepsi_date,
-        $invitation->resepsi_time,
+        $invitation->resolveTimeHm($invitation->resepsi_time, $invitation->resepsi_date, '11:00'),
         '11.00',
         'Resepsi Pernikahan',
         (string) ($invitation->resepsi_venue ?? ''),

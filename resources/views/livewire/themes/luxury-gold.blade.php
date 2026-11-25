@@ -265,7 +265,7 @@
 
                 {{-- Countdown (inside card, like original) --}}
                 <div x-data="{
-                        targetDate: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}').getTime(),
+                        targetDate: new Date('{{ $invitation->countdownIso() }}').getTime(),
                         days: 0, hours: 0, minutes: 0, seconds: 0,
                         update() {
                             const now = new Date().getTime();
@@ -426,7 +426,7 @@
                                 <svg class="w-4 h-4 text-primary/70 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
                                 </svg>
-                                <span class="text-sm font-semibold">{{ $invitation->akad_date?->format('H:i') }} WIB</span>
+                                <span class="text-sm font-semibold">{{ $invitation->formatEventTime('akad', false) }}</span>
                             </div>
                             <div class="flex items-start gap-3">
                                 <svg class="w-4 h-4 text-primary/70 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -464,7 +464,7 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="material-icons text-primary/70" style="font-size: 18px;">access_time</span>
-                                <span class="text-sm font-semibold">{{ $invitation->resepsi_date?->format('H:i') }} WIB - Selesai</span>
+                                <span class="text-sm font-semibold">{{ $invitation->formatEventTime('resepsi', true) }}</span>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="material-icons text-primary/70 mt-0.5" style="font-size: 18px;">location_on</span>

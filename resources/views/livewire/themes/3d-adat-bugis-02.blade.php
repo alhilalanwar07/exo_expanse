@@ -852,6 +852,70 @@
     @endpush
 
     @push('alpine-components')
+        <style>
+            .elementor-346 .elementor-element.elementor-element-34aa0a29.bugis-footer-wrap {
+                display: block !important;
+                background: linear-gradient(180deg, #5C2222 0%, #320707 100%) !important;
+                padding: 26px 18px 104px !important;
+            }
+            .elementor-346 .bugis-footer-card {
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+                max-width: 420px;
+                width: 100%;
+                margin: 0 auto;
+                background: linear-gradient(155deg, #682B2B 0%, #460505 58%, #260303 100%);
+                border: 1px solid rgba(231, 211, 159, 0.48);
+                border-radius: 26px;
+                padding: 28px 20px 24px;
+                color: #FFF8EF;
+                box-shadow: 0 18px 38px rgba(18, 1, 1, 0.48);
+            }
+            .elementor-346 .bugis-footer-card::before {
+                content: '';
+                position: absolute;
+                inset: 7px;
+                border-radius: 20px;
+                border: 1px dashed rgba(231, 211, 159, 0.28);
+                pointer-events: none;
+            }
+            .elementor-346 .bugis-footer-card::after {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 240px;
+                height: 180px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(231, 211, 159, 0.16) 0%, transparent 72%);
+                pointer-events: none;
+            }
+            .elementor-346 .bugis-footer-cta {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 7px;
+                margin-top: 14px;
+                padding: 9px 20px;
+                border-radius: 999px;
+                background: rgba(231, 211, 159, 0.14);
+                border: 1px solid rgba(231, 211, 159, 0.52);
+                color: #F6E6BC !important;
+                font-family: 'Poppins', sans-serif;
+                font-size: 11.5px;
+                font-weight: 600;
+                letter-spacing: 0.4px;
+                text-decoration: none !important;
+                transition: all 0.25s ease;
+            }
+            .elementor-346 .bugis-footer-cta:hover {
+                background: #E7D39F;
+                color: #2E0606 !important;
+                transform: translateY(-1px);
+            }
+        </style>
         <!-- Lottie runtime & Alpine controller loaded in body before Livewire initializes Alpine (keeps <head> under 64 KB for WhatsApp OG parser) -->
         <script src="{{ asset('themes/3d-adat-bugis-02/assets/lottie.min.js') }}" defer></script>
         <script>
@@ -1513,17 +1577,8 @@
     }
     $displayDate = $mainDateObj ? $mainDateObj->format('d . m . Y') : '03 . 02 . 2027';
 
-    // Use event time if available for countdown precision
-    $mainTimeRaw = $eventType === 'resepsi_only'
-        ? ($invitation->resepsi_time ?: '10:00:00')
-        : ($invitation->akad_time ?: $invitation->resepsi_time ?: '08:00:00');
-    $countdownDateObj = $mainDateObj ? $mainDateObj->copy() : \Carbon\Carbon::parse('2027-02-03');
-    if (preg_match('/^(\d{1,2}):(\d{2})/', (string) $mainTimeRaw, $tm)) {
-        $countdownDateObj->setTime((int) $tm[1], (int) $tm[2], 0);
-    } else {
-        $countdownDateObj->setTime(8, 0, 0);
-    }
-    $targetTimestamp = $countdownDateObj->timestamp;
+    $countdownDateObj = $invitation->primaryEventDateTime();
+    $targetTimestamp = $invitation->countdownTimestamp();
 
     $mainAddress = ($eventType === 'resepsi_only')
         ? ($invitation->resepsi_address ?? $invitation->resepsi_venue ?? '')
@@ -1532,21 +1587,12 @@
     $googleCalendarUrl = 'https://www.google.com/calendar/render?' . http_build_query([
         'action' => 'TEMPLATE',
         'text' => 'Pernikahan ' . $coupleTitle,
-        'dates' => $countdownDateObj->copy()->utc()->format('Ymd\THis\Z') . '/' . $countdownDateObj->copy()->utc()->addHours(4)->format('Ymd\THis\Z'),
+        'dates' => $invitation->googleCalendarDates('primary', 4),
         'details' => 'Undangan Pernikahan ' . $groomFull . ' & ' . $brideFull,
         'location' => $mainAddress,
     ]);
 
-    $formatEventTime = function (?string $time, string $fallback = '08:00'): string {
-        $t = trim((string) $time);
-        if ($t === '') {
-            return $fallback . ' WIB - Selesai';
-        }
-        if (preg_match('/^(\d{1,2}:\d{2})/', $t, $m)) {
-            return $m[1] . ' WIB - Selesai';
-        }
-        return str_contains(strtolower($t), 'selesai') ? $t : ($t . ' - Selesai');
-    };
+    $formatEventTime = fn (?string $time, string $fallback = '08:00'): string => $invitation->formatCustomTime($time, $fallback, true);
 
     // Music
     $musicRaw = $invitation->background_music;
@@ -2022,7 +2068,7 @@
                                     data-settings='{"_animation":"fadeInUp","_animation_delay":250}'
                                     data-widget_type="heading.default">
                                     <p class="elementor-heading-title elementor-size-default">
-                                        {{ $formatEventTime($invitation->akad_time, '08:00') }}</p>
+                                        {{ $invitation->formatEventTime('akad', true) }}</p>
                                 </div>
                                 <div class="elementor-element elementor-element-6b92d7a7 elementor-view-default elementor-invisible elementor-widget elementor-widget-icon"
                                     data-settings='{"_animation":"fadeInDown","_animation_delay":250}'
@@ -2096,7 +2142,7 @@
                                 data-settings='{"_animation":"fadeInUp","_animation_delay":250}'
                                 data-widget_type="heading.default">
                                 <p class="elementor-heading-title elementor-size-default">
-                                    {{ $formatEventTime($invitation->resepsi_time, '10:00') }}</p>
+                                    {{ $invitation->formatEventTime('resepsi', true) }}</p>
                             </div>
                             <div class="elementor-element elementor-element-1c20eef2 elementor-view-default elementor-invisible elementor-widget elementor-widget-icon"
                                 data-settings='{"_animation":"fadeInDown","_animation_delay":250}'
@@ -2844,34 +2890,40 @@
                 </div>
 
                 <!-- Footer (34aa0a29) -->
-                <div class="has_eae_slider elementor-element elementor-element-34aa0a29 e-con-full e-flex e-con e-child"
+                <footer class="has_eae_slider elementor-element elementor-element-34aa0a29 bugis-footer-wrap e-con-full e-flex e-con e-child"
                     data-e-type="container" data-element_type="container" data-id="34aa0a29">
-                    <div class="elementor-element elementor-element-34a93772 elementor-widget elementor-widget-image"
-                        data-widget_type="image.default">
-                        <a href="{{ url('/') }}">
-                            <img alt="ExoInvite Logo" loading="lazy" src="{{ asset('assets/svg/logo-light.svg') }}"
-                                style="width: 170px; max-width: 65%; height: auto;" />
-                        </a>
-                    </div>
-                    <!-- <div class="elementor-element elementor-element-292a0be7 elementor-widget elementor-widget-heading" data-widget_type="heading.default">
-                        <h2 class="elementor-heading-title elementor-size-default"><a href="{{ url('/') }}">{{ config('app.name', 'ExoInvite') }}</a></h2>
-                    </div> -->
-                    <div class="has_eae_slider elementor-element elementor-element-5fcccf3f e-grid e-con-full e-con e-child"
-                        data-e-type="container" data-element_type="container" data-id="5fcccf3f">
-                        <div class="elementor-element elementor-element-30608850 elementor-widget__width-auto elementor-view-default elementor-widget elementor-widget-icon"
-                            data-widget_type="icon.default">
-                            <div class="elementor-icon-wrapper">
-                                <div class="elementor-icon"><i aria-hidden="true" class="fab fa-instagram"></i></div>
+                    <div class="bugis-footer-card">
+                        <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+                            {{-- Bugis Sulapa Eppa (4-sided Traditional Diamond) Ornament --}}
+                            <svg width="38" height="16" viewBox="0 0 38 16" fill="none" aria-hidden="true" style="margin-bottom:8px;opacity:0.92;">
+                                <path d="M1 8h10M27 8h10" stroke="#E7D39F" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.72"/>
+                                <path d="M19 1.5L25.5 8L19 14.5L12.5 8L19 1.5Z" fill="#E7D39F" fill-opacity="0.16" stroke="#E7D39F" stroke-width="1.1"/>
+                                <path d="M19 4.5L22.5 8L19 11.5L15.5 8L19 4.5Z" fill="#E7D39F" fill-opacity="0.35" stroke="#E7D39F" stroke-width="0.9"/>
+                                <circle cx="19" cy="8" r="1.4" fill="#E7D39F"/>
+                            </svg>
+                            <span style="font-family:'Cinzel',serif;font-size:9.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:#E7D39F;margin-bottom:10px;">
+                                Digital Invitation By
+                            </span>
+                            <a href="{{ url('/') }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
+                                <img alt="ExoInvite Logo" loading="lazy" src="{{ asset('assets/svg/logo-light.svg') }}"
+                                    style="width:162px;max-width:72%;height:auto;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.32));" />
+                            </a>
+                            <p style="font-family:'Caudex',serif;font-size:0.95rem;font-style:italic;color:rgba(255,248,239,0.82);margin:10px auto 0 !important;max-width:270px;line-height:1.55;">
+                                Wujudkan undangan digital elegan &amp; berkesan untuk setiap momen istimewa Anda.
+                            </p>
+                            <a href="{{ url('/') }}" target="_blank" rel="noopener" class="bugis-footer-cta">
+                                <span>Buat Undangan Seperti Ini</span>
+                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                            </a>
+                            <div style="width:110px;height:1px;background:linear-gradient(90deg,transparent,rgba(231,211,159,0.45),transparent);margin:18px auto 12px;"></div>
+                            <div style="font-family:'Poppins',sans-serif;font-size:10.5px;color:rgba(231,211,159,0.7);letter-spacing:0.6px;">
+                                &copy; {{ date('Y') }} ExoInvite &bull; All Rights Reserved
                             </div>
                         </div>
-                        <div class="elementor-element elementor-element-3f3c4899 elementor-widget__width-auto elementor-view-default elementor-widget elementor-widget-icon"
-                            data-widget_type="icon.default">
-                            <div class="elementor-icon-wrapper">
-                                <div class="elementor-icon"><i aria-hidden="true" class="fab fa-tiktok"></i></div>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                </footer>
 
             </div>
         </div>

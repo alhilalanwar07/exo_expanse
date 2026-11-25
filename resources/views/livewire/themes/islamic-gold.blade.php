@@ -455,7 +455,7 @@
                 <div class="mt-20">
                     <h3 class="gold-txt">Akad Nikah</h3>
                     <p>{{ $invitation->akad_date ? $invitation->akad_date->translatedFormat('l, d F Y') : 'TBA' }}</p>
-                    <p>{{ $invitation->akad_date ? $invitation->akad_date->format('H:i') . ' WIB - Selesai' : '' }}</p>
+                    <p>{{ $invitation->akad_date ? $invitation->formatEventTime('akad', true) : '' }}</p>
                     <p class="mt-20" style="font-size: 0.9rem; opacity: 0.8;">
                         {{ $invitation->akad_venue }} <br>
                         {{ $invitation->akad_address }}
@@ -471,7 +471,7 @@
                 <div class="mt-20" style="border-top: 1px solid var(--border); padding-top: 20px;">
                     <h3 class="gold-txt">Resepsi</h3>
                     <p>{{ $invitation->resepsi_date->translatedFormat('l, d F Y') }}</p>
-                    <p>{{ $invitation->resepsi_date->format('H:i') }} WIB - Selesai</p>
+                    <p>{{ $invitation->formatEventTime('resepsi', true) }}</p>
                     <p class="mt-20" style="font-size: 0.9rem; opacity: 0.8;">
                         {{ $invitation->resepsi_venue }} <br>
                         {{ $invitation->resepsi_address }}
@@ -490,7 +490,7 @@
             <div class="card">
                 <h2 class="font-script mb-20">Save The Date</h2>
                 
-                <div class="countdown-box" x-data="countdown('{{ $invitation->akad_date->format('Y-m-d H:i:s') }}')" x-init="init()">
+                <div class="countdown-box" x-data="countdown('{{ $invitation->countdownIso() }}')" x-init="init()">
                     <div class="time-unit"><div class="time-val" x-text="days">00</div><div class="time-label">Hari</div></div>
                     <div class="time-unit"><div class="time-val" x-text="hours">00</div><div class="time-label">Jam</div></div>
                     <div class="time-unit"><div class="time-val" x-text="minutes">00</div><div class="time-label">Menit</div></div>
@@ -503,9 +503,8 @@
                         const title = 'The Wedding of {{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }}';
                         const location = '{{ $invitation->akad_venue }}';
                         const details = 'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Bapak/Ibu/Saudara/i untuk Hadir di Acara Kami.';
-                        const startDate = '{{ $invitation->akad_date ? $invitation->akad_date->format('Ymd\THis') : '' }}';
-                        const endDate = '{{ $invitation->resepsi_date ? $invitation->resepsi_date->format('Ymd\THis') : ($invitation->akad_date ? $invitation->akad_date->addHours(2)->format('Ymd\THis') : '') }}';
-                        const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${startDate}/${endDate}`;
+                        const dates = '{{ $invitation->googleCalendarDates('primary', 3) }}';
+                        const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${dates}`;
                         window.open(url, '_blank');
                     " class="btn-open" style="font-size: 0.9rem; margin-top: 25px;">
                         <i class="far fa-calendar-alt"></i> Simpan ke Kalender

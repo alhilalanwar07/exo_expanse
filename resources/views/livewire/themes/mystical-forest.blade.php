@@ -375,7 +375,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
                 
                 {{-- Simple Countdown --}}
                 <div x-data="{
-                    days:0, hours:0, target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+                    days:0, hours:0, target: new Date('{{ $invitation->countdownIso() }}'),
                     init() { setInterval(() => this.update(), 1000); },
                     update() { const diff = this.target - new Date(); if(diff>0){ this.days=Math.floor(diff/86400000); this.hours=Math.floor((diff%86400000)/3600000); }}
                 }" style="display: flex; justify-content: center; gap: 20px; margin-top: 30px; color: var(--mystic-gold);">
@@ -431,7 +431,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
                     <div class="event-marker"></div>
                     <div class="event-content-mystic">
                         <h3 style="color: var(--mystic-gold);">Sacred Union (Akad)</h3>
-                        <p style="font-weight: bold; margin: 10px 0;">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }} <br> {{ $invitation->akad_date?->format('H:i') }} WIB</p>
+                        <p style="font-weight: bold; margin: 10px 0;">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }} <br> {{ $invitation->formatEventTime('akad', false) }}</p>
                         <p style="opacity: 0.8; font-size: 0.9rem;">{{ $invitation->akad_venue }}</p>
                          <a href="{{ $invitation->akad_maps_link }}" target="_blank" class="btn-magic" style="padding: 10px 20px; font-size: 0.8rem; margin-top: 15px; display: inline-block;">Open Map</a>
                     </div>
@@ -443,7 +443,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; }
                     <div class="event-marker"></div>
                     <div class="event-content-mystic">
                          <h3 style="color: var(--mystic-gold);">The Royal Feast (Resepsi)</h3>
-                         <p style="font-weight: bold; margin: 10px 0;">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }} <br> {{ $invitation->resepsi_date?->format('H:i') }} WIB</p>
+                         <p style="font-weight: bold; margin: 10px 0;">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }} <br> {{ $invitation->formatEventTime('resepsi', false) }}</p>
                         <p style="opacity: 0.8; font-size: 0.9rem;">{{ $invitation->resepsi_venue }}</p>
                          <a href="{{ $invitation->resepsi_maps_link }}" target="_blank" class="btn-magic" style="padding: 10px 20px; font-size: 0.8rem; margin-top: 15px; display: inline-block;">Open Map</a>
                     </div>

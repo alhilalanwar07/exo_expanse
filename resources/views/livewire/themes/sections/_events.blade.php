@@ -21,7 +21,7 @@
             <div class="text-center animate__animated animate__fadeInDown animate__slower w-full">
                 <div class="color-accent font-latin text-3xl mb-2">Akad Nikah</div>
                 <div class="text-sm mb-1">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }}</div>
-                <div class="text-sm mb-2">Pukul {{ $invitation->akad_date?->format('H:i') }} WITA - Selesai</div>
+                <div class="text-sm mb-2">Pukul {{ $invitation->formatEventTime('akad', true) }}</div>
                 <div class="text-xs opacity-80 mt-2">
                     <strong>{{ $invitation->akad_venue }}</strong><br>
                     {{ $invitation->akad_address }}
@@ -39,7 +39,7 @@
             <div class="text-center animate__animated animate__fadeInUp animate__slower w-full">
                 <div class="color-accent font-latin text-3xl mb-2">Resepsi</div>
                 <div class="text-sm mb-1">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}</div>
-                <div class="text-sm mb-2">Pukul {{ $invitation->resepsi_date?->format('H:i') }} WITA - Selesai</div>
+                <div class="text-sm mb-2">Pukul {{ $invitation->formatEventTime('resepsi', true) }}</div>
                 <div class="text-xs opacity-80 mt-2">
                     <strong>{{ $invitation->resepsi_venue }}</strong><br>
                     {{ $invitation->resepsi_address }}

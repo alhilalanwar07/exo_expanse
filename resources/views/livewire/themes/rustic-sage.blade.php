@@ -866,7 +866,7 @@ body {
             {{-- Countdown --}}
             <div x-data="{
                 days:0, hours:0, minutes:0, seconds:0,
-                target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+                target: new Date('{{ $invitation->countdownIso() }}'),
                 init() { this.update(); setInterval(() => this.update(), 1000); },
                 update() {
                     const diff = this.target - new Date();
@@ -887,9 +887,9 @@ body {
             {{-- Save Calendar --}}
             <button class="save-date-btn animate-fade-up" style="animation-delay: 0.3s;" @click="
                 const title = '{{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }} Wedding';
-                const date = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
+                const dates = '{{ $invitation->googleCalendarDates('primary', 3) }}';
                 const location = '{{ $invitation->akad_venue }}';
-                window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`, '_blank');
+                window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&location=${encodeURIComponent(location)}`, '_blank');
             ">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 Simpan Tanggal
@@ -948,7 +948,7 @@ body {
                     </div>
                     <div class="event-meta">
                         <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
-                        {{ $invitation->akad_date?->format('H:i') }} WIB
+                        {{ $invitation->formatEventTime('akad', false) }}
                     </div>
                     <p style="margin: 10px 0; font-size: 0.95rem;">{{ $invitation->akad_venue }}</p>
                     <a href="{{ $invitation->akad_maps_link }}" target="_blank" class="btn btn-outline" style="padding: 8px 20px; font-size: 10px;">Google Maps</a>
@@ -965,7 +965,7 @@ body {
                     </div>
                     <div class="event-meta">
                         <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
-                        {{ $invitation->resepsi_date?->format('H:i') }} WIB - Selesai
+                        {{ $invitation->formatEventTime('resepsi', true) }}
                     </div>
                     <p style="margin: 10px 0; font-size: 0.95rem;">{{ $invitation->resepsi_venue }}</p>
                     <a href="{{ $invitation->resepsi_maps_link }}" target="_blank" class="btn btn-outline" style="padding: 8px 20px; font-size: 10px;">Google Maps</a>

@@ -111,6 +111,7 @@ class MobileInvitationController extends Controller
                 ]),
                 'custom_styles' => [
                     'event_type' => $styles['event_type'] ?? 'both',
+                    'timezone' => $invitation->timezone,
                     'name_order' => $styles['name_order'] ?? 'groom_first',
                     'cover_title' => $styles['cover_title'] ?? '',
                     'cover_subtitle' => $styles['cover_subtitle'] ?? 'The Wedding of',
@@ -393,6 +394,7 @@ class MobileInvitationController extends Controller
             'name_order' => $request->input('custom_styles.name_order'),
             'cover_title' => $request->input('custom_styles.cover_title'),
             'cover_subtitle' => $request->input('custom_styles.cover_subtitle'),
+            'timezone' => $request->input('custom_styles.timezone'),
             'welcome_message' => $request->input('custom_styles.welcome_message'),
             'quran_verse' => $request->input('custom_styles.quran_verse'),
             'countdown_enabled' => $request->input('custom_styles.countdown_enabled'),

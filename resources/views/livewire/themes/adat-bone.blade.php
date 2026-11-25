@@ -239,6 +239,64 @@ a { color: inherit; text-decoration: none; }
 .satumomen_track { -ms-overflow-style: none; scrollbar-width: none; }
 .slide-content::-webkit-scrollbar { display: none; }
 .slide-content { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Royal Bone ExoInvite Luxury Footer Card */
+.ab-footer-card {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    width: 100%;
+    background: linear-gradient(155deg, #761332 0%, #4c071b 56%, #2b0410 100%);
+    border: 1px solid rgba(212, 176, 81, 0.52);
+    border-radius: 24px;
+    padding: 24px 18px 22px;
+    color: #FFFFFF;
+    box-shadow: 0 18px 38px rgba(24, 2, 10, 0.48);
+}
+.ab-footer-card::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border-radius: 18px;
+    border: 1px dashed rgba(212, 176, 81, 0.3);
+    pointer-events: none;
+}
+.ab-footer-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 230px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 176, 81, 0.18) 0%, transparent 72%);
+    pointer-events: none;
+}
+.ab-footer-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 13px;
+    padding: 9px 20px;
+    border-radius: 999px;
+    background: rgba(212, 176, 81, 0.15);
+    border: 1px solid rgba(212, 176, 81, 0.58);
+    color: #f5df9b;
+    font-family: var(--font-base);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+.ab-footer-cta:hover {
+    background: var(--inv-accent);
+    color: var(--btn-color);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(212, 176, 81, 0.3);
+}
 </style>
 @endpush
 
@@ -247,7 +305,7 @@ a { color: inherit; text-decoration: none; }
     activeSlide: 0,
     playing: false,
     audioEl: null,
-    slides: ['cover', 'opening', 'couple', 'quote', 'lovestory', 'events', 'maps', 'gallery', 'gift', 'rsvp'],
+    slides: ['cover', 'opening', 'couple', 'quote', 'lovestory', 'events', 'maps', 'gallery', 'gift', 'rsvp', 'closing'],
     init() {
         this.setupIntersectionObserver();
     },
@@ -515,7 +573,7 @@ a { color: inherit; text-decoration: none; }
                     <div class="text-center animate__animated animate__fadeInDown animate__slower w-full">
                         <div class="color-accent font-latin text-3xl mb-2">Akad Nikah</div>
                         <div class="text-sm mb-1">{{ $invitation->akad_date?->translatedFormat('l, d F Y') }}</div>
-                        <div class="text-sm mb-2">Pukul {{ $invitation->akad_date?->format('H:i') }} WITA - Selesai</div>
+                        <div class="text-sm mb-2">Pukul {{ $invitation->formatEventTime('akad', true) }}</div>
                         <div class="text-xs opacity-80 mt-2">
                             <strong>{{ $invitation->akad_venue }}</strong><br>
                             {{ $invitation->akad_address }}
@@ -532,7 +590,7 @@ a { color: inherit; text-decoration: none; }
                     <div class="text-center animate__animated animate__fadeInUp animate__slower w-full">
                         <div class="color-accent font-latin text-3xl mb-2">Resepsi</div>
                         <div class="text-sm mb-1">{{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}</div>
-                        <div class="text-sm mb-2">Pukul {{ $invitation->resepsi_date?->format('H:i') }} WITA - Selesai</div>
+                        <div class="text-sm mb-2">Pukul {{ $invitation->formatEventTime('resepsi', true) }}</div>
                         <div class="text-xs opacity-80 mt-2">
                             <strong>{{ $invitation->resepsi_venue }}</strong><br>
                             {{ $invitation->resepsi_address }}
@@ -711,7 +769,7 @@ a { color: inherit; text-decoration: none; }
                     {{-- COUNTDOWN --}}
                     <div class="flex justify-center gap-2 mb-6 animate__animated animate__fadeInUp animate__slower mx-auto" style="max-width:280px;" x-data="{
                         days: 0, hours: 0, minutes: 0, seconds: 0,
-                        target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') ?? now()->addDays(30)->format('Y-m-d H:i:s') }}'),
+                        target: new Date('{{ $invitation->countdownIso() }}'),
                         init() {
                             setInterval(() => {
                                 const diff = this.target - new Date();
@@ -852,8 +910,8 @@ a { color: inherit; text-decoration: none; }
         @endif
 
         {{-- Slide 10: CLOSING WATERMARK --}}
-        <div id="slide-10" data-index="10" class="satumomen_slide">
-            <div class="container-mobile">
+        <div id="slide-10" data-index="10" class="satumomen_slide" style="height: auto; min-height: 100dvh;">
+            <div class="container-mobile" style="height: auto; min-height: 100dvh;">
                 <div class="frame">
                     <img class="frame-tl animate__animated animate__fadeInTopLeft animate__slow" src="{{ asset('assets/themes/adat-bone/tl.webp') }}" alt="frame">
                     <img class="frame-tr animate__animated animate__fadeInTopRight animate__slow" src="{{ asset('assets/themes/adat-bone/tr.webp') }}" alt="frame">
@@ -861,23 +919,56 @@ a { color: inherit; text-decoration: none; }
                     <img class="frame-br animate__animated animate__fadeInBottomRight animate__slow" src="{{ asset('assets/themes/adat-bone/br.webp') }}" alt="frame">
                 </div>
                 
-                <div class="slide-content slide-center">
-                    <div class="text-center px-4">
-                        <div class="text-sm opacity-80 leading-relaxed italic mb-8 animate__animated animate__fadeInDown animate__slower">
+                <div class="slide-content" style="justify-content: center; align-items: center; padding: 54px 22px 104px;">
+                    @php
+                        $abOrder = $invitation->custom_styles['name_order'] ?? 'groom_first';
+                        $abCoupleTitle = $abOrder === 'bride_first'
+                            ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname
+                            : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname;
+                    @endphp
+                    <div class="text-center px-2 mb-7">
+                        <div class="text-sm opacity-80 leading-relaxed italic mb-5 animate__animated animate__fadeInDown animate__slower">
                             Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i, berkenan hadir dan memberikan do'a restu kepada kedua mempelai.
                         </div>
                         
                         <div class="text-sm italic opacity-90 mb-2 animate__animated animate__fadeInDown animate__slow">Hormat Kami Yang Mengundang</div>
                         
-                        <div class="color-accent font-accent text-4xl mb-12 animate__animated animate__fadeInDown animate__slow">
-                            {{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}
-                        </div>
-
-                        <div class="mt-10 opacity-50 text-[10px] uppercase font-sans animate__animated animate__fadeInUp animate__slower">
-                            <div>Powered By</div>
-                            <div class="font-bold text-xs mt-1">Exo Expanse Theme Engine</div>
+                        <div class="color-accent font-accent text-4xl animate__animated animate__fadeInDown animate__slow">
+                            {{ $abCoupleTitle }}
                         </div>
                     </div>
+
+                    <footer class="w-full animate__animated animate__fadeInUp animate__slow">
+                        <div class="ab-footer-card">
+                            <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+                                {{-- Royal Bone Gold Crown-Diamond Ornament --}}
+                                <svg width="38" height="16" viewBox="0 0 38 16" fill="none" aria-hidden="true" style="margin-bottom:8px;opacity:0.92;">
+                                    <path d="M1 8h10M27 8h10" stroke="#d4b051" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.72"/>
+                                    <path d="M19 1.5L23 6.5L28 4.5L24.5 11.5H13.5L10 4.5L15 6.5L19 1.5Z" fill="#d4b051" fill-opacity="0.22" stroke="#d4b051" stroke-width="1.1" stroke-linejoin="round"/>
+                                    <circle cx="19" cy="8.5" r="1.4" fill="#f0d483"/>
+                                </svg>
+                                <span style="font-family:var(--font-base);font-size:9.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:#f0d483;margin-bottom:10px;">
+                                    Digital Invitation By
+                                </span>
+                                <a href="{{ url('/') }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
+                                    <img src="{{ asset('assets/svg/logo-light.svg') }}" alt="ExoInvite Logo" loading="lazy" style="width:158px;max-width:72%;height:auto;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.32));">
+                                </a>
+                                <p style="font-family:var(--font-base);font-size:0.92rem;font-style:italic;color:rgba(255,255,255,0.82);margin:10px auto 0;max-width:260px;line-height:1.55;">
+                                    Wujudkan undangan digital elegan &amp; berkesan untuk setiap momen istimewa Anda.
+                                </p>
+                                <a href="{{ url('/') }}" target="_blank" rel="noopener" class="ab-footer-cta">
+                                    <span>Buat Undangan Seperti Ini</span>
+                                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                </a>
+                                <div style="width:110px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,176,81,0.45),transparent);margin:16px auto 11px;"></div>
+                                <div style="font-size:10.5px;color:rgba(245,223,155,0.7);letter-spacing:0.6px;">
+                                    &copy; {{ date('Y') }} ExoInvite &bull; All Rights Reserved
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </div>

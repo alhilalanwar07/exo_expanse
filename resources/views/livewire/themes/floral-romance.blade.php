@@ -1275,7 +1275,7 @@ body {
         <section id="home" class="hero-section" x-data="{
             days: 0, hours: 0, minutes: 0, seconds: 0,
             isActive: true,
-            target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+            target: new Date('{{ $invitation->countdownIso() }}'),
             init() { 
                 this.update(); 
                 setInterval(() => this.update(), 1000); 
@@ -1295,9 +1295,9 @@ body {
             saveToCalendar() {
                 @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
                 const title = '{{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }} Wedding';
-                const date = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
+                const dates = '{{ $invitation->googleCalendarDates('primary', 3) }}';
                 const location = '{{ $invitation->akad_venue }}';
-                const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`;
+                const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&location=${encodeURIComponent(location)}`;
                 window.open(url, '_blank');
             }
         }">
@@ -1446,7 +1446,7 @@ body {
                 
                 <div x-data="{
                     days: 0, hours: 0, minutes: 0, seconds: 0,
-                    target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+                    target: new Date('{{ $invitation->countdownIso() }}'),
                     init() { this.update(); setInterval(() => this.update(), 1000); },
                     update() {
                         const diff = this.target - new Date();
@@ -1499,7 +1499,7 @@ body {
                             <div class="event-info">
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                                    <span>{{ $invitation->akad_date?->format('H:i') }} WIB</span>
+                                    <span>{{ $invitation->formatEventTime('akad', false) }}</span>
                                 </div>
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -1526,7 +1526,7 @@ body {
                             <div class="event-info">
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                                    <span>{{ $invitation->resepsi_date?->format('H:i') }} WIB - Selesai</span>
+                                    <span>{{ $invitation->formatEventTime('resepsi', true) }}</span>
                                 </div>
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>

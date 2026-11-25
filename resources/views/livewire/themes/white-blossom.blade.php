@@ -1859,7 +1859,7 @@ body {
         <section id="home" class="hero-section" x-data="{
             days: 0, hours: 0, minutes: 0, seconds: 0,
             isActive: true,
-            target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+            target: new Date('{{ $invitation->countdownIso() }}'),
             init() { 
                 this.update(); 
                 setInterval(() => this.update(), 1000); 
@@ -1879,9 +1879,9 @@ body {
             saveToCalendar() {
                 @php $order = $invitation->custom_styles['name_order'] ?? 'groom_first'; @endphp
                 const title = '{{ $order === 'bride_first' ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname }} Wedding';
-                const date = '{{ $invitation->akad_date?->format('Ymd\THis') }}';
+                const dates = '{{ $invitation->googleCalendarDates('primary', 3) }}';
                 const location = '{{ $invitation->akad_venue }}';
-                const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${date}/${date}&location=${encodeURIComponent(location)}`;
+                const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&location=${encodeURIComponent(location)}`;
                 window.open(url, '_blank');
             }
             }">
@@ -2051,7 +2051,7 @@ body {
                 
                 <div x-data="{
                     days: 0, hours: 0, minutes: 0, seconds: 0,
-                    target: new Date('{{ $invitation->akad_date?->format('Y-m-d H:i:s') }}'),
+                    target: new Date('{{ $invitation->countdownIso() }}'),
                     init() { this.update(); setInterval(() => this.update(), 1000); },
                     update() {
                         const diff = this.target - new Date();
@@ -2106,7 +2106,7 @@ body {
                             <div class="event-info">
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                                    <span>{{ $invitation->akad_date?->format('H:i') }} WIB</span>
+                                    <span>{{ $invitation->formatEventTime('akad', false) }}</span>
                                 </div>
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -2133,7 +2133,7 @@ body {
                             <div class="event-info">
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                                    <span>{{ $invitation->resepsi_date?->format('H:i') }} WIB - Selesai</span>
+                                    <span>{{ $invitation->formatEventTime('resepsi', true) }}</span>
                                 </div>
                                 <div class="event-info-item">
                                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -2522,12 +2522,53 @@ body {
         </section>
         @endif
 
+        {{-- CLOSING --}}
+        @php
+            $wbOrder = $invitation->custom_styles['name_order'] ?? 'groom_first';
+            $wbCoupleTitle = $wbOrder === 'bride_first'
+                ? $invitation->bride_nickname . ' & ' . $invitation->groom_nickname
+                : $invitation->groom_nickname . ' & ' . $invitation->bride_nickname;
+        @endphp
+        <section class="wb-closing-section">
+            <p class="font-script text-4xl text-[#C9A227] mb-3">{{ $wbCoupleTitle }}</p>
+            <p class="font-serif text-lg mb-4" style="color: var(--dark);">{{ $invitation->akad_date?->translatedFormat('d F Y') }}</p>
+            <div style="width: 64px; height: 1px; background: linear-gradient(90deg, transparent, #C9A227, transparent); margin: 0 auto 14px;"></div>
+            <p class="text-xs" style="color: var(--text); opacity: 0.78;">Terima kasih atas kehadiran dan doa restu Anda</p>
+        </section>
+
         {{-- FOOTER --}}
-        <footer class="theme-footer">
-            <p class="font-script text-4xl text-[#C9A227] mb-3">{{ $invitation->groom_nickname }} & {{ $invitation->bride_nickname }}</p>
-            <p class="font-serif text-lg mb-4">{{ $invitation->akad_date?->translatedFormat('d F Y') }}</p>
-            <div style="width: 64px; height: 1px; background: linear-gradient(90deg, transparent, #C9A227, transparent); margin: 0 auto 16px;"></div>
-            <p class="text-xs opacity-60">Terima kasih atas kehadiran dan doa restu Anda</p>
+        <footer class="wb-footer-wrap">
+            <div class="wb-footer-card">
+                <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+                    <svg width="38" height="16" viewBox="0 0 38 16" fill="none" aria-hidden="true" style="margin-bottom:8px;opacity:0.9;">
+                        <path d="M1 8h11M26 8h11" stroke="#C9A227" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.65"/>
+                        <circle cx="19" cy="4.2" r="2.2" fill="#E8D5A3" stroke="#C9A227" stroke-width="0.9"/>
+                        <circle cx="15.4" cy="8" r="2.2" fill="#E8D5A3" stroke="#C9A227" stroke-width="0.9"/>
+                        <circle cx="22.6" cy="8" r="2.2" fill="#E8D5A3" stroke="#C9A227" stroke-width="0.9"/>
+                        <circle cx="19" cy="11.8" r="2.2" fill="#E8D5A3" stroke="#C9A227" stroke-width="0.9"/>
+                        <circle cx="19" cy="8" r="1.8" fill="#C9A227"/>
+                    </svg>
+                    <span style="font-family:'Cinzel',serif;font-size:9.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:#A68B1B;margin-bottom:10px;">
+                        Digital Invitation By
+                    </span>
+                    <a href="{{ url('/') }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
+                        <img src="{{ asset('assets/svg/logo-dark.svg') }}" alt="ExoInvite Logo" loading="lazy" style="width:162px;max-width:72%;height:auto;display:block;filter:drop-shadow(0 3px 10px rgba(166,139,27,0.12));">
+                    </a>
+                    <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:#575043;margin:10px auto 0;max-width:270px;line-height:1.55;">
+                        Wujudkan undangan digital elegan &amp; berkesan untuk setiap momen istimewa Anda.
+                    </p>
+                    <a href="{{ url('/') }}" target="_blank" rel="noopener" class="wb-footer-cta">
+                        <span>Buat Undangan Seperti Ini</span>
+                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </a>
+                    <div style="width:110px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,0.48),transparent);margin:18px auto 12px;"></div>
+                    <div style="font-family:'Cinzel',serif;font-size:9.8px;color:#8C7A53;letter-spacing:0.6px;">
+                        &copy; {{ date('Y') }} ExoInvite &bull; All Rights Reserved
+                    </div>
+                </div>
+            </div>
         </footer>
     </main>
 
@@ -2567,3 +2608,79 @@ body {
         </div>
     </nav>
 </div>
+
+@once
+    @push('alpine-components')
+        <style>
+            .wb-closing-section {
+                padding: 52px 20px 24px;
+                background: linear-gradient(180deg, var(--cream) 0%, var(--pearl) 100%);
+                text-align: center;
+                color: var(--dark);
+            }
+            .wb-footer-wrap {
+                background: var(--pearl);
+                padding: 6px 20px calc(var(--bottom-nav-height) + 34px + env(safe-area-inset-bottom));
+                width: 100%;
+            }
+            .wb-footer-card {
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+                max-width: 460px;
+                margin: 0 auto;
+                background: linear-gradient(155deg, #FFFFFF 0%, #FCF9F2 56%, #F5ECDC 100%);
+                border: 1px solid rgba(201, 162, 39, 0.45);
+                border-radius: 26px;
+                padding: 28px 20px 24px;
+                color: var(--dark);
+                box-shadow: 0 18px 40px rgba(166, 139, 27, 0.14);
+            }
+            .wb-footer-card::before {
+                content: '';
+                position: absolute;
+                inset: 7px;
+                border-radius: 20px;
+                border: 1px dashed rgba(201, 162, 39, 0.34);
+                pointer-events: none;
+            }
+            .wb-footer-card::after {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 240px;
+                height: 180px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201, 162, 39, 0.16) 0%, transparent 72%);
+                pointer-events: none;
+            }
+            .wb-footer-cta {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 7px;
+                margin-top: 14px;
+                padding: 9px 20px;
+                border-radius: 999px;
+                background: linear-gradient(135deg, rgba(201, 162, 39, 0.12), rgba(232, 213, 163, 0.28));
+                border: 1px solid rgba(201, 162, 39, 0.55);
+                color: #8A6D14;
+                font-family: 'Cinzel', serif;
+                font-size: 10.5px;
+                font-weight: 700;
+                letter-spacing: 0.6px;
+                text-decoration: none;
+                transition: all 0.25s ease;
+            }
+            .wb-footer-cta:hover {
+                background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+                color: #FFFFFF;
+                border-color: var(--gold-dark);
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(201, 162, 39, 0.28);
+            }
+        </style>
+    @endpush
+@endonce

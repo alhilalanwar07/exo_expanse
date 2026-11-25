@@ -573,16 +573,8 @@
     }
     $displayDate = $mainDateObj ? $mainDateObj->format('d . m . Y') : '03 . 02 . 2027';
 
-    $mainTimeRaw = $eventType === 'resepsi_only'
-        ? ($invitation->resepsi_time ?: '10:00:00')
-        : ($invitation->akad_time ?: $invitation->resepsi_time ?: '08:00:00');
-    $countdownDateObj = $mainDateObj ? $mainDateObj->copy() : \Carbon\Carbon::parse('2027-02-03');
-    if (preg_match('/^(\d{1,2})[:.](\d{2})/', (string) $mainTimeRaw, $tm)) {
-        $countdownDateObj->setTime((int) $tm[1], (int) $tm[2], 0);
-    } else {
-        $countdownDateObj->setTime(8, 0, 0);
-    }
-    $targetTimestamp = $countdownDateObj->timestamp;
+    $countdownDateObj = $invitation->primaryEventDateTime();
+    $targetTimestamp = $invitation->countdownTimestamp();
 
     $mainAddress = ($eventType === 'resepsi_only')
         ? ($invitation->resepsi_address ?? $invitation->resepsi_venue ?? '')
@@ -591,22 +583,12 @@
     $googleCalendarUrl = 'https://www.google.com/calendar/render?'.http_build_query([
         'action' => 'TEMPLATE',
         'text' => 'Pernikahan '.$coupleTitle,
-        'dates' => $countdownDateObj->copy()->utc()->format('Ymd\THis\Z').'/'.$countdownDateObj->copy()->utc()->addHours(4)->format('Ymd\THis\Z'),
+        'dates' => $invitation->googleCalendarDates('primary', 4),
         'details' => 'Undangan Pernikahan '.$groomFull.' & '.$brideFull,
         'location' => $mainAddress,
     ]);
 
-    $formatEventTime = function (?string $time, string $fallback = '08:00'): string {
-        $t = trim((string) $time);
-        if ($t === '') {
-            return $fallback.' WIB - Selesai';
-        }
-        if (preg_match('/^(\d{1,2}:\d{2})$/', $t, $m)) {
-            return $m[1].' WIB - Selesai';
-        }
-
-        return str_contains(strtolower($t), 'selesai') ? $t : ($t.' - Selesai');
-    };
+    $formatEventTime = fn (?string $time, string $fallback = '08:00'): string => $invitation->formatCustomTime($time, $fallback, true);
 
     // 3. Background Music (resolves music_id via Invitation accessor + uploaded path + bg-music.mp3 fallback so music icon ALWAYS appears)
     $musicRaw = $invitation->background_music ?? $invitation->music_url ?? null;
@@ -1036,7 +1018,7 @@
                         <div style="padding-left:6px;">
                             <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--cb-muted);margin-bottom:3px;">Waktu</div>
                             <div style="font-family:var(--cb-font-heading);font-size:14.5px;font-weight:700;color:var(--cb-primary);">
-                                {{ $formatEventTime($invitation->akad_time, '08:00') }}
+                                {{ $invitation->formatEventTime('akad', true) }}
                             </div>
                         </div>
                     </div>
@@ -1081,7 +1063,7 @@
                         <div style="padding-left:6px;">
                             <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--cb-muted);margin-bottom:3px;">Waktu</div>
                             <div style="font-family:var(--cb-font-heading);font-size:14.5px;font-weight:700;color:var(--cb-primary);">
-                                {{ $formatEventTime($invitation->resepsi_time, '10:00') }}
+                                {{ $invitation->formatEventTime('resepsi', true) }}
                             </div>
                         </div>
                     </div>
@@ -1527,16 +1509,21 @@
         <footer class="cb-footer-wrap">
             <div class="cb-footer-card cb-reveal" data-reveal="footer" :class="{ 'cb-revealed': revealed['footer'] }">
                 <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+                    <svg width="36" height="14" viewBox="0 0 36 14" fill="none" aria-hidden="true" style="margin-bottom:8px;opacity:0.9;">
+                        <path d="M1 7h11M24 7h11" stroke="#E8C98F" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.7"/>
+                        <path d="M18 1.5L21.5 7L18 12.5L14.5 7L18 1.5Z" fill="#E8C98F" fill-opacity="0.24" stroke="#E8C98F" stroke-width="1.1"/>
+                        <circle cx="18" cy="7" r="1.4" fill="#E8C98F"/>
+                    </svg>
                     <span style="font-family:var(--cb-font-display);font-size:9.5px;font-weight:600;letter-spacing:3.2px;text-transform:uppercase;color:#E8C98F;opacity:0.9;margin-bottom:10px;">
                         Digital Invitation By
                     </span>
-                    <a href="{{ url('/') }}" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
+                    <a href="{{ url('/') }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">
                         <img src="{{ asset('assets/svg/logo-light.svg') }}" alt="ExoInvite Logo" loading="lazy" style="width:162px;max-width:72%;height:auto;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.28));">
                     </a>
                     <p style="font-family:var(--cb-font-heading);font-size:0.96rem;font-style:italic;color:rgba(255,253,249,0.78);margin:10px auto 0;max-width:270px;line-height:1.5;">
                         Wujudkan undangan digital elegan &amp; berkesan untuk setiap momen istimewa Anda.
                     </p>
-                    <a href="{{ url('/') }}" class="cb-footer-cta">
+                    <a href="{{ url('/') }}" target="_blank" rel="noopener" class="cb-footer-cta">
                         <span>Buat Undangan Seperti Ini</span>
                         <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>

@@ -196,8 +196,11 @@
                     <div class="bg-white/5 backdrop-blur-lg p-12 rounded-3xl border border-white/10 text-center">
                         <div class="text-4xl mb-6">💍</div>
                         <h3 class="font-heading text-2xl mb-2">Akad Nikah</h3>
-                        <p class="font-body text-slate-400 mb-8 tracking-widest uppercase text-sm font-bold">
+                        <p class="font-body text-slate-400 mb-2 tracking-widest uppercase text-sm font-bold">
                             {{ $invitation->akad_date?->translatedFormat('l, d F Y') }}
+                        </p>
+                        <p class="font-body text-slate-300 text-sm mb-6">
+                            Pukul {{ $invitation->formatEventTime('akad', true) }}
                         </p>
                         <div class="space-y-4 mb-10">
                             <p class="font-body font-bold text-lg">{{ $invitation->akad_venue }}</p>
@@ -210,8 +213,11 @@
                     <div class="bg-white/5 backdrop-blur-lg p-12 rounded-3xl border border-white/10 text-center">
                         <div class="text-4xl mb-6">🥂</div>
                         <h3 class="font-heading text-2xl mb-2">Resepsi</h3>
-                        <p class="font-body text-slate-400 mb-8 tracking-widest uppercase text-sm font-bold">
+                        <p class="font-body text-slate-400 mb-2 tracking-widest uppercase text-sm font-bold">
                             {{ $invitation->resepsi_date?->translatedFormat('l, d F Y') }}
+                        </p>
+                        <p class="font-body text-slate-300 text-sm mb-6">
+                            Pukul {{ $invitation->formatEventTime('resepsi', true) }}
                         </p>
                         <div class="space-y-4 mb-10">
                             <p class="font-body font-bold text-lg">{{ $invitation->resepsi_venue }}</p>
