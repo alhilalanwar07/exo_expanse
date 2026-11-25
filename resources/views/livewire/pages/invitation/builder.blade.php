@@ -317,7 +317,7 @@
                                     ] as $tzCode => $tzDesc)
                                         <button
                                             type="button"
-                                            wire:click="$set('timezone', '{{ $tzCode }}')"
+                                            wire:click="setTimezone('{{ $tzCode }}')"
                                             @class([
                                                 'px-4 py-2.5 rounded-xl border-2 text-left transition-all flex items-center justify-between gap-2',
                                                 'border-rose-500 bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-200 dark:border-rose-500 shadow-sm' => $this->timezone === $tzCode,

@@ -109,7 +109,7 @@
                     <div class="max-w-4xl mx-auto px-6 text-center">
                         <h2 class="font-display text-4xl font-bold mb-12">Menghitung Hari</h2>
                         
-                        <div class="grid grid-cols-4 gap-4" x-data="countdown('{{ $invitation->event_date?->toISOString() ?? now()->addDays(30)->toISOString() }}')">
+                        <div class="grid grid-cols-4 gap-4" x-data="countdown('{{ $invitation->countdownIso() }}')">
                             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
                                 <div class="text-5xl font-bold text-gradient" x-text="days">00</div>
                                 <div class="text-white/60 mt-2">Hari</div>
@@ -144,7 +144,7 @@
                                 </div>
                                 <h3 class="font-display text-2xl font-semibold mb-2">Tanggal</h3>
                                 <p class="text-white/80 text-lg">{{ $invitation->event_date?->translatedFormat('l, d F Y') ?? '-' }}</p>
-                                <p class="text-white/60 mt-2">{{ $content['event_time'] ?? '-' }} {{ $content['timezone'] ?? 'WIB' }}</p>
+                                <p class="text-white/60 mt-2">{{ !empty($content['event_time']) ? $invitation->formatCustomTime($content['event_time'], '08:00', false) : $invitation->formatEventTime('akad', true) }}</p>
                             </div>
                             
                             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center">

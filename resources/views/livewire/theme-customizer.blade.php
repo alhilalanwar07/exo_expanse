@@ -324,7 +324,7 @@ new class extends Component
                                         </h2>
                                         <p style="color: var(--color-text); font-family: var(--font-body);" class="text-sm">
                                             Tempat: Grand Hotel<br>
-                                            Waktu: 10.00 - 12.00 WIB
+                                            Waktu: {{ $invitation->formatEventTime('akad', true) }}
                                         </p>
                                     </div>
                                     <div>
@@ -333,7 +333,7 @@ new class extends Component
                                         </h2>
                                         <p style="color: var(--color-text); font-family: var(--font-body);" class="text-sm">
                                             Tempat: Ballroom Paradise<br>
-                                            Waktu: 18.00 - 21.00 WIB
+                                            Waktu: {{ $invitation->formatEventTime('resepsi', true) }}
                                         </p>
                                     </div>
                                 </div>

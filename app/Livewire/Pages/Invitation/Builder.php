@@ -445,6 +445,14 @@ class Builder extends Component
         }
     }
 
+    public function setTimezone(string $timezone): void
+    {
+        $normalized = strtoupper(trim($timezone));
+        if (array_key_exists($normalized, Invitation::TIMEZONES)) {
+            $this->timezone = $normalized;
+        }
+    }
+
     public function updatedTitle(string $value): void
     {
         $this->slug = Str::slug($value);
