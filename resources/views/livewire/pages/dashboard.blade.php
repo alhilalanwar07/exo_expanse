@@ -348,6 +348,17 @@
                         Kirim via Instagram
                     </button>
                     <button 
+                        type="button"
+                        data-share-message="{{ $this->getInstagramTextOnlyMessage() }}"
+                        @click="copyShareMessage($el.dataset.shareMessage)"
+                        class="w-full py-2.5 px-4 text-xs font-medium text-rose-600 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 border border-rose-200 dark:border-rose-800 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        Salin Pengantar Saja (Tanpa Link — Solusi iPhone)
+                    </button>
+                    <button 
                         wire:click="closeShareModal"
                         type="button"
                         class="w-full py-3 px-4 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors"

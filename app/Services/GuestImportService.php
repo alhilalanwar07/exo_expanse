@@ -135,11 +135,11 @@ class GuestImportService
      */
     public function generateShareMessage(Invitation $invitation, string $invitationUrl, string $guestName): string
     {
-        return $this->buildAlignedShareMessage($invitation, $invitationUrl, $guestName, true, null, false);
+        return $this->buildAlignedShareMessage($invitation, $invitationUrl, $guestName, true, null);
     }
 
     /**
-     * Generate an aligned invitation share message for Instagram DM (without event details, iOS Dark Mode & length safe).
+     * Generate a clean plain-text share message for Instagram DM (without event details, dividers, or control characters).
      */
     public function generateInstagramShareMessage(
         Invitation $invitation,
@@ -147,45 +147,35 @@ class GuestImportService
         string $guestName,
         int $maxUtf16Length = self::INSTAGRAM_DM_MAX_UTF16_LENGTH
     ): string {
-        return $this->buildAlignedShareMessage($invitation, $invitationUrl, $guestName, false, $maxUtf16Length, true);
+        return $this->buildAlignedShareMessage($invitation, $invitationUrl, $guestName, false, $maxUtf16Length);
     }
 
     /**
-     * Build the shared invitation message with configurable event details, iOS Dark Mode protection, and UTF-16 length guard.
+     * Generate greeting and couple title without URL so iPhone users can send text and link in separate DM bubbles.
+     */
+    public function generateInstagramTextOnlyMessage(Invitation $invitation, string $guestName): string
+    {
+        $lines = $this->buildGreetingHeaderLines($guestName, $this->getInvitationTitle($invitation), false);
+        $lines[] = 'Link undangan bisa diakses lengkap di pesan berikutnya:';
+
+        return $this->normalizeLineEndings(implode("\n", $lines));
+    }
+
+    /**
+     * Build the shared invitation message with configurable event details and UTF-16 length guard.
      */
     private function buildAlignedShareMessage(
         Invitation $invitation,
         string $invitationUrl,
         string $guestName,
         bool $includeEventDetails,
-        ?int $maxUtf16Length,
-        bool $neutralizeIosDetector
+        ?int $maxUtf16Length
     ): string {
         $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
         $invitationTitle = $this->getInvitationTitle($invitation);
-        $displayGuest = $neutralizeIosDetector ? $this->preventIosDataDetector($guestName) : $guestName;
-        $displayTitle = $neutralizeIosDetector ? $this->preventIosDataDetector($invitationTitle) : $invitationTitle;
 
-        $buildMessage = function (?string $eventDetails, string $closing) use ($displayGuest, $displayTitle, $personalUrl, $includeEventDetails): string {
-            $lines = [
-                'Yth. Bapak/Ibu/Saudara/i',
-                $displayGuest,
-                'Di Tempat',
-            ];
-
-            if ($includeEventDetails) {
-                $lines[] = '-----------';
-                $lines[] = 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,';
-                $lines[] = '===========';
-                $lines[] = $displayTitle;
-                $lines[] = '===========';
-            } else {
-                $lines[] = '';
-                $lines[] = 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,';
-                $lines[] = '';
-                $lines[] = $displayTitle;
-                $lines[] = '';
-            }
+        $buildMessage = function (?string $eventDetails, string $closing) use ($guestName, $invitationTitle, $personalUrl, $includeEventDetails): string {
+            $lines = $this->buildGreetingHeaderLines($guestName, $invitationTitle, $includeEventDetails);
 
             if ($eventDetails !== null && $eventDetails !== '') {
                 $lines[] = $eventDetails;
@@ -243,7 +233,7 @@ class GuestImportService
 
         // Final safety net: preserve the full personal link and trim prefix text cleanly by codepoint.
         $suffix = "\n\nLink undangan bisa diakses lengkap di:\n{$personalUrl}";
-        $prefix = "Yth. Bapak/Ibu/Saudara/i\n{$displayGuest}\n\n{$displayTitle}";
+        $prefix = "Yth. Bapak/Ibu/Saudara/i\n{$guestName}\n\n{$invitationTitle}";
 
         while ($prefix !== '' && $this->utf16Length($prefix.$suffix) > $maxUtf16Length) {
             $prefix = mb_substr($prefix, 0, max(0, mb_strlen($prefix, 'UTF-8') - 1), 'UTF-8');
@@ -254,18 +244,33 @@ class GuestImportService
     }
 
     /**
-     * Insert invisible non-breaking Word Joiners so iOS Data Detectors do not highlight
-     * couple titles or academic degrees (e.g. "S.Kom", "Muh.") in yellow on Dark Mode.
+     * Build the recipient greeting and couple title header lines.
      */
-    private function preventIosDataDetector(string $text): string
+    private function buildGreetingHeaderLines(string $guestName, string $invitationTitle, bool $withDividers): array
     {
-        if ($text === '') {
-            return '';
+        $lines = [
+            'Yth. Bapak/Ibu/Saudara/i',
+            $guestName,
+            'Di Tempat',
+        ];
+
+        if ($withDividers) {
+            $lines[] = '-----------';
+            $lines[] = 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,';
+            $lines[] = '===========';
+            $lines[] = $invitationTitle;
+            $lines[] = '===========';
+
+            return $lines;
         }
 
-        $protected = preg_replace('/([.,])/u', "$1\u{2060}", $text) ?? $text;
+        $lines[] = '';
+        $lines[] = 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,';
+        $lines[] = '';
+        $lines[] = $invitationTitle;
+        $lines[] = '';
 
-        return preg_replace('/\b([\p{L}])([\p{L}]{2,})/u', "$1\u{2060}$2", $protected) ?? $protected;
+        return $lines;
     }
 
     /**

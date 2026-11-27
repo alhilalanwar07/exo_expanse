@@ -90,44 +90,48 @@ class Dashboard extends Component
 
     public function getShareMessage(): string
     {
-        $invitation = Invitation::where('slug', $this->shareInvitationSlug)->first();
-        if (! $invitation) {
-            return '';
-        }
+        $ctx = $this->resolveShareContext();
 
-        $invitationUrl = route('invitation.show', $this->shareInvitationSlug);
-        $importService = app(GuestImportService::class);
-        $recipientName = empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName;
-
-        return $importService->generateShareMessage($invitation, $invitationUrl, $recipientName);
+        return $ctx ? $ctx['service']->generateShareMessage($ctx['invitation'], $ctx['url'], $ctx['recipient']) : '';
     }
 
     public function getInstagramShareMessage(): string
     {
-        $invitation = Invitation::where('slug', $this->shareInvitationSlug)->first();
-        if (! $invitation) {
-            return '';
-        }
+        $ctx = $this->resolveShareContext();
 
-        $invitationUrl = route('invitation.show', $this->shareInvitationSlug);
-        $importService = app(GuestImportService::class);
-        $recipientName = empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName;
+        return $ctx ? $ctx['service']->generateInstagramShareMessage($ctx['invitation'], $ctx['url'], $ctx['recipient']) : '';
+    }
 
-        return $importService->generateInstagramShareMessage($invitation, $invitationUrl, $recipientName);
+    public function getInstagramTextOnlyMessage(): string
+    {
+        $ctx = $this->resolveShareContext();
+
+        return $ctx ? $ctx['service']->generateInstagramTextOnlyMessage($ctx['invitation'], $ctx['recipient']) : '';
     }
 
     public function getWhatsAppUrl(): string
     {
+        $ctx = $this->resolveShareContext();
+
+        return $ctx ? $ctx['service']->generateWhatsAppUrl($ctx['invitation'], $ctx['url'], $ctx['recipient']) : '#';
+    }
+
+    /**
+     * Resolve shared invitation, URL, recipient fallback, and import service for share actions.
+     */
+    private function resolveShareContext(): ?array
+    {
         $invitation = Invitation::where('slug', $this->shareInvitationSlug)->first();
         if (! $invitation) {
-            return '#';
+            return null;
         }
 
-        $invitationUrl = route('invitation.show', $this->shareInvitationSlug);
-        $importService = app(GuestImportService::class);
-        $recipientName = empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName;
-
-        return $importService->generateWhatsAppUrl($invitation, $invitationUrl, $recipientName);
+        return [
+            'invitation' => $invitation,
+            'url' => route('invitation.show', $this->shareInvitationSlug),
+            'recipient' => empty($this->shareRecipientName) ? '[Nama Tamu]' : $this->shareRecipientName,
+            'service' => app(GuestImportService::class),
+        ];
     }
 
     public function openThemeModal(int $id, string $title, ?int $currentThemeId): void
