@@ -8,16 +8,17 @@
             this.toast.timer = setTimeout(() => { this.toast.show = false; }, 3000);
         },
         async copyShareMessage(message) {
-            if (!message) {
+            const normalizedMessage = String(message ?? '').replace(/\r\n?/g, '\n');
+            if (!normalizedMessage) {
                 this.showToast('Pesan undangan tidak tersedia.', 'error');
                 return;
             }
             try {
                 if (navigator.clipboard && window.isSecureContext) {
-                    await navigator.clipboard.writeText(message);
+                    await navigator.clipboard.writeText(normalizedMessage);
                 } else {
                     const textarea = document.createElement('textarea');
-                    textarea.value = message;
+                    textarea.value = normalizedMessage;
                     textarea.setAttribute('readonly', '');
                     textarea.style.position = 'fixed';
                     textarea.style.left = '-9999px';
@@ -337,7 +338,7 @@
                     </a>
                     <button 
                         type="button"
-                        data-share-message="{{ $this->getShareMessage() }}"
+                        data-share-message="{{ $this->getInstagramShareMessage() }}"
                         @click="copyShareMessage($el.dataset.shareMessage)"
                         class="w-full py-3 px-4 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 hover:opacity-90 rounded-xl shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
