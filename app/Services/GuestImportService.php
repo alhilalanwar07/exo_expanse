@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use App\Models\Invitation;
-use App\Models\MessageTemplate;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class GuestImportService
 {
-    public const INSTAGRAM_DM_MAX_UTF16_LENGTH = 950;
+    public const INSTAGRAM_DM_MAX_UTF16_LENGTH = 850;
     /**
      * Parse comma-separated text into guest array.
      * Input: "Bapak Budi, Ibu Siti, Pak Ahmad"
@@ -132,27 +131,15 @@ class GuestImportService
     }
 
     /**
-     * Generate formatted invitation share message for a single guest.
+     * Generate formatted invitation share message for a single guest (aligned across WhatsApp and Instagram DM).
      */
     public function generateShareMessage(Invitation $invitation, string $invitationUrl, string $guestName): string
     {
-        $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
-
-        $template = MessageTemplate::where('slug', 'universal')->first();
-        $templateContent = $template ? $template->content : "Kepada Yth. {nama},\n\nKami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami:\n\n{judul}\n\n{detail_acara}\n\nSilakan buka klik link berikut untuk info selengkapnya:\n{link}\n\nKehadiran dan doa restu Anda adalah kebahagiaan bagi kami.\nTerima kasih.";
-
-        $invitationTitle = $this->getInvitationTitle($invitation);
-        $eventDetails = $this->formatEventDetails($invitation);
-
-        return str_replace(
-            ['{nama}', '{judul}', '{detail_acara}', '{link}'],
-            [$guestName, $invitationTitle, $eventDetails, $personalUrl],
-            $templateContent
-        );
+        return $this->generateInstagramShareMessage($invitation, $invitationUrl, $guestName);
     }
 
     /**
-     * Generate a compact invitation share message tailored for Instagram DM on iOS (<= 1,000 UTF-16 code units).
+     * Generate an aligned invitation share message matching the WhatsApp universal format while staying within Instagram iOS limits.
      */
     public function generateInstagramShareMessage(
         Invitation $invitation,
@@ -163,36 +150,48 @@ class GuestImportService
         $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
         $invitationTitle = $this->getInvitationTitle($invitation);
 
-        $buildMessage = function (?string $eventDetails, bool $compactIntro = false) use ($guestName, $invitationTitle, $personalUrl): string {
+        $buildMessage = function (?string $eventDetails, string $closing = '') use ($guestName, $invitationTitle, $personalUrl): string {
             $lines = [
-                "Kepada Yth. {$guestName}",
-                '',
-                $compactIntro
-                    ? "Kami mengundang Bapak/Ibu/Saudara/i hadir di acara {$invitationTitle}."
-                    : "Dengan hormat, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara:\n{$invitationTitle}",
+                'Yth. Bapak/Ibu/Saudara/i',
+                $guestName,
+                'Di Tempat',
+                '-----------',
+                'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,',
+                '===========',
+                $invitationTitle,
+                '===========',
             ];
 
             if ($eventDetails !== null && $eventDetails !== '') {
-                $lines[] = '';
                 $lines[] = $eventDetails;
             }
 
             $lines[] = '';
-            $lines[] = "Info lengkap & konfirmasi kehadiran:\n{$personalUrl}";
+            $lines[] = 'Link undangan bisa diakses lengkap di:';
+            $lines[] = $personalUrl;
 
-            if (! $compactIntro) {
+            if ($closing !== '') {
                 $lines[] = '';
-                $lines[] = 'Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir. Terima kasih.';
+                $lines[] = $closing;
             }
 
             return $this->normalizeLineEndings(implode("\n", $lines));
         };
 
+        $fullClosing = "Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir di acara kami\nTerima kasih banyak atas perhatiannya";
+        $shortClosing = 'Terima kasih banyak atas perhatiannya';
+
+        $fullDetails = $this->formatEventDetails($invitation, true, null);
+        $trimmedAddressDetails = $this->formatEventDetails($invitation, true, 65);
+        $noAddressDetails = $this->formatEventDetails($invitation, false, null);
+
         $candidates = [
-            $buildMessage($this->formatCompactEventDetails($invitation, true, null), false),
-            $buildMessage($this->formatCompactEventDetails($invitation, true, 70), false),
-            $buildMessage($this->formatCompactEventDetails($invitation, false, null), false),
-            $buildMessage(null, true),
+            $buildMessage($fullDetails, $fullClosing),
+            $buildMessage($fullDetails, $shortClosing),
+            $buildMessage($fullDetails, ''),
+            $buildMessage($trimmedAddressDetails, ''),
+            $buildMessage($noAddressDetails, ''),
+            $buildMessage(null, ''),
         ];
 
         foreach ($candidates as $candidate) {
@@ -202,8 +201,8 @@ class GuestImportService
         }
 
         // Final safety net: preserve the full personal link and trim prefix text cleanly by codepoint.
-        $suffix = "\n\n{$personalUrl}";
-        $prefix = "Kepada Yth. {$guestName}\n\nUndangan {$invitationTitle}";
+        $suffix = "\n\nLink undangan bisa diakses lengkap di:\n{$personalUrl}";
+        $prefix = "Yth. Bapak/Ibu/Saudara/i\n{$guestName}\n\n{$invitationTitle}";
 
         while ($prefix !== '' && $this->utf16Length($prefix.$suffix) > $maxUtf16Length) {
             $prefix = mb_substr($prefix, 0, max(0, mb_strlen($prefix, 'UTF-8') - 1), 'UTF-8');
@@ -211,52 +210,6 @@ class GuestImportService
         }
 
         return $this->normalizeLineEndings($prefix !== '' ? $prefix.$suffix : $personalUrl);
-    }
-
-    /**
-     * Format compact event details without verbose dividers, optionally capping venue/address length.
-     */
-    private function formatCompactEventDetails(Invitation $invitation, bool $includeAddress = true, ?int $maxAddressLength = null): string
-    {
-        $details = [];
-        $eventType = $invitation->event_type;
-
-        $events = [
-            [
-                'enabled' => in_array($eventType, ['akad_only', 'both'], true) && $invitation->akad_date,
-                'label' => 'Akad Nikah',
-                'date' => $invitation->akad_date,
-                'key' => 'akad',
-                'address' => $invitation->akad_address ?: $invitation->akad_venue,
-            ],
-            [
-                'enabled' => in_array($eventType, ['resepsi_only', 'both'], true) && $invitation->resepsi_date,
-                'label' => 'Resepsi',
-                'date' => $invitation->resepsi_date,
-                'key' => 'resepsi',
-                'address' => $invitation->resepsi_address ?: $invitation->resepsi_venue,
-            ],
-        ];
-
-        foreach ($events as $event) {
-            if (! $event['enabled']) {
-                continue;
-            }
-
-            $dateStr = Carbon::parse($event['date'])->translatedFormat('d-m-Y');
-            $timeStr = $invitation->formatEventTime($event['key'], true);
-            $details[] = "{$event['label']}: {$dateStr}, {$timeStr}";
-
-            if ($includeAddress && ! empty($event['address'])) {
-                $address = trim(preg_replace('/\s+/', ' ', (string) $event['address']));
-                if ($maxAddressLength !== null && mb_strlen($address, 'UTF-8') > $maxAddressLength) {
-                    $address = rtrim(mb_substr($address, 0, max(1, $maxAddressLength - 3), 'UTF-8')).'...';
-                }
-                $details[] = "Lokasi: {$address}";
-            }
-        }
-
-        return implode("\n", $details);
     }
 
     /**
@@ -305,38 +258,52 @@ class GuestImportService
     }
 
     /**
-     * Format event details for WhatsApp message.
+     * Format event details for WhatsApp and Instagram share messages.
      */
-    public function formatEventDetails(Invitation $invitation): string
+    public function formatEventDetails(Invitation $invitation, bool $includeAddress = true, ?int $maxAddressLength = null): string
     {
-        $details = [];
+        $blocks = [];
         $eventType = $invitation->event_type;
 
-        if (in_array($eventType, ['akad_only', 'both'], true) && $invitation->akad_date) {
-            $akadDate = Carbon::parse($invitation->akad_date);
-            $akadTime = $invitation->formatEventTime('akad', true);
+        $events = [
+            [
+                'enabled' => in_array($eventType, ['akad_only', 'both'], true) && $invitation->akad_date,
+                'title' => 'Pada: Akad Pernikahan',
+                'date' => $invitation->akad_date,
+                'key' => 'akad',
+                'address' => $invitation->akad_address ?: $invitation->akad_venue,
+            ],
+            [
+                'enabled' => in_array($eventType, ['resepsi_only', 'both'], true) && $invitation->resepsi_date,
+                'title' => 'Pada: Resepsi Pernikahan',
+                'date' => $invitation->resepsi_date,
+                'key' => 'resepsi',
+                'address' => $invitation->resepsi_address ?: $invitation->resepsi_venue,
+            ],
+        ];
 
-            $details[] = 'Pada: Akad Pernikahan';
-            $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$akadDate->translatedFormat('d-m-Y');
-            $details[] = "\u{1F55B} Pukul: {$akadTime}";
-            if ($invitation->akad_address) {
-                $details[] = "\u{1F4CD} Lokasi: {$invitation->akad_address}";
+        foreach ($events as $event) {
+            if (! $event['enabled']) {
+                continue;
             }
-            $details[] = '';
+
+            $lines = [
+                $event['title'],
+                "\u{1F5D3}\u{FE0F} Tanggal: ".Carbon::parse($event['date'])->translatedFormat('d-m-Y'),
+                "\u{1F55B} Pukul: ".$invitation->formatEventTime($event['key'], true),
+            ];
+
+            if ($includeAddress && ! empty($event['address'])) {
+                $address = trim(preg_replace('/\s+/', ' ', (string) $event['address']));
+                if ($maxAddressLength !== null && mb_strlen($address, 'UTF-8') > $maxAddressLength) {
+                    $address = rtrim(mb_substr($address, 0, max(1, $maxAddressLength - 3), 'UTF-8')).'...';
+                }
+                $lines[] = "\u{1F4CD} Lokasi: {$address}";
+            }
+
+            $blocks[] = implode("\n", $lines);
         }
 
-        if (in_array($eventType, ['resepsi_only', 'both'], true) && $invitation->resepsi_date) {
-            $receptionDate = Carbon::parse($invitation->resepsi_date);
-            $receptionTime = $invitation->formatEventTime('resepsi', true);
-
-            $details[] = 'Pada: Resepsi Pernikahan';
-            $details[] = "\u{1F5D3}\u{FE0F} Tanggal: ".$receptionDate->translatedFormat('d-m-Y');
-            $details[] = "\u{1F55B} Pukul: {$receptionTime}";
-            if ($invitation->resepsi_address) {
-                $details[] = "\u{1F4CD} Lokasi: {$invitation->resepsi_address}";
-            }
-        }
-
-        return implode("\n", $details);
+        return implode("\n\n", $blocks);
     }
 }
