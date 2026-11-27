@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class GuestImportService
 {
-    public const INSTAGRAM_DM_MAX_UTF16_LENGTH = 850;
+    public const INSTAGRAM_DM_MAX_UTF16_LENGTH = 860;
     /**
      * Parse comma-separated text into guest array.
      * Input: "Bapak Budi, Ibu Siti, Pak Ahmad"
@@ -131,15 +131,15 @@ class GuestImportService
     }
 
     /**
-     * Generate formatted invitation share message for a single guest (aligned across WhatsApp and Instagram DM).
+     * Generate formatted invitation share message for WhatsApp (includes event details).
      */
     public function generateShareMessage(Invitation $invitation, string $invitationUrl, string $guestName): string
     {
-        return $this->generateInstagramShareMessage($invitation, $invitationUrl, $guestName);
+        return $this->buildAlignedShareMessage($invitation, $invitationUrl, $guestName, true, null, false);
     }
 
     /**
-     * Generate an aligned invitation share message matching the WhatsApp universal format while staying within Instagram iOS limits.
+     * Generate an aligned invitation share message for Instagram DM (without event details, iOS Dark Mode & length safe).
      */
     public function generateInstagramShareMessage(
         Invitation $invitation,
@@ -147,26 +147,42 @@ class GuestImportService
         string $guestName,
         int $maxUtf16Length = self::INSTAGRAM_DM_MAX_UTF16_LENGTH
     ): string {
+        return $this->buildAlignedShareMessage($invitation, $invitationUrl, $guestName, false, $maxUtf16Length, true);
+    }
+
+    /**
+     * Build the shared invitation message with configurable event details, iOS Dark Mode protection, and UTF-16 length guard.
+     */
+    private function buildAlignedShareMessage(
+        Invitation $invitation,
+        string $invitationUrl,
+        string $guestName,
+        bool $includeEventDetails,
+        ?int $maxUtf16Length,
+        bool $neutralizeIosDetector
+    ): string {
         $personalUrl = $invitationUrl.'?kpd='.rawurlencode($guestName);
         $invitationTitle = $this->getInvitationTitle($invitation);
+        $displayGuest = $neutralizeIosDetector ? $this->preventIosDataDetector($guestName) : $guestName;
+        $displayTitle = $neutralizeIosDetector ? $this->preventIosDataDetector($invitationTitle) : $invitationTitle;
 
-        $buildMessage = function (?string $eventDetails, string $closing = '') use ($guestName, $invitationTitle, $personalUrl): string {
+        $buildMessage = function (?string $eventDetails, string $closing) use ($displayGuest, $displayTitle, $personalUrl): string {
             $lines = [
                 'Yth. Bapak/Ibu/Saudara/i',
-                $guestName,
+                $displayGuest,
                 'Di Tempat',
                 '-----------',
                 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,',
                 '===========',
-                $invitationTitle,
+                $displayTitle,
                 '===========',
             ];
 
             if ($eventDetails !== null && $eventDetails !== '') {
                 $lines[] = $eventDetails;
+                $lines[] = '';
             }
 
-            $lines[] = '';
             $lines[] = 'Link undangan bisa diakses lengkap di:';
             $lines[] = $personalUrl;
 
@@ -178,21 +194,44 @@ class GuestImportService
             return $this->normalizeLineEndings(implode("\n", $lines));
         };
 
-        $fullClosing = "Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir di acara kami\nTerima kasih banyak atas perhatiannya";
+        $fullClosing = implode("\n", [
+            'Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir di acara kami',
+            'Mohon maaf perihal undangan hanya di bagikan melalui pesan ini',
+            'Terima kasih banyak atas perhatiannya',
+        ]);
+        $twoLineClosing = implode("\n", [
+            'Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir di acara kami',
+            'Terima kasih banyak atas perhatiannya',
+        ]);
         $shortClosing = 'Terima kasih banyak atas perhatiannya';
 
-        $fullDetails = $this->formatEventDetails($invitation, true, null);
-        $trimmedAddressDetails = $this->formatEventDetails($invitation, true, 65);
-        $noAddressDetails = $this->formatEventDetails($invitation, false, null);
+        if (! $includeEventDetails) {
+            $fullMessage = $buildMessage(null, $fullClosing);
+            if ($maxUtf16Length === null || $this->utf16Length($fullMessage) <= $maxUtf16Length) {
+                return $fullMessage;
+            }
 
-        $candidates = [
-            $buildMessage($fullDetails, $fullClosing),
-            $buildMessage($fullDetails, $shortClosing),
-            $buildMessage($fullDetails, ''),
-            $buildMessage($trimmedAddressDetails, ''),
-            $buildMessage($noAddressDetails, ''),
-            $buildMessage(null, ''),
-        ];
+            $candidates = [
+                $buildMessage(null, $twoLineClosing),
+                $buildMessage(null, $shortClosing),
+                $buildMessage(null, ''),
+            ];
+        } else {
+            $fullDetails = $this->formatEventDetails($invitation, true, null);
+            if ($maxUtf16Length === null) {
+                return $buildMessage($fullDetails, $fullClosing);
+            }
+
+            $candidates = [
+                $buildMessage($fullDetails, $fullClosing),
+                $buildMessage($fullDetails, $twoLineClosing),
+                $buildMessage($fullDetails, $shortClosing),
+                $buildMessage($fullDetails, ''),
+                $buildMessage($this->formatEventDetails($invitation, true, 65), ''),
+                $buildMessage($this->formatEventDetails($invitation, false, null), ''),
+                $buildMessage(null, ''),
+            ];
+        }
 
         foreach ($candidates as $candidate) {
             if ($this->utf16Length($candidate) <= $maxUtf16Length) {
@@ -202,7 +241,7 @@ class GuestImportService
 
         // Final safety net: preserve the full personal link and trim prefix text cleanly by codepoint.
         $suffix = "\n\nLink undangan bisa diakses lengkap di:\n{$personalUrl}";
-        $prefix = "Yth. Bapak/Ibu/Saudara/i\n{$guestName}\n\n{$invitationTitle}";
+        $prefix = "Yth. Bapak/Ibu/Saudara/i\n{$displayGuest}\n\n{$displayTitle}";
 
         while ($prefix !== '' && $this->utf16Length($prefix.$suffix) > $maxUtf16Length) {
             $prefix = mb_substr($prefix, 0, max(0, mb_strlen($prefix, 'UTF-8') - 1), 'UTF-8');
@@ -210,6 +249,21 @@ class GuestImportService
         }
 
         return $this->normalizeLineEndings($prefix !== '' ? $prefix.$suffix : $personalUrl);
+    }
+
+    /**
+     * Insert invisible non-breaking Word Joiners so iOS Data Detectors do not highlight
+     * couple titles or academic degrees (e.g. "S.Kom", "Muh.") in yellow on Dark Mode.
+     */
+    private function preventIosDataDetector(string $text): string
+    {
+        if ($text === '') {
+            return '';
+        }
+
+        $protected = preg_replace('/([.,])/u', "$1\u{2060}", $text) ?? $text;
+
+        return preg_replace('/\b([\p{L}])([\p{L}]{2,})/u', "$1\u{2060}$2", $protected) ?? $protected;
     }
 
     /**
