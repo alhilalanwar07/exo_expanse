@@ -166,17 +166,26 @@ class GuestImportService
         $displayGuest = $neutralizeIosDetector ? $this->preventIosDataDetector($guestName) : $guestName;
         $displayTitle = $neutralizeIosDetector ? $this->preventIosDataDetector($invitationTitle) : $invitationTitle;
 
-        $buildMessage = function (?string $eventDetails, string $closing) use ($displayGuest, $displayTitle, $personalUrl): string {
+        $buildMessage = function (?string $eventDetails, string $closing) use ($displayGuest, $displayTitle, $personalUrl, $includeEventDetails): string {
             $lines = [
                 'Yth. Bapak/Ibu/Saudara/i',
                 $displayGuest,
                 'Di Tempat',
-                '-----------',
-                'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,',
-                '===========',
-                $displayTitle,
-                '===========',
             ];
+
+            if ($includeEventDetails) {
+                $lines[] = '-----------';
+                $lines[] = 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,';
+                $lines[] = '===========';
+                $lines[] = $displayTitle;
+                $lines[] = '===========';
+            } else {
+                $lines[] = '';
+                $lines[] = 'Dengan segala kerendahan hati, kami mengundang Bapak/Ibu/Saudara/i dan teman-teman untuk menghadiri acara,';
+                $lines[] = '';
+                $lines[] = $displayTitle;
+                $lines[] = '';
+            }
 
             if ($eventDetails !== null && $eventDetails !== '') {
                 $lines[] = $eventDetails;
@@ -206,14 +215,7 @@ class GuestImportService
         $shortClosing = 'Terima kasih banyak atas perhatiannya';
 
         if (! $includeEventDetails) {
-            $fullMessage = $buildMessage(null, $fullClosing);
-            if ($maxUtf16Length === null || $this->utf16Length($fullMessage) <= $maxUtf16Length) {
-                return $fullMessage;
-            }
-
             $candidates = [
-                $buildMessage(null, $twoLineClosing),
-                $buildMessage(null, $shortClosing),
                 $buildMessage(null, ''),
             ];
         } else {
